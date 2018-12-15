@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:icon="@drawable/ic_account_circle_grey_24dp"
+        android:title="@string/settings_server_settings">
+        <intent
+            android:targetClass="net.eneiluj.nextcloud.phonetrack.android.activity.SettingsActivity"
+            android:targetPackage="net.eneiluj.nextcloud.phonetrack" />
+    </Preference>
+
+    <ListPreference
+        android:icon="@android:drawable/ic_menu_mylocation"
+        android:key="@string/pref_key_providers"
+        android:summary=""
+        android:title="@string/settings_providers_title"
+        android:entries="@array/providersEntries"
+        android:entryValues="@array/providersValues"
+        android:defaultValue="@string/pref_value_providers" />
+
+    <CheckBoxPreference
+        android:icon="@android:drawable/ic_lock_power_off"
+        android:key="@string/pref_key_autostart"
+        android:title="@string/pref_autostart_title"
+        android:summary="@string/pref_autostart_summary"
+        android:defaultValue="@string/pref_autostart_default" />
+
+    <CheckBoxPreference
+        android:icon="@drawable/ic_filter_3_grey_24dp"
+        android:key="@string/pref_key_shownbsynced"
+        android:title="@string/pref_shownbsynced_title"
+        android:summary="@string/pref_shownbsynced_summary"
+        android:defaultValue="@string/pref_shownbsynced_default" />
+
+    <SwitchPreferenceCompat
+        android:defaultValue="@string/pref_value_theme_light"
+        android:icon="@drawable/ic_brightness_2_grey_24dp"
+        android:key="@string/pref_key_theme"
+        android:summary="%s"
+        android:title="@string/settings_theme_title" />
+
+    <PreferenceScreen
+        android:key="@string/pref_key_certs"
+        android:persistent="false"
+        android:icon="@drawable/ic_https_grey_24dp"
+        android:title="@string/settings_cert_category">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_key_trust_system_certs"
+            android:title="@string/settings_cert_trust_system"
+            android:summaryOn="@string/settings_cert_trust_system_on"
+            android:summaryOff="@string/settings_cert_trust_system_off" />
+        <Preference
+            android:key="@string/pref_key_reset_trust"
+            android:title="@string/settings_cert_reset"
+            android:summary="@string/settings_cert_reset_summary" />
+    </PreferenceScreen>
+
+</PreferenceScreen>

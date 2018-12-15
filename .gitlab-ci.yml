@@ -1,0 +1,29 @@
+image: livexp/android-sdk
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
+stages:
+  - build
+
+before_script:
+    - docker-android-sdk-install "build-tools;28.0.3"
+    - cd /root/
+    - wget https://services.gradle.org/distributions/gradle-5.0-bin.zip > /dev/null 2>&1
+    - unzip gradle-5.0-bin.zip > /dev/null 2>&1
+    - cd -
+
+build_app:
+  stage: build
+  only:
+    refs:
+      - build
+  artifacts:
+    paths:
+      - app/build/outputs/apk/release/app-release-unsigned.apk
+      - app/build/outputs/apk/debug/app-debug.apk
+  script:
+      - export PATH=/root/gradle-5.0/bin:$PATH
+      - pwd
+      - cd app ; gradle build
+

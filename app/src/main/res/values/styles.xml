@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="AppTheme" parent="@style/Theme.AppCompat.DayNight.DarkActionBar">
+        <!-- Main theme colors -->
+        <!-- App Bar -->
+        <item name="colorPrimary">@color/primary</item>
+        <!-- Status Bar and contextual Status Bars -->
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <!-- Snackbar Action Link -->
+        <item name="colorAccent">@color/primary</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:buttonStyle">@style/cloudbutton</item>
+        <item name="android:windowBackground">@color/bg_normal</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Preferences" parent="AppTheme">
+        <item name="android:textColor">@color/fg_default</item>
+        <item name="android:textColorSecondary">@color/fg_default_low</item>
+    </style>
+
+    <!--
+        cert4android is using these styles and we want the same button style in the trust activity
+    -->
+    <style name="Widget.AppCompat.Button.Borderless" parent="cloudbutton">
+        <item name="android:layout_margin">2dp</item>
+    </style>
+
+    <style name="Widget.AppCompat.Button.Borderless.Colored" parent="Widget.AppCompat.Button.Borderless"></style>
+
+    <style name="cloudbutton" parent="android:style/Widget.Button">
+        <item name="android:background">@color/primary</item>
+        <item name="android:textColor">@drawable/button_selector</item>
+        <item name="android:padding">@dimen/button_padding</item>
+        <item name="android:elevation">@dimen/button_elevation</item>
+    </style>
+
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/splashscreen</item>
+    </style>
+
+    <style name="NavigationItem">
+        <item name="android:textSize">@dimen/secondary_font_size</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">#de000000</item>
+    </style>
+</resources>

@@ -209,8 +209,8 @@ public class EditPhoneTrackLogjobFragment extends EditLogjobFragment {
         // manage from URL DIALOG
         fromUrlEdit = new EditText(getContext());
         fromUrlBuilder = new AlertDialog.Builder(getContext());
-        fromUrlBuilder.setMessage("Enter Your Message");
-        fromUrlBuilder.setTitle("Enter Your Title");
+        fromUrlBuilder.setMessage(getString(R.string.dialog_msg_import_pt_url));
+        fromUrlBuilder.setTitle(getString(R.string.dialog_title_import_pt_url));
 
         fromUrlBuilder.setView(fromUrlEdit);
 
@@ -258,19 +258,27 @@ public class EditPhoneTrackLogjobFragment extends EditLogjobFragment {
             String right = spl[1];
             String[] spl2 = right.split("/");
             if (spl2.length > 2) {
-                String token = spl2[1];
-                String[] spl3 = spl2[2].split("\\?");
-                if (spl3.length > 1) {
-                    String devname = spl3[0];
-                    editTitle.setText("From logging URL");
-                    editTitle.setSummary("From logging URL");
-                    editDevicename.setText(devname);
-                    editDevicename.setSummary(devname);
-                    editToken.setText(token);
-                    editToken.setSummary(token);
-                    editURL.setText(nextURL);
-                    editURL.setSummary(nextURL);
+                String token;
+                String[] splEnd;
+                // example .../apps/phonetrack/logGet/token/devname?lat=0.1...
+                if (spl2.length == 3) {
+                    token = spl2[1];
+                    splEnd = spl2[2].split("\\?");
                 }
+                // example .../apps/phonetrack/log/osmand/token/devname?lat=0.1...
+                else {
+                    token = spl2[2];
+                    splEnd = spl2[3].split("\\?");
+                }
+                String devname = splEnd[0];
+                editTitle.setText("From PhoneTrack logging URL");
+                editTitle.setSummary("From PhoneTrack logging URL");
+                editDevicename.setText(devname);
+                editDevicename.setSummary(devname);
+                editToken.setText(token);
+                editToken.setSummary(token);
+                editURL.setText(nextURL);
+                editURL.setSummary(nextURL);
             }
         }
     }

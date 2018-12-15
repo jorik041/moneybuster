@@ -66,7 +66,6 @@ public class DBLogjob implements Item, Serializable {
     public boolean setAttrFromLoggingUrl(String loggingUrl) {
         boolean worked = false;
         String[] spl = loggingUrl.split("/apps/phonetrack/");
-        System.out.println(spl.length);
         if (spl.length == 2) {
             String nextURL = spl[0];
             if (nextURL.contains("index.php")) {
@@ -76,7 +75,6 @@ public class DBLogjob implements Item, Serializable {
             String right = spl[1];
             String[] spl2 = right.split("/");
             if (spl2.length > 2) {
-                Log.v("DBLogjob", right);
                 String token;
                 String[] splEnd;
                 // example .../apps/phonetrack/logGet/token/devname?lat=0.1...

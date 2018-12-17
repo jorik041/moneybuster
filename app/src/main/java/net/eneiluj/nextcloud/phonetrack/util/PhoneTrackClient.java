@@ -64,10 +64,14 @@ public class PhoneTrackClient {
     }
 
     public ServerResponse.SessionsResponse getSessions(CustomCertManager ccm, long lastModified, String lastETag) throws JSONException, IOException {
-        String target = "APIgetSessions";
+        String target = "api/getsessions";
         return new ServerResponse.SessionsResponse(requestServer(ccm, target, METHOD_GET, null, lastETag));
     }
 
+    public ServerResponse.ShareDeviceResponse shareDevice(CustomCertManager ccm, String token, String deviceName) throws JSONException, IOException {
+        String target = "api/sharedevice/" + token + "/" + deviceName;
+        return new ServerResponse.ShareDeviceResponse(requestServer(ccm, target, METHOD_GET, null, null));
+    }
 
     /**
      * Request-Method for POST, PUT with or without JSON-Object-Parameter

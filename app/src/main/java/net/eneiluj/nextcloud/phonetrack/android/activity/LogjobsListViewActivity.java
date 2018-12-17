@@ -137,6 +137,10 @@ public class LogjobsListViewActivity extends AppCompatActivity implements ItemAd
         }
 
         @Override
+        public void onFinish(String result, String message) {
+        }
+
+        @Override
         public void onScheduled() {
         }
     };

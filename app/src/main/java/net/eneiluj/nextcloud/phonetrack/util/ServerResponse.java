@@ -7,6 +7,7 @@ import android.support.v7.preference.PreferenceManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,6 +55,15 @@ public class ServerResponse {
         }
     }
 
+    public static class ShareDeviceResponse extends ServerResponse {
+        public ShareDeviceResponse(PhoneTrackClient.ResponseData response) {
+            super(response);
+        }
+
+        public String getPublicToken() throws JSONException {
+            return getPublicTokenFromJSON(new JSONObject(getContent()));
+        }
+    }
 
     private final PhoneTrackClient.ResponseData response;
 
@@ -73,38 +83,26 @@ public class ServerResponse {
         return response.getLastModified();
     }
 
+    protected String getPublicTokenFromJSON(JSONObject json) throws JSONException {
+        int done = 0;
+        String publictoken;
+        if (json.has("code") && json.has("sharetoken")) {
+            done = json.getInt("code");
+            publictoken = json.getString("sharetoken");
+            if (done == 1) {
+                return publictoken;
+            }
+        }
+        return null;
+    }
+
     protected CloudSession getSessionFromJSON(JSONArray json, PhoneTrackSQLiteOpenHelper dbHelper) throws JSONException {
-        //long id = 0;
         String name = "";
         String token = "";
         if (json.length() > 1) {
             name = json.getString(0);
             token = json.getString(1);
         }
-        /*if (!json.isNull(PhoneTrackClient.JSON_ID)) {
-            id = json.getLong(PhoneTrackClient.JSON_ID);
-        }
-        if (!json.isNull(PhoneTrackClient.JSON_TITLE)) {
-            title = json.getString(PhoneTrackClient.JSON_TITLE);
-        }
-        if (!json.isNull(PhoneTrackClient.JSON_CONTENT)) {
-            content = json.getString(PhoneTrackClient.JSON_CONTENT);
-        }
-        if (!json.isNull(PhoneTrackClient.JSON_MODIFIED)) {
-            modified = GregorianCalendar.getInstance();
-            modified.setTimeInMillis(json.getLong(PhoneTrackClient.JSON_MODIFIED) * 1000);
-        }
-        if (!json.isNull(PhoneTrackClient.JSON_FAVORITE)) {
-            favorite = json.getBoolean(PhoneTrackClient.JSON_FAVORITE);
-        }
-        if (!json.isNull(PhoneTrackClient.JSON_CATEGORY)) {
-            category = json.getString(PhoneTrackClient.JSON_CATEGORY);
-        }
-        if (!json.isNull(PhoneTrackClient.JSON_ETAG)) {
-            etag = json.getString(PhoneTrackClient.JSON_ETAG);
-        }
-        return new CloudSession(id, modified, title, content, favorite, category, etag);
-        */
 
         Context appContext = dbHelper.getContext().getApplicationContext();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext.getApplicationContext());

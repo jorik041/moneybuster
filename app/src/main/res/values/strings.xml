@@ -91,6 +91,12 @@
     <string name="pref_shownbsynced_title">Show number of synced points</string>
     <string name="pref_shownbsynced_summary">synced = sent to the server</string>
     <string name="pref_shownbsynced_default" translatable="false">false</string>
+    <string name="share_dev_title">Share public PhoneTrack URL</string>
+    <string name="menu_share_dev_title">Share public PhoneTrack URL</string>
+    <string name="error_share_dev_same_url">Nextcloud URL must be the same as in Account settings to be able to share</string>
+    <string name="error_share_dev_configured">Account settings must be configured</string>
+    <string name="error_share_dev_network">Failed to share device\nNetwork unavailable</string>
+    <string name="error_share_dev_helper">Error when sharing device : %s</string>
 
     <!-- Web errors -->
     <string name="e_illegal_redirect" translatable="false">Illegal redirect: %d</string>

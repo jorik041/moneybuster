@@ -373,4 +373,92 @@ public class SessionServerSyncHelper {
         String password = preferences.getString(SettingsActivity.SETTINGS_PASSWORD, SettingsActivity.DEFAULT_SETTINGS);
         return new PhoneTrackClient(url, username, password);
     }
+
+    public boolean shareDevice(String token, String deviceName, ICallback callback) {
+        if (isSyncPossible()) {
+            ShareDeviceTask shareDeviceTask = new ShareDeviceTask(token, deviceName, callback);
+            shareDeviceTask.execute();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * task to ask server to create public share with name restriction on device
+     * or just get the share token if it already exists
+     *
+     */
+    private class ShareDeviceTask extends AsyncTask<Void, Void, LoginStatus> {
+        private PhoneTrackClient client;
+        private String token;
+        private String deviceName;
+        private String publicUrl = null;
+        private ICallback callback;
+        private List<Throwable> exceptions = new ArrayList<>();
+
+        public ShareDeviceTask(String token, String deviceName, ICallback callback) {
+            this.token = token;
+            this.deviceName = deviceName;
+            this.callback = callback;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected LoginStatus doInBackground(Void... voids) {
+            client = createPhoneTrackClient();
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
+            if (LoggerService.DEBUG) { Log.i(getClass().getSimpleName(), "STARTING share device"); }
+            LoginStatus status = LoginStatus.OK;
+            String sharetoken;
+            try {
+                ServerResponse.ShareDeviceResponse response = client.shareDevice(customCertManager, token, deviceName);
+                sharetoken = response.getPublicToken();
+                if (LoggerService.DEBUG) {
+                    Log.i(getClass().getSimpleName(), "HERE IS THE TOKEN BIIIITCH "+sharetoken);
+                }
+                publicUrl = prefs.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS)
+                        .replaceAll("/+$", "")
+                        + "/index.php/apps/phonetrack/publicSessionWatch/" + sharetoken;
+
+
+            } catch (IOException e) {
+                if (LoggerService.DEBUG) {
+                    Log.e(getClass().getSimpleName(), "Exception", e);
+                }
+                exceptions.add(e);
+                status = LoginStatus.CONNECTION_FAILED;
+            } catch (JSONException e) {
+                if (LoggerService.DEBUG) {
+                    Log.e(getClass().getSimpleName(), "Exception", e);
+                }
+                exceptions.add(e);
+                status = LoginStatus.JSON_FAILED;
+            }
+            if (LoggerService.DEBUG) {
+                Log.i(getClass().getSimpleName(), "FINISHED share device");
+            }
+            return status;
+        }
+
+        @Override
+        protected void onPostExecute(LoginStatus status) {
+            super.onPostExecute(status);
+            String errorString = "";
+            if (status != LoginStatus.OK) {
+                errorString = appContext.getString(
+                        R.string.error_sync,
+                        appContext.getString(status.str)
+                );
+                errorString += "\n\n";
+                for (Throwable e : exceptions) {
+                    errorString += e.getClass().getName() + ": " + e.getMessage();
+                }
+            }
+            callback.onFinish(publicUrl, errorString);
+        }
+    }
 }

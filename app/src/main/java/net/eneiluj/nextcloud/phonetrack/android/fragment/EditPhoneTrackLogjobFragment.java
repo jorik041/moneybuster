@@ -1,26 +1,36 @@
 package net.eneiluj.nextcloud.phonetrack.android.fragment;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 //import android.preference.EditTextPreference;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.preference.EditTextPreference;
 //import android.preference.ListPreference;
 //import android.preference.Preference;
 import android.support.v7.preference.Preference;
 //import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
+import android.support.v7.preference.PreferenceManager;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.eneiluj.nextcloud.phonetrack.R;
+import net.eneiluj.nextcloud.phonetrack.android.activity.SettingsActivity;
 import net.eneiluj.nextcloud.phonetrack.model.DBLogjob;
 import net.eneiluj.nextcloud.phonetrack.model.DBSession;
+import net.eneiluj.nextcloud.phonetrack.persistence.SessionServerSyncHelper;
 import net.eneiluj.nextcloud.phonetrack.util.ICallback;
 
 //public abstract class EditLogjobFragment extends Fragment implements CategoryDialogFragment.CategoryDialogListener {
@@ -88,6 +98,8 @@ public class EditPhoneTrackLogjobFragment extends EditLogjobFragment {
             MenuItem itemSelectSession = menu.findItem(R.id.menu_selectSession);
             itemSelectSession.setVisible(false);
         }
+        menu.findItem(R.id.menu_share).setVisible(db.getPhonetrackServerSyncHelper().isConfigured(getActivity()));
+        menu.findItem(R.id.menu_share).setTitle(R.string.menu_share_dev_title);
     }
 
     /**
@@ -136,6 +148,30 @@ public class EditPhoneTrackLogjobFragment extends EditLogjobFragment {
         return f;
     }
 
+    private ICallback shareCallBack = new ICallback() {
+        @Override
+        public void onFinish() {
+        }
+
+        public void onFinish(String publicUrl, String message) {
+            if (publicUrl != null) {
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_dev_title));
+                shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, publicUrl);
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_dev_title)));
+            }
+            else {
+                showToast(getString(R.string.error_share_dev_helper, message), Toast.LENGTH_LONG);
+            }
+        }
+
+        @Override
+        public void onScheduled() {
+        }
+    };
+
     /**
      * Main-Menu-Handler
      */
@@ -148,6 +184,30 @@ public class EditPhoneTrackLogjobFragment extends EditLogjobFragment {
             case R.id.menu_selectSession:
                 selectDialog.show();
                 return true;
+            case R.id.menu_share:
+                String token = getToken();
+                String devicename = getDevicename();
+                String nextURL = getURL().replaceAll("/+$", "");
+                SessionServerSyncHelper syncHelper = db.getPhonetrackServerSyncHelper();
+                if (syncHelper.isConfigured(this.getActivity())) {
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+                    String configUrl = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS)
+                            .replaceAll("/+$", "");
+                    if (nextURL.equals(configUrl)) {
+                        if (!syncHelper.shareDevice(token, devicename, shareCallBack)) {
+                            showToast(getString(R.string.error_share_dev_network), Toast.LENGTH_LONG);
+                        }
+                    }
+                    else {
+                        Log.d(getClass().getSimpleName(), "NOT THE SAME NEXTCLOUD URL");
+                        showToast(getString(R.string.error_share_dev_same_url), Toast.LENGTH_LONG);
+                    }
+                }
+                else {
+                    showToast(getString(R.string.error_share_dev_configured), Toast.LENGTH_LONG);
+                }
+
+                return false;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -281,6 +341,12 @@ public class EditPhoneTrackLogjobFragment extends EditLogjobFragment {
                 editURL.setSummary(nextURL);
             }
         }
+    }
+
+    protected void showToast(CharSequence text, int duration) {
+        Context context = getActivity();
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
 }

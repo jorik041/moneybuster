@@ -14,7 +14,7 @@
     <string name="action_settings">Configuración</string>
     <string name="setting_title">Título</string>
     <string name="setting_title_long">Nombre del trabajo de registro</string>
-    <string name="mandatory">(mandatory)</string>
+    <string name="mandatory">(obligatorio)</string>
     <string name="setting_devicename">Nombre de dispositivo</string>
     <string name="setting_devicename_long">Nombre del dispositivo o token de reserva</string>
     <string name="setting_token">Token de sesión</string>
@@ -47,12 +47,14 @@
     <string name="setting_min_time_long">Tiempo mínimo entre dos puntos registrados (segundos)</string>
     <string name="setting_min_accuracy">Precisión mínima</string>
     <string name="setting_min_accuracy_long">Precisión mínima para puntos registrados (metros)</string>
-    <string name="logjob_info_dialog_title">About %s</string>
-    <string name="logjob_info_nbsync">%d locations sent</string>
-    <string name="logjob_info_nbnotsync">%d locations pending</string>
-    <string name="logjob_info_lastloc">Last location acquired at %s</string>
-    <string name="logjob_info_lastsync">Last successfull sync at %s</string>
-    <string name="logjob_info_lastsync_error">Last synchronization error at %s\n\n%s</string>
+    <string name="logjob_info_dialog_title">Acerca de %s</string>
+    <string name="logjob_info_nbsync">%d posiciones enviadas</string>
+    <string name="logjob_info_nbnotsync">%d posiciones pendientes</string>
+    <string name="logjob_info_lastloc">Última posición obtenida en %s</string>
+    <string name="logjob_info_lastsync">Última sinronización correcta a las %s</string>
+    <string name="logjob_info_lastsync_error">Último error de sincronización en %s\n\n%s</string>
+    <string name="dialog_title_import_pt_url">Importar URL de registro de PhoneTrack</string>
+    <string name="dialog_msg_import_pt_url">Cualquier URL de registro compatible introducida en la interfaz web de PhoneTrack</string>
     <string name="is_running">procesando (%s pendiente, %s enviado)</string>
     <!-- Settings -->
     <string name="settings_server_settings">Cuenta</string>
@@ -80,11 +82,17 @@
     <string name="using_network">Usando ubicación basada en red</string>
     <string name="using_gps">Usando ubicación por gps</string>
     <string name="location_permission_denied">Permiso de ubicación denegado</string>
-    <string name="sessions_sync_success">Sessions synchronized</string>
+    <string name="sessions_sync_success">Sesiones sincronizadas</string>
     <string name="pref_autostart_title">Inicio automático</string>
     <string name="pref_autostart_summary">El registro se iniciará al arrancar el sistema</string>
     <string name="pref_shownbsynced_title">Mostrar número de puntos sincronizados</string>
     <string name="pref_shownbsynced_summary">sincronizado = enviado al servidor</string>
+    <string name="share_dev_title">Compartir la URL pública de PhoneTrack</string>
+    <string name="menu_share_dev_title">Compartir la URL pública de PhoneTrack</string>
+    <string name="error_share_dev_same_url">La URL de Nextcloud debe ser la misma de los ajustes de cuenta para ser capaz de compartir</string>
+    <string name="error_share_dev_configured">Los ajustes de cuenta deben ser configurados</string>
+    <string name="error_share_dev_network">Fallo al compartir dispositivo\nRed no disponible</string>
+    <string name="error_share_dev_helper">Error al compartir el dispositivo : %s</string>
     <!-- Web errors -->
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">PhoneTrack - Seguridad de la conexión</string>

@@ -53,10 +53,12 @@
     <string name="logjob_info_lastloc">Last location acquired at %s</string>
     <string name="logjob_info_lastsync">Last successfull sync at %s</string>
     <string name="logjob_info_lastsync_error">Last synchronization error at %s\n\n%s</string>
+    <string name="dialog_title_import_pt_url">Import PhoneTrack logging URL</string>
+    <string name="dialog_msg_import_pt_url">Any compatible logging URL given in PhoneTrack web interface</string>
     <string name="is_running">running (%s pending, %s sent)</string>
     <!-- Settings -->
     <string name="settings_server_settings">Account</string>
-    <string name="settings_url">Server address</string>
+    <string name="settings_url">Адреса сервера</string>
     <string name="settings_url_warn_http">WARNING: \"http\" is unsafe. Please use \"https\".</string>
     <string name="settings_username">Username</string>
     <string name="settings_password">Password</string>
@@ -85,6 +87,12 @@
     <string name="pref_autostart_summary">Logging will start on system boot</string>
     <string name="pref_shownbsynced_title">Show number of synced points</string>
     <string name="pref_shownbsynced_summary">synced = sent to the server</string>
+    <string name="share_dev_title">Share public PhoneTrack URL</string>
+    <string name="menu_share_dev_title">Share public PhoneTrack URL</string>
+    <string name="error_share_dev_same_url">Nextcloud URL must be the same as in Account settings to be able to share</string>
+    <string name="error_share_dev_configured">Account settings must be configured</string>
+    <string name="error_share_dev_network">Failed to share device\nNetwork unavailable</string>
+    <string name="error_share_dev_helper">Error when sharing device : %s</string>
     <!-- Web errors -->
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">PhoneTrack - Connection security</string>
@@ -109,31 +117,31 @@
     <string name="about_developers_title">Developers</string>
     <string name="about_translators_title">Translators</string>
     <string name="about_translators_crowdin">PhoneTrack community on &lt;a href=\"%1$s\"&gt;Crowdin&lt;/a&gt;</string>
-    <string name="about_testers_title">Testers</string>
-    <string name="about_source_title">Source code</string>
-    <string name="about_source">This project is hosted on Gitlab: &lt;a href=\"%1$s\"&gt;%1$s&lt;/a&gt;</string>
-    <string name="about_issues_title">Issues</string>
-    <string name="about_issues">You can report bugs, enhancement proposals and feature requests at the Gitlab issue tracker: &lt;a href=\"%1$s\"&gt;%1$s&lt;/a&gt;</string>
-    <string name="about_translate_title">Translate</string>
-    <string name="about_translate">Join the PhoneTrack team on Crowdin and help us to translate this app: &lt;a href=\"%1$s\"&gt;%1$s&lt;/a&gt;</string>
-    <string name="about_app_license_title">App license</string>
-    <string name="about_app_license">This application is licensed under the GNU GENERAL PUBLIC LICENSE v3+.</string>
-    <string name="about_app_license_button">View license</string>
-    <string name="about_icons_disclaimer_title">Icons</string>
-    <string name="about_icons_disclaimer">&lt;p&gt;Original icon made by %1$s&lt;/p&gt;&lt;p&gt;All further icons used by this app are &lt;a href=\"https://materialdesignicons.com/\"&gt;Material Design Icons&lt;/a&gt; made by Google Inc. and licensed under the Apache 2.0 License.&lt;/p&gt;</string>
-    <string name="about_credits_tab_title">Credits</string>
-    <string name="about_contribution_tab_title">Contribution</string>
-    <string name="about_license_tab_title">License</string>
+    <string name="about_testers_title">Тестувальники</string>
+    <string name="about_source_title">Сирцевий код</string>
+    <string name="about_source">Розміщення цього проекту на Gitlab: &lt;a href=\"%1$s\"&gt;%1$s&lt;/a&gt;</string>
+    <string name="about_issues_title">Проблеми</string>
+    <string name="about_issues">Ви можете повідомити про помилки, пропозиції покращення роботи та побажання на трекері Gitlab: &lt;a href=\"%1$s\"&gt;%1$s&lt;/a&gt;</string>
+    <string name="about_translate_title">Перекласти</string>
+    <string name="about_translate">Приєднатися до команди PhoneTrack Crowdin і допомогти нам перевести цей додаток: &lt;a href=\"%1$s\"&gt;%1$s&lt;/a&gt;</string>
+    <string name="about_app_license_title">Ліцензія додатку</string>
+    <string name="about_app_license">Ця програму ліцензовано за GGNU GENERAL PUBLIC LICENSE v3+.</string>
+    <string name="about_app_license_button">Переглянути ліцензію</string>
+    <string name="about_icons_disclaimer_title">Іконки</string>
+    <string name="about_icons_disclaimer">&lt;p&gt;Оригінальні іконки розроблені %1$s&lt;/p&gt;&lt;p&gt;Решта іконок, використаних у цьому додатку, це &lt;a href=\"https://materialdesignicons.com/\"&gt;Material Design Icons&lt;/a&gt; made by Google Inc. and licensed under the Apache 2.0 License.&lt;/p&gt;</string>
+    <string name="about_credits_tab_title">Розробники</string>
+    <string name="about_contribution_tab_title">Внесок</string>
+    <string name="about_license_tab_title">Ліцензія</string>
     <!-- Shortcuts -->
-    <string name="shortcut_create_long">Create a new log job</string>
+    <string name="shortcut_create_long">Створити нове завдання журналювання</string>
     <!-- Key / Values for preferences -->
-    <string name="pref_value_theme_light">Light</string>
-    <string name="pref_value_theme_dark">Dark</string>
+    <string name="pref_value_theme_light">Світлий</string>
+    <string name="pref_value_theme_dark">Темний</string>
     <!-- Plurals -->
     <plurals name="ab_selected">
-        <item quantity="one">%d selected</item>
-        <item quantity="few">%d selected</item>
-        <item quantity="many">%d selected</item>
-        <item quantity="other">%d selected</item>
+        <item quantity="one">%d обрано</item>
+        <item quantity="few">%d обрано</item>
+        <item quantity="many">%d обрано</item>
+        <item quantity="other">%d обрано</item>
     </plurals>
 </resources>

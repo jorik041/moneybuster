@@ -53,6 +53,8 @@
     <string name="logjob_info_lastloc">Letzer Standort erworben bei %s</string>
     <string name="logjob_info_lastsync">Letzte erfolgreiche Synchronisierung bei %s</string>
     <string name="logjob_info_lastsync_error">Letzter Synchronisierungsfehler bei: %s\n\n%s</string>
+    <string name="dialog_title_import_pt_url">PhoneTrack-Protokollierungs-URL importieren</string>
+    <string name="dialog_msg_import_pt_url">Jede kompatible Protokollierungs-URL, die in der PhoneTrack-Webschnittstelle angegeben ist</string>
     <string name="is_running">wird ausgeführt (%s ausstehend, %s gesendet)</string>
     <!-- Settings -->
     <string name="settings_server_settings">Konto</string>
@@ -85,6 +87,12 @@
     <string name="pref_autostart_summary">Protokollierung wird beim Systemstart gestartet</string>
     <string name="pref_shownbsynced_title">Anzahl der synchronisierten Punkte anzeigen</string>
     <string name="pref_shownbsynced_summary">synchronisiert = an den Server gesendet</string>
+    <string name="share_dev_title">Öffentliche PhoneTrack-URL freigeben</string>
+    <string name="menu_share_dev_title">Öffentliche PhoneTrack-URL freigeben</string>
+    <string name="error_share_dev_same_url">Die Nextcloud-URL muss mit der in den Kontoeinstellungen übereinstimmen, um sie gemeinsam nutzen zu können</string>
+    <string name="error_share_dev_configured">Die Kontoeinstellungen müssen konfiguriert werden</string>
+    <string name="error_share_dev_network">Gerät konnte nicht freigegeben werden\nNetzwerk nicht verfügbar</string>
+    <string name="error_share_dev_helper">Fehler bei der Freigabe des Geräts : %s</string>
     <!-- Web errors -->
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">PhoneTrack - Verbindungssicherheit</string>

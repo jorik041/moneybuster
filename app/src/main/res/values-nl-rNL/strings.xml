@@ -14,7 +14,7 @@
     <string name="action_settings">Instellingen</string>
     <string name="setting_title">Naam</string>
     <string name="setting_title_long">Naam logboek</string>
-    <string name="mandatory">(mandatory)</string>
+    <string name="mandatory">(verplicht)</string>
     <string name="setting_devicename">Apparaatnaam</string>
     <string name="setting_devicename_long">Toestelnaam of reserveringsbewijs</string>
     <string name="setting_token">Sessie bewijs</string>
@@ -47,12 +47,14 @@
     <string name="setting_min_time_long">Minimale tijd tussen twee gelogde punten (seconden)</string>
     <string name="setting_min_accuracy">Minimale nauwkeurigheid</string>
     <string name="setting_min_accuracy_long">Minimale nauwkeurigheid voor gelogde punten (meters)</string>
-    <string name="logjob_info_dialog_title">About %s</string>
-    <string name="logjob_info_nbsync">%d locations sent</string>
-    <string name="logjob_info_nbnotsync">%d locations pending</string>
-    <string name="logjob_info_lastloc">Last location acquired at %s</string>
-    <string name="logjob_info_lastsync">Last successfull sync at %s</string>
-    <string name="logjob_info_lastsync_error">Last synchronization error at %s\n\n%s</string>
+    <string name="logjob_info_dialog_title">Over %s</string>
+    <string name="logjob_info_nbsync">%d posities verzonden</string>
+    <string name="logjob_info_nbnotsync">%d uitstaande posities</string>
+    <string name="logjob_info_lastloc">Laatste locatie verworven op %s</string>
+    <string name="logjob_info_lastsync">Laatste succesvolle synchronisatie op %s</string>
+    <string name="logjob_info_lastsync_error">Laatste synchronisatiefout op %s\n\n%s</string>
+    <string name="dialog_title_import_pt_url">Import PhoneTrack logging URL</string>
+    <string name="dialog_msg_import_pt_url">Any compatible logging URL given in PhoneTrack web interface</string>
     <string name="is_running">draaiend (%s in behandeling, %s verzonden)</string>
     <!-- Settings -->
     <string name="settings_server_settings">Account</string>
@@ -80,11 +82,17 @@
     <string name="using_network">Netwerklocatie in gebruik</string>
     <string name="using_gps">GPS-locatie in gebruik</string>
     <string name="location_permission_denied">Locatie toestemming geweigerd</string>
-    <string name="sessions_sync_success">Sessions synchronized</string>
+    <string name="sessions_sync_success">Sessies gesynchroniseerd</string>
     <string name="pref_autostart_title">Automatisch starten</string>
     <string name="pref_autostart_summary">Logboekregistratie begint als systeem opstart</string>
     <string name="pref_shownbsynced_title">Toon aantal gesynchroniseerde punten</string>
     <string name="pref_shownbsynced_summary">gesynchroniseerd = naar de server verzonden</string>
+    <string name="share_dev_title">Share public PhoneTrack URL</string>
+    <string name="menu_share_dev_title">Share public PhoneTrack URL</string>
+    <string name="error_share_dev_same_url">Nextcloud URL must be the same as in Account settings to be able to share</string>
+    <string name="error_share_dev_configured">Account settings must be configured</string>
+    <string name="error_share_dev_network">Failed to share device\nNetwork unavailable</string>
+    <string name="error_share_dev_helper">Error when sharing device : %s</string>
     <!-- Web errors -->
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">PhoneTrack - beveiliging van de verbinding</string>

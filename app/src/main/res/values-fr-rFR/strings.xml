@@ -53,6 +53,8 @@
     <string name="logjob_info_lastloc">Dernière position acquise le %s</string>
     <string name="logjob_info_lastsync">Dernière synchronisation de position réussie le %s</string>
     <string name="logjob_info_lastsync_error">Dernière erreur de synchronisation le %s\n\n%s</string>
+    <string name="dialog_title_import_pt_url">Importer une URL de logging de PhoneTrack</string>
+    <string name="dialog_msg_import_pt_url">N\'importe quelle URL de logging fournie dans l\'interface web de PhoneTrack</string>
     <string name="is_running">en marche (%s en attente, %s envoyés)</string>
     <!-- Settings -->
     <string name="settings_server_settings">Compte</string>
@@ -85,6 +87,12 @@
     <string name="pref_autostart_summary">Le logging commencera au démarrage du système</string>
     <string name="pref_shownbsynced_title">Montrer le nombre de points synchronisés</string>
     <string name="pref_shownbsynced_summary">synchronisés = envoyés au serveur</string>
+    <string name="share_dev_title">Partager l\'URL publique PhoneTrack</string>
+    <string name="menu_share_dev_title">Partager l\'URL publique PhoneTrack</string>
+    <string name="error_share_dev_same_url">L\'URL de Nextcloud doit être identique à celle définie dans les paramètres du compte pour pouvoir créer le partage</string>
+    <string name="error_share_dev_configured">Les paramètres du compte doivent être renseignés</string>
+    <string name="error_share_dev_network">Impossible de partager l\'appareil\nRéseau indisponible</string>
+    <string name="error_share_dev_helper">Erreur du partage de l\'appareil : %s</string>
     <!-- Web errors -->
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">PhoneTrack - Sécurité de la connexion</string>

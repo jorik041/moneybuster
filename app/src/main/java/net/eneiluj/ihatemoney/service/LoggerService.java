@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.eneiluj.ihatemoney.R;
-import net.eneiluj.ihatemoney.android.activity.LogjobsListViewActivity;
+import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
 import net.eneiluj.ihatemoney.android.fragment.PreferencesFragment;
 import net.eneiluj.ihatemoney.model.DBLogjob;
 import net.eneiluj.ihatemoney.persistence.PhoneTrackSQLiteOpenHelper;
@@ -183,7 +183,7 @@ public class LoggerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (isRunning) {
-            final boolean logjobsUpdated = (intent != null) && intent.getBooleanExtra(LogjobsListViewActivity.UPDATED_LOGJOBS, false);
+            final boolean logjobsUpdated = (intent != null) && intent.getBooleanExtra(BillsListViewActivity.UPDATED_LOGJOBS, false);
             final boolean providersUpdated = (intent != null) && intent.getBooleanExtra(PreferencesFragment.UPDATED_PROVIDERS, false);
             final boolean updateNotif = (intent != null) && intent.getBooleanExtra(UPDATE_NOTIFICATION, false);
             if (logjobsUpdated) {
@@ -194,7 +194,7 @@ public class LoggerService extends Service {
                         Log.d(TAG, "[onStartCommand : upd logjob but firstrun so nothing]");
                     }
                 } else {
-                    String ljId = String.valueOf(intent.getLongExtra(LogjobsListViewActivity.UPDATED_LOGJOB_ID, 0));
+                    String ljId = String.valueOf(intent.getLongExtra(BillsListViewActivity.UPDATED_LOGJOB_ID, 0));
                     if (DEBUG) {
                         Log.d(TAG, "[onStartCommand : upd logjob]");
                     }
@@ -492,10 +492,10 @@ public class LoggerService extends Service {
                         //.setContentText(String.format(getString(R.string.is_running), getString(R.string.app_name)));
         mNotificationBuilder = mBuilder;
 
-        Intent resultIntent = new Intent(this, LogjobsListViewActivity.class);
+        Intent resultIntent = new Intent(this, BillsListViewActivity.class);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(LogjobsListViewActivity.class);
+        stackBuilder.addParentStack(BillsListViewActivity.class);
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
@@ -598,7 +598,7 @@ public class LoggerService extends Service {
                 updateNotificationContent();
 
                 Intent syncOneDev = new Intent(getApplicationContext(), WebTrackService.class);
-                syncOneDev.putExtra(LogjobsListViewActivity.UPDATED_LOGJOB_ID, logjobId);
+                syncOneDev.putExtra(BillsListViewActivity.UPDATED_LOGJOB_ID, logjobId);
                 startService(syncOneDev);
             }
         }

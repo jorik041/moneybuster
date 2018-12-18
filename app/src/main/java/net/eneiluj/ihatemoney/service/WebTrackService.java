@@ -21,7 +21,7 @@ import java.util.Map;
 
 import net.eneiluj.ihatemoney.BuildConfig;
 import net.eneiluj.ihatemoney.R;
-import net.eneiluj.ihatemoney.android.activity.LogjobsListViewActivity;
+import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
 import net.eneiluj.ihatemoney.model.DBLocation;
 import net.eneiluj.ihatemoney.model.DBLogjob;
 import net.eneiluj.ihatemoney.persistence.PhoneTrackSQLiteOpenHelper;
@@ -71,7 +71,7 @@ public class WebTrackService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (LoggerService.DEBUG) { Log.d(TAG, "[websync start]"); }
 
-        String logjobId = intent.getStringExtra(LogjobsListViewActivity.UPDATED_LOGJOB_ID);
+        String logjobId = intent.getStringExtra(BillsListViewActivity.UPDATED_LOGJOB_ID);
 
         if (pi != null) {
             // cancel pending alarm

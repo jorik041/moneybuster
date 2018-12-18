@@ -65,13 +65,13 @@ import net.eneiluj.ihatemoney.service.WebTrackService;
 import net.eneiluj.ihatemoney.util.ICallback;
 import net.eneiluj.ihatemoney.util.PhoneTrackClientUtil;
 
-public class LogjobsListViewActivity extends AppCompatActivity implements ItemAdapter.LogjobClickListener {
+public class BillsListViewActivity extends AppCompatActivity implements ItemAdapter.LogjobClickListener {
 
     private final static int PERMISSION_LOCATION = 1;
 
     private final static int PERMISSION_FOREGROUND_SERVICE = 1;
 
-    private static final String TAG = LogjobsListViewActivity.class.getSimpleName();
+    private static final String TAG = BillsListViewActivity.class.getSimpleName();
 
     public final static String CREATED_LOGJOB = "net.eneiluj.ihatemoney.created_logjob";
     public final static String CREDENTIALS_CHANGED = "net.eneiluj.ihatemoney.CREDENTIALS_CHANGED";
@@ -93,6 +93,7 @@ public class LogjobsListViewActivity extends AppCompatActivity implements ItemAd
     private final static int show_single_logjob_cmd = 1;
     private final static int server_settings = 2;
     private final static int about = 3;
+    private final static int addproject = 4;
 
 
     @BindView(R.id.logjobsListActivityActionBar)
@@ -172,18 +173,18 @@ public class LogjobsListViewActivity extends AppCompatActivity implements ItemAd
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             if (LoggerService.DEBUG) { Log.d(TAG, "[request 2 permissions]"); }
-            ActivityCompat.requestPermissions(LogjobsListViewActivity.this, new String[]{Manifest.permission.FOREGROUND_SERVICE, Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
+            ActivityCompat.requestPermissions(BillsListViewActivity.this, new String[]{Manifest.permission.FOREGROUND_SERVICE, Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
         }
         else {
             if (LoggerService.DEBUG) { Log.d(TAG, "[request 1 permission]"); }
-            ActivityCompat.requestPermissions(LogjobsListViewActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
+            ActivityCompat.requestPermissions(BillsListViewActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
         }
 
         Map<String, Integer> enabled = db.getEnabledCount();
         int nbEnabledLogjobs = enabled.containsKey("1") ? enabled.get("1") : 0;
         if (nbEnabledLogjobs > 0) {
             // start loggerservice !
-            Intent intent = new Intent(LogjobsListViewActivity.this, LoggerService.class);
+            Intent intent = new Intent(BillsListViewActivity.this, LoggerService.class);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 startService(intent);
             } else {
@@ -262,7 +263,7 @@ public class LogjobsListViewActivity extends AppCompatActivity implements ItemAd
                     }
                 }
                 if (db.getLocationCount() > 0) {
-                    Intent syncIntent = new Intent(LogjobsListViewActivity.this, WebTrackService.class);
+                    Intent syncIntent = new Intent(BillsListViewActivity.this, WebTrackService.class);
                     startService(syncIntent);
                     showToast(getString(R.string.uploading_started));
                 }
@@ -452,11 +453,12 @@ public class LogjobsListViewActivity extends AppCompatActivity implements ItemAd
 
     private void setupNavigationMenu() {
         //final NavigationAdapter.NavigationItem itemTrashbin = new NavigationAdapter.NavigationItem("trashbin", getString(R.string.action_trashbin), null, R.drawable.ic_delete_grey600_24dp);
+        final NavigationAdapter.NavigationItem itemAddProject = new NavigationAdapter.NavigationItem("addproject", getString(R.string.action_add_project), null, R.drawable.ic_add_green_24dp);
         final NavigationAdapter.NavigationItem itemSettings = new NavigationAdapter.NavigationItem("settings", getString(R.string.action_settings), null, R.drawable.ic_settings_grey600_24dp);
         final NavigationAdapter.NavigationItem itemAbout = new NavigationAdapter.NavigationItem("about", getString(R.string.simple_about), null, R.drawable.ic_info_outline_grey600_24dp);
 
         ArrayList<NavigationAdapter.NavigationItem> itemsMenu = new ArrayList<>();
-        //itemsMenu.add(itemTrashbin);
+        itemsMenu.add(itemAddProject);
         itemsMenu.add(itemSettings);
         itemsMenu.add(itemAbout);
 
@@ -469,12 +471,10 @@ public class LogjobsListViewActivity extends AppCompatActivity implements ItemAd
                 } else if (item == itemAbout) {
                     Intent aboutIntent = new Intent(getApplicationContext(), AboutActivity.class);
                     startActivityForResult(aboutIntent, about);
+                } else if (item == itemAddProject) {
+                    //Intent addProjectIntent = new Intent(getApplicationContext(), AddProjectActivity.class);
+                    //startActivityForResult(addProjectIntent, addproject);
                 }
-                /*else if (item == itemTrashbin) {
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    String url = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS);
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url + "index.php/apps/files/?dir=/&view=trashbin")));
-                }*/
             }
 
             @Override
@@ -485,7 +485,7 @@ public class LogjobsListViewActivity extends AppCompatActivity implements ItemAd
 
 
         this.updateUsernameInDrawer();
-        final LogjobsListViewActivity that = this;
+        final BillsListViewActivity that = this;
         this.account.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -890,7 +890,7 @@ public class LogjobsListViewActivity extends AppCompatActivity implements ItemAd
     }
 
     private void notifyLoggerService(long jobId) {
-        Intent intent = new Intent(LogjobsListViewActivity.this, LoggerService.class);
+        Intent intent = new Intent(BillsListViewActivity.this, LoggerService.class);
         intent.putExtra(UPDATED_LOGJOBS, true);
         intent.putExtra(UPDATED_LOGJOB_ID, jobId);
         startService(intent);
@@ -1088,7 +1088,7 @@ public class LogjobsListViewActivity extends AppCompatActivity implements ItemAd
                 case LoggerService.BROADCAST_LOCATION_PERMISSION_DENIED:
                     showToast(getString(R.string.location_permission_denied), Toast.LENGTH_LONG);
                     //setLocLed(LED_RED);
-                    ActivityCompat.requestPermissions(LogjobsListViewActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
+                    ActivityCompat.requestPermissions(BillsListViewActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
                     break;
             }
         }

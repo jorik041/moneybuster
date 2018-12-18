@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 //import android.preference.EditTextPreference;
+import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.EditTextPreference;
 //import android.preference.ListPreference;
 //import android.preference.Preference;
@@ -31,49 +32,56 @@ import butterknife.ButterKnife;
 import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
 import net.eneiluj.ihatemoney.model.DBLogjob;
+import net.eneiluj.ihatemoney.model.DBProject;
 import net.eneiluj.ihatemoney.persistence.PhoneTrackSQLiteOpenHelper;
 import net.eneiluj.ihatemoney.service.LoggerService;
 import net.eneiluj.ihatemoney.util.ICallback;
 
-//public abstract class EditLogjobFragment extends Fragment implements CategoryDialogFragment.CategoryDialogListener {
-//public class EditLogjobFragment extends PreferencesFragment {
-public abstract class EditLogjobFragment extends PreferenceFragmentCompat {
+public class EditProjectFragment extends PreferenceFragmentCompat {
 
-    public interface LogjobFragmentListener {
+    public interface ProjectFragmentListener {
         void close();
 
-        void onLogjobUpdated(DBLogjob logjob);
+        void onProjectUpdated(DBLogjob logjob);
     }
 
-    public static final String PARAM_LOGJOB_ID = "logjobId";
-    public static final String PARAM_NEWLOGJOB = "newLogjob";
-    private static final String SAVEDKEY_LOGJOB = "logjob";
-    private static final String SAVEDKEY_ORIGINAL_LOGJOB = "original_logjob";
+    public static final String PARAM_PROJECT_ID = "projectId";
+    public static final String PARAM_NEWPROJECT = "newProject";
+    private static final String SAVEDKEY_PROJECT = "project";
+    private static final String SAVEDKEY_ORIGINAL_PROJECT = "original_project";
 
-    protected DBLogjob logjob;
+    protected DBProject project;
     @Nullable
-    protected DBLogjob originalLogjob;
+    protected DBProject originalProject;
     protected PhoneTrackSQLiteOpenHelper db;
-    protected LogjobFragmentListener listener;
-
-    private static final String LOG_TAG_AUTOSAVE = "AutoSave";
-
-    private static final long DELAY = 2000; // Wait for this time after typing before saving
-    private static final long DELAY_AFTER_SYNC = 5000; // Wait for this time after saving before checking for next save
+    protected ProjectFragmentListener listener;
 
     private Handler handler;
-    private boolean saveActive, unsavedEdit;
 
-    protected EditTextPreference editTitle;
-    protected EditTextPreference editURL;
-    protected EditTextPreference editToken;
-    protected EditTextPreference editDevicename;
-    protected EditTextPreference editMintime;
-    protected EditTextPreference editMindistance;
-    protected EditTextPreference editMinaccuracy;
+    protected EditTextPreference editProjectId;
+    protected EditTextPreference editProjectIHMUrl;
+    protected EditTextPreference editProjectPassword;
+    protected CheckBoxPreference editProjectCreate;
+    protected EditTextPreference editProjectEmail;
 
     private DialogInterface.OnClickListener deleteDialogClickListener;
     private AlertDialog.Builder confirmDeleteAlertBuilder;
+
+    public static EditProjectFragment newInstance(long projectId) {
+        EditProjectFragment f = new EditProjectFragment();
+        Bundle b = new Bundle();
+        b.putLong(PARAM_PROJECT_ID, projectId);
+        f.setArguments(b);
+        return f;
+    }
+
+    public static EditProjectFragment newInstanceWithNewProject(DBProject newProject) {
+        EditProjectFragment f = new EditProjectFragment();
+        Bundle b = new Bundle();
+        b.putSerializable(PARAM_NEWPROJECT, newProject);
+        f.setArguments(b);
+        return f;
+    }
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootkey) {
@@ -92,6 +100,100 @@ public abstract class EditLogjobFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        addPreferencesFromResource(R.xml.activity_edit_project);
+
+        Preference idPref = findPreference("id");
+        idPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+
+            @Override
+            public boolean onPreferenceChange(Preference preference,
+                                              Object newValue) {
+                EditTextPreference pref = (EditTextPreference) findPreference("id");
+                pref.setSummary((CharSequence) newValue);
+                return true;
+            }
+
+        });
+        Preference URLPref = findPreference("url");
+        URLPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+
+            @Override
+            public boolean onPreferenceChange(Preference preference,
+                                              Object newValue) {
+                EditTextPreference pref = (EditTextPreference) findPreference("url");
+                pref.setSummary((CharSequence) newValue);
+                return true;
+            }
+
+        });
+        Preference passwordPref = findPreference("password");
+        passwordPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+
+            @Override
+            public boolean onPreferenceChange(Preference preference,
+                                              Object newValue) {
+                EditTextPreference pref = (EditTextPreference) findPreference("password");
+                //pref.setSummary((CharSequence) newValue);
+                return true;
+            }
+
+        });
+        Preference emailPref = findPreference("email");
+        emailPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+
+            @Override
+            public boolean onPreferenceChange(Preference preference,
+                                              Object newValue) {
+                EditTextPreference pref = (EditTextPreference) preference;
+                pref.setSummary((CharSequence) newValue);
+                return true;
+            }
+
+        });
+
+        Preference createPref = findPreference("createonserver");
+        createPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+
+            @Override
+            public boolean onPreferenceChange(Preference preference,
+                                              Object newValue) {
+                CheckBoxPreference pref = (CheckBoxPreference) findPreference("createonserver");
+                EditTextPreference emailPref = (EditTextPreference) findPreference("email");
+                emailPref.setVisible((Boolean) newValue);
+                //pref.setChecked((Boolean) newValue);
+                return true;
+            }
+
+        });
+
+        // delete confirmation
+        deleteDialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        //Yes button clicked
+                        db.deleteProject(project.getId());
+                        listener.close();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //No button clicked
+                        break;
+                }
+            }
+        };
+        confirmDeleteAlertBuilder = new AlertDialog.Builder(getActivity());
+        confirmDeleteAlertBuilder.setMessage("Are you sure?").setPositiveButton("Yes", deleteDialogClickListener)
+                .setNegativeButton("No", deleteDialogClickListener);
+
+        handler = new Handler(Looper.getMainLooper());
+
+        System.out.println("CUSTOM on create : "+logjob);
+
+
+
         if (savedInstanceState == null) {
             long id = getArguments().getLong(PARAM_LOGJOB_ID);
             if (id > 0) {
@@ -114,104 +216,6 @@ public abstract class EditLogjobFragment extends PreferenceFragmentCompat {
         ///////////////
         //addPreferencesFromResource(R.xml.activity_edit);
 
-    }
-
-    public void endOnCreate() {
-        Preference titlePref = findPreference("title");
-        titlePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference,
-                                              Object newValue) {
-                EditTextPreference pref = (EditTextPreference) findPreference("title");
-                pref.setSummary((CharSequence) newValue);
-                // trick to make change effective before saving
-                // otherwise edittext is not up to date when saving...
-                pref.setText((String) newValue);
-                saveLogjob(null);
-                return true;
-            }
-
-        });
-        Preference URLPref = findPreference("URL");
-        URLPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference,
-                                              Object newValue) {
-                EditTextPreference pref = (EditTextPreference) findPreference("URL");
-                pref.setSummary((CharSequence) newValue);
-                pref.setText((String) newValue);
-                saveLogjob(null);
-                return true;
-            }
-
-        });
-        Preference minTimePref = findPreference("mintime");
-        minTimePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference,
-                                              Object newValue) {
-                EditTextPreference pref = (EditTextPreference) findPreference("mintime");
-                pref.setSummary((CharSequence) newValue);
-                pref.setText((String) newValue);
-                saveLogjob(null);
-                return true;
-            }
-
-        });
-        Preference minDistancePref = findPreference("mindistance");
-        minDistancePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference,
-                                              Object newValue) {
-                EditTextPreference pref = (EditTextPreference) preference;
-                pref.setSummary((CharSequence) newValue);
-                pref.setText((String) newValue);
-                saveLogjob(null);
-                return true;
-            }
-
-        });
-        Preference minAccuracyPref = findPreference("minaccuracy");
-        minAccuracyPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference,
-                                              Object newValue) {
-                EditTextPreference pref = (EditTextPreference) findPreference("minaccuracy");
-                pref.setSummary((CharSequence) newValue);
-                pref.setText((String) newValue);
-                saveLogjob(null);
-                return true;
-            }
-
-        });
-
-        // delete confirmation
-        deleteDialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which){
-                    case DialogInterface.BUTTON_POSITIVE:
-                        //Yes button clicked
-                        db.deleteLogjob(logjob.getId());
-                        listener.close();
-                        break;
-
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        //No button clicked
-                        break;
-                }
-            }
-        };
-        confirmDeleteAlertBuilder = new AlertDialog.Builder(getActivity());
-        confirmDeleteAlertBuilder.setMessage("Are you sure?").setPositiveButton("Yes", deleteDialogClickListener)
-               .setNegativeButton("No", deleteDialogClickListener);
-
-        handler = new Handler(Looper.getMainLooper());
     }
 
     @Override
@@ -268,6 +272,11 @@ public abstract class EditLogjobFragment extends PreferenceFragmentCompat {
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.menu_share).setVisible(false);
+
+        MenuItem itemSelectSession = menu.findItem(R.id.menu_selectSession);
+        itemSelectSession.setVisible(false);
+        MenuItem itemFromLogUrl = menu.findItem(R.id.menu_fromLogUrl);
+        itemFromLogUrl.setVisible(false);
     }
 
     /**
@@ -320,7 +329,9 @@ public abstract class EditLogjobFragment extends PreferenceFragmentCompat {
      *
      * @param callback Observer which is called after save/synchronization
      */
-    protected abstract void saveLogjob(@Nullable ICallback callback);
+    protected void saveProject(@Nullable ICallback callback) {
+
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -354,6 +365,9 @@ public abstract class EditLogjobFragment extends PreferenceFragmentCompat {
         editMinaccuracy = (EditTextPreference) this.findPreference("minaccuracy");
         editMinaccuracy.setText(String.valueOf(logjob.getMinAccuracy()));
         editMinaccuracy.setSummary(String.valueOf(logjob.getMinAccuracy()));
+
+        editPost = (CheckBoxPreference) this.findPreference("post");
+        editPost.setChecked(logjob.getPost());
     }
 
     protected String getTitle() {
@@ -371,4 +385,5 @@ public abstract class EditLogjobFragment extends PreferenceFragmentCompat {
     protected String getMinaccuracy() {
         return editMinaccuracy.getText();
     }
+
 }

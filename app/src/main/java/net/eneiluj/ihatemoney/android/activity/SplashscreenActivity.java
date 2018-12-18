@@ -13,7 +13,7 @@ public class SplashscreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent(this, LogjobsListViewActivity.class);
+        Intent intent = new Intent(this, BillsListViewActivity.class);
         startActivity(intent);
         finish();
     }

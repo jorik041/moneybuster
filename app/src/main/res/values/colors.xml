@@ -2,8 +2,8 @@
 <resources>
     <!-- Colors -->
 
-    <color name="primary">#0082C9</color>
-    <color name="primary_dark">#286090</color>
+    <color name="primary">#74991B</color>
+    <color name="primary_dark">#5F7D16</color>
 
     <color name="separator">#d2d2d2</color>
 
@@ -12,7 +12,7 @@
     <color name="bg_normal">#ffffff</color>
     <color name="bg_normal_transparent">#aaffffff</color>
     <color name="bg_attention">#d40000</color>
-    <color name="bg_warning">#0082C9</color>
+    <color name="bg_warning">#74991B</color>
     <color name="fg_default">#000000</color>
     <color name="fg_default_selection">#333333</color>
     <color name="fg_default_low">#666666</color>

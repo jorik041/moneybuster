@@ -63,6 +63,11 @@
                             android:id="@+id/account"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
+                        <Spinner
+                            android:id="@+id/projects"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            />
                     </android.support.v7.widget.LinearLayoutCompat>
                 </LinearLayout>
 

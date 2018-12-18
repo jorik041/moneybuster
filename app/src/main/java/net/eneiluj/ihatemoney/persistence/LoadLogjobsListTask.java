@@ -17,7 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.eneiluj.ihatemoney.R;
-import net.eneiluj.ihatemoney.android.activity.LogjobsListViewActivity;
+import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
 import net.eneiluj.ihatemoney.model.Category;
 import net.eneiluj.ihatemoney.model.DBLogjob;
 import net.eneiluj.ihatemoney.model.Item;
@@ -111,10 +111,10 @@ public class LoadLogjobsListTask extends AsyncTask<Void, Void, List<Item>> {
             if (category.favorite != null && category.favorite && logjob.isEnabled()) {
                 itemList.add(colorTheLogjob(logjob));
             }
-            else if (category.category == LogjobsListViewActivity.CATEGORY_PHONETRACK && !logjob.getToken().isEmpty() && !logjob.getDeviceName().isEmpty()) {
+            else if (category.category == BillsListViewActivity.CATEGORY_PHONETRACK && !logjob.getToken().isEmpty() && !logjob.getDeviceName().isEmpty()) {
                 itemList.add(colorTheLogjob(logjob));
             }
-            else if (category.category == LogjobsListViewActivity.CATEGORY_CUSTOM && logjob.getToken().isEmpty() && logjob.getDeviceName().isEmpty()) {
+            else if (category.category == BillsListViewActivity.CATEGORY_CUSTOM && logjob.getToken().isEmpty() && logjob.getDeviceName().isEmpty()) {
                 itemList.add(colorTheLogjob(logjob));
             }
             else if (category.favorite == null && category.category == null) {

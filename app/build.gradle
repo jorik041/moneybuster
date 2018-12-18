@@ -5,7 +5,7 @@ android {
     buildToolsVersion '28.0.3'
 
     defaultConfig {
-        applicationId "net.eneiluj.nextcloud.phonetrack"
+        applicationId "net.eneiluj.ihatemoney"
         minSdkVersion 24
         targetSdkVersion 28
         versionCode 2

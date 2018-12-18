@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="net.eneiluj.nextcloud.phonetrack.android.activity.LogjobsListViewActivity">
+    tools:context="net.eneiluj.ihatemoney.android.activity.LogjobsListViewActivity">
     <item
         android:id="@+id/search"
         android:title="@string/action_search"

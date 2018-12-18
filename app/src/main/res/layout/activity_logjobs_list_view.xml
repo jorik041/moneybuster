@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/bg_normal"
-            tools:context="net.eneiluj.nextcloud.phonetrack.android.activity.LogjobsListViewActivity"
+            tools:context="net.eneiluj.ihatemoney.android.activity.LogjobsListViewActivity"
             tools:ignore="MergeRootFrame">
 
             <android.support.v7.widget.RecyclerView

@@ -70,6 +70,8 @@ import net.eneiluj.ihatemoney.service.WebTrackService;
 import net.eneiluj.ihatemoney.util.ICallback;
 import net.eneiluj.ihatemoney.util.PhoneTrackClientUtil;
 
+import static net.eneiluj.ihatemoney.android.activity.EditProjectActivity.PARAM_PROJECT_ID;
+
 public class BillsListViewActivity extends AppCompatActivity implements ItemAdapter.LogjobClickListener {
 
     private final static int PERMISSION_LOCATION = 1;
@@ -100,6 +102,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private final static int server_settings = 2;
     private final static int about = 3;
     private final static int addproject = 4;
+    private final static int removeproject = 5;
+    private final static int editproject = 6;
 
 
     @BindView(R.id.logjobsListActivityActionBar)
@@ -463,11 +467,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private void setupNavigationMenu() {
         //final NavigationAdapter.NavigationItem itemTrashbin = new NavigationAdapter.NavigationItem("trashbin", getString(R.string.action_trashbin), null, R.drawable.ic_delete_grey600_24dp);
         final NavigationAdapter.NavigationItem itemAddProject = new NavigationAdapter.NavigationItem("addproject", getString(R.string.action_add_project), null, android.R.drawable.ic_menu_add);
+        final NavigationAdapter.NavigationItem itemEditProject = new NavigationAdapter.NavigationItem("editproject", getString(R.string.action_edit_project), null, android.R.drawable.ic_menu_edit);
+        final NavigationAdapter.NavigationItem itemRemoveProject = new NavigationAdapter.NavigationItem("removeproject", getString(R.string.action_remove_project), null, android.R.drawable.ic_menu_delete);
         final NavigationAdapter.NavigationItem itemSettings = new NavigationAdapter.NavigationItem("settings", getString(R.string.action_settings), null, R.drawable.ic_settings_grey600_24dp);
         final NavigationAdapter.NavigationItem itemAbout = new NavigationAdapter.NavigationItem("about", getString(R.string.simple_about), null, R.drawable.ic_info_outline_grey600_24dp);
 
         ArrayList<NavigationAdapter.NavigationItem> itemsMenu = new ArrayList<>();
         itemsMenu.add(itemAddProject);
+        itemsMenu.add(itemEditProject);
+        itemsMenu.add(itemRemoveProject);
         itemsMenu.add(itemSettings);
         itemsMenu.add(itemAbout);
 
@@ -483,6 +491,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 } else if (item == itemAddProject) {
                     Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
                     startActivityForResult(newProjectIntent, addproject);
+                } else if (item == itemEditProject) {
+                    MenuProject proj = (MenuProject) projects.getSelectedItem();
+                    Intent editProjectIntent = new Intent(getApplicationContext(), EditProjectActivity.class);
+                    editProjectIntent.putExtra(PARAM_PROJECT_ID, proj.getId());
+                    startActivityForResult(editProjectIntent, editproject);
+                } else if (item == itemRemoveProject) {
+                    MenuProject proj = (MenuProject) projects.getSelectedItem();
+                    db.deleteProject(proj.getId());
+                    projectsAdapter.remove(proj);
+                    projectsAdapter.notifyDataSetChanged();
                 }
             }
 

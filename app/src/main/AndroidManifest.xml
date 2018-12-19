@@ -79,6 +79,14 @@
         </activity>
 
         <activity
+            android:name="net.eneiluj.ihatemoney.android.activity.EditProjectActivity"
+            android:label="@string/simple_edit_project"
+            android:parentActivityName="net.eneiluj.ihatemoney.android.activity.BillsListViewActivity"
+            android:windowSoftInputMode="stateHidden"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
             android:name="net.eneiluj.ihatemoney.android.activity.EditPhoneTrackLogjobActivity"
             android:label="@string/simple_edit_pt"
             android:parentActivityName="net.eneiluj.ihatemoney.android.activity.BillsListViewActivity"

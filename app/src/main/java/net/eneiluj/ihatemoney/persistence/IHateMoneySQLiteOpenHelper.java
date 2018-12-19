@@ -311,6 +311,13 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         );
     }
 
+    public void deleteProject(long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(table_projects,
+                key_id + " = ?",
+                new String[]{String.valueOf(id)});
+    }
+
     /**
      * Inserts a logjob directly into the Database.
      *

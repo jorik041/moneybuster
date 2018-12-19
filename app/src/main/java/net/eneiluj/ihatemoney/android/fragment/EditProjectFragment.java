@@ -143,18 +143,20 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
 
         handler = new Handler(Looper.getMainLooper());
 
-        System.out.println("PROJECT on create : "+project);
+
 
         if (savedInstanceState == null) {
             long id = getArguments().getLong(PARAM_PROJECT_ID);
             if (id > 0) {
                 // TODO
-                //project = db.getProject(id);
+                project = db.getProject(id);
             }
         } else {
             project = (DBProject) savedInstanceState.getSerializable(SAVEDKEY_PROJECT);
         }
         setHasOptionsMenu(true);
+
+        System.out.println("PROJECT on create : "+project);
     }
 
     @Override

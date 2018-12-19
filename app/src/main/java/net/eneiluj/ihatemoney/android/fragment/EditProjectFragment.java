@@ -3,19 +3,15 @@ package net.eneiluj.ihatemoney.android.fragment;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-//import android.preference.EditTextPreference;
-import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.EditTextPreference;
-//import android.preference.ListPreference;
-//import android.preference.Preference;
 import android.support.v7.preference.Preference;
-//import android.preference.PreferenceFragment;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.annotation.Nullable;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -139,7 +135,9 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                 }
             }
         };
-        confirmDeleteAlertBuilder = new AlertDialog.Builder(getActivity());
+        //confirmDeleteAlertBuilder = new AlertDialog.Builder(getActivity());
+        confirmDeleteAlertBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this.getActivity(), R.style.Theme_AppCompat_DayNight_Dialog));
+
         confirmDeleteAlertBuilder.setMessage("Are you sure?").setPositiveButton("Yes", deleteDialogClickListener)
                 .setNegativeButton("No", deleteDialogClickListener);
 

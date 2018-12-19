@@ -72,7 +72,7 @@
 
         <activity
             android:name="net.eneiluj.ihatemoney.android.activity.NewProjectActivity"
-            android:label="@string/simple_edit_pt"
+            android:label="@string/simple_add_project"
             android:parentActivityName="net.eneiluj.ihatemoney.android.activity.BillsListViewActivity"
             android:windowSoftInputMode="stateHidden"
             android:launchMode="singleTask">

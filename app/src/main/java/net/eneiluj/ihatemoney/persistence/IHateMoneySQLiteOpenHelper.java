@@ -89,7 +89,8 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
             key_satellites, key_battery};
 
     private static final String[] columnsProjects = {
-            key_id, key_remoteId, key_ihmUrl, key_name, key_email, key_password
+            // long id, String remoteId, String password, String name, String ihmUrl, String email
+            key_id, key_remoteId, key_password,  key_name, key_ihmUrl, key_email
     };
 
     private static final String default_order = key_id + " DESC";
@@ -245,6 +246,69 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_email, project.getEmail());
         values.put(key_ihmUrl, project.getIhmUrl());
         return db.insert(table_projects, null, values);
+    }
+
+    /**
+     * Get a single logjob by ID
+     *
+     * @param id int - ID of the requested log job
+     * @return requested log job
+     */
+    public DBProject getProject(long id) {
+        List<DBProject> projects = getProjectsCustom(key_id + " = ?", new String[]{String.valueOf(id)}, null);
+        return projects.isEmpty() ? null : projects.get(0);
+    }
+
+    /**
+     * Returns a list of all sessions in the Database
+     *
+     * @return List&lt;DBSession&gt;
+     */
+    @NonNull
+    @WorkerThread
+    public List<DBProject> getProjects() {
+        return getProjectsCustom("", new String[]{}, default_order);
+    }
+
+    /**
+     * Query the database with a custom raw query.
+     *
+     * @param selection     A filter declaring which rows to return, formatted as an SQL WHERE clause (excluding the WHERE itself).
+     * @param selectionArgs You may include ?s in selection, which will be replaced by the values from selectionArgs, in order that they appear in the selection. The values will be bound as Strings.
+     * @param orderBy       How to order the rows, formatted as an SQL ORDER BY clause (excluding the ORDER BY itself). Passing null will use the default sort order, which may be unordered.
+     * @return List of log jobs
+     */
+    @NonNull
+    @WorkerThread
+    private List<DBProject> getProjectsCustom(@NonNull String selection, @NonNull String[] selectionArgs, @Nullable String orderBy) {
+        SQLiteDatabase db = getReadableDatabase();
+        if (selectionArgs.length > 2) {
+            Log.v("Logjob", selection + "   ----   " + selectionArgs[0] + " " + selectionArgs[1] + " " + selectionArgs[2]);
+        }
+        Cursor cursor = db.query(table_projects, columnsProjects, selection, selectionArgs, null, null, orderBy);
+        List<DBProject> projects = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            projects.add(getProjectFromCursor(cursor));
+        }
+        cursor.close();
+        return projects;
+    }
+
+    /**
+     * Creates a DBLogjob object from the current row of a Cursor.
+     *
+     * @param cursor database cursor
+     * @return DBLogjob
+     */
+    @NonNull
+    private DBProject getProjectFromCursor(@NonNull Cursor cursor) {
+        return new DBProject(cursor.getLong(0),
+                cursor.getString(1),
+                cursor.getString(2),
+                cursor.getString(3),
+                cursor.getString(4),
+                cursor.getString(5)
+        );
     }
 
     /**

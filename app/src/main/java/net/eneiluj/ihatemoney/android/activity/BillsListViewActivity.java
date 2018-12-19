@@ -37,6 +37,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -105,8 +106,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     Toolbar toolbar;
     @BindView(R.id.drawerLayout)
     DrawerLayout drawerLayout;
-    @BindView(R.id.account)
-    TextView account;
     @BindView(R.id.projects)
     Spinner projects;
     ArrayAdapter<MenuProject> projectsAdapter;
@@ -180,12 +179,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         setupNavigationMenu();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            if (LoggerService.DEBUG) { Log.d(TAG, "[request 2 permissions]"); }
-            ActivityCompat.requestPermissions(BillsListViewActivity.this, new String[]{Manifest.permission.FOREGROUND_SERVICE, Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
-        }
-        else {
             if (LoggerService.DEBUG) { Log.d(TAG, "[request 1 permission]"); }
-            ActivityCompat.requestPermissions(BillsListViewActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
+            ActivityCompat.requestPermissions(BillsListViewActivity.this, new String[]{Manifest.permission.FOREGROUND_SERVICE}, PERMISSION_FOREGROUND_SERVICE);
         }
 
         Map<String, Integer> enabled = db.getEnabledCount();
@@ -198,6 +193,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             } else {
                 startForegroundService(intent);
             }
+        }
+
+        // create project if there isn't any
+        if (db.getProjects().isEmpty()) {
+            Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
+            startActivityForResult(newProjectIntent, addproject);
         }
     }
 
@@ -461,7 +462,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     private void setupNavigationMenu() {
         //final NavigationAdapter.NavigationItem itemTrashbin = new NavigationAdapter.NavigationItem("trashbin", getString(R.string.action_trashbin), null, R.drawable.ic_delete_grey600_24dp);
-        final NavigationAdapter.NavigationItem itemAddProject = new NavigationAdapter.NavigationItem("addproject", getString(R.string.action_add_project), null, R.drawable.ic_add_green_24dp);
+        final NavigationAdapter.NavigationItem itemAddProject = new NavigationAdapter.NavigationItem("addproject", getString(R.string.action_add_project), null, android.R.drawable.ic_menu_add);
         final NavigationAdapter.NavigationItem itemSettings = new NavigationAdapter.NavigationItem("settings", getString(R.string.action_settings), null, R.drawable.ic_settings_grey600_24dp);
         final NavigationAdapter.NavigationItem itemAbout = new NavigationAdapter.NavigationItem("about", getString(R.string.simple_about), null, R.drawable.ic_info_outline_grey600_24dp);
 
@@ -492,26 +493,62 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         });
 
 
-        this.updateUsernameInDrawer();
+
         final BillsListViewActivity that = this;
-        this.account.setOnClickListener(new View.OnClickListener() {
+        /*this.account.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent settingsIntent = new Intent(that, SettingsActivity.class);
                 startActivityForResult(settingsIntent, server_settings);
             }
-        });
+        });*/
 
         adapterMenu.setItems(itemsMenu);
         listNavigationMenu.setAdapter(adapterMenu);
 
         // projects
-        projectsAdapter = new ArrayAdapter<MenuProject>(this, android.R.layout.simple_spinner_item, android.R.id.text1);
+
+        // restore last selected project
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String lastId = preferences.getString("last_selected_project", "");
+
+        //projectsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, android.R.id.text1);
+        projectsAdapter = new ArrayAdapter<>(this, R.layout.item_projects_spinner);
         projectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         projects.setAdapter(projectsAdapter);
-        projectsAdapter.add(new MenuProject(1, "plop"));
-        projectsAdapter.add(new MenuProject(2, "plop2"));
+        List<DBProject> projs = db.getProjects();
+        MenuProject restoredProject = null;
+        MenuProject tmpProject;
+        for (DBProject proj : projs) {
+            tmpProject = new MenuProject(proj.getId(), proj.getRemoteId()+"@"+proj.getIhmUrl());
+            projectsAdapter.add(tmpProject);
+            if (String.valueOf(proj.getId()).equals(lastId)) {
+                restoredProject = tmpProject;
+            }
+        }
         projectsAdapter.notifyDataSetChanged();
+
+        if (restoredProject != null) {
+            Log.v(TAG, "POSITION OF " + lastId + " : " + projectsAdapter.getPosition(restoredProject));
+            projects.setSelection(projectsAdapter.getPosition(restoredProject));
+        }
+
+        projects.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int pos, long id) {
+                MenuProject it = (MenuProject) parent.getItemAtPosition(pos);
+                Log.v(TAG, "ITEM SELECTED "+pos+" "+id+" "+it.toString());
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                preferences.edit().putString("last_selected_project", String.valueOf(it.getId())).apply();
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Another interface callback
+                Log.v(TAG, "NOOOOOOO ITEM SELECTED ");
+            }
+
+        });
+        //this.updateUsernameInDrawer();
     }
 
     public void initList() {
@@ -741,22 +778,25 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             long pid = data.getLongExtra(CREATED_PROJECT, 0);
             //DBProject createdProject = db.getProject();
             System.out.println("BILLS request code : addproject " + pid);
-            projectsAdapter.add(new MenuProject(pid, "new"+pid));
-            projectsAdapter.notifyDataSetChanged();
+            if (pid != 0) {
+                DBProject proj = db.getProject(pid);
+                projectsAdapter.add(new MenuProject(proj.getId(), proj.getRemoteId() + "@" + proj.getIhmUrl()));
+                projectsAdapter.notifyDataSetChanged();
+            }
         }
 
     }
 
     private void updateUsernameInDrawer() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String username = preferences.getString(SettingsActivity.SETTINGS_USERNAME, SettingsActivity.DEFAULT_SETTINGS);
+        /*String username = preferences.getString(SettingsActivity.SETTINGS_USERNAME, SettingsActivity.DEFAULT_SETTINGS);
         String url = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS).replace("https://", "").replace("http://", "");
         if(!SettingsActivity.DEFAULT_SETTINGS.equals(username) && !SettingsActivity.DEFAULT_SETTINGS.equals(url)) {
             this.account.setText(username + "@" + url.substring(0, url.length() - 1));
         }
         else {
             this.account.setText("Tap here to connect");
-        }
+        }*/
     }
 
     @Override

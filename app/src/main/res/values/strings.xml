@@ -41,6 +41,7 @@
     <string name="action_search">Search</string>
     <string name="simple_cancel">Cancel</string>
     <string name="simple_edit_pt">Edit PhoneTrack log job</string>
+    <string name="simple_add_project">Add project</string>
     <string name="simple_edit_cu">Edit custom log job</string>
     <string name="simple_about">About</string>
     <string name="action_logjob_deleted">Log job deleted</string>

@@ -53,16 +53,17 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
         launchNewProjectFragment();
     }
 
-    /*protected long getProjectId() {
-        return getIntent().getLongExtra(PARAM_PROJECT_ID, 0);
-    }*/
+    protected String getDefaultIhmUrl() {
+        return getIntent().getStringExtra(NewProjectFragment.PARAM_DEFAULT_URL);
+    }
 
     /**
      * Starts the logjob fragment for an existing logjob or a new logjob.
      * The actual behavior is triggered by the activity's intent.
      */
     private void launchNewProjectFragment() {
-        fragment = NewProjectFragment.newInstance();
+        String defaultIhmUrl = getDefaultIhmUrl();
+        fragment = NewProjectFragment.newInstance(defaultIhmUrl);
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
     }
 

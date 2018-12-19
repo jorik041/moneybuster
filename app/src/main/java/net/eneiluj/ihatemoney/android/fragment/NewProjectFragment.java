@@ -31,6 +31,7 @@ import net.eneiluj.ihatemoney.util.ICallback;
 public class NewProjectFragment extends PreferenceFragmentCompat {
 
     private static final String SAVEDKEY_PROJECT = "project";
+    public static final String PARAM_DEFAULT_URL = "defaultUrl";
 
     public interface NewProjectFragmentListener {
         void close(long pid);
@@ -49,11 +50,11 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     protected EditTextPreference newProjectEmail;
     protected EditTextPreference newProjectName;
 
-    public static NewProjectFragment newInstance() {
+    public static NewProjectFragment newInstance(String defaultIhmUrl) {
         NewProjectFragment f = new NewProjectFragment();
         Bundle b = new Bundle();
-        //b.putLong(PARAM_PROJECT_ID, projectId);
-        //f.setArguments(b);
+        b.putString(PARAM_DEFAULT_URL, defaultIhmUrl);
+        f.setArguments(b);
         return f;
     }
 
@@ -267,6 +268,9 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         newProjectId = (EditTextPreference) this.findPreference("id");
         newProjectPassword = (EditTextPreference) this.findPreference("password");
         newProjectIHMUrl = (EditTextPreference) this.findPreference("url");
+        String defaultUrl = getArguments().getString(PARAM_DEFAULT_URL);
+        newProjectIHMUrl.setText(defaultUrl);
+        newProjectIHMUrl.setSummary(defaultUrl);
         newProjectCreate = (CheckBoxPreference) this.findPreference("createonserver");
     }
 

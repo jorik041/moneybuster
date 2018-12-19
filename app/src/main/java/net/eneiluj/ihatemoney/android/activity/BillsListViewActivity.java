@@ -53,6 +53,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import net.eneiluj.ihatemoney.R;
+import net.eneiluj.ihatemoney.android.fragment.NewProjectFragment;
 import net.eneiluj.ihatemoney.model.Category;
 import net.eneiluj.ihatemoney.model.DBLocation;
 import net.eneiluj.ihatemoney.model.DBLogjob;
@@ -204,6 +205,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         // create project if there isn't any
         if (db.getProjects().isEmpty()) {
             Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
+            //newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "");
             startActivityForResult(newProjectIntent, addproject);
         }
     }
@@ -492,6 +494,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     startActivityForResult(aboutIntent, about);
                 } else if (item == itemAddProject) {
                     Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
+                    if (projectsAdapter.getCount() > 0) {
+                        long pid = projectsAdapter.getItem(0).getId();
+                        String url = db.getProject(pid).getIhmUrl();
+                        newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, url);
+                    }
                     startActivityForResult(newProjectIntent, addproject);
                 } else if (item == itemEditProject) {
                     MenuProject proj = (MenuProject) projects.getSelectedItem();
@@ -810,25 +817,25 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 projectsAdapter.notifyDataSetChanged();
             }
         } else if (requestCode == editproject) {
-            long pid = data.getLongExtra(DELETED_PROJECT, 0);
-            if (pid != 0) {
-                // TODO remove project from spinner
-                MenuProject mp;
-                for (int i = 0; i < projectsAdapter.getCount(); i++) {
-                    mp = projectsAdapter.getItem(i);
-                    if (mp.getId() == pid) {
-                        if (LoggerService.DEBUG) {
-                            Log.d(TAG, "[SPINNER deleted project " + mp + "]");
+            if (data != null) {
+                long pid = data.getLongExtra(DELETED_PROJECT, 0);
+                if (pid != 0) {
+                    MenuProject mp;
+                    for (int i = 0; i < projectsAdapter.getCount(); i++) {
+                        mp = projectsAdapter.getItem(i);
+                        if (mp.getId() == pid) {
+                            if (LoggerService.DEBUG) {
+                                Log.d(TAG, "[SPINNER deleted project " + mp + "]");
+                            }
+                            projectsAdapter.remove(mp);
+                            break;
                         }
-                        projectsAdapter.remove(mp);
-                        break;
                     }
+                    projects.setSelection(0);
+                    projectsAdapter.notifyDataSetChanged();
                 }
-                projects.setSelection(0);
-                projectsAdapter.notifyDataSetChanged();
             }
         }
-
     }
 
     private void updateUsernameInDrawer() {

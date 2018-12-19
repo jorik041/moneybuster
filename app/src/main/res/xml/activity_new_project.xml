@@ -3,18 +3,6 @@
     android:key="project_preferences">
 
     <EditTextPreference
-        android:id="@+id/newProjectId"
-        android:icon="@drawable/ic_title_grey_24dp"
-        android:dialogMessage="@string/setting_project_id_long"
-        android:dialogTitle="@string/setting_project_id"
-        android:key="id"
-        android:singleLine="true"
-        android:selectAllOnFocus="true"
-        android:persistent="false"
-        android:summary=""
-        android:title="@string/setting_project_id" />
-
-    <EditTextPreference
         android:id="@+id/newProjectIHMUrl"
         android:icon="@drawable/ic_link_grey_24dp"
         android:dialogMessage="@string/setting_project_url_long"
@@ -25,6 +13,18 @@
         android:persistent="false"
         android:summary=""
         android:title="@string/setting_project_url" />
+
+    <EditTextPreference
+        android:id="@+id/newProjectId"
+        android:icon="@drawable/ic_title_grey_24dp"
+        android:dialogMessage="@string/setting_project_id_long"
+        android:dialogTitle="@string/setting_project_id"
+        android:key="id"
+        android:singleLine="true"
+        android:selectAllOnFocus="true"
+        android:persistent="false"
+        android:summary=""
+        android:title="@string/setting_project_id" />
 
     <EditTextPreference
         android:id="@+id/newProjectPassword"
@@ -38,7 +38,6 @@
         android:summary=""
         android:inputType="textPassword"
         android:title="@string/setting_password" />
-
 
     <CheckBoxPreference
         android:id="@+id/newProjectCreateRemote"

@@ -318,13 +318,22 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(id)});
     }
 
-    public void updateProject(long projId, @Nullable String newName, @Nullable String newEmail) {
+    public void updateProject(long projId, @Nullable String newName, @Nullable String newEmail, @Nullable String newPassword) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(key_name, newName);
-        values.put(key_email, newEmail);
-        int rows = db.update(table_projects, values, key_id + " = ?", new String[]{String.valueOf(projId)});
+        if (newName != null) {
+            values.put(key_name, newName);
+        }
+        if (newEmail != null) {
+            values.put(key_email, newEmail);
+        }
+        if (newPassword != null) {
+            values.put(key_password, newPassword);
+        }
+        if (values.size() > 0) {
+            int rows = db.update(table_projects, values, key_id + " = ?", new String[]{String.valueOf(projId)});
+        }
     }
 
     /**

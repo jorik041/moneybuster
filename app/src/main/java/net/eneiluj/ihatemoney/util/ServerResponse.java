@@ -29,13 +29,13 @@ public class ServerResponse {
         }
     }
 
-    public static class ShareDeviceResponse extends ServerResponse {
-        public ShareDeviceResponse(IHateMoneyClient.ResponseData response) {
+    public static class EditRemoteProjectResponse extends ServerResponse {
+        public EditRemoteProjectResponse(IHateMoneyClient.ResponseData response) {
             super(response);
         }
 
-        public String getPublicToken() throws JSONException {
-            return getPublicTokenFromJSON(new JSONObject(getContent()));
+        public String getStringContent() {
+            return getContent();
         }
     }
 

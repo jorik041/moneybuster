@@ -3,6 +3,7 @@ package net.eneiluj.ihatemoney.android.fragment;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,6 +24,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import net.eneiluj.ihatemoney.R;
@@ -217,7 +219,8 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
             case R.id.menu_save:
                 // TODO network and local save
                 //saveProject(null);
-                return false;
+                db.getIhateMoneyServerSyncHelper().editRemoteProject(project.getId(), getName(), getEmail(), getPassword(), editCallBack);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -268,4 +271,28 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
         return editProjectEmail.getText();
     }
 
+    private ICallback editCallBack = new ICallback() {
+        @Override
+        public void onFinish() {
+        }
+
+        public void onFinish(String result, String message) {
+            if (message.isEmpty()) {
+                listener.close();
+            }
+            else {
+                showToast(getString(R.string.error_share_dev_helper, message), Toast.LENGTH_LONG);
+            }
+        }
+
+        @Override
+        public void onScheduled() {
+        }
+    };
+
+    protected void showToast(CharSequence text, int duration) {
+        Context context = getActivity();
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
 }

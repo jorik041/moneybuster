@@ -1,6 +1,7 @@
 package net.eneiluj.ihatemoney.util;
 
 import android.support.annotation.WorkerThread;
+import android.util.ArrayMap;
 import android.util.Base64;
 import android.util.Log;
 
@@ -13,6 +14,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URLEncoder;
+import java.util.Map;
 
 import at.bitfire.cert4android.CustomCertManager;
 import net.eneiluj.ihatemoney.BuildConfig;
@@ -50,6 +53,7 @@ public class IHateMoneyClient {
 
     public static final String METHOD_GET = "GET";
     public static final String METHOD_POST = "POST";
+    public static final String METHOD_PUT = "PUT";
     public static final String JSON_ID = "id";
     public static final String JSON_TITLE = "title";
     public static final String JSON_ETAG = "etag";
@@ -67,6 +71,17 @@ public class IHateMoneyClient {
         return new ServerResponse.ProjectResponse(requestServer(ccm, target, METHOD_GET, null, lastETag, project.getRemoteId(), project.getPassword()));
     }
 
+    public ServerResponse.EditRemoteProjectResponse editRemoteProject(CustomCertManager ccm, DBProject project, String newName, String newEmail, String newPassword) throws JSONException, IOException {
+        String target = project.getIhmUrl().replaceAll("/+$", "")
+                + "/api/projects/" + project.getRemoteId();
+        //https://ihatemoney.org/api/projects/demo
+        Map<String, String> params = new ArrayMap<>();
+        params.put("name", newName);
+        params.put("contact_email", newEmail);
+        params.put("password", newPassword);
+        return new ServerResponse.EditRemoteProjectResponse(requestServer(ccm, target, METHOD_PUT, params, null, project.getRemoteId(), project.getPassword()));
+    }
+
     /**
      * Request-Method for POST, PUT with or without JSON-Object-Parameter
      *
@@ -77,7 +92,7 @@ public class IHateMoneyClient {
      * @throws MalformedURLException
      * @throws IOException
      */
-    private ResponseData requestServer(CustomCertManager ccm, String target, String method, JSONObject params, String lastETag, String username, String password)
+    private ResponseData requestServer(CustomCertManager ccm, String target, String method, Map<String, String>  params, String lastETag, String username, String password)
             throws IOException {
         StringBuffer result = new StringBuffer();
         // setup connection
@@ -98,13 +113,25 @@ public class IHateMoneyClient {
         // send request data (optional)
         byte[] paramData = null;
         if (params != null) {
-            paramData = params.toString().getBytes();
+            String dataString = "";
+            for (Map.Entry<String, String> p : params.entrySet()) {
+                String key = p.getKey();
+                String value = p.getValue();
+                if (dataString.length() > 0) {
+                    dataString += "&";
+                }
+                dataString += URLEncoder.encode(key, "UTF-8") + "=";
+                dataString += URLEncoder.encode(value, "UTF-8");
+            }
+            byte[] data = dataString.getBytes();
+
             Log.d(getClass().getSimpleName(), "Params: " + params);
-            con.setFixedLengthStreamingMode(paramData.length);
-            con.setRequestProperty("Content-Type", application_json);
+            con.setFixedLengthStreamingMode(data.length);
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            con.setRequestProperty("Content-Length", Integer.toString(data.length));
             con.setDoOutput(true);
             OutputStream os = con.getOutputStream();
-            os.write(paramData);
+            os.write(data);
             os.flush();
             os.close();
         }

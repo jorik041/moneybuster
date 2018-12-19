@@ -255,7 +255,7 @@ public class IHateMoneyServerSyncHelper {
 
         @Override
         protected LoginStatus doInBackground(Void... voids) {
-            client = createPhoneTrackClient(); // recreate PhoneTrackClients on every sync in case the connection settings was changed
+            client = createIHateMoneyClient(); // recreate PhoneTrackClients on every sync in case the connection settings was changed
             Log.i(getClass().getSimpleName(), "STARTING SYNCHRONIZATION");
             //dbHelper.debugPrintFullDB();
             LoginStatus status = LoginStatus.OK;
@@ -285,8 +285,9 @@ public class IHateMoneyServerSyncHelper {
                 String name = projResponse.getName();
                 String email = projResponse.getEmail();
                 Log.d(getClass().getSimpleName(), "EMAIL : "+email);
-                // TODO
-                dbHelper.updateProject(project.getId(), name, email);
+                dbHelper.updateProject(project.getId(), name, email, null);
+
+                // TODO get members and bills
 
                 status = LoginStatus.OK;
 
@@ -355,35 +356,38 @@ public class IHateMoneyServerSyncHelper {
         }
     }
 
-    private IHateMoneyClient createPhoneTrackClient() {
+    private IHateMoneyClient createIHateMoneyClient() {
         return new IHateMoneyClient();
     }
 
-    /*public boolean shareDevice(String token, String deviceName, ICallback callback) {
+    public boolean editRemoteProject(long projId, String newName, String newEmail, String newPassword, ICallback callback) {
         if (isSyncPossible()) {
-            ShareDeviceTask shareDeviceTask = new ShareDeviceTask(token, deviceName, callback);
-            shareDeviceTask.execute();
+            EditRemoteProjectTask editRemoteProjectTask = new EditRemoteProjectTask(projId, newName, newEmail, newPassword, callback);
+            editRemoteProjectTask.execute();
             return true;
         }
         return false;
-    }*/
+    }
 
     /**
      * task to ask server to create public share with name restriction on device
      * or just get the share token if it already exists
      *
      */
-    /*private class ShareDeviceTask extends AsyncTask<Void, Void, LoginStatus> {
+    private class EditRemoteProjectTask extends AsyncTask<Void, Void, LoginStatus> {
         private IHateMoneyClient client;
-        private String token;
-        private String deviceName;
-        private String publicUrl = null;
+        private String newName;
+        private String newEmail;
+        private String newPassword;
+        private DBProject project;
         private ICallback callback;
         private List<Throwable> exceptions = new ArrayList<>();
 
-        public ShareDeviceTask(String token, String deviceName, ICallback callback) {
-            this.token = token;
-            this.deviceName = deviceName;
+        public EditRemoteProjectTask(long projId, String newName, String newEmail, String newPassword, ICallback callback) {
+            this.project = dbHelper.getProject(projId);
+            this.newName = newName;
+            this.newEmail = newEmail;
+            this.newPassword = newPassword;
             this.callback = callback;
         }
 
@@ -394,22 +398,13 @@ public class IHateMoneyServerSyncHelper {
 
         @Override
         protected LoginStatus doInBackground(Void... voids) {
-            client = createPhoneTrackClient();
+            client = createIHateMoneyClient();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
-            if (LoggerService.DEBUG) { Log.i(getClass().getSimpleName(), "STARTING share device"); }
+            if (LoggerService.DEBUG) { Log.i(getClass().getSimpleName(), "STARTING edit remote project"); }
             LoginStatus status = LoginStatus.OK;
-            String sharetoken;
             try {
-                ServerResponse.ShareDeviceResponse response = client.shareDevice(customCertManager, token, deviceName);
-                sharetoken = response.getPublicToken();
-                if (LoggerService.DEBUG) {
-                    Log.i(getClass().getSimpleName(), "HERE IS THE TOKEN BIIIITCH "+sharetoken);
-                }
-                publicUrl = prefs.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS)
-                        .replaceAll("/+$", "")
-                        + "/index.php/apps/ihatemoney/publicSessionWatch/" + sharetoken;
-
-
+                ServerResponse.EditRemoteProjectResponse response = client.editRemoteProject(customCertManager, project, newName, newEmail, newPassword);
+                if (LoggerService.DEBUG) { Log.i(getClass().getSimpleName(), "RESPONSE edit remote project : "+response.getStringContent()); }
             } catch (IOException e) {
                 if (LoggerService.DEBUG) {
                     Log.e(getClass().getSimpleName(), "Exception", e);
@@ -443,8 +438,11 @@ public class IHateMoneyServerSyncHelper {
                     errorString += e.getClass().getName() + ": " + e.getMessage();
                 }
             }
-            callback.onFinish(publicUrl, errorString);
+            else {
+                dbHelper.updateProject(project.getId(), newName, newEmail, newPassword);
+            }
+            callback.onFinish(newName, errorString);
         }
-    }*/
+    }
 
 }

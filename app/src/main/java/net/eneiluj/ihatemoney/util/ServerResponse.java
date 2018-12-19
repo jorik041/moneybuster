@@ -39,6 +39,16 @@ public class ServerResponse {
         }
     }
 
+    public static class DeleteRemoteProjectResponse extends ServerResponse {
+        public DeleteRemoteProjectResponse(IHateMoneyClient.ResponseData response) {
+            super(response);
+        }
+
+        public String getStringContent() {
+            return getContent();
+        }
+    }
+
     private final IHateMoneyClient.ResponseData response;
 
     public ServerResponse(IHateMoneyClient.ResponseData response) {

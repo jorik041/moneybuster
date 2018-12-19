@@ -82,6 +82,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     public final static String CREATED_LOGJOB = "net.eneiluj.ihatemoney.created_logjob";
     public final static String CREATED_PROJECT = "net.eneiluj.ihatemoney.created_project";
+    public final static String DELETED_PROJECT = "net.eneiluj.ihatemoney.deleted_project";
     public final static String CREDENTIALS_CHANGED = "net.eneiluj.ihatemoney.CREDENTIALS_CHANGED";
     public static final String ADAPTER_KEY_ALL = "all";
     public static final String ADAPTER_KEY_ENABLED = "enabled";
@@ -154,6 +155,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         @Override
         public void onScheduled() {
+            swipeRefreshLayout.setRefreshing(false);
         }
     };
 
@@ -559,7 +561,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 preferences.edit().putString("last_selected_project", String.valueOf(it.getId())).apply();
                 // get project info from server
-                synchronize();
+                if (db.getIhateMoneyServerSyncHelper().isSyncPossible()) {
+                    synchronize();
+                }
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
@@ -803,6 +807,24 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 MenuProject mproj = new MenuProject(proj.getId(), proj.getRemoteId() + "@" + proj.getIhmUrl());
                 projectsAdapter.add(mproj);
                 projects.setSelection(projectsAdapter.getPosition(mproj));
+                projectsAdapter.notifyDataSetChanged();
+            }
+        } else if (requestCode == editproject) {
+            long pid = data.getLongExtra(DELETED_PROJECT, 0);
+            if (pid != 0) {
+                // TODO remove project from spinner
+                MenuProject mp;
+                for (int i = 0; i < projectsAdapter.getCount(); i++) {
+                    mp = projectsAdapter.getItem(i);
+                    if (mp.getId() == pid) {
+                        if (LoggerService.DEBUG) {
+                            Log.d(TAG, "[SPINNER deleted project " + mp + "]");
+                        }
+                        projectsAdapter.remove(mp);
+                        break;
+                    }
+                }
+                projects.setSelection(0);
                 projectsAdapter.notifyDataSetChanged();
             }
         }

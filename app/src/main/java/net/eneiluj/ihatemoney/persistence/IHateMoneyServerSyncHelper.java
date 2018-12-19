@@ -237,6 +237,7 @@ public class IHateMoneyServerSyncHelper {
 
         public SyncTask(boolean onlyLocalChanges, long projId) {
             this.onlyLocalChanges = onlyLocalChanges;
+            Log.i(getClass().getSimpleName(), "SYNC TASK pid : "+projId);
             this.project = dbHelper.getProject(projId);
         }
 
@@ -274,7 +275,7 @@ public class IHateMoneyServerSyncHelper {
          */
         private LoginStatus pullRemoteChanges() {
             // TODO add/remove sessions
-            Log.d(getClass().getSimpleName(), "pullRemoteChanges()");
+            Log.d(getClass().getSimpleName(), "pullRemoteChanges("+project+")");
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
             String lastETag = preferences.getString(SettingsActivity.SETTINGS_KEY_ETAG, null);
             long lastModified = preferences.getLong(SettingsActivity.SETTINGS_KEY_LAST_MODIFIED, 0);
@@ -419,7 +420,7 @@ public class IHateMoneyServerSyncHelper {
                 status = LoginStatus.JSON_FAILED;
             }
             if (LoggerService.DEBUG) {
-                Log.i(getClass().getSimpleName(), "FINISHED share device");
+                Log.i(getClass().getSimpleName(), "FINISHED edit remote project");
             }
             return status;
         }
@@ -442,6 +443,85 @@ public class IHateMoneyServerSyncHelper {
                 dbHelper.updateProject(project.getId(), newName, newEmail, newPassword);
             }
             callback.onFinish(newName, errorString);
+        }
+    }
+
+    public boolean deleteRemoteProject(long projId, ICallback callback) {
+        if (isSyncPossible()) {
+            DeleteRemoteProjectTask deleteRemoteProjectTask = new DeleteRemoteProjectTask(projId, callback);
+            deleteRemoteProjectTask.execute();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * task to ask server to create public share with name restriction on device
+     * or just get the share token if it already exists
+     *
+     */
+    private class DeleteRemoteProjectTask extends AsyncTask<Void, Void, LoginStatus> {
+        private IHateMoneyClient client;
+        private DBProject project;
+        private ICallback callback;
+        private List<Throwable> exceptions = new ArrayList<>();
+
+        public DeleteRemoteProjectTask(long projId, ICallback callback) {
+            this.project = dbHelper.getProject(projId);
+            this.callback = callback;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected LoginStatus doInBackground(Void... voids) {
+            client = createIHateMoneyClient();
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
+            if (LoggerService.DEBUG) { Log.i(getClass().getSimpleName(), "STARTING delete remote project"); }
+            LoginStatus status = LoginStatus.OK;
+            try {
+                ServerResponse.DeleteRemoteProjectResponse response = client.deleteRemoteProject(customCertManager, project);
+                if (LoggerService.DEBUG) { Log.i(getClass().getSimpleName(), "RESPONSE delete remote project : "+response.getStringContent()); }
+            } catch (IOException e) {
+                if (LoggerService.DEBUG) {
+                    Log.e(getClass().getSimpleName(), "Exception", e);
+                }
+                exceptions.add(e);
+                status = LoginStatus.CONNECTION_FAILED;
+            } catch (JSONException e) {
+                if (LoggerService.DEBUG) {
+                    Log.e(getClass().getSimpleName(), "Exception", e);
+                }
+                exceptions.add(e);
+                status = LoginStatus.JSON_FAILED;
+            }
+            if (LoggerService.DEBUG) {
+                Log.i(getClass().getSimpleName(), "FINISHED delete device");
+            }
+            return status;
+        }
+
+        @Override
+        protected void onPostExecute(LoginStatus status) {
+            super.onPostExecute(status);
+            String errorString = "";
+            if (status != LoginStatus.OK) {
+                errorString = appContext.getString(
+                        R.string.error_sync,
+                        appContext.getString(status.str)
+                );
+                errorString += "\n\n";
+                for (Throwable e : exceptions) {
+                    errorString += e.getClass().getName() + ": " + e.getMessage();
+                }
+            }
+            else {
+                dbHelper.deleteProject(project.getId());
+            }
+            callback.onFinish(String.valueOf(project.getId()), errorString);
         }
     }
 

@@ -54,6 +54,7 @@ public class IHateMoneyClient {
     public static final String METHOD_GET = "GET";
     public static final String METHOD_POST = "POST";
     public static final String METHOD_PUT = "PUT";
+    public static final String METHOD_DELETE = "DELETE";
     public static final String JSON_ID = "id";
     public static final String JSON_TITLE = "title";
     public static final String JSON_ETAG = "etag";
@@ -80,6 +81,12 @@ public class IHateMoneyClient {
         params.put("contact_email", newEmail);
         params.put("password", newPassword);
         return new ServerResponse.EditRemoteProjectResponse(requestServer(ccm, target, METHOD_PUT, params, null, project.getRemoteId(), project.getPassword()));
+    }
+
+    public ServerResponse.DeleteRemoteProjectResponse deleteRemoteProject(CustomCertManager ccm, DBProject project) throws JSONException, IOException {
+        String target = project.getIhmUrl().replaceAll("/+$", "")
+                + "/api/projects/" + project.getRemoteId();
+        return new ServerResponse.DeleteRemoteProjectResponse(requestServer(ccm, target, METHOD_DELETE, null, null, project.getRemoteId(), project.getPassword()));
     }
 
     /**
@@ -145,17 +152,17 @@ public class IHateMoneyClient {
 
         System.out.println("METHOD : "+method);
         BufferedReader rd;
-        if (responseCode == 400) {
-            rd = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+        if (responseCode >= 200 && responseCode < 400) {
+            rd = new BufferedReader(new InputStreamReader(con.getInputStream()));
         }
         else {
-            rd = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            rd = new BufferedReader(new InputStreamReader(con.getErrorStream()));
         }
         String line;
         while ((line = rd.readLine()) != null) {
             result.append(line);
         }
-        if (responseCode == 400) {
+        if (responseCode >= 400) {
             throw new IOException(result.toString());
         }
         // create response object

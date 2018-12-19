@@ -34,6 +34,8 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     public interface EditProjectFragmentListener {
         void close();
 
+        void closeOnDelete(long projId);
+
         void onProjectUpdated(DBLogjob logjob);
     }
 
@@ -126,7 +128,8 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                         //Yes button clicked
                         // TODO
                         //db.deleteProject(project.getId());
-                        listener.close();
+                        db.getIhateMoneyServerSyncHelper().deleteRemoteProject(project.getId(), deleteCallBack);
+                        //listener.close();
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -142,8 +145,6 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                 .setNegativeButton("No", deleteDialogClickListener);
 
         handler = new Handler(Looper.getMainLooper());
-
-
 
         if (savedInstanceState == null) {
             long id = getArguments().getLong(PARAM_PROJECT_ID);
@@ -277,6 +278,25 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
         public void onFinish(String result, String message) {
             if (message.isEmpty()) {
                 listener.close();
+            }
+            else {
+                showToast(getString(R.string.error_share_dev_helper, message), Toast.LENGTH_LONG);
+            }
+        }
+
+        @Override
+        public void onScheduled() {
+        }
+    };
+
+    private ICallback deleteCallBack = new ICallback() {
+        @Override
+        public void onFinish() {
+        }
+
+        public void onFinish(String result, String message) {
+            if (message.isEmpty()) {
+                listener.closeOnDelete(Long.valueOf(result));
             }
             else {
                 showToast(getString(R.string.error_share_dev_helper, message), Toast.LENGTH_LONG);

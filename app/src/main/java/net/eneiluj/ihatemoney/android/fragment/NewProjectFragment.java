@@ -1,8 +1,6 @@
 package net.eneiluj.ihatemoney.android.fragment;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -26,41 +24,34 @@ import android.view.WindowManager;
 
 import butterknife.ButterKnife;
 import net.eneiluj.ihatemoney.R;
-import net.eneiluj.ihatemoney.model.DBLogjob;
 import net.eneiluj.ihatemoney.model.DBProject;
 import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
 import net.eneiluj.ihatemoney.util.ICallback;
 
-public class EditProjectFragment extends PreferenceFragmentCompat {
+public class NewProjectFragment extends PreferenceFragmentCompat {
 
-    public interface EditProjectFragmentListener {
+    public interface NewProjectFragmentListener {
         void close();
-
-        void onProjectUpdated(DBLogjob logjob);
     }
 
-    public static final String PARAM_PROJECT_ID = "projectId";
-    private static final String SAVEDKEY_PROJECT = "project";
-
-    protected DBProject project;
     @Nullable
     protected IHateMoneySQLiteOpenHelper db;
-    protected EditProjectFragmentListener listener;
+    protected NewProjectFragmentListener listener;
 
     private Handler handler;
 
-    protected EditTextPreference editProjectName;
-    protected EditTextPreference editProjectPassword;
-    protected EditTextPreference editProjectEmail;
+    protected EditTextPreference newProjectId;
+    protected EditTextPreference newProjectIHMUrl;
+    protected EditTextPreference newProjectPassword;
+    protected CheckBoxPreference newProjectCreate;
+    protected EditTextPreference newProjectEmail;
+    protected EditTextPreference newProjectName;
 
-    private DialogInterface.OnClickListener deleteDialogClickListener;
-    private AlertDialog.Builder confirmDeleteAlertBuilder;
-
-    public static EditProjectFragment newInstance(long projectId) {
-        EditProjectFragment f = new EditProjectFragment();
+    public static NewProjectFragment newInstance() {
+        NewProjectFragment f = new NewProjectFragment();
         Bundle b = new Bundle();
-        b.putLong(PARAM_PROJECT_ID, projectId);
-        f.setArguments(b);
+        //b.putLong(PARAM_PROJECT_ID, projectId);
+        //f.setArguments(b);
         return f;
     }
 
@@ -82,10 +73,35 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        addPreferencesFromResource(R.xml.activity_edit_project);
+        addPreferencesFromResource(R.xml.activity_new_project);
 
+        Preference idPref = findPreference("id");
+        idPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+
+            @Override
+            public boolean onPreferenceChange(Preference preference,
+                                              Object newValue) {
+                EditTextPreference pref = (EditTextPreference) findPreference("id");
+                pref.setSummary((CharSequence) newValue);
+                return true;
+            }
+
+        });
+        Preference URLPref = findPreference("url");
+        URLPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+
+            @Override
+            public boolean onPreferenceChange(Preference preference,
+                                              Object newValue) {
+                EditTextPreference pref = (EditTextPreference) findPreference("url");
+                pref.setSummary((CharSequence) newValue);
+                return true;
+            }
+
+        });
         Preference namePref = findPreference("name");
         namePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+
             @Override
             public boolean onPreferenceChange(Preference preference,
                                               Object newValue) {
@@ -93,6 +109,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                 pref.setSummary((CharSequence) newValue);
                 return true;
             }
+
         });
         Preference passwordPref = findPreference("password");
         passwordPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -119,41 +136,27 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
 
         });
 
-        // delete confirmation
-        deleteDialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which){
-                    case DialogInterface.BUTTON_POSITIVE:
-                        //Yes button clicked
-                        // TODO
-                        //db.deleteProject(project.getId());
-                        listener.close();
-                        break;
+        Preference createPref = findPreference("createonserver");
+        createPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        //No button clicked
-                        break;
-                }
+            @Override
+            public boolean onPreferenceChange(Preference preference,
+                                              Object newValue) {
+                CheckBoxPreference pref = (CheckBoxPreference) findPreference("createonserver");
+                EditTextPreference emailPref = (EditTextPreference) findPreference("email");
+                emailPref.setVisible((Boolean) newValue);
+                EditTextPreference namePref = (EditTextPreference) findPreference("name");
+                namePref.setVisible((Boolean) newValue);
+                //pref.setChecked((Boolean) newValue);
+                return true;
             }
-        };
-        confirmDeleteAlertBuilder = new AlertDialog.Builder(getActivity());
-        confirmDeleteAlertBuilder.setMessage("Are you sure?").setPositiveButton("Yes", deleteDialogClickListener)
-                .setNegativeButton("No", deleteDialogClickListener);
+
+        });
 
         handler = new Handler(Looper.getMainLooper());
 
-        System.out.println("PROJECT on create : "+project);
+        System.out.println("PROJECT on create : ");
 
-        if (savedInstanceState == null) {
-            long id = getArguments().getLong(PARAM_PROJECT_ID);
-            if (id > 0) {
-                // TODO
-                //project = db.getProject(id);
-            }
-        } else {
-            project = (DBProject) savedInstanceState.getSerializable(SAVEDKEY_PROJECT);
-        }
         setHasOptionsMenu(true);
     }
 
@@ -161,9 +164,9 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            listener = (EditProjectFragmentListener) context;
+            listener = (NewProjectFragmentListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.getClass() + " must implement " + EditProjectFragmentListener.class);
+            throw new ClassCastException(context.getClass() + " must implement " + NewProjectFragmentListener.class);
         }
         db = IHateMoneySQLiteOpenHelper.getInstance(context);
     }
@@ -187,20 +190,14 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        //saveLogjob(null);
-        outState.putSerializable(SAVEDKEY_PROJECT, project);
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_edit_project_fragment, menu);
+        inflater.inflate(R.menu.menu_new_project_fragment, menu);
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
+        //menu.findItem(R.id.menu_delete_remote).setVisible(false);
     }
 
     /**
@@ -209,13 +206,10 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_delete_remote:
-                confirmDeleteAlertBuilder.show();
+            case R.id.menu_create:
+                saveProject(null);
+                listener.close();
                 return true;
-            case R.id.menu_save:
-                // TODO network and local save
-                //saveProject(null);
-                return false;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -231,7 +225,18 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
      * @param callback Observer which is called after save/synchronization
      */
     protected void saveProject(@Nullable ICallback callback) {
+        // TODO create remote
+        String remoteId = getRemoteId();
+        String ihmUrl = getIhmUrl();
+        String password = getPassword();
+        String email = getEmail();
+        String name = getName();
+        boolean createRemote = getCreateRemote();
 
+        DBProject newProject = new DBProject(0, remoteId, password, name, ihmUrl, email);
+        long pid = db.addProject(newProject);
+        System.out.println("PROJECT local id : "+pid);
+        // TODO update billsview project selector
     }
 
     @Override
@@ -243,27 +248,34 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
         // hide the keyboard when this window gets the focus
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        editProjectName = (EditTextPreference) this.findPreference("name");
-        editProjectName.setText(project.getName());
-        editProjectName.setSummary(project.getName());
+        newProjectEmail = (EditTextPreference) this.findPreference("email");
+        newProjectEmail.setVisible(false);
+        newProjectName = (EditTextPreference) this.findPreference("name");
+        newProjectName.setVisible(false);
 
-        editProjectPassword = (EditTextPreference) this.findPreference("password");
-        editProjectPassword.setText(project.getPassword());
-        //editProjectPassword.setSummary(logjob.getUrl());
-
-        editProjectEmail = (EditTextPreference) this.findPreference("email");
-        editProjectEmail.setText(String.valueOf(project.getEmail()));
-        editProjectEmail.setSummary(String.valueOf(project.getEmail()));
+        newProjectId = (EditTextPreference) this.findPreference("id");
+        newProjectPassword = (EditTextPreference) this.findPreference("password");
+        newProjectIHMUrl = (EditTextPreference) this.findPreference("url");
+        newProjectCreate = (CheckBoxPreference) this.findPreference("createonserver");
     }
 
-    protected String getName() {
-        return editProjectName.getText();
+    protected String getRemoteId() {
+        return newProjectId.getText();
+    }
+    protected String getIhmUrl() {
+        return newProjectIHMUrl.getText();
     }
     protected String getPassword() {
-        return editProjectPassword.getText();
+        return newProjectPassword.getText();
+    }
+    protected boolean getCreateRemote() {
+        return newProjectCreate.isChecked();
+    }
+    protected String getName() {
+        return newProjectName.getText();
     }
     protected String getEmail() {
-        return editProjectEmail.getText();
+        return newProjectEmail.getText();
     }
 
 }

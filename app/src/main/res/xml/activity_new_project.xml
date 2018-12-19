@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="project_preferences">
+
+    <EditTextPreference
+        android:id="@+id/newProjectId"
+        android:icon="@drawable/ic_title_grey_24dp"
+        android:dialogMessage="@string/setting_project_id_long"
+        android:dialogTitle="@string/setting_project_id"
+        android:key="id"
+        android:singleLine="true"
+        android:selectAllOnFocus="true"
+        android:persistent="false"
+        android:summary=""
+        android:title="@string/setting_project_id" />
+
+    <EditTextPreference
+        android:id="@+id/newProjectIHMUrl"
+        android:icon="@drawable/ic_link_grey_24dp"
+        android:dialogMessage="@string/setting_project_url_long"
+        android:dialogTitle="@string/setting_project_url"
+        android:key="url"
+        android:singleLine="true"
+        android:selectAllOnFocus="true"
+        android:persistent="false"
+        android:summary=""
+        android:title="@string/setting_project_url" />
+
+    <EditTextPreference
+        android:id="@+id/newProjectPassword"
+        android:icon="@android:drawable/ic_lock_lock"
+        android:dialogMessage="@string/setting_password_long"
+        android:dialogTitle="@string/setting_password"
+        android:key="password"
+        android:singleLine="true"
+        android:selectAllOnFocus="true"
+        android:persistent="false"
+        android:summary=""
+        android:inputType="textPassword"
+        android:title="@string/setting_password" />
+
+
+    <CheckBoxPreference
+        android:id="@+id/newProjectCreateRemote"
+        android:icon="@android:drawable/ic_input_add"
+        android:key="createonserver"
+        android:title="@string/setting_create_project_title"
+        android:summary="@string/setting_create_project_summary" />
+
+    <EditTextPreference
+        android:id="@+id/newProjectName"
+        android:icon="@drawable/ic_title_grey_24dp"
+        android:dialogMessage="@string/setting_project_name_long"
+        android:dialogTitle="@string/setting_project_name"
+        android:key="name"
+        android:singleLine="true"
+        android:selectAllOnFocus="true"
+        android:persistent="false"
+        android:summary=""
+        android:title="@string/setting_project_name" />
+
+    <EditTextPreference
+        android:id="@+id/newProjectEmail"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:dialogMessage="@string/setting_email_long"
+        android:dialogTitle="@string/setting_email"
+        android:key="email"
+        android:singleLine="true"
+        android:selectAllOnFocus="true"
+        android:persistent="false"
+        android:summary=""
+        android:title="@string/setting_email" />
+
+</PreferenceScreen>

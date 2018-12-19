@@ -51,17 +51,17 @@ public class SessionServerSyncHelper {
      * This has to be a singleton in order to realize correct registering and unregistering of
      * the BroadcastReceiver, which listens on changes of network connectivity.
      *
-     * @param dbHelper PhoneTrackSQLiteOpenHelper
+     * @param dbHelper IHateMoneySQLiteOpenHelper
      * @return SessionServerSyncHelper
      */
-    public static synchronized SessionServerSyncHelper getInstance(PhoneTrackSQLiteOpenHelper dbHelper) {
+    public static synchronized SessionServerSyncHelper getInstance(IHateMoneySQLiteOpenHelper dbHelper) {
         if (instance == null) {
             instance = new SessionServerSyncHelper(dbHelper);
         }
         return instance;
     }
 
-    private final PhoneTrackSQLiteOpenHelper dbHelper;
+    private final IHateMoneySQLiteOpenHelper dbHelper;
     private final Context appContext;
 
     private CustomCertManager customCertManager;
@@ -103,7 +103,7 @@ public class SessionServerSyncHelper {
     private List<ICallback> callbacksPull = new ArrayList<>();
 
 
-    private SessionServerSyncHelper(PhoneTrackSQLiteOpenHelper db) {
+    private SessionServerSyncHelper(IHateMoneySQLiteOpenHelper db) {
         this.dbHelper = db;
         this.appContext = db.getContext().getApplicationContext();
         new Thread() {

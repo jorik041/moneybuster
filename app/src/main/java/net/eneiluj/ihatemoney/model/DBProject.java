@@ -10,16 +10,56 @@ public class DBProject implements Serializable {
     private long id;
     private String remoteId;
     private String name;
-    private String IHMurl;
+    private String ihmUrl;
     private String email;
+    private String password;
 
-    public DBProject(long id, String remoteId, String name, String IHMurl, String email) {
+    public DBProject(long id, String remoteId, String password, String name, String ihmUrl, String email) {
         this.id = id;
         this.remoteId = remoteId;
         this.name = name;
-        this.IHMurl = IHMurl;
+        this.ihmUrl = ihmUrl;
+        this.email = email;
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getRemoteId() {
+        return remoteId;
+    }
+
+    public void setRemoteId(String remoteId) {
+        this.remoteId = remoteId;
+    }
+
+    public String getIhmUrl() {
+        return ihmUrl;
+    }
+
+    public void setIhmUrl(String ihmUrl) {
+        this.ihmUrl = ihmUrl;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
         this.email = email;
     }
+
+
 
     public long getId() {
         return id;
@@ -35,6 +75,6 @@ public class DBProject implements Serializable {
 
     @Override
     public String toString() {
-        return "#DBProject" + getId() + "/" + this.remoteId + "," + this.name + ", " + this.IHMurl + ", " + this.email;
+        return "#DBProject" + getId() + "/" + this.remoteId + "," + this.name + ", " + this.ihmUrl + ", " + this.email;
     }
 }

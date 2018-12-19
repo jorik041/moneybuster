@@ -15,23 +15,24 @@ import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.fragment.EditCustomLogjobFragment;
 import net.eneiluj.ihatemoney.android.fragment.EditLogjobFragment;
 import net.eneiluj.ihatemoney.android.fragment.EditProjectFragment;
+import net.eneiluj.ihatemoney.android.fragment.NewProjectFragment;
 import net.eneiluj.ihatemoney.model.DBLogjob;
 import net.eneiluj.ihatemoney.model.DBProject;
 
-public class EditProjectActivity extends AppCompatActivity implements EditProjectFragment.EditProjectFragmentListener {
+public class NewProjectActivity extends AppCompatActivity implements NewProjectFragment.NewProjectFragmentListener {
 
-    public static final String PARAM_PROJECT_ID = "projectId";
+    //public static final String PARAM_PROJECT_ID = "projectId";
 
-    protected EditProjectFragment fragment;
+    protected NewProjectFragment fragment;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
-            launchEditProjectFragment();
+            launchNewProjectFragment();
         } else {
-            fragment = (EditProjectFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
+            fragment = (NewProjectFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
         }
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -42,34 +43,26 @@ public class EditProjectActivity extends AppCompatActivity implements EditProjec
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.d(getClass().getSimpleName(), "onNewIntent: " + intent.getLongExtra(PARAM_PROJECT_ID, 0));
+        //Log.d(getClass().getSimpleName(), "onNewIntent: " + intent.getLongExtra(PARAM_PROJECT_ID, 0));
+        Log.d(getClass().getSimpleName(), "onNewIntent: ");
         setIntent(intent);
         if (fragment != null) {
             getSupportFragmentManager().beginTransaction().detach(fragment).commit();
             fragment = null;
         }
-        launchEditProjectFragment();
+        launchNewProjectFragment();
     }
 
-    protected long getProjectId() {
+    /*protected long getProjectId() {
         return getIntent().getLongExtra(PARAM_PROJECT_ID, 0);
-    }
+    }*/
 
     /**
      * Starts the logjob fragment for an existing logjob or a new logjob.
      * The actual behavior is triggered by the activity's intent.
      */
-    private void launchEditProjectFragment() {
-        long projectId = getProjectId();
-        // save state of the fragment in order to resume with the same logjob and originalLogjob
-        Fragment.SavedState savedState = null;
-        if (fragment != null) {
-            savedState = getSupportFragmentManager().saveFragmentInstanceState(fragment);
-        }
-        fragment = EditProjectFragment.newInstance(projectId);
-        if (savedState != null) {
-            fragment.setInitialSavedState(savedState);
-        }
+    private void launchNewProjectFragment() {
+        fragment = NewProjectFragment.newInstance();
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
     }
 
@@ -95,14 +88,6 @@ public class EditProjectActivity extends AppCompatActivity implements EditProjec
     public void close() {
         fragment.onCloseProject();
         finish();
-    }
-
-    public void onProjectUpdated(DBLogjob logjob) {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(logjob.getTitle());
-            actionBar.setSubtitle(logjob.getDeviceName());
-        }
     }
 
     protected void showToast(CharSequence text, int duration) {

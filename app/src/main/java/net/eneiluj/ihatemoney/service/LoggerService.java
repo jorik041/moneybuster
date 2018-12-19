@@ -47,7 +47,7 @@ import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
 import net.eneiluj.ihatemoney.android.fragment.PreferencesFragment;
 import net.eneiluj.ihatemoney.model.DBLogjob;
-import net.eneiluj.ihatemoney.persistence.PhoneTrackSQLiteOpenHelper;
+import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
 
 import static android.location.LocationProvider.AVAILABLE;
 import static android.location.LocationProvider.OUT_OF_SERVICE;
@@ -86,7 +86,7 @@ public class LoggerService extends Service {
     private LocationManager locManager;
     private Map<String, mLocationListener> locListeners;
     private Map<String, DBLogjob> logjobs;
-    private PhoneTrackSQLiteOpenHelper db;
+    private IHateMoneySQLiteOpenHelper db;
 
     private Map<String, Location> lastLocations;
     private static volatile Map<String, Long> lastUpdateRealtime;
@@ -108,7 +108,7 @@ public class LoggerService extends Service {
         }
         firstRun = true;
 
-        db = PhoneTrackSQLiteOpenHelper.getInstance(getApplicationContext());
+        db = IHateMoneySQLiteOpenHelper.getInstance(getApplicationContext());
 
         syncIntent = new Intent(getApplicationContext(), WebTrackService.class);
         // start websync service if needed

@@ -24,7 +24,7 @@ import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
 import net.eneiluj.ihatemoney.model.DBLocation;
 import net.eneiluj.ihatemoney.model.DBLogjob;
-import net.eneiluj.ihatemoney.persistence.PhoneTrackSQLiteOpenHelper;
+import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
 import net.eneiluj.ihatemoney.persistence.WebTrackHelper;
 
 import static android.app.PendingIntent.FLAG_ONE_SHOT;
@@ -41,7 +41,7 @@ public class WebTrackService extends IntentService {
     public static final String BROADCAST_SYNC_STARTED = "net.eneiluj.ihatemoney.broadcast.sync_started";
     public static final String BROADCAST_SYNC_DONE = "net.eneiluj.ihatemoney.broadcast.sync_done";
 
-    private PhoneTrackSQLiteOpenHelper db;
+    private IHateMoneySQLiteOpenHelper db;
     private WebTrackHelper web;
     private static PendingIntent pi = null;
     private static String userAgent;
@@ -60,7 +60,7 @@ public class WebTrackService extends IntentService {
         userAgent = this.getString(R.string.app_name) + "/" + BuildConfig.VERSION_NAME;
 
         web = new WebTrackHelper(this);
-        db = PhoneTrackSQLiteOpenHelper.getInstance(this);
+        db = IHateMoneySQLiteOpenHelper.getInstance(this);
     }
 
     /**

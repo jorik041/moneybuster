@@ -22,7 +22,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import net.eneiluj.ihatemoney.R;
-import net.eneiluj.ihatemoney.persistence.PhoneTrackSQLiteOpenHelper;
+import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
 import net.eneiluj.ihatemoney.service.LoggerService;
 
 import static android.support.v7.widget.RecyclerView.NO_POSITION;
@@ -37,10 +37,10 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Item> itemList;
     private boolean showCategory = true;
     private List<Integer> selected;
-    private PhoneTrackSQLiteOpenHelper db;
+    private IHateMoneySQLiteOpenHelper db;
     private SharedPreferences prefs;
 
-    public ItemAdapter(@NonNull LogjobClickListener logjobClickListener, PhoneTrackSQLiteOpenHelper db) {
+    public ItemAdapter(@NonNull LogjobClickListener logjobClickListener, IHateMoneySQLiteOpenHelper db) {
         this.itemList = new ArrayList<>();
         this.selected = new ArrayList<>();
         this.logjobClickListener = logjobClickListener;

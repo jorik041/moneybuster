@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_delete_remote"
+        android:icon="@drawable/ic_delete_white_24dp"
+        android:orderInCategory="83"
+        android:title="@string/menu_delete_project_remote"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_save"
+        android:icon="@android:drawable/ic_menu_save"
+        android:orderInCategory="110"
+        android:title="@string/menu_save_project"
+        app:showAsAction="ifRoom" />
+
+</menu>

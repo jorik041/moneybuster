@@ -19,6 +19,7 @@ import java.util.Map;
 
 import net.eneiluj.ihatemoney.model.CloudSession;
 import net.eneiluj.ihatemoney.model.DBLocation;
+import net.eneiluj.ihatemoney.model.DBProject;
 import net.eneiluj.ihatemoney.model.DBSession;
 import net.eneiluj.ihatemoney.model.DBLogjob;
 import net.eneiluj.ihatemoney.model.SyncError;
@@ -28,9 +29,9 @@ import net.eneiluj.ihatemoney.util.ICallback;
 /**
  * Helps to add, get, update and delete log jobs, sessions, locations with the option to trigger a session Resync with the Server.
  */
-public class PhoneTrackSQLiteOpenHelper extends SQLiteOpenHelper {
+public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
 
-    private static final String TAG = PhoneTrackSQLiteOpenHelper.class.getSimpleName();
+    private static final String TAG = IHateMoneySQLiteOpenHelper.class.getSimpleName();
 
     private static final int database_version = 8;
     private static final String database_name = "NEXTCLOUD_PHONETRACK";
@@ -68,6 +69,14 @@ public class PhoneTrackSQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String key_satellites = "SATELLITES";
     private static final String key_battery = "BATTERY";
 
+    private static final String table_projects = "PROJECTS";
+    //private static final String key_id = "ID";
+    private static final String key_remoteId = "REMOTEID";
+    //private static final String key_name = "NAME";
+    private static final String key_email = "EMAIL";
+    private static final String key_password = "PASSWORD";
+    private static final String key_ihmUrl = "IHMURL";
+
     private static final String[] columnsSessions = {key_id, key_token, key_name, key_nextURL};
     private static final String[] columnsLogjobs = {
             key_id, key_title, key_url, key_token, key_deviceName,
@@ -79,28 +88,32 @@ public class PhoneTrackSQLiteOpenHelper extends SQLiteOpenHelper {
             key_bearing, key_altitude, key_speed, key_accuracy,
             key_satellites, key_battery};
 
+    private static final String[] columnsProjects = {
+            key_id, key_remoteId, key_ihmUrl, key_name, key_email, key_password
+    };
+
     private static final String default_order = key_id + " DESC";
 
-    private static PhoneTrackSQLiteOpenHelper instance;
+    private static IHateMoneySQLiteOpenHelper instance;
 
     private SessionServerSyncHelper serverSyncHelper;
     private Context context;
 
-    private PhoneTrackSQLiteOpenHelper(Context context) {
+    private IHateMoneySQLiteOpenHelper(Context context) {
         super(context, database_name, null, database_version);
         this.context = context.getApplicationContext();
         serverSyncHelper = SessionServerSyncHelper.getInstance(this);
         //recreateDatabase(getWritableDatabase());
     }
 
-    public static PhoneTrackSQLiteOpenHelper getInstance(Context context) {
+    public static IHateMoneySQLiteOpenHelper getInstance(Context context) {
         if (instance == null)
-            return instance = new PhoneTrackSQLiteOpenHelper(context.getApplicationContext());
+            return instance = new IHateMoneySQLiteOpenHelper(context.getApplicationContext());
         else
             return instance;
     }
 
-    public SessionServerSyncHelper getPhonetrackServerSyncHelper() {
+    public SessionServerSyncHelper getIhateMoneyServerSyncHelper() {
         return serverSyncHelper;
     }
 
@@ -114,6 +127,7 @@ public class PhoneTrackSQLiteOpenHelper extends SQLiteOpenHelper {
         createTableSessions(db, table_sessions);
         createTableLogjobs(db, table_logjobs);
         createTableLocations(db, table_locations);
+        createTableProjects(db, table_projects);
         createIndexes(db);
     }
 
@@ -161,42 +175,20 @@ public class PhoneTrackSQLiteOpenHelper extends SQLiteOpenHelper {
                 key_battery + " FLOAT)");
     }
 
+    private void createTableProjects(SQLiteDatabase db, String tableName) {
+        db.execSQL("CREATE TABLE " + tableName + " ( " +
+                key_id + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                key_remoteId + " TEXT, " +
+                key_name + " TEXT, " +
+                key_ihmUrl + " TEXT, " +
+                key_password + " TEXT, " +
+                key_email + " TEXT)");
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
-
-    /*@Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 3) {
-            recreateDatabase(db);
-        }
-        if (oldVersion < 4) {
-            clearDatabase(db);
-        }
-        if (oldVersion < 5) {
-            db.execSQL("ALTER TABLE " + table_logjobs + " ADD COLUMN " + key_remote_id + " INTEGER");
-            db.execSQL("UPDATE " + table_logjobs + " SET " + key_remote_id + "=" + key_id + " WHERE (" + key_remote_id + " IS NULL OR " + key_remote_id + "=0) AND " + key_status + "!=?", new String[]{DBStatus.LOCAL_CREATED.getTitle()});
-            db.execSQL("UPDATE " + table_logjobs + " SET " + key_remote_id + "=0, " + key_status + "=? WHERE " + key_status + "=?", new String[]{DBStatus.LOCAL_EDITED.getTitle(), DBStatus.LOCAL_CREATED.getTitle()});
-        }
-        if (oldVersion < 6) {
-            db.execSQL("ALTER TABLE " + table_logjobs + " ADD COLUMN " + key_favorite + " INTEGER DEFAULT 0");
-        }
-        if (oldVersion < 7) {
-            dropIndexes(db);
-            db.execSQL("ALTER TABLE " + table_logjobs + " ADD COLUMN " + key_category + " TEXT NOT NULL DEFAULT ''");
-            db.execSQL("ALTER TABLE " + table_logjobs + " ADD COLUMN " + key_etag + " TEXT");
-            createIndexes(db);
-        }
-        if (oldVersion < 8) {
-            final String table_temp = "LOGJOBS_TEMP";
-            createTable(db, table_temp);
-            db.execSQL(String.format("INSERT INTO %s(%s,%s,%s,%s,%s,%s,%s,%s,%s) ", table_temp, key_id, key_remote_id, key_status, key_title, key_modified, key_content, key_favorite, key_category, key_etag)
-                    + String.format("SELECT %s,%s,%s,%s,strftime('%%s',%s),%s,%s,%s,%s FROM %s", key_id, key_remote_id, key_status, key_title, key_modified, key_content, key_favorite, key_category, key_etag, table_logjobs));
-            db.execSQL(String.format("DROP TABLE %s", table_logjobs));
-            db.execSQL(String.format("ALTER TABLE %s RENAME TO %s", table_temp, table_logjobs));
-        }
-    }*/
 
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -237,34 +229,22 @@ public class PhoneTrackSQLiteOpenHelper extends SQLiteOpenHelper {
         return context;
     }
 
-    /**
-     * Creates a new session in the Database and adds a Synchronization Flag.
-     *
-     */
-    @SuppressWarnings("UnusedReturnValue")
-    public long addSessionAndSync(String name, String token, String nextURL) {
-        CloudSession session = new CloudSession(name, token, nextURL);
-        return addSessionAndSync(session);
-    }
-
     public long addSessionAndSync(CloudSession session) {
         DBSession dbs = new DBSession(0, session.getName(), session.getToken(), session.getNextURL());
         long id = addSession(dbs);
         notifySessionsChanged();
-        //getPhonetrackServerSyncHelper().scheduleSync(true);
+
         return id;
     }
 
-    /**
-     * Creates a new logjob in the Database and adds a Synchronization Flag.
-     */
-    @SuppressWarnings("UnusedReturnValue")
-    public long addLogjobAndSync(String title, String url, String token, String deviceName, int minTime, int minDistance, int minAccuracy, int nbSync, boolean post) {
-        // TODO there is an 'enabled' field
-        DBLogjob dblj = new DBLogjob(0, title, url, token, deviceName, minTime, minDistance, minAccuracy, post,false, nbSync);
-        long id = addLogjob(dblj);
-        //getPhonetrackServerSyncHelper().scheduleSync(true);
-        return id;
+    public long addProject(DBProject project) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(key_remoteId, project.getRemoteId());
+        values.put(key_password, project.getPassword());
+        values.put(key_email, project.getEmail());
+        values.put(key_ihmUrl, project.getIhmUrl());
+        return db.insert(table_projects, null, values);
     }
 
     /**

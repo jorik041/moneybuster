@@ -31,7 +31,7 @@ import butterknife.ButterKnife;
 import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
 import net.eneiluj.ihatemoney.model.DBLogjob;
-import net.eneiluj.ihatemoney.persistence.PhoneTrackSQLiteOpenHelper;
+import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
 import net.eneiluj.ihatemoney.service.LoggerService;
 import net.eneiluj.ihatemoney.util.ICallback;
 
@@ -53,7 +53,7 @@ public abstract class EditLogjobFragment extends PreferenceFragmentCompat {
     protected DBLogjob logjob;
     @Nullable
     protected DBLogjob originalLogjob;
-    protected PhoneTrackSQLiteOpenHelper db;
+    protected IHateMoneySQLiteOpenHelper db;
     protected LogjobFragmentListener listener;
 
     private static final String LOG_TAG_AUTOSAVE = "AutoSave";
@@ -222,7 +222,7 @@ public abstract class EditLogjobFragment extends PreferenceFragmentCompat {
         } catch (ClassCastException e) {
             throw new ClassCastException(context.getClass() + " must implement " + LogjobFragmentListener.class);
         }
-        db = PhoneTrackSQLiteOpenHelper.getInstance(context);
+        db = IHateMoneySQLiteOpenHelper.getInstance(context);
     }
 
     @Override

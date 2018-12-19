@@ -24,7 +24,7 @@ import at.bitfire.cert4android.CustomCertManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import net.eneiluj.ihatemoney.R;
-import net.eneiluj.ihatemoney.persistence.PhoneTrackSQLiteOpenHelper;
+import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
 import net.eneiluj.ihatemoney.persistence.SessionServerSyncHelper;
 import net.eneiluj.ihatemoney.util.PhoneTrackClientUtil;
 import net.eneiluj.ihatemoney.util.PhoneTrackClientUtil.LoginStatus;
@@ -215,7 +215,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(String... params) {
-            CustomCertManager ccm = SessionServerSyncHelper.getInstance(PhoneTrackSQLiteOpenHelper.getInstance(getApplicationContext())).getCustomCertManager();
+            CustomCertManager ccm = SessionServerSyncHelper.getInstance(IHateMoneySQLiteOpenHelper.getInstance(getApplicationContext())).getCustomCertManager();
             return PhoneTrackClientUtil.isValidURL(ccm, params[0]);
         }
 
@@ -252,7 +252,7 @@ public class SettingsActivity extends AppCompatActivity {
             url = params[0];
             username = params[1];
             password = params[2];
-            CustomCertManager ccm = SessionServerSyncHelper.getInstance(PhoneTrackSQLiteOpenHelper.getInstance(getApplicationContext())).getCustomCertManager();
+            CustomCertManager ccm = SessionServerSyncHelper.getInstance(IHateMoneySQLiteOpenHelper.getInstance(getApplicationContext())).getCustomCertManager();
             return PhoneTrackClientUtil.isValidLogin(ccm, url, username, password);
         }
 

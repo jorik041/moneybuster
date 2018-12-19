@@ -30,6 +30,8 @@
     <string name="setting_project_id">Project ID</string>
     <string name="setting_project_url_long">URL of IHateMoney instance hosting the project</string>
     <string name="setting_project_url">IHateMoney URL</string>
+    <string name="setting_project_name">Project name</string>
+    <string name="setting_project_name_long">Name displayed in user interface</string>
     <string name="setting_password_long">Also named "access code"</string>
     <string name="setting_password">Password</string>
     <string name="setting_create_project_title">Create project one the server</string>
@@ -50,6 +52,9 @@
     <string name="menu_select_session">Use Nextcloud PhoneTrack session</string>
     <string name="menu_from_url">Use Nextcloud PhoneTrack logging URL</string>
     <string name="menu_share">Share</string>
+    <string name="menu_delete_project_remote">Delete project on server</string>
+    <string name="menu_delete_project_local">Remove local project</string>
+    <string name="menu_save_project">Save project</string>
     <string name="fab_create_phonetrack">New PhoneTrack log job</string>
     <string name="fab_create_custom">New Custom log job</string>
     <string name="setting_min_distance">Minimum distance</string>

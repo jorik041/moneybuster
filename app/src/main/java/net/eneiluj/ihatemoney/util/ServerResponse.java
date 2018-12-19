@@ -15,7 +15,7 @@ import java.util.List;
 
 import net.eneiluj.ihatemoney.android.activity.SettingsActivity;
 import net.eneiluj.ihatemoney.model.CloudSession;
-import net.eneiluj.ihatemoney.persistence.PhoneTrackSQLiteOpenHelper;
+import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
 
 /**
  * Provides entity classes for handling server responses with a single logjob ({@link SessionResponse}) or a list of ihatemoney ({@link SessionsResponse}).
@@ -30,7 +30,7 @@ public class ServerResponse {
             super(response);
         }
 
-        public CloudSession getSession(PhoneTrackSQLiteOpenHelper dbHelper) throws JSONException {
+        public CloudSession getSession(IHateMoneySQLiteOpenHelper dbHelper) throws JSONException {
             return getSessionFromJSON(new JSONArray(getContent()), dbHelper);
         }
     }
@@ -40,7 +40,7 @@ public class ServerResponse {
             super(response);
         }
 
-        public List<CloudSession> getSessions(PhoneTrackSQLiteOpenHelper dbHelper) throws JSONException {
+        public List<CloudSession> getSessions(IHateMoneySQLiteOpenHelper dbHelper) throws JSONException {
             List<CloudSession> sessionsList = new ArrayList<>();
             //JSONObject topObj = new JSONObject(getTitle());
             JSONArray sessions = new JSONArray(getContent());
@@ -96,7 +96,7 @@ public class ServerResponse {
         return null;
     }
 
-    protected CloudSession getSessionFromJSON(JSONArray json, PhoneTrackSQLiteOpenHelper dbHelper) throws JSONException {
+    protected CloudSession getSessionFromJSON(JSONArray json, IHateMoneySQLiteOpenHelper dbHelper) throws JSONException {
         String name = "";
         String token = "";
         if (json.length() > 1) {

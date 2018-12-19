@@ -95,7 +95,7 @@ public class EditPhoneTrackLogjobFragment extends EditLogjobFragment {
             MenuItem itemSelectSession = menu.findItem(R.id.menu_selectSession);
             itemSelectSession.setVisible(false);
         }
-        menu.findItem(R.id.menu_share).setVisible(db.getPhonetrackServerSyncHelper().isConfigured(getActivity()));
+        menu.findItem(R.id.menu_share).setVisible(db.getIhateMoneyServerSyncHelper().isConfigured(getActivity()));
         menu.findItem(R.id.menu_share).setTitle(R.string.menu_share_dev_title);
     }
 
@@ -185,7 +185,7 @@ public class EditPhoneTrackLogjobFragment extends EditLogjobFragment {
                 String token = getToken();
                 String devicename = getDevicename();
                 String nextURL = getURL().replaceAll("/+$", "");
-                SessionServerSyncHelper syncHelper = db.getPhonetrackServerSyncHelper();
+                SessionServerSyncHelper syncHelper = db.getIhateMoneyServerSyncHelper();
                 if (syncHelper.isConfigured(this.getActivity())) {
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
                     String configUrl = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS)

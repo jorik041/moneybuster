@@ -57,8 +57,8 @@ import net.eneiluj.ihatemoney.model.Item;
 import net.eneiluj.ihatemoney.model.ItemAdapter;
 import net.eneiluj.ihatemoney.model.NavigationAdapter;
 import net.eneiluj.ihatemoney.model.SyncError;
+import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
 import net.eneiluj.ihatemoney.persistence.LoadLogjobsListTask;
-import net.eneiluj.ihatemoney.persistence.PhoneTrackSQLiteOpenHelper;
 import net.eneiluj.ihatemoney.persistence.SessionServerSyncHelper;
 import net.eneiluj.ihatemoney.service.LoggerService;
 import net.eneiluj.ihatemoney.service.WebTrackService;
@@ -124,7 +124,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private Category navigationSelection = new Category(null, null);
     private String navigationOpen = "";
     private ActionMode mActionMode;
-    private PhoneTrackSQLiteOpenHelper db = null;
+    private IHateMoneySQLiteOpenHelper db = null;
     private SearchView searchView = null;
     private ICallback syncCallBack = new ICallback() {
         @Override
@@ -164,7 +164,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         setContentView(R.layout.drawer_layout);
         ButterKnife.bind(this);
 
-        db = PhoneTrackSQLiteOpenHelper.getInstance(this);
+        db = IHateMoneySQLiteOpenHelper.getInstance(this);
 
         setupActionBar();
         setupLogjobsList();
@@ -198,8 +198,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         // refresh and sync every time the activity gets visible
         refreshLists();
         swipeRefreshLayout.setRefreshing(false);
-        db.getPhonetrackServerSyncHelper().addCallbackPull(syncCallBack);
-        if (db.getPhonetrackServerSyncHelper().isSyncPossible()) {
+        db.getIhateMoneyServerSyncHelper().addCallbackPull(syncCallBack);
+        if (db.getIhateMoneyServerSyncHelper().isSyncPossible()) {
             synchronize();
         }
         super.onResume();
@@ -253,7 +253,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (db.getPhonetrackServerSyncHelper().isSyncPossible()) {
+                if (db.getIhateMoneyServerSyncHelper().isSyncPossible()) {
                     synchronize();
                 } else {
                     //swipeRefreshLayout.setRefreshing(false);
@@ -472,8 +472,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     Intent aboutIntent = new Intent(getApplicationContext(), AboutActivity.class);
                     startActivityForResult(aboutIntent, about);
                 } else if (item == itemAddProject) {
-                    //Intent addProjectIntent = new Intent(getApplicationContext(), AddProjectActivity.class);
-                    //startActivityForResult(addProjectIntent, addproject);
+                    Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
+                    startActivityForResult(newProjectIntent, addproject);
                 }
             }
 
@@ -709,8 +709,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             listView.scrollToPosition(0);
         } else if (requestCode == server_settings) {
             // Create new Instance with new URL and credentials
-            db = PhoneTrackSQLiteOpenHelper.getInstance(this);
-            if (db.getPhonetrackServerSyncHelper().isSyncPossible()) {
+            db = IHateMoneySQLiteOpenHelper.getInstance(this);
+            if (db.getIhateMoneyServerSyncHelper().isSyncPossible()) {
                 this.updateUsernameInDrawer();
                 adapter.removeAll();
                 synchronize();
@@ -780,7 +780,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     public void onLogjobEnabledClick(int position, View view) {
         DBLogjob logjob = (DBLogjob) adapter.getItem(position);
         if (logjob != null) {
-            PhoneTrackSQLiteOpenHelper db = PhoneTrackSQLiteOpenHelper.getInstance(view.getContext());
+            IHateMoneySQLiteOpenHelper db = IHateMoneySQLiteOpenHelper.getInstance(view.getContext());
             db.toggleEnabled(logjob, syncCallBack);
             adapter.notifyItemChanged(position);
             refreshLists();
@@ -794,7 +794,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         DBLogjob logjob = (DBLogjob) adapter.getItem(position);
         if (logjob != null) {
             String ljId = String.valueOf(logjob.getId());
-            PhoneTrackSQLiteOpenHelper db = PhoneTrackSQLiteOpenHelper.getInstance(view.getContext());
+            IHateMoneySQLiteOpenHelper db = IHateMoneySQLiteOpenHelper.getInstance(view.getContext());
             long tsLastLoc = db.getLastLocTimestamp(ljId);
             long tsLastSync = db.getLastSyncTimestamp(ljId);
             SyncError lastSyncErr = db.getLastSyncError(ljId);
@@ -885,8 +885,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     private void synchronize() {
         //swipeRefreshLayout.setRefreshing(true);
-        db.getPhonetrackServerSyncHelper().addCallbackPull(syncCallBack);
-        db.getPhonetrackServerSyncHelper().scheduleSync(false);
+        db.getIhateMoneyServerSyncHelper().addCallbackPull(syncCallBack);
+        db.getIhateMoneyServerSyncHelper().scheduleSync(false);
     }
 
     private void notifyLoggerService(long jobId) {

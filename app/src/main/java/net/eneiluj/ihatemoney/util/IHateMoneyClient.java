@@ -144,10 +144,19 @@ public class IHateMoneyClient {
         }
 
         System.out.println("METHOD : "+method);
-        BufferedReader rd = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        BufferedReader rd;
+        if (responseCode == 400) {
+            rd = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+        }
+        else {
+            rd = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        }
         String line;
         while ((line = rd.readLine()) != null) {
             result.append(line);
+        }
+        if (responseCode == 400) {
+            throw new IOException(result.toString());
         }
         // create response object
         String etag = con.getHeaderField("ETag");

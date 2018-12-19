@@ -63,8 +63,8 @@ import net.eneiluj.ihatemoney.model.MenuProject;
 import net.eneiluj.ihatemoney.model.NavigationAdapter;
 import net.eneiluj.ihatemoney.model.SyncError;
 import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
+import net.eneiluj.ihatemoney.persistence.IHateMoneyServerSyncHelper;
 import net.eneiluj.ihatemoney.persistence.LoadLogjobsListTask;
-import net.eneiluj.ihatemoney.persistence.SessionServerSyncHelper;
 import net.eneiluj.ihatemoney.service.LoggerService;
 import net.eneiluj.ihatemoney.service.WebTrackService;
 import net.eneiluj.ihatemoney.util.ICallback;
@@ -145,7 +145,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 mActionMode.finish();
             }
             refreshLists();
-            //swipeRefreshLayout.setRefreshing(false);
+            swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
@@ -161,7 +161,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // First Run Wizard
-        /*if (!SessionServerSyncHelper.isConfigured(this)) {
+        /*if (!IHateMoneyServerSyncHelper.isConfigured(this)) {
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
             startActivityForResult(settingsIntent, server_settings);
         }*/
@@ -271,7 +271,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 } else {
                     //swipeRefreshLayout.setRefreshing(false);
                     // don't bother user if no conf
-                    if (SessionServerSyncHelper.isConfigured(getApplicationContext())) {
+                    if (IHateMoneyServerSyncHelper.isConfigured(getApplicationContext())) {
                         Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(PhoneTrackClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
                     }
                 }
@@ -558,6 +558,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 Log.v(TAG, "ITEM SELECTED "+pos+" "+id+" "+it.toString());
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 preferences.edit().putString("last_selected_project", String.valueOf(it.getId())).apply();
+                // get project info from server
+                synchronize();
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
@@ -788,7 +790,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 adapter.removeAll();
                 synchronize();
             } else {
-                if (SessionServerSyncHelper.isConfigured(getApplicationContext())) {
+                if (IHateMoneyServerSyncHelper.isConfigured(getApplicationContext())) {
                     Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(PhoneTrackClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
                 }
             }
@@ -798,7 +800,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             System.out.println("BILLS request code : addproject " + pid);
             if (pid != 0) {
                 DBProject proj = db.getProject(pid);
-                projectsAdapter.add(new MenuProject(proj.getId(), proj.getRemoteId() + "@" + proj.getIhmUrl()));
+                MenuProject mproj = new MenuProject(proj.getId(), proj.getRemoteId() + "@" + proj.getIhmUrl());
+                projectsAdapter.add(mproj);
+                projects.setSelection(projectsAdapter.getPosition(mproj));
                 projectsAdapter.notifyDataSetChanged();
             }
         }
@@ -967,9 +971,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     }
 
     private void synchronize() {
-        //swipeRefreshLayout.setRefreshing(true);
+        swipeRefreshLayout.setRefreshing(true);
+        MenuProject proj = (MenuProject) projects.getSelectedItem();
+        long projId = proj.getId();
         db.getIhateMoneyServerSyncHelper().addCallbackPull(syncCallBack);
-        db.getIhateMoneyServerSyncHelper().scheduleSync(false);
+        db.getIhateMoneyServerSyncHelper().scheduleSync(false, projId);
     }
 
     private void notifyLoggerService(long jobId) {
@@ -1068,8 +1074,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         filter.addAction(WebTrackService.BROADCAST_SYNC_STARTED);
         filter.addAction(WebTrackService.BROADCAST_SYNC_DONE);
         filter.addAction(WebTrackService.BROADCAST_SYNC_FAILED);
-        filter.addAction(SessionServerSyncHelper.BROADCAST_SESSIONS_SYNC_FAILED);
-        filter.addAction(SessionServerSyncHelper.BROADCAST_SESSIONS_SYNCED);
+        filter.addAction(IHateMoneyServerSyncHelper.BROADCAST_SESSIONS_SYNC_FAILED);
+        filter.addAction(IHateMoneyServerSyncHelper.BROADCAST_SESSIONS_SYNCED);
         registerReceiver(mBroadcastReceiver, filter);
     }
 
@@ -1137,11 +1143,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     showToast(getString(R.string.uploading_failed) + "\n" + errorMessage, Toast.LENGTH_LONG);
                     break;
                 }
-                case SessionServerSyncHelper.BROADCAST_SESSIONS_SYNC_FAILED:
+                case IHateMoneyServerSyncHelper.BROADCAST_SESSIONS_SYNC_FAILED:
                     String errorMessage = intent.getStringExtra(LoggerService.BROADCAST_ERROR_MESSAGE);
                     showToast(errorMessage, Toast.LENGTH_LONG);
                     break;
-                case SessionServerSyncHelper.BROADCAST_SESSIONS_SYNCED:
+                case IHateMoneyServerSyncHelper.BROADCAST_SESSIONS_SYNCED:
                     showToast(getString(R.string.sessions_sync_success));
                     break;
                 case LoggerService.BROADCAST_LOCATION_STARTED:

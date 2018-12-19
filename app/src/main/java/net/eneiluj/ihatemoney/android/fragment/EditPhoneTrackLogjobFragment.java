@@ -27,7 +27,7 @@ import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.activity.SettingsActivity;
 import net.eneiluj.ihatemoney.model.DBLogjob;
 import net.eneiluj.ihatemoney.model.DBSession;
-import net.eneiluj.ihatemoney.persistence.SessionServerSyncHelper;
+import net.eneiluj.ihatemoney.persistence.IHateMoneyServerSyncHelper;
 import net.eneiluj.ihatemoney.util.ICallback;
 
 //public abstract class EditLogjobFragment extends Fragment implements CategoryDialogFragment.CategoryDialogListener {
@@ -182,27 +182,7 @@ public class EditPhoneTrackLogjobFragment extends EditLogjobFragment {
                 selectDialog.show();
                 return true;
             case R.id.menu_share:
-                String token = getToken();
-                String devicename = getDevicename();
-                String nextURL = getURL().replaceAll("/+$", "");
-                SessionServerSyncHelper syncHelper = db.getIhateMoneyServerSyncHelper();
-                if (syncHelper.isConfigured(this.getActivity())) {
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-                    String configUrl = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS)
-                            .replaceAll("/+$", "");
-                    if (nextURL.equals(configUrl)) {
-                        if (!syncHelper.shareDevice(token, devicename, shareCallBack)) {
-                            showToast(getString(R.string.error_share_dev_network), Toast.LENGTH_LONG);
-                        }
-                    }
-                    else {
-                        Log.d(getClass().getSimpleName(), "NOT THE SAME NEXTCLOUD URL");
-                        showToast(getString(R.string.error_share_dev_same_url), Toast.LENGTH_LONG);
-                    }
-                }
-                else {
-                    showToast(getString(R.string.error_share_dev_configured), Toast.LENGTH_LONG);
-                }
+
 
                 return false;
             default:

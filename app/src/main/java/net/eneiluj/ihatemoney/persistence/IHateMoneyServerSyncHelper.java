@@ -19,19 +19,17 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import at.bitfire.cert4android.CustomCertManager;
 import at.bitfire.cert4android.CustomCertService;
 import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.activity.SettingsActivity;
-import net.eneiluj.ihatemoney.model.CloudSession;
+import net.eneiluj.ihatemoney.model.DBProject;
 import net.eneiluj.ihatemoney.service.LoggerService;
 import net.eneiluj.ihatemoney.util.ICallback;
-import net.eneiluj.ihatemoney.util.PhoneTrackClient;
+import net.eneiluj.ihatemoney.util.IHateMoneyClient;
 import net.eneiluj.ihatemoney.util.PhoneTrackClientUtil.LoginStatus;
 import net.eneiluj.ihatemoney.util.ServerResponse;
 import net.eneiluj.ihatemoney.util.SupportUtil;
@@ -39,24 +37,24 @@ import net.eneiluj.ihatemoney.util.SupportUtil;
 /**
  * Helps to synchronize the Database to the Server.
  */
-public class SessionServerSyncHelper {
+public class IHateMoneyServerSyncHelper {
 
     public static final String BROADCAST_SESSIONS_SYNC_FAILED = "net.eneiluj.ihatemoney.broadcast.sessions_sync_failed";
     public static final String BROADCAST_SESSIONS_SYNCED = "net.eneiluj.ihatemoney.broadcast.sessions_synced";
 
-    private static SessionServerSyncHelper instance;
+    private static IHateMoneyServerSyncHelper instance;
 
     /**
-     * Get (or create) instance from SessionServerSyncHelper.
+     * Get (or create) instance from IHateMoneyServerSyncHelper.
      * This has to be a singleton in order to realize correct registering and unregistering of
      * the BroadcastReceiver, which listens on changes of network connectivity.
      *
      * @param dbHelper IHateMoneySQLiteOpenHelper
-     * @return SessionServerSyncHelper
+     * @return IHateMoneyServerSyncHelper
      */
-    public static synchronized SessionServerSyncHelper getInstance(IHateMoneySQLiteOpenHelper dbHelper) {
+    public static synchronized IHateMoneyServerSyncHelper getInstance(IHateMoneySQLiteOpenHelper dbHelper) {
         if (instance == null) {
-            instance = new SessionServerSyncHelper(dbHelper);
+            instance = new IHateMoneyServerSyncHelper(dbHelper);
         }
         return instance;
     }
@@ -73,7 +71,10 @@ public class SessionServerSyncHelper {
         public void onReceive(Context context, Intent intent) {
             updateNetworkStatus();
             if (isSyncPossible()) {
-                scheduleSync(false);
+                String lastId = PreferenceManager.getDefaultSharedPreferences(context).getString("last_selected_project", "");
+                if (!lastId.equals("")) {
+                    scheduleSync(false, Long.valueOf(lastId));
+                }
             }
         }
     };
@@ -84,7 +85,10 @@ public class SessionServerSyncHelper {
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             cert4androidReady = true;
             if (isSyncPossible()) {
-                scheduleSync(false);
+                String lastId = PreferenceManager.getDefaultSharedPreferences(dbHelper.getContext()).getString("last_selected_project", "");
+                if (!lastId.equals("")) {
+                    scheduleSync(false, Long.valueOf(lastId));
+                }
             }
         }
 
@@ -103,7 +107,7 @@ public class SessionServerSyncHelper {
     private List<ICallback> callbacksPull = new ArrayList<>();
 
 
-    private SessionServerSyncHelper(IHateMoneySQLiteOpenHelper db) {
+    private IHateMoneyServerSyncHelper(IHateMoneySQLiteOpenHelper db) {
         this.dbHelper = db;
         this.appContext = db.getContext().getApplicationContext();
         new Thread() {
@@ -137,13 +141,13 @@ public class SessionServerSyncHelper {
     /**
      * Synchronization is only possible, if there is an active network connection and
      * Cert4Android service is available.
-     * SessionServerSyncHelper observes changes in the network connection.
+     * IHateMoneyServerSyncHelper observes changes in the network connection.
      * The current state can be retrieved with this method.
      *
      * @return true if sync is possible, otherwise false.
      */
     public boolean isSyncPossible() {
-        return networkConnected && isConfigured(appContext) && cert4androidReady;
+        return networkConnected && cert4androidReady;
     }
 
     public CustomCertManager getCustomCertManager() {
@@ -151,7 +155,7 @@ public class SessionServerSyncHelper {
     }
 
     /**
-     * Adds a callback method to the SessionServerSyncHelper for the synchronization part push local changes to the server.
+     * Adds a callback method to the IHateMoneyServerSyncHelper for the synchronization part push local changes to the server.
      * All callbacks will be executed once the synchronization operations are done.
      * After execution the callback will be deleted, so it has to be added again if it shall be
      * executed the next time all synchronize operations are finished.
@@ -163,7 +167,7 @@ public class SessionServerSyncHelper {
     }
 
     /**
-     * Adds a callback method to the SessionServerSyncHelper for the synchronization part pull remote changes from the server.
+     * Adds a callback method to the IHateMoneyServerSyncHelper for the synchronization part pull remote changes from the server.
      * All callbacks will be executed once the synchronization operations are done.
      * After execution the callback will be deleted, so it has to be added again if it shall be
      * executed the next time all synchronize operations are finished.
@@ -181,12 +185,12 @@ public class SessionServerSyncHelper {
      *
      * @param onlyLocalChanges Whether to only push local changes to the server or to also load the whole list of sessions from the server.
      */
-    public void scheduleSync(boolean onlyLocalChanges) {
+    public void scheduleSync(boolean onlyLocalChanges, long projId) {
         Log.d(getClass().getSimpleName(), "Sync requested (" + (onlyLocalChanges ? "onlyLocalChanges" : "full") + "; " + (syncActive ? "sync active" : "sync NOT active") + ") ...");
-        Log.d(getClass().getSimpleName(), "(network:" + networkConnected + "; conf:" + isConfigured(appContext) + "; cert4android:" + cert4androidReady + ")");
+        Log.d(getClass().getSimpleName(), "(network:" + networkConnected + "; cert4android:" + cert4androidReady + ")");
         if (isSyncPossible() && (!syncActive || onlyLocalChanges)) {
             Log.d(getClass().getSimpleName(), "... starting now");
-            SyncTask syncTask = new SyncTask(onlyLocalChanges);
+            SyncTask syncTask = new SyncTask(onlyLocalChanges, projId);
             syncTask.addCallbacks(callbacksPush);
             callbacksPush = new ArrayList<>();
             if (!onlyLocalChanges) {
@@ -212,11 +216,11 @@ public class SessionServerSyncHelper {
         ConnectivityManager connMgr = (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
         if (activeInfo != null && activeInfo.isConnected()) {
-            Log.d(SessionServerSyncHelper.class.getSimpleName(), "Network connection established.");
+            Log.d(IHateMoneyServerSyncHelper.class.getSimpleName(), "Network connection established.");
             networkConnected = true;
         } else {
             networkConnected = false;
-            Log.d(SessionServerSyncHelper.class.getSimpleName(), "No network connection.");
+            Log.d(IHateMoneyServerSyncHelper.class.getSimpleName(), "No network connection.");
         }
     }
 
@@ -226,12 +230,14 @@ public class SessionServerSyncHelper {
      */
     private class SyncTask extends AsyncTask<Void, Void, LoginStatus> {
         private final boolean onlyLocalChanges;
+        private DBProject project;
         private final List<ICallback> callbacks = new ArrayList<>();
-        private PhoneTrackClient client;
+        private IHateMoneyClient client;
         private List<Throwable> exceptions = new ArrayList<>();
 
-        public SyncTask(boolean onlyLocalChanges) {
+        public SyncTask(boolean onlyLocalChanges, long projId) {
             this.onlyLocalChanges = onlyLocalChanges;
+            this.project = dbHelper.getProject(projId);
         }
 
         public void addCallbacks(List<ICallback> callbacks) {
@@ -253,11 +259,11 @@ public class SessionServerSyncHelper {
             Log.i(getClass().getSimpleName(), "STARTING SYNCHRONIZATION");
             //dbHelper.debugPrintFullDB();
             LoginStatus status = LoginStatus.OK;
-            // TODO avoid doing getsessions everytime
+            // TODO
             //pushLocalChanges();
-            //if (!onlyLocalChanges) {
+            if (!onlyLocalChanges) {
                 status = pullRemoteChanges();
-            //}
+            }
             //dbHelper.debugPrintFullDB();
             Log.i(getClass().getSimpleName(), "SYNCHRONIZATION FINISHED");
             return status;
@@ -275,40 +281,24 @@ public class SessionServerSyncHelper {
             LoginStatus status;
             try {
                 Map<String, Long> locIdMap = dbHelper.getTokenMap();
-                ServerResponse.SessionsResponse response = client.getSessions(customCertManager, lastModified, lastETag);
-                List<CloudSession> remoteSessions = response.getSessions(dbHelper);
-                Set<String> remoteTokens = new HashSet<>();
-                // pull remote changes: update or create each remote logjob
-                for (CloudSession remoteSession : remoteSessions) {
-                    Log.v(getClass().getSimpleName(), "   Process Remote Session: " + remoteSession);
-                    remoteTokens.add(remoteSession.getToken());
-                    if (locIdMap.containsKey(remoteSession.getToken())) {
-                        Log.v(getClass().getSimpleName(), "   ... found -> Update");
-                        dbHelper.updateSession(locIdMap.get(remoteSession.getToken()), remoteSession);
-                    } else {
-                        Log.v(getClass().getSimpleName(), "   ... create");
-                        dbHelper.addSession(remoteSession);
-                    }
-                }
-                Log.d(getClass().getSimpleName(), "   Remove remotely deleted Sessions");
-                // remove remotely deleted sessions
-                for (Map.Entry<String, Long> locEntry : locIdMap.entrySet()) {
-                    if (!remoteTokens.contains(locEntry.getKey())) {
-                        Log.v(getClass().getSimpleName(), "   ... remove " + locEntry.getValue());
-                        dbHelper.deleteSession(locEntry.getValue());
-                    }
-                }
+                ServerResponse.ProjectResponse projResponse = client.getProject(customCertManager, project, lastModified, lastETag);
+                String name = projResponse.getName();
+                String email = projResponse.getEmail();
+                Log.d(getClass().getSimpleName(), "EMAIL : "+email);
+                // TODO
+                dbHelper.updateProject(project.getId(), name, email);
+
                 status = LoginStatus.OK;
 
                 // update ETag and Last-Modified in order to reduce size of next response
                 SharedPreferences.Editor editor = preferences.edit();
-                String etag = response.getETag();
+                String etag = projResponse.getETag();
                 if (etag != null && !etag.isEmpty()) {
                     editor.putString(SettingsActivity.SETTINGS_KEY_ETAG, etag);
                 } else {
                     editor.remove(SettingsActivity.SETTINGS_KEY_ETAG);
                 }
-                long modified = response.getLastModified();
+                long modified = projResponse.getLastModified();
                 if (modified != 0) {
                     editor.putLong(SettingsActivity.SETTINGS_KEY_LAST_MODIFIED, modified);
                 } else {
@@ -360,35 +350,31 @@ public class SessionServerSyncHelper {
             dbHelper.notifySessionsChanged();
             // start next sync if scheduled meanwhile
             if (syncScheduled) {
-                scheduleSync(false);
+                scheduleSync(false, project.getId());
             }
         }
     }
 
-    private PhoneTrackClient createPhoneTrackClient() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext.getApplicationContext());
-        String url = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS);
-        String username = preferences.getString(SettingsActivity.SETTINGS_USERNAME, SettingsActivity.DEFAULT_SETTINGS);
-        String password = preferences.getString(SettingsActivity.SETTINGS_PASSWORD, SettingsActivity.DEFAULT_SETTINGS);
-        return new PhoneTrackClient(url, username, password);
+    private IHateMoneyClient createPhoneTrackClient() {
+        return new IHateMoneyClient();
     }
 
-    public boolean shareDevice(String token, String deviceName, ICallback callback) {
+    /*public boolean shareDevice(String token, String deviceName, ICallback callback) {
         if (isSyncPossible()) {
             ShareDeviceTask shareDeviceTask = new ShareDeviceTask(token, deviceName, callback);
             shareDeviceTask.execute();
             return true;
         }
         return false;
-    }
+    }*/
 
     /**
      * task to ask server to create public share with name restriction on device
      * or just get the share token if it already exists
      *
      */
-    private class ShareDeviceTask extends AsyncTask<Void, Void, LoginStatus> {
-        private PhoneTrackClient client;
+    /*private class ShareDeviceTask extends AsyncTask<Void, Void, LoginStatus> {
+        private IHateMoneyClient client;
         private String token;
         private String deviceName;
         private String publicUrl = null;
@@ -459,5 +445,6 @@ public class SessionServerSyncHelper {
             }
             callback.onFinish(publicUrl, errorString);
         }
-    }
+    }*/
+
 }

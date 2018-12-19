@@ -130,7 +130,7 @@ public class PhoneTrackClientUtil {
         StringBuilder result = new StringBuilder();
         try {
             HttpURLConnection con = SupportUtil.getHttpURLConnection(ccm, url + "status.php");
-            con.setRequestMethod(PhoneTrackClient.METHOD_GET);
+            con.setRequestMethod(IHateMoneyClient.METHOD_GET);
             con.setConnectTimeout(10 * 1000); // 10 seconds
             BufferedReader rd = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String line;

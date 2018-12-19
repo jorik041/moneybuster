@@ -16,9 +16,10 @@ import java.net.MalformedURLException;
 
 import at.bitfire.cert4android.CustomCertManager;
 import net.eneiluj.ihatemoney.BuildConfig;
+import net.eneiluj.ihatemoney.model.DBProject;
 
 @WorkerThread
-public class PhoneTrackClient {
+public class IHateMoneyClient {
 
     /**
      * This entity class is used to return relevant data of the HTTP reponse.
@@ -53,24 +54,17 @@ public class PhoneTrackClient {
     public static final String JSON_TITLE = "title";
     public static final String JSON_ETAG = "etag";
     private static final String application_json = "application/json";
-    private String url;
-    private String username;
-    private String password;
 
-    public PhoneTrackClient(String url, String username, String password) {
-        this.url = url;
-        this.username = username;
-        this.password = password;
+
+    public IHateMoneyClient() {
+
     }
 
-    public ServerResponse.SessionsResponse getSessions(CustomCertManager ccm, long lastModified, String lastETag) throws JSONException, IOException {
-        String target = "api/getsessions";
-        return new ServerResponse.SessionsResponse(requestServer(ccm, target, METHOD_GET, null, lastETag));
-    }
-
-    public ServerResponse.ShareDeviceResponse shareDevice(CustomCertManager ccm, String token, String deviceName) throws JSONException, IOException {
-        String target = "api/sharedevice/" + token + "/" + deviceName;
-        return new ServerResponse.ShareDeviceResponse(requestServer(ccm, target, METHOD_GET, null, null));
+    public ServerResponse.ProjectResponse getProject(CustomCertManager ccm, DBProject project, long lastModified, String lastETag) throws JSONException, IOException {
+        String target = project.getIhmUrl().replaceAll("/+$", "")
+                + "/api/projects/" + project.getRemoteId();
+        //https://ihatemoney.org/api/projects/demo
+        return new ServerResponse.ProjectResponse(requestServer(ccm, target, METHOD_GET, null, lastETag, project.getRemoteId(), project.getPassword()));
     }
 
     /**
@@ -83,11 +77,11 @@ public class PhoneTrackClient {
      * @throws MalformedURLException
      * @throws IOException
      */
-    private ResponseData requestServer(CustomCertManager ccm, String target, String method, JSONObject params, String lastETag)
+    private ResponseData requestServer(CustomCertManager ccm, String target, String method, JSONObject params, String lastETag, String username, String password)
             throws IOException {
         StringBuffer result = new StringBuffer();
         // setup connection
-        String targetURL = url + "index.php/apps/ihatemoney/" + target;
+        String targetURL = target;
         HttpURLConnection con = SupportUtil.getHttpURLConnection(ccm, targetURL);
         con.setRequestMethod(method);
         con.setRequestProperty(

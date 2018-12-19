@@ -97,13 +97,13 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static IHateMoneySQLiteOpenHelper instance;
 
-    private SessionServerSyncHelper serverSyncHelper;
+    private IHateMoneyServerSyncHelper serverSyncHelper;
     private Context context;
 
     private IHateMoneySQLiteOpenHelper(Context context) {
         super(context, database_name, null, database_version);
         this.context = context.getApplicationContext();
-        serverSyncHelper = SessionServerSyncHelper.getInstance(this);
+        serverSyncHelper = IHateMoneyServerSyncHelper.getInstance(this);
         //recreateDatabase(getWritableDatabase());
     }
 
@@ -114,7 +114,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
             return instance;
     }
 
-    public SessionServerSyncHelper getIhateMoneyServerSyncHelper() {
+    public IHateMoneyServerSyncHelper getIhateMoneyServerSyncHelper() {
         return serverSyncHelper;
     }
 
@@ -316,6 +316,15 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         db.delete(table_projects,
                 key_id + " = ?",
                 new String[]{String.valueOf(id)});
+    }
+
+    public void updateProject(long projId, @Nullable String newName, @Nullable String newEmail) {
+        //debugPrintFullDB();
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(key_name, newName);
+        values.put(key_email, newEmail);
+        int rows = db.update(table_projects, values, key_id + " = ?", new String[]{String.valueOf(projId)});
     }
 
     /**

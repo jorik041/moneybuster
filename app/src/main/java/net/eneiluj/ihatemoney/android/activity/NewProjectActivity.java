@@ -68,14 +68,14 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
 
     @Override
     public void onBackPressed() {
-        close();
+        close(0);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                close();
+                close(0);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -85,8 +85,11 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
     /**
      * Send result and closes the Activity
      */
-    public void close() {
+    public void close(long pid) {
         fragment.onCloseProject();
+        final Intent data = new Intent();
+        data.putExtra(BillsListViewActivity.CREATED_PROJECT, pid);
+        setResult(RESULT_OK, data);
         finish();
     }
 

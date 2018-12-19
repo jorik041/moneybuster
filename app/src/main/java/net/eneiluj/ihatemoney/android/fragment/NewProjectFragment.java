@@ -30,8 +30,10 @@ import net.eneiluj.ihatemoney.util.ICallback;
 
 public class NewProjectFragment extends PreferenceFragmentCompat {
 
+    private static final String SAVEDKEY_PROJECT = "project";
+
     public interface NewProjectFragmentListener {
-        void close();
+        void close(long pid);
     }
 
     @Nullable
@@ -190,6 +192,14 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        System.out.println("PROJECT SAVE INSTANCE STATEEEEEEEE");
+        //saveLogjob(null);
+        //outState.putSerializable(SAVEDKEY_PROJECT, project);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_new_project_fragment, menu);
     }
@@ -207,8 +217,8 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_create:
-                saveProject(null);
-                listener.close();
+                long pid = saveProject(null);
+                listener.close(pid);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -224,7 +234,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
      *
      * @param callback Observer which is called after save/synchronization
      */
-    protected void saveProject(@Nullable ICallback callback) {
+    protected long saveProject(@Nullable ICallback callback) {
         // TODO create remote
         String remoteId = getRemoteId();
         String ihmUrl = getIhmUrl();
@@ -237,6 +247,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         long pid = db.addProject(newProject);
         System.out.println("PROJECT local id : "+pid);
         // TODO update billsview project selector
+        return pid;
     }
 
     @Override

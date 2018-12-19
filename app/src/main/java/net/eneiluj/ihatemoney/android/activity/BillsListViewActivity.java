@@ -37,7 +37,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,8 +55,10 @@ import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.model.Category;
 import net.eneiluj.ihatemoney.model.DBLocation;
 import net.eneiluj.ihatemoney.model.DBLogjob;
+import net.eneiluj.ihatemoney.model.DBProject;
 import net.eneiluj.ihatemoney.model.Item;
 import net.eneiluj.ihatemoney.model.ItemAdapter;
+import net.eneiluj.ihatemoney.model.MenuProject;
 import net.eneiluj.ihatemoney.model.NavigationAdapter;
 import net.eneiluj.ihatemoney.model.SyncError;
 import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
@@ -74,6 +78,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private static final String TAG = BillsListViewActivity.class.getSimpleName();
 
     public final static String CREATED_LOGJOB = "net.eneiluj.ihatemoney.created_logjob";
+    public final static String CREATED_PROJECT = "net.eneiluj.ihatemoney.created_project";
     public final static String CREDENTIALS_CHANGED = "net.eneiluj.ihatemoney.CREDENTIALS_CHANGED";
     public static final String ADAPTER_KEY_ALL = "all";
     public static final String ADAPTER_KEY_ENABLED = "enabled";
@@ -102,6 +107,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     DrawerLayout drawerLayout;
     @BindView(R.id.account)
     TextView account;
+    @BindView(R.id.projects)
+    Spinner projects;
+    ArrayAdapter<MenuProject> projectsAdapter;
     @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.fab_create_phonetrack)
@@ -496,6 +504,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         adapterMenu.setItems(itemsMenu);
         listNavigationMenu.setAdapter(adapterMenu);
+
+        // projects
+        projectsAdapter = new ArrayAdapter<MenuProject>(this, android.R.layout.simple_spinner_item, android.R.id.text1);
+        projectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        projects.setAdapter(projectsAdapter);
+        projectsAdapter.add(new MenuProject(1, "plop"));
+        projectsAdapter.add(new MenuProject(2, "plop2"));
+        projectsAdapter.notifyDataSetChanged();
     }
 
     public void initList() {
@@ -697,6 +713,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (LoggerService.DEBUG) { Log.d(TAG, "[ACT RESULT]"); }
         // Check which request we're responding to
         if (requestCode == create_logjob_cmd) {
             // Make sure the request was successful
@@ -704,6 +721,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 //not need because of db.synchronisation in createActivity
 
                 DBLogjob createdLogjob = (DBLogjob) data.getExtras().getSerializable(CREATED_LOGJOB);
+                if (LoggerService.DEBUG) { Log.d(TAG, "[ACT RESULT CREATED LOGJOB ] " + createdLogjob.getTitle()); }
                 adapter.add(createdLogjob);
             }
             listView.scrollToPosition(0);
@@ -719,7 +737,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(PhoneTrackClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
                 }
             }
+        } else if (requestCode == addproject) {
+            long pid = data.getLongExtra(CREATED_PROJECT, 0);
+            //DBProject createdProject = db.getProject();
+            System.out.println("BILLS request code : addproject " + pid);
+            projectsAdapter.add(new MenuProject(pid, "new"+pid));
+            projectsAdapter.notifyDataSetChanged();
         }
+
     }
 
     private void updateUsernameInDrawer() {

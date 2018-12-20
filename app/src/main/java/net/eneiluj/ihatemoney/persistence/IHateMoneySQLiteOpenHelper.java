@@ -666,7 +666,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         db.insert(table_members, null, values);
     }
 
-    public void updateMember(long remoteId, @Nullable String newName, double newWeight, boolean newActivated) {
+    public void updateMember(long remoteId, long projId, @Nullable String newName, double newWeight, boolean newActivated) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -676,15 +676,16 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_weight, newWeight);
         values.put(key_activated, newActivated ? 1 : 0);
         if (values.size() > 0) {
-            int rows = db.update(table_members, values, key_id + " = ?", new String[]{String.valueOf(remoteId)});
+            int rows = db.update(table_members, values, key_remoteId + " = ? AND "+key_projectid+" = ?",
+                    new String[]{String.valueOf(remoteId), String.valueOf(projId)});
         }
     }
 
     /**
      *
      */
-    public List<DBMember> getMembersOfProject(String projId) {
-        List<DBMember> members = getMembersCustom(key_projectid + " = ?", new String[]{projId}, key_name + " ASC");
+    public List<DBMember> getMembersOfProject(long projId) {
+        List<DBMember> members = getMembersCustom(key_projectid + " = ?", new String[]{String.valueOf(projId)}, key_name + " ASC");
         return members;
     }
 

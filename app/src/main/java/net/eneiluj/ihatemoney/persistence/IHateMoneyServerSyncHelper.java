@@ -310,7 +310,7 @@ public class IHateMoneyServerSyncHelper {
                         }
                         else {
                             Log.d(getClass().getSimpleName(), "Update member : "+m);
-                            dbHelper.updateMember(m.getRemoteId(), m.getName(), m.getWeight(), m.isActivated());
+                            dbHelper.updateMember(m.getRemoteId(), project.getId(), m.getName(), m.getWeight(), m.isActivated());
                         }
                     }
                 }

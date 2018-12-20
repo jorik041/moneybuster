@@ -18,7 +18,6 @@ import android.os.Handler;
 //import android.preference.PreferenceManager;
 import android.support.v7.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -56,6 +55,7 @@ import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.fragment.NewProjectFragment;
 import net.eneiluj.ihatemoney.model.Category;
 import net.eneiluj.ihatemoney.model.DBLogjob;
+import net.eneiluj.ihatemoney.model.DBMember;
 import net.eneiluj.ihatemoney.model.DBProject;
 import net.eneiluj.ihatemoney.model.Item;
 import net.eneiluj.ihatemoney.model.ItemAdapter;
@@ -124,7 +124,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     @BindView(R.id.floatingMenu)
     com.github.clans.fab.FloatingActionMenu fabMenu;
     @BindView(R.id.navigationList)
-    RecyclerView listNavigationCategories;
+    RecyclerView listNavigationMembers;
     @BindView(R.id.navigationMenu)
     RecyclerView listNavigationMenu;
     @BindView(R.id.recycler_view)
@@ -132,7 +132,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     private ActionBarDrawerToggle drawerToggle;
     private ItemAdapter adapter = null;
-    private NavigationAdapter adapterCategories;
+    private NavigationAdapter adapterMembers;
     private NavigationAdapter.NavigationItem itemAll, itemEnabled, itemPhonetrack, itemCustom, itemUncategorized;
     private Category navigationSelection = new Category(null, null);
     private String navigationOpen = "";
@@ -182,8 +182,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         setupActionBar();
         setupLogjobsList();
-        setupNavigationList(categoryAdapterSelectedItem);
         setupNavigationMenu();
+        setupMembersNavigationList(categoryAdapterSelectedItem);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             if (DEBUG) { Log.d(TAG, "[request 1 permission]"); }
@@ -253,7 +253,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable(SAVED_STATE_NAVIGATION_SELECTION, navigationSelection);
-        outState.putString(SAVED_STATE_NAVIGATION_ADAPTER_SLECTION, adapterCategories.getSelectedItem());
+        outState.putString(SAVED_STATE_NAVIGATION_ADAPTER_SLECTION, adapterMembers.getSelectedItem());
         outState.putString(SAVED_STATE_NAVIGATION_OPEN, navigationOpen);
     }
 
@@ -309,19 +309,17 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         });
     }
 
-    private void setupNavigationList(final String selectedItem) {
+    private void setupMembersNavigationList(final String selectedItem) {
         itemAll = new NavigationAdapter.NavigationItem(ADAPTER_KEY_ALL, getString(R.string.label_all_logjobs), null, R.drawable.ic_allgrey_24dp);
-        itemEnabled = new NavigationAdapter.NavigationItem(ADAPTER_KEY_ENABLED, getString(R.string.label_enabled), null, R.drawable.ic_check_box_grey_24dp);
-        itemPhonetrack = new NavigationAdapter.NavigationItem(ADAPTER_KEY_PHONETRACK, getString(R.string.label_phonetrack_lj), null, R.drawable.ic_phonetrack_grey_24dp);
-        itemCustom = new NavigationAdapter.NavigationItem(ADAPTER_KEY_CUSTOM, getString(R.string.label_custom_lj), null, R.drawable.ic_link_menu_grey_24dp);
-        adapterCategories = new NavigationAdapter(new NavigationAdapter.ClickListener() {
+
+        adapterMembers = new NavigationAdapter(new NavigationAdapter.ClickListener() {
             @Override
             public void onItemClick(NavigationAdapter.NavigationItem item) {
                 selectItem(item, true);
             }
 
             private void selectItem(NavigationAdapter.NavigationItem item, boolean closeNavigation) {
-                adapterCategories.setSelectedItem(item.id);
+                adapterMembers.setSelectedItem(item.id);
 
                 // update current selection
                 if (itemAll == item) {
@@ -354,7 +352,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 refreshLists(true);
             }
 
-            @Override
+            /*@Override
             public void onIconClick(NavigationAdapter.NavigationItem item) {
                 if (item.icon == NavigationAdapter.ICON_MULTIPLE && !item.label.equals(navigationOpen)) {
                     navigationOpen = item.label;
@@ -365,10 +363,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 } else {
                     onItemClick(item);
                 }
+            }*/
+
+            @Override
+            public void onIconClick(NavigationAdapter.NavigationItem item) {
+                onItemClick(item);
             }
         });
-        adapterCategories.setSelectedItem(selectedItem);
-        listNavigationCategories.setAdapter(adapterCategories);
+        adapterMembers.setSelectedItem(selectedItem);
+        listNavigationMembers.setAdapter(adapterMembers);
     }
 
 
@@ -400,16 +403,25 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             Map<String, Integer> favorites = db.getEnabledCount();
             int numFavorites = favorites.containsKey("1") ? favorites.get("1") : 0;
             int numNonFavorites = favorites.containsKey("0") ? favorites.get("0") : 0;
-            itemEnabled.count = numFavorites;
+
             itemAll.count = numFavorites + numNonFavorites;
-            itemPhonetrack.count = nbPT;
-            itemCustom.count = nbCU;
+
 
             ArrayList<NavigationAdapter.NavigationItem> items = new ArrayList<>();
             items.add(itemAll);
-            items.add(itemEnabled);
-            items.add(itemPhonetrack);
-            items.add(itemCustom);
+            //items.add(itemEnabled);
+            //items.add(itemPhonetrack);
+            //items.add(itemCustom);
+            MenuProject mproj = (MenuProject) projects.getSelectedItem();
+            List<DBMember> members = db.getMembersOfProject(mproj.getId());
+            for (DBMember m : members) {
+                items.add(new NavigationAdapter.NavigationItem(
+                        String.valueOf(m.getId()),
+                        m.getName(),
+                        null,
+                        R.drawable.ic_account_circle_grey_24dp)
+                );
+            }
             NavigationAdapter.NavigationItem lastPrimaryCategory = null, lastSecondaryCategory = null;
             /*for (NavigationAdapter.NavigationItem item : categories) {
                 int slashIndex = item.label.indexOf('/');
@@ -464,7 +476,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         @Override
         protected void onPostExecute(List<NavigationAdapter.NavigationItem> items) {
-            adapterCategories.setItems(items);
+            adapterMembers.setItems(items);
         }
     }
 
@@ -1120,7 +1132,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     break;
                 case IHateMoneyServerSyncHelper.BROADCAST_SESSIONS_SYNCED:
                     // TODO
-                    //updateMembers();
+                    setupMembersNavigationList(ADAPTER_KEY_ALL);
                     showToast(getString(R.string.sessions_sync_success));
                     break;
             }

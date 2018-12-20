@@ -57,17 +57,13 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String key_lastSyncErrorTimestamp = "LASTSYNCERRTIME";
     private static final String key_lastSyncErrorText = "LASTSYNCERR";
 
-    private static final String table_locations = "LOCATIONS";
-    private static final String key_logjobid = "LOGJOBID";
-    private static final String key_lat = "LAT";
-    private static final String key_lon = "LON";
-    private static final String key_time = "TIME";
-    private static final String key_bearing = "BEARING";
-    private static final String key_altitude = "ALTITUDE";
-    private static final String key_speed = "SPEED";
-    private static final String key_accuracy = "ACCURACY";
-    private static final String key_satellites = "SATELLITES";
-    private static final String key_battery = "BATTERY";
+    private static final String table_members = "MEMBERS";
+    //private static final String key_id = "ID";
+    //private static final String key_remoteId = "REMOTEID";
+    private static final String key_projectid = "PROJECTID";
+    //private static final String key_name = "NAME";
+    private static final String key_activated = "ACTIVATED";
+    private static final String key_weight = "WEIGHT";
 
     private static final String table_projects = "PROJECTS";
     //private static final String key_id = "ID";
@@ -82,11 +78,11 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
             key_id, key_title, key_url, key_token, key_deviceName,
             key_minTime, key_minDistance, key_minAccuracy, key_post, key_enabled,
             key_nbsync, key_lastSyncTimestamp, key_lastLocTimestamp,
-            key_lastSyncErrorTimestamp, key_lastSyncErrorText};
-    private static final String[] columnsLocations = {
-            key_id, key_logjobid, key_lat, key_lon, key_time,
-            key_bearing, key_altitude, key_speed, key_accuracy,
-            key_satellites, key_battery};
+            key_lastSyncErrorTimestamp, key_lastSyncErrorText
+    };
+    private static final String[] columnsMembers = {
+            key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight
+    };
 
     private static final String[] columnsProjects = {
             // long id, String remoteId, String password, String name, String ihmUrl, String email
@@ -127,7 +123,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         createTableSessions(db, table_sessions);
         createTableLogjobs(db, table_logjobs);
-        createTableLocations(db, table_locations);
+        createTableMembers(db, table_members);
         createTableProjects(db, table_projects);
         createIndexes(db);
     }
@@ -160,20 +156,15 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
                 key_token + " TEXT)");
     }
 
-    private void createTableLocations(SQLiteDatabase db, String tableName) {
-        // key_id, key_logjobid, key_lat, key_lon, key_time, key_bearing, key_altitude, key_speed, key_accuracy, key_satellites, key_battery
+    private void createTableMembers(SQLiteDatabase db, String tableName) {
+        // key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight
         db.execSQL("CREATE TABLE " + tableName + " ( " +
                 key_id + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                key_logjobid + " INTEGER, " +
-                key_lat + " FLOAT, " +
-                key_lon + " FLOAT, " +
-                key_time + " INTEGER, " +
-                key_bearing + " FLOAT, " +
-                key_altitude + " FLOAT, " +
-                key_speed + " FLOAT, " +
-                key_accuracy + " FLOAT, " +
-                key_satellites + " INTEGER, " +
-                key_battery + " FLOAT)");
+                key_remoteId + " INTEGER, " +
+                key_projectid + " INTEGER, " +
+                key_name + " TEXT, " +
+                key_activated + " INTEGER, " +
+                key_weight + " FLOAT)");
     }
 
     private void createTableProjects(SQLiteDatabase db, String tableName) {
@@ -641,9 +632,9 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     public void deleteLogjob(long id) {
         SQLiteDatabase db = this.getWritableDatabase();
         // delete all locations
-        db.delete(table_locations,
+        /*db.delete(table_locations,
                 key_logjobid + " = ?",
-                new String[]{String.valueOf(id)});
+                new String[]{String.valueOf(id)});*/
         // delete the log job
         db.delete(table_logjobs,
                 key_id + " = ?",
@@ -658,53 +649,23 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * key_lat, key_lon, key_time, key_bearing, key_altitude, key_speed, key_accuracy, key_satellites, key_battery
+     *
      *
      * @param ljId
      * @param loc
      */
-    public void addLocation(String ljId, Location loc, float battery) {
-        if (LoggerService.DEBUG) { Log.d(TAG, "[writeLocation from ljid, loc, battery]"); }
+    public void addMember(DBMember m) {
+        // key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight
+        if (LoggerService.DEBUG) { Log.d(TAG, "[add member]"); }
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(key_logjobid, ljId);
-        values.put(key_time, loc.getTime() / 1000);
-        values.put(key_lat, loc.getLatitude());
-        values.put(key_lon, loc.getLongitude());
-        values.put(key_bearing, loc.hasBearing() ? loc.getBearing() : -1.0);
-        values.put(key_altitude, loc.hasAltitude() ? loc.getAltitude() : -1.0);
-        values.put(key_speed, loc.hasSpeed() ? loc.getSpeed() : -1.0);
-        values.put(key_accuracy, loc.hasAccuracy() ? loc.getAccuracy() : -1.0);
-        values.put(key_battery, battery);
-        int sat = -1;
-        //if (LoggerService.DEBUG) { Log.d(TAG, "[PROVIDER "+loc.getProvider()+"]"); }
-        if(loc.getProvider() == "gps" && loc.getExtras() != null) {
-            sat = loc.getExtras().getInt("satellites", -1);
-        }
-        values.put(key_satellites, sat);
+        values.put(key_remoteId, m.getRemoteId());
+        values.put(key_projectid, m.getProjectId());
+        values.put(key_name, m.getName());
+        values.put(key_activated, m.isActivated() ? "1" : "0");
+        values.put(key_weight, m.getWeight());
 
-        db.insert(table_locations, null, values);
-
-        setLastLocTimestamp(ljId, loc.getTime() / 1000);
-    }
-
-    public void addLocation(DBLocation dbLoc) {
-        if (LoggerService.DEBUG) { Log.d(TAG, "[writeLocation from dblocation]"); }
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        values.put(key_logjobid, dbLoc.getLogjobId());
-        values.put(key_time, dbLoc.getTimestamp());
-        values.put(key_lat, dbLoc.getLat());
-        values.put(key_lon, dbLoc.getLon());
-        values.put(key_bearing, dbLoc.getBearing());
-        values.put(key_altitude, dbLoc.getAltitude());
-        values.put(key_speed, dbLoc.getSpeed());
-        values.put(key_accuracy, dbLoc.getAccuracy());
-        values.put(key_battery, dbLoc.getBattery());
-        values.put(key_satellites, dbLoc.getSatellites());
-
-        db.insert(table_locations, null, values);
+        db.insert(table_members, null, values);
     }
 
     /**

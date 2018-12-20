@@ -72,21 +72,32 @@ public class IHateMoneyClient {
         return new ServerResponse.ProjectResponse(requestServer(ccm, target, METHOD_GET, null, lastETag, project.getRemoteId(), project.getPassword()));
     }
 
-    public ServerResponse.EditRemoteProjectResponse editRemoteProject(CustomCertManager ccm, DBProject project, String newName, String newEmail, String newPassword) throws JSONException, IOException {
+    public ServerResponse.EditRemoteProjectResponse editRemoteProject(CustomCertManager ccm, DBProject project, String newName, String newEmail, String newPassword) throws IOException {
         String target = project.getIhmUrl().replaceAll("/+$", "")
                 + "/api/projects/" + project.getRemoteId();
         //https://ihatemoney.org/api/projects/demo
         Map<String, String> params = new ArrayMap<>();
-        params.put("name", newName);
-        params.put("contact_email", newEmail);
-        params.put("password", newPassword);
+        params.put("name", newName == null ? "" : newName);
+        params.put("contact_email", newEmail == null ? "" : newEmail);
+        params.put("password", newPassword == null ? "" : newPassword);
         return new ServerResponse.EditRemoteProjectResponse(requestServer(ccm, target, METHOD_PUT, params, null, project.getRemoteId(), project.getPassword()));
     }
 
-    public ServerResponse.DeleteRemoteProjectResponse deleteRemoteProject(CustomCertManager ccm, DBProject project) throws JSONException, IOException {
+    public ServerResponse.DeleteRemoteProjectResponse deleteRemoteProject(CustomCertManager ccm, DBProject project) throws IOException {
         String target = project.getIhmUrl().replaceAll("/+$", "")
                 + "/api/projects/" + project.getRemoteId();
         return new ServerResponse.DeleteRemoteProjectResponse(requestServer(ccm, target, METHOD_DELETE, null, null, project.getRemoteId(), project.getPassword()));
+    }
+
+    public ServerResponse.CreateRemoteProjectResponse createRemoteProject(CustomCertManager ccm, DBProject project) throws IOException {
+        String target = project.getIhmUrl().replaceAll("/+$", "")
+                + "/api/projects";
+        Map<String, String> params = new ArrayMap<>();
+        params.put("name", project.getName() == null ? "" : project.getName());
+        params.put("contact_email", project.getEmail() == null ? "" : project.getEmail());
+        params.put("password", project.getPassword() == null ? "" : project.getPassword());
+        params.put("id", project.getRemoteId() == null ? "" : project.getRemoteId());
+        return new ServerResponse.CreateRemoteProjectResponse(requestServer(ccm, target, METHOD_POST, params, null, null, null));
     }
 
     /**
@@ -106,11 +117,12 @@ public class IHateMoneyClient {
         String targetURL = target;
         HttpURLConnection con = SupportUtil.getHttpURLConnection(ccm, targetURL);
         con.setRequestMethod(method);
-        con.setRequestProperty(
-                "Authorization",
-                "Basic " + Base64.encodeToString((username + ":" + password).getBytes(), Base64.NO_WRAP));
-        // https://github.com/square/retrofit/issues/805#issuecomment-93426183
-        con.setRequestProperty( "Connection", "Close");
+        if (username != null) {
+            con.setRequestProperty(
+                    "Authorization",
+                    "Basic " + Base64.encodeToString((username + ":" + password).getBytes(), Base64.NO_WRAP));
+        }
+        con.setRequestProperty("Connection", "Close");
         con.setRequestProperty("User-Agent", "ihatemoney-android/" + BuildConfig.VERSION_NAME);
         if (lastETag != null && METHOD_GET.equals(method)) {
             con.setRequestProperty("If-None-Match", lastETag);

@@ -21,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import net.eneiluj.ihatemoney.R;
@@ -218,8 +219,14 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_create:
-                long pid = saveProject(null);
-                listener.close(pid);
+                // remote project should already exists, just add it locally
+                if (!newProjectCreate.isChecked()) {
+                    long pid = saveProject(null);
+                    listener.close(pid);
+                }
+                else {
+                    db.getIhateMoneyServerSyncHelper().createRemoteProject(getRemoteId(), getName(), getEmail(), getPassword(), getIhmUrl(), createRemoteCallBack);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -236,18 +243,15 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
      * @param callback Observer which is called after save/synchronization
      */
     protected long saveProject(@Nullable ICallback callback) {
-        // TODO create remote
         String remoteId = getRemoteId();
         String ihmUrl = getIhmUrl();
         String password = getPassword();
         String email = getEmail();
         String name = getName();
-        boolean createRemote = getCreateRemote();
 
         DBProject newProject = new DBProject(0, remoteId, password, name, ihmUrl, email);
         long pid = db.addProject(newProject);
         System.out.println("PROJECT local id : "+pid);
-        // TODO update billsview project selector
         return pid;
     }
 
@@ -272,6 +276,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         newProjectIHMUrl.setText(defaultUrl);
         newProjectIHMUrl.setSummary(defaultUrl);
         newProjectCreate = (CheckBoxPreference) this.findPreference("createonserver");
+        newProjectCreate.setChecked(false);
     }
 
     protected String getRemoteId() {
@@ -291,6 +296,32 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     }
     protected String getEmail() {
         return newProjectEmail.getText();
+    }
+
+    private ICallback createRemoteCallBack = new ICallback() {
+        @Override
+        public void onFinish() {
+        }
+
+        public void onFinish(String result, String message) {
+            if (message.isEmpty()) {
+                long pid = saveProject(null);
+                listener.close(pid);
+            }
+            else {
+                showToast(getString(R.string.error_share_dev_helper, message), Toast.LENGTH_LONG);
+            }
+        }
+
+        @Override
+        public void onScheduled() {
+        }
+    };
+
+    protected void showToast(CharSequence text, int duration) {
+        Context context = getActivity();
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
 }

@@ -55,7 +55,6 @@ import butterknife.ButterKnife;
 import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.fragment.NewProjectFragment;
 import net.eneiluj.ihatemoney.model.Category;
-import net.eneiluj.ihatemoney.model.DBLocation;
 import net.eneiluj.ihatemoney.model.DBLogjob;
 import net.eneiluj.ihatemoney.model.DBProject;
 import net.eneiluj.ihatemoney.model.Item;
@@ -66,8 +65,6 @@ import net.eneiluj.ihatemoney.model.SyncError;
 import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
 import net.eneiluj.ihatemoney.persistence.IHateMoneyServerSyncHelper;
 import net.eneiluj.ihatemoney.persistence.LoadLogjobsListTask;
-import net.eneiluj.ihatemoney.service.LoggerService;
-import net.eneiluj.ihatemoney.service.WebTrackService;
 import net.eneiluj.ihatemoney.util.ICallback;
 import net.eneiluj.ihatemoney.util.PhoneTrackClientUtil;
 
@@ -76,6 +73,9 @@ import static net.eneiluj.ihatemoney.android.activity.EditProjectActivity.PARAM_
 public class BillsListViewActivity extends AppCompatActivity implements ItemAdapter.LogjobClickListener {
 
     private final static int PERMISSION_LOCATION = 1;
+    public static boolean DEBUG = true;
+    public static final String BROADCAST_EXTRA_PARAM = "net.eneiluj.ihatemoney.broadcast_extra_param";
+    public static final String BROADCAST_ERROR_MESSAGE = "net.eneiluj.ihatemoney.broadcast_error_message";
 
     private final static int PERMISSION_FOREGROUND_SERVICE = 1;
 
@@ -186,11 +186,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         setupNavigationMenu();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            if (LoggerService.DEBUG) { Log.d(TAG, "[request 1 permission]"); }
+            if (DEBUG) { Log.d(TAG, "[request 1 permission]"); }
             ActivityCompat.requestPermissions(BillsListViewActivity.this, new String[]{Manifest.permission.FOREGROUND_SERVICE}, PERMISSION_FOREGROUND_SERVICE);
         }
 
-        Map<String, Integer> enabled = db.getEnabledCount();
+        /*Map<String, Integer> enabled = db.getEnabledCount();
         int nbEnabledLogjobs = enabled.containsKey("1") ? enabled.get("1") : 0;
         if (nbEnabledLogjobs > 0) {
             // start loggerservice !
@@ -200,12 +200,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             } else {
                 startForegroundService(intent);
             }
-        }
+        }*/
 
         // create project if there isn't any
         if (db.getProjects().isEmpty()) {
             Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
-            //newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "");
+            newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "https://ihatemoney.org");
             startActivityForResult(newProjectIntent, addproject);
         }
     }
@@ -231,7 +231,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
      */
     @Override
     protected void onPause() {
-        if (LoggerService.DEBUG) { Log.d(TAG, "[onPause]"); }
+        if (DEBUG) { Log.d(TAG, "[onPause]"); }
         unregisterReceiver(mBroadcastReceiver);
         super.onPause();
     }
@@ -279,14 +279,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(PhoneTrackClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
                     }
                 }
-                if (db.getLocationCount() > 0) {
+                // TODO synchronize
+                /*if (db.getLocationCount() > 0) {
                     Intent syncIntent = new Intent(BillsListViewActivity.this, WebTrackService.class);
                     startService(syncIntent);
                     showToast(getString(R.string.uploading_started));
                 }
                 else {
                     swipeRefreshLayout.setRefreshing(false);
-                }
+                }*/
             }
         });
 
@@ -547,7 +548,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         MenuProject restoredProject = null;
         MenuProject tmpProject;
         for (DBProject proj : projs) {
-            tmpProject = new MenuProject(proj.getId(), proj.getRemoteId()+"@"+proj.getIhmUrl());
+            tmpProject = new MenuProject(
+                    proj.getId(),
+                    proj.getRemoteId()+"@"+proj.getIhmUrl()
+                            .replace("https://", "")
+                            .replace("http://", "")
+            );
             projectsAdapter.add(tmpProject);
             if (String.valueOf(proj.getId()).equals(lastId)) {
                 restoredProject = tmpProject;
@@ -617,7 +623,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     case ItemTouchHelper.LEFT: {
                         final DBLogjob dbLogjob = (DBLogjob) adapter.getItem(viewHolder.getAdapterPosition());
                         // get locations
-                        final List<DBLocation> locations = db.getLocationOfLogjob(String.valueOf(dbLogjob.getId()));
+                        /*final List<DBLocation> locations = db.getLocationOfLogjob(String.valueOf(dbLogjob.getId()));
                         db.deleteLogjob(dbLogjob.getId());
                         adapter.remove(dbLogjob);
                         refreshLists();
@@ -637,7 +643,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                     }
                                 })
                                 .show();
-                        notifyLoggerService(dbLogjob.getId());
+                        notifyLoggerService(dbLogjob.getId());*/
                         break;
                     }
                     case ItemTouchHelper.RIGHT: {
@@ -781,7 +787,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (LoggerService.DEBUG) { Log.d(TAG, "[ACT RESULT]"); }
+        if (DEBUG) { Log.d(TAG, "[ACT RESULT]"); }
         // Check which request we're responding to
         if (requestCode == create_logjob_cmd) {
             // Make sure the request was successful
@@ -789,7 +795,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 //not need because of db.synchronisation in createActivity
 
                 DBLogjob createdLogjob = (DBLogjob) data.getExtras().getSerializable(CREATED_LOGJOB);
-                if (LoggerService.DEBUG) { Log.d(TAG, "[ACT RESULT CREATED LOGJOB ] " + createdLogjob.getTitle()); }
+                if (DEBUG) { Log.d(TAG, "[ACT RESULT CREATED LOGJOB ] " + createdLogjob.getTitle()); }
                 adapter.add(createdLogjob);
             }
             listView.scrollToPosition(0);
@@ -824,7 +830,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     for (int i = 0; i < projectsAdapter.getCount(); i++) {
                         mp = projectsAdapter.getItem(i);
                         if (mp.getId() == pid) {
-                            if (LoggerService.DEBUG) {
+                            if (DEBUG) {
                                 Log.d(TAG, "[SPINNER deleted project " + mp + "]");
                             }
                             projectsAdapter.remove(mp);
@@ -917,10 +923,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
 
-            if (LoggerService.DEBUG) { Log.d(TAG, "[LAST " + tsLastLoc + " "+tsLastSync+ "]"); }
+            if (DEBUG) { Log.d(TAG, "[LAST " + tsLastLoc + " "+tsLastSync+ "]"); }
 
             String nbsyncText = view.getContext().getString(R.string.logjob_info_nbsync, logjob.getNbSync());
-            String nbnotsyncText = view.getContext().getString(R.string.logjob_info_nbnotsync, db.getLogjobLocationCount(logjob.getId()));
+            String nbnotsyncText = "";
+            //String nbnotsyncText = view.getContext().getString(R.string.logjob_info_nbnotsync, db.getLogjobLocationCount(logjob.getId()));
             String lastLocText = "";
             String lastSyncText = "";
             String lastSyncErrText = "";
@@ -1008,10 +1015,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     }
 
     private void notifyLoggerService(long jobId) {
-        Intent intent = new Intent(BillsListViewActivity.this, LoggerService.class);
+        /*Intent intent = new Intent(BillsListViewActivity.this, LoggerService.class);
         intent.putExtra(UPDATED_LOGJOBS, true);
         intent.putExtra(UPDATED_LOGJOB_ID, jobId);
-        startService(intent);
+        startService(intent);*/
     }
 
     /**
@@ -1091,18 +1098,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
      */
     private void registerBroadcastReceiver() {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(LoggerService.BROADCAST_LOCATION_STARTED);
-        filter.addAction(LoggerService.BROADCAST_LOCATION_STOPPED);
-        filter.addAction(LoggerService.BROADCAST_LOCATION_UPDATED);
-        filter.addAction(LoggerService.BROADCAST_LOCATION_DISABLED);
-        filter.addAction(LoggerService.BROADCAST_LOCATION_GPS_DISABLED);
-        filter.addAction(LoggerService.BROADCAST_LOCATION_NETWORK_DISABLED);
-        filter.addAction(LoggerService.BROADCAST_LOCATION_GPS_ENABLED);
-        filter.addAction(LoggerService.BROADCAST_LOCATION_NETWORK_ENABLED);
-        filter.addAction(LoggerService.BROADCAST_LOCATION_PERMISSION_DENIED);
-        filter.addAction(WebTrackService.BROADCAST_SYNC_STARTED);
-        filter.addAction(WebTrackService.BROADCAST_SYNC_DONE);
-        filter.addAction(WebTrackService.BROADCAST_SYNC_FAILED);
         filter.addAction(IHateMoneyServerSyncHelper.BROADCAST_SESSIONS_SYNC_FAILED);
         filter.addAction(IHateMoneyServerSyncHelper.BROADCAST_SESSIONS_SYNCED);
         registerReceiver(mBroadcastReceiver, filter);
@@ -1114,99 +1109,19 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (LoggerService.DEBUG) { Log.d(TAG, "[broadcast received " + intent + "]"); }
+            if (DEBUG) { Log.d(TAG, "[broadcast received " + intent + "]"); }
             if (intent == null || intent.getAction() == null) {
                 return;
             }
             switch (intent.getAction()) {
-                case LoggerService.BROADCAST_LOCATION_UPDATED:
-                    String ljId = intent.getStringExtra(LoggerService.BROADCAST_EXTRA_PARAM);
-                    if (LoggerService.DEBUG) { Log.d(TAG, "[broadcast loc updated " + ljId + "]"); }
-                    // to update all items
-                    //adapter.notifyDataSetChanged();
-                    // but we update just the changed one
-                    DBLogjob lj;
-                    for (int i = 0; i < adapter.getItemCount(); i++) {
-                        lj = (DBLogjob) adapter.getItem(i);
-                        if (String.valueOf(lj.getId()).equals(ljId)) {
-                            adapter.notifyItemChanged(i);
-                            break;
-                        }
-                    }
-                    break;
-                case WebTrackService.BROADCAST_SYNC_STARTED:
-                    swipeRefreshLayout.setRefreshing(true);
-                    break;
-                // when sync is finished (fail or success)
-                case WebTrackService.BROADCAST_SYNC_DONE:
-                    String ljId2 = intent.getStringExtra(LoggerService.BROADCAST_EXTRA_PARAM);
-                    if (ljId2 != null) {
-                        if (LoggerService.DEBUG) {
-                            Log.d(TAG, "[broadcast loc synced " + ljId2 + "]");
-                        }
-                        // to update all items
-                        //adapter.notifyDataSetChanged();
-                        // but we update just the changed one
-                        DBLogjob lj2;
-                        for (int i = 0; i < adapter.getItemCount(); i++) {
-                            lj2 = (DBLogjob) adapter.getItem(i);
-                            if (String.valueOf(lj2.getId()).equals(ljId2)) {
-                                adapter.notifyItemChanged(i);
-                                if (LoggerService.DEBUG) {
-                                    Log.d(TAG, "[notifyItemChanged " + i + "]");
-                                }
-                                break;
-                            }
-                        }
-                    }
-                    // without parameter : end of sync service
-                    else {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                    break;
-                case (WebTrackService.BROADCAST_SYNC_FAILED): {
-                    // TODO show that there was an error for the logjob
-                    // TODO let the user see the error...
-                    String ljId3 = intent.getStringExtra(LoggerService.BROADCAST_EXTRA_PARAM);
-                    String errorMessage = intent.getStringExtra(LoggerService.BROADCAST_ERROR_MESSAGE);
-                    showToast(getString(R.string.uploading_failed) + "\n" + errorMessage, Toast.LENGTH_LONG);
-                    break;
-                }
                 case IHateMoneyServerSyncHelper.BROADCAST_SESSIONS_SYNC_FAILED:
-                    String errorMessage = intent.getStringExtra(LoggerService.BROADCAST_ERROR_MESSAGE);
+                    String errorMessage = intent.getStringExtra(BROADCAST_ERROR_MESSAGE);
                     showToast(errorMessage, Toast.LENGTH_LONG);
                     break;
                 case IHateMoneyServerSyncHelper.BROADCAST_SESSIONS_SYNCED:
+                    // TODO
+                    //updateMembers();
                     showToast(getString(R.string.sessions_sync_success));
-                    break;
-                case LoggerService.BROADCAST_LOCATION_STARTED:
-                    showToast(getString(R.string.tracking_started));
-                    //setLocLed(LED_YELLOW);
-                    break;
-                case LoggerService.BROADCAST_LOCATION_STOPPED:
-                    showToast(getString(R.string.tracking_stopped));
-                    //setLocLed(LED_RED);
-                    break;
-                case LoggerService.BROADCAST_LOCATION_GPS_DISABLED:
-                    showToast(getString(R.string.gps_disabled_warning), Toast.LENGTH_LONG);
-                    break;
-                case LoggerService.BROADCAST_LOCATION_NETWORK_DISABLED:
-                    showToast(getString(R.string.net_disabled_warning), Toast.LENGTH_LONG);
-                    break;
-                case LoggerService.BROADCAST_LOCATION_DISABLED:
-                    showToast(getString(R.string.location_disabled), Toast.LENGTH_LONG);
-                    //setLocLed(LED_RED);
-                    break;
-                case LoggerService.BROADCAST_LOCATION_NETWORK_ENABLED:
-                    showToast(getString(R.string.using_network), Toast.LENGTH_LONG);
-                    break;
-                case LoggerService.BROADCAST_LOCATION_GPS_ENABLED:
-                    showToast(getString(R.string.using_gps), Toast.LENGTH_LONG);
-                    break;
-                case LoggerService.BROADCAST_LOCATION_PERMISSION_DENIED:
-                    showToast(getString(R.string.location_permission_denied), Toast.LENGTH_LONG);
-                    //setLocLed(LED_RED);
-                    ActivityCompat.requestPermissions(BillsListViewActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
                     break;
             }
         }

@@ -4,15 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-//import android.preference.Preference;
 import android.support.v4.app.Fragment;
 import android.support.v7.preference.Preference;
-//import android.preference.PreferenceFragment;
 import android.support.v7.preference.PreferenceFragmentCompat;
-
-//import android.preference.PreferenceManager;
 import android.support.v7.preference.PreferenceManager;
-//import android.preference.SwitchPreference;
 import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.preference.SwitchPreferenceCompat;
 import android.support.annotation.Nullable;
@@ -24,7 +19,7 @@ import android.widget.Toast;
 import at.bitfire.cert4android.CustomCertManager;
 import net.eneiluj.ihatemoney.R;
 
-import net.eneiluj.ihatemoney.service.LoggerService;
+
 import net.eneiluj.ihatemoney.util.IHateMoney;
 
 public class PreferencesFragment extends PreferenceFragmentCompat implements PreferenceFragmentCompat.OnPreferenceStartScreenCallback{
@@ -95,10 +90,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 setProvidersSummary(providersPref, (String) newValue);
-                Intent intent = new Intent(getActivity(), LoggerService.class);
+                /*Intent intent = new Intent(getActivity(), LoggerService.class);
                 intent.putExtra(PreferencesFragment.UPDATED_PROVIDERS, true);
                 intent.putExtra(PreferencesFragment.UPDATED_PROVIDERS_VALUE, (String) newValue);
-                getActivity().startService(intent);
+                getActivity().startService(intent);*/
                 return true;
             }
         });

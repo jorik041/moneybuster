@@ -17,13 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
 import net.eneiluj.ihatemoney.model.CloudSession;
 import net.eneiluj.ihatemoney.model.DBLocation;
+import net.eneiluj.ihatemoney.model.DBMember;
 import net.eneiluj.ihatemoney.model.DBProject;
 import net.eneiluj.ihatemoney.model.DBSession;
 import net.eneiluj.ihatemoney.model.DBLogjob;
 import net.eneiluj.ihatemoney.model.SyncError;
-import net.eneiluj.ihatemoney.service.LoggerService;
 import net.eneiluj.ihatemoney.util.ICallback;
 
 /**
@@ -650,13 +651,10 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
 
     /**
      *
-     *
-     * @param ljId
-     * @param loc
      */
     public void addMember(DBMember m) {
         // key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight
-        if (LoggerService.DEBUG) { Log.d(TAG, "[add member]"); }
+        if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[add member]"); }
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(key_remoteId, m.getRemoteId());
@@ -669,97 +667,53 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Get a single logjob by ID
      *
-     * @param ljId int - ID of the logjob
-     * @return requested locations
      */
-    public List<DBLocation> getLocationOfLogjob(String ljId) {
-        List<DBLocation> locations = getLocationsCustom(key_logjobid + " = ?", new String[]{ljId}, key_time + " ASC");
-        return locations;
+    public List<DBMember> getMembersOfProject(String projId) {
+        List<DBMember> members = getMembersCustom(key_projectid + " = ?", new String[]{projId}, key_name + " ASC");
+        return members;
     }
 
     /**
-     * Query the database with a custom raw query.
      *
-     * @param selection     A filter declaring which rows to return, formatted as an SQL WHERE clause (excluding the WHERE itself).
-     * @param selectionArgs You may include ?s in selection, which will be replaced by the values from selectionArgs, in order that they appear in the selection. The values will be bound as Strings.
-     * @param orderBy       How to order the rows, formatted as an SQL ORDER BY clause (excluding the ORDER BY itself). Passing null will use the default sort order, which may be unordered.
-     * @return List of locations
      */
     @NonNull
     @WorkerThread
-    private List<DBLocation> getLocationsCustom(@NonNull String selection, @NonNull String[] selectionArgs, @Nullable String orderBy) {
+    private List<DBMember> getMembersCustom(@NonNull String selection, @NonNull String[] selectionArgs, @Nullable String orderBy) {
         SQLiteDatabase db = getReadableDatabase();
         if (selectionArgs.length > 2) {
-            Log.v("Location", selection + "   ----   " + selectionArgs[0] + " " + selectionArgs[1] + " " + selectionArgs[2]);
+            Log.v("Member", selection + "   ----   " + selectionArgs[0] + " " + selectionArgs[1] + " " + selectionArgs[2]);
         }
-        Cursor cursor = db.query(table_locations, columnsLocations, selection, selectionArgs, null, null, orderBy);
-        List<DBLocation> locations = new ArrayList<>();
+        Cursor cursor = db.query(table_members, columnsMembers, selection, selectionArgs, null, null, orderBy);
+        List<DBMember> members = new ArrayList<>();
         while (cursor.moveToNext()) {
-            locations.add(getLocationFromCursor(cursor));
+            members.add(getMemberFromCursor(cursor));
         }
         cursor.close();
-        return locations;
+        return members;
     }
 
     /**
-     * Creates a DBLocation object from the current row of a Cursor.
-     * key_id, key_logjobid, key_lat, key_lon, 4 key_time, 5 key_bearing, 6 key_altitude, 7 key_speed, 8 key_accuracy, 9 key_satellites, 10 key_battery
      *
-     * @param cursor database cursor
-     * @return DBLocation
      */
     @NonNull
-    private DBLocation getLocationFromCursor(@NonNull Cursor cursor) {
-        return new DBLocation(cursor.getLong(0), cursor.getLong(1), cursor.getFloat(2), cursor.getFloat(3), cursor.getInt(4), cursor.getFloat(5), cursor.getFloat(6), cursor.getFloat(7), cursor.getFloat(8), cursor.getInt(9), cursor.getFloat(10));
+    private DBMember getMemberFromCursor(@NonNull Cursor cursor) {
+        // key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight
+        return new DBMember(
+                cursor.getLong(0),
+                cursor.getLong(1),
+                cursor.getLong(2),
+                cursor.getString(3),
+                cursor.getInt(4) == 1,
+                cursor.getFloat(5)
+        );
     }
 
-    @NonNull
-    @WorkerThread
-    public int getLogjobLocationCount(long ljId) {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(
-                table_locations,
-                new String[]{"COUNT(*)"},
-                key_logjobid +" = ?",
-                new String[]{String.valueOf(ljId)},
-                null,
-                null,
-                null);
-        int result = 0;
-        while (cursor.moveToNext()) {
-            result = cursor.getInt(0);
-            break;
-        }
-        cursor.close();
-        return result;
-    }
 
-    @NonNull
-    @WorkerThread
-    public int getLocationCount() {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(
-                table_locations,
-                new String[]{"COUNT(*)"},
-                null,
-                new String[]{},
-                null,
-                null,
-                null);
-        int result = 0;
-        while (cursor.moveToNext()) {
-            result = cursor.getInt(0);
-            break;
-        }
-        cursor.close();
-        return result;
-    }
 
-    public void deleteLocation(long id) {
+    public void deleteMember(long id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(table_locations,
+        db.delete(table_members,
                 key_id + " = ?",
                 new String[]{String.valueOf(id)});
     }

@@ -32,7 +32,6 @@ import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
 import net.eneiluj.ihatemoney.model.DBLogjob;
 import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
-import net.eneiluj.ihatemoney.service.LoggerService;
 import net.eneiluj.ihatemoney.util.ICallback;
 
 //public abstract class EditLogjobFragment extends Fragment implements CategoryDialogFragment.CategoryDialogListener {
@@ -239,10 +238,10 @@ public abstract class EditLogjobFragment extends PreferenceFragmentCompat {
     }
 
     private void notifyLoggerService(long jobId) {
-        Intent intent = new Intent(getActivity(), LoggerService.class);
+        /*Intent intent = new Intent(getActivity(), LoggerService.class);
         intent.putExtra(BillsListViewActivity.UPDATED_LOGJOBS, true);
         intent.putExtra(BillsListViewActivity.UPDATED_LOGJOB_ID, jobId);
-        getActivity().startService(intent);
+        getActivity().startService(intent);*/
     }
 
     @Override

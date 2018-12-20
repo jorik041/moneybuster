@@ -22,8 +22,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import net.eneiluj.ihatemoney.R;
+import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
 import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
-import net.eneiluj.ihatemoney.service.LoggerService;
 
 import static android.support.v7.widget.RecyclerView.NO_POSITION;
 
@@ -140,7 +140,8 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
 
-            int nb = db.getLogjobLocationCount(logjob.getId());
+            //int nb = db.getLogjobLocationCount(logjob.getId());
+            int nb = 0;
             String nbTxt = (nb == 0) ? "" : String.valueOf(nb);
             nvHolder.nbNotSync.setText(nbTxt);
             int visible = (nb == 0) ? View.INVISIBLE : View.VISIBLE;
@@ -149,7 +150,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (prefs.getBoolean(db.getContext().getString(R.string.pref_key_shownbsynced), false)) {
                 int nbSent = db.getNbSync(logjob.getId());
                 nbTxt = (nbSent == 0) ? "" : String.valueOf(nbSent);
-                if (LoggerService.DEBUG) {
+                if (BillsListViewActivity.DEBUG) {
                     Log.d(TAG, "[onBind : " + nbSent + " nbSync]");
                 }
                 nvHolder.nbSync.setText(nbTxt);
@@ -193,7 +194,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public Item getItem(int logjobPosition) {
         if (logjobPosition >= 0 && logjobPosition < itemList.size()) {
-            if (LoggerService.DEBUG) { Log.d(TAG, "[GETITEM " + logjobPosition + "/"+itemList.size()+"]"); }
+            if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[GETITEM " + logjobPosition + "/"+itemList.size()+"]"); }
             return itemList.get(logjobPosition);
         }
         else {

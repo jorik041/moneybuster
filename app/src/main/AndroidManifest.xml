@@ -131,11 +131,6 @@
         </service>
 
         <service
-            android:name="net.eneiluj.ihatemoney.service.LoggerService"
-            android:enabled="true"
-            android:exported="false" />
-
-        <service
             android:name="net.eneiluj.ihatemoney.service.WebTrackService"
             android:exported="false" />
 

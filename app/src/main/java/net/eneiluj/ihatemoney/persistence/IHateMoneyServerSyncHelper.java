@@ -25,9 +25,9 @@ import java.util.Map;
 import at.bitfire.cert4android.CustomCertManager;
 import at.bitfire.cert4android.CustomCertService;
 import net.eneiluj.ihatemoney.R;
+import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
 import net.eneiluj.ihatemoney.android.activity.SettingsActivity;
 import net.eneiluj.ihatemoney.model.DBProject;
-import net.eneiluj.ihatemoney.service.LoggerService;
 import net.eneiluj.ihatemoney.util.ICallback;
 import net.eneiluj.ihatemoney.util.IHateMoneyClient;
 import net.eneiluj.ihatemoney.util.PhoneTrackClientUtil.LoginStatus;
@@ -337,7 +337,7 @@ public class IHateMoneyServerSyncHelper {
                 // broadcast the error
                 // if the log job list is not visible, no toast
                 Intent intent = new Intent(BROADCAST_SESSIONS_SYNC_FAILED);
-                intent.putExtra(LoggerService.BROADCAST_ERROR_MESSAGE, errorString);
+                intent.putExtra(BillsListViewActivity.BROADCAST_ERROR_MESSAGE, errorString);
                 appContext.sendBroadcast(intent);
             }
             else {
@@ -401,19 +401,19 @@ public class IHateMoneyServerSyncHelper {
         protected LoginStatus doInBackground(Void... voids) {
             client = createIHateMoneyClient();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
-            if (LoggerService.DEBUG) { Log.i(getClass().getSimpleName(), "STARTING edit remote project"); }
+            if (BillsListViewActivity.DEBUG) { Log.i(getClass().getSimpleName(), "STARTING edit remote project"); }
             LoginStatus status = LoginStatus.OK;
             try {
                 ServerResponse.EditRemoteProjectResponse response = client.editRemoteProject(customCertManager, project, newName, newEmail, newPassword);
-                if (LoggerService.DEBUG) { Log.i(getClass().getSimpleName(), "RESPONSE edit remote project : "+response.getStringContent()); }
+                if (BillsListViewActivity.DEBUG) { Log.i(getClass().getSimpleName(), "RESPONSE edit remote project : "+response.getStringContent()); }
             } catch (IOException e) {
-                if (LoggerService.DEBUG) {
+                if (BillsListViewActivity.DEBUG) {
                     Log.e(getClass().getSimpleName(), "Exception", e);
                 }
                 exceptions.add(e);
                 status = LoginStatus.CONNECTION_FAILED;
             }
-            if (LoggerService.DEBUG) {
+            if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "FINISHED edit remote project");
             }
             return status;
@@ -474,19 +474,19 @@ public class IHateMoneyServerSyncHelper {
         protected LoginStatus doInBackground(Void... voids) {
             client = createIHateMoneyClient();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
-            if (LoggerService.DEBUG) { Log.i(getClass().getSimpleName(), "STARTING delete remote project"); }
+            if (BillsListViewActivity.DEBUG) { Log.i(getClass().getSimpleName(), "STARTING delete remote project"); }
             LoginStatus status = LoginStatus.OK;
             try {
                 ServerResponse.DeleteRemoteProjectResponse response = client.deleteRemoteProject(customCertManager, project);
-                if (LoggerService.DEBUG) { Log.i(getClass().getSimpleName(), "RESPONSE delete remote project : "+response.getStringContent()); }
+                if (BillsListViewActivity.DEBUG) { Log.i(getClass().getSimpleName(), "RESPONSE delete remote project : "+response.getStringContent()); }
             } catch (IOException e) {
-                if (LoggerService.DEBUG) {
+                if (BillsListViewActivity.DEBUG) {
                     Log.e(getClass().getSimpleName(), "Exception", e);
                 }
                 exceptions.add(e);
                 status = LoginStatus.CONNECTION_FAILED;
             }
-            if (LoggerService.DEBUG) {
+            if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "FINISHED delete device");
             }
             return status;
@@ -548,19 +548,19 @@ public class IHateMoneyServerSyncHelper {
         protected LoginStatus doInBackground(Void... voids) {
             client = createIHateMoneyClient();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
-            if (LoggerService.DEBUG) { Log.i(getClass().getSimpleName(), "STARTING create remote project"); }
+            if (BillsListViewActivity.DEBUG) { Log.i(getClass().getSimpleName(), "STARTING create remote project"); }
             LoginStatus status = LoginStatus.OK;
             try {
                 ServerResponse.CreateRemoteProjectResponse response = client.createRemoteProject(customCertManager, project);
-                if (LoggerService.DEBUG) { Log.i(getClass().getSimpleName(), "RESPONSE create remote project : "+response.getStringContent()); }
+                if (BillsListViewActivity.DEBUG) { Log.i(getClass().getSimpleName(), "RESPONSE create remote project : "+response.getStringContent()); }
             } catch (IOException e) {
-                if (LoggerService.DEBUG) {
+                if (BillsListViewActivity.DEBUG) {
                     Log.e(getClass().getSimpleName(), "Exception", e);
                 }
                 exceptions.add(e);
                 status = LoginStatus.CONNECTION_FAILED;
             }
-            if (LoggerService.DEBUG) {
+            if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "FINISHED create remote project");
             }
             return status;

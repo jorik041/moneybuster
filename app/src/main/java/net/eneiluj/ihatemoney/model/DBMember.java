@@ -11,10 +11,10 @@ public class DBMember implements Serializable {
     private long remoteId;
     private String name;
     private long projectId;
-    private float weight;
+    private double weight;
     private boolean activated;
 
-    public DBMember(long id, long remoteId,long projectId,  String name, boolean activated, float weight) {
+    public DBMember(long id, long remoteId, long projectId,  String name, boolean activated, double weight) {
         // key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight
         this.id = id;
         this.remoteId = remoteId;
@@ -56,11 +56,11 @@ public class DBMember implements Serializable {
         this.projectId = projectId;
     }
 
-    public float getWeight() {
+    public double getWeight() {
         return weight;
     }
 
-    public void setWeight(float weight) {
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 

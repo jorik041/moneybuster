@@ -2,10 +2,15 @@ package net.eneiluj.ihatemoney.util;
 
 //import android.preference.PreferenceManager;
 
+import net.eneiluj.ihatemoney.model.DBMember;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides entity classes for handling server responses with a single logjob ({@link ProjectResponse}) or a list of ihatemoney ({@link SessionsResponse}).
@@ -26,6 +31,10 @@ public class ServerResponse {
 
         public String getName() throws JSONException {
             return getNameFromJSON(new JSONObject(getContent()));
+        }
+
+        public List<DBMember> getMembers(long projId) throws JSONException {
+            return getMembersFromJSON(new JSONObject(getContent()), projId);
         }
     }
 
@@ -104,5 +113,38 @@ public class ServerResponse {
             email = json.getString("contact_email");
         }
         return email;
+    }
+
+    protected List<DBMember> getMembersFromJSON(JSONObject json, long projId) throws JSONException {
+        List<DBMember> members = new ArrayList<>();
+
+        if (json.has("members")) {
+            JSONArray jsonMs = json.getJSONArray("members");
+            for (int i = 0; i < jsonMs.length(); i++) {
+                JSONObject jsonM = jsonMs.getJSONObject(i);
+                members.add(getMemberFromJSON(jsonM, projId));
+            }
+        }
+        return members;
+    }
+
+    protected DBMember getMemberFromJSON(JSONObject json, long projId) throws JSONException {
+        boolean activated = true;
+        double weight = 1;
+        long remoteId = 0;
+        String name = "";
+        if (!json.isNull("id")) {
+            remoteId = json.getLong("id");
+        }
+        if (!json.isNull("weight")) {
+            weight = json.getDouble("weight");
+        }
+        if (!json.isNull("activated")) {
+            activated = json.getBoolean("activated");
+        }
+        if (!json.isNull("name")) {
+            name = json.getString("name");
+        }
+        return new DBMember(0, remoteId, projId, name, activated, weight);
     }
 }

@@ -27,6 +27,7 @@ import at.bitfire.cert4android.CustomCertService;
 import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
 import net.eneiluj.ihatemoney.android.activity.SettingsActivity;
+import net.eneiluj.ihatemoney.model.DBMember;
 import net.eneiluj.ihatemoney.model.DBProject;
 import net.eneiluj.ihatemoney.util.ICallback;
 import net.eneiluj.ihatemoney.util.IHateMoneyClient;
@@ -289,6 +290,30 @@ public class IHateMoneyServerSyncHelper {
                 dbHelper.updateProject(project.getId(), name, email, null);
 
                 // TODO get members and bills
+                List<DBMember> members = projResponse.getMembers(project.getId());
+                for (DBMember m : members) {
+
+                    DBMember localMember = dbHelper.getMember(m.getRemoteId(), project.getId());
+                    // member does not exist locally, add it
+                    if (localMember == null) {
+                        Log.d(getClass().getSimpleName(), "Add member : "+m);
+                        dbHelper.addMember(m);
+                    }
+                    // member exists, check if needs update
+                    else {
+                        if (m.getName().equals(localMember.getName()) &&
+                                m.getWeight() == localMember.getWeight() &&
+                                m.isActivated() == localMember.isActivated()
+                                ) {
+                            // alright
+                            Log.d(getClass().getSimpleName(), "Nothing to do for member : "+localMember);
+                        }
+                        else {
+                            Log.d(getClass().getSimpleName(), "Update member : "+m);
+                            dbHelper.updateMember(m.getRemoteId(), m.getName(), m.getWeight(), m.isActivated());
+                        }
+                    }
+                }
 
                 status = LoginStatus.OK;
 

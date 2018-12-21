@@ -987,10 +987,11 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         );
     }
 
-
-
     public void deleteBill(long id) {
         SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(table_billowers,
+                key_billId + " = ?",
+                new String[]{String.valueOf(id)});
         db.delete(table_bills,
                 key_id + " = ?",
                 new String[]{String.valueOf(id)});
@@ -1047,8 +1048,6 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
                 cursor.getLong(2)
         );
     }
-
-
 
     public void deleteBillOwer(long id) {
         SQLiteDatabase db = this.getWritableDatabase();

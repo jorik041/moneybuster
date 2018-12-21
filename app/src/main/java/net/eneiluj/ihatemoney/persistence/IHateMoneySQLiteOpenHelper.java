@@ -19,6 +19,8 @@ import java.util.Map;
 
 import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
 import net.eneiluj.ihatemoney.model.CloudSession;
+import net.eneiluj.ihatemoney.model.DBBill;
+import net.eneiluj.ihatemoney.model.DBBillOwer;
 import net.eneiluj.ihatemoney.model.DBLocation;
 import net.eneiluj.ihatemoney.model.DBMember;
 import net.eneiluj.ihatemoney.model.DBProject;
@@ -960,7 +962,9 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(table_bills, columnsBills, selection, selectionArgs, null, null, orderBy);
         List<DBBill> bills = new ArrayList<>();
         while (cursor.moveToNext()) {
-            bills.add(getBillFromCursor(cursor));
+            DBBill bill = getBillFromCursor(cursor);
+            bill.setBillOwers(getBillowersOfBill(bill.getId()));
+            bills.add(bill);
         }
         cursor.close();
         return bills;
@@ -988,6 +992,67 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     public void deleteBill(long id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(table_bills,
+                key_id + " = ?",
+                new String[]{String.valueOf(id)});
+    }
+
+    public void addBillower(long billId, DBBillOwer bo) {
+        // key_id, key_billId, key_member_remoteId
+        if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[add billower]"); }
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(key_billId, bo.getBillId());
+        values.put(key_member_remoteId, bo.getMemberRemoteId());
+
+        db.insert(table_billowers, null, values);
+    }
+
+    /**
+     *
+     */
+    public List<DBBillOwer> getBillowersOfBill(long billId) {
+        List<DBBillOwer> billOwers = getBillOwersCustom(key_billId + " = ?", new String[]{String.valueOf(billId)}, null);
+        return billOwers;
+    }
+
+    /**
+     *
+     */
+    @NonNull
+    @WorkerThread
+    private List<DBBillOwer> getBillOwersCustom(@NonNull String selection, @NonNull String[] selectionArgs, @Nullable String orderBy) {
+        SQLiteDatabase db = getReadableDatabase();
+        if (selectionArgs.length > 2) {
+            Log.v("BillOwers", selection + "   ----   " + selectionArgs[0] + " " + selectionArgs[1] + " " + selectionArgs[2]);
+        }
+        Cursor cursor = db.query(table_billowers, columnsBillowers, selection, selectionArgs, null, null, orderBy);
+        List<DBBillOwer> billOwers = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            DBBillOwer billOwer = getBillOwerFromCursor(cursor);
+            billOwers.add(billOwer);
+        }
+        cursor.close();
+        return billOwers;
+    }
+
+    /**
+     *
+     */
+    @NonNull
+    private DBBillOwer getBillOwerFromCursor(@NonNull Cursor cursor) {
+        // key_id, key_billId, key_member_remoteId
+        return new DBBillOwer(
+                cursor.getLong(0),
+                cursor.getLong(1),
+                cursor.getLong(2)
+        );
+    }
+
+
+
+    public void deleteBillOwer(long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(table_billowers,
                 key_id + " = ?",
                 new String[]{String.valueOf(id)});
     }

@@ -100,6 +100,13 @@ public class IHateMoneyClient {
         return new ServerResponse.CreateRemoteProjectResponse(requestServer(ccm, target, METHOD_POST, params, null, null, null));
     }
 
+    public ServerResponse.BillsResponse getBills(CustomCertManager ccm, DBProject project) throws JSONException, IOException {
+        String target = project.getIhmUrl().replaceAll("/+$", "")
+                + "/api/projects/" + project.getRemoteId() + "/bills";
+        //https://ihatemoney.org/api/projects/demo/bills
+        return new ServerResponse.BillsResponse(requestServer(ccm, target, METHOD_GET, null, null, project.getRemoteId(), project.getPassword()));
+    }
+
     /**
      * Request-Method for POST, PUT with or without JSON-Object-Parameter
      *

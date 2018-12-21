@@ -318,7 +318,7 @@ public class IHateMoneyServerSyncHelper {
                 }
 
                 // get bills
-                ServerResponse.BillsResponse billsResponse = client.getBills(customCertManager, project, lastModified, lastETag);
+                ServerResponse.BillsResponse billsResponse = client.getBills(customCertManager, project);
                 List<DBBill> remoteBills = billsResponse.getBills(project.getId());
                 Map<Long,DBBill> remoteBillsByRemoteId = new ArrayMap<>();
                 for (DBBill remoteBill : remoteBills) {
@@ -334,7 +334,12 @@ public class IHateMoneyServerSyncHelper {
                 for (DBBill remoteBill : remoteBills) {
                     // add if local does not exist
                     if (!localBillsByRemoteId.containsKey(remoteBill.getRemoteId())) {
-                        dbHelper.addBill(remoteBill);
+                        long billId = dbHelper.addBill(remoteBill);
+                        Log.d(getClass().getSimpleName(), "Add bill : " + remoteBill);
+                        //////// billowers
+                        for (DBBillOwer rbo : remoteBill.getBillOwers()) {
+                            dbHelper.addBillower(billId, rbo);
+                        }
                     }
                     // update bill if necessary
                     // and billOwers if necessary
@@ -366,22 +371,24 @@ public class IHateMoneyServerSyncHelper {
                         for (DBBillOwer rbo : remoteBill.getBillOwers()) {
                             if (!localBillOwersByRemoteIds.containsKey(rbo.getMemberRemoteId())) {
                                 dbHelper.addBillower(localBill.getId(), rbo);
+                                Log.d(getClass().getSimpleName(), "Add billOwer : " + rbo);
                             }
                         }
                         // delete local which are not there remotely
                         for (DBBillOwer lbo : localBill.getBillOwers()) {
                             if (!remoteBillOwersByRemoteIds.containsKey(lbo.getMemberRemoteId())) {
                                 dbHelper.deleteBillOwer(lbo.getId());
+                                Log.d(getClass().getSimpleName(), "Delete billOwer : " + lbo);
                             }
                         }
                     }
-
                 }
                 // delete local bill
                 for (DBBill localBill : localBills) {
                     // if local bill does not exist remotely
                     if (!remoteBillsByRemoteId.containsKey(localBill.getRemoteId())) {
                         dbHelper.deleteBill(localBill.getId());
+                        Log.d(getClass().getSimpleName(), "Delete bill : " + localBill);
                     }
                 }
 

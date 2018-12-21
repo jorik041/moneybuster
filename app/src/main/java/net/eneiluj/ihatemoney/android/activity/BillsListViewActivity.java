@@ -413,6 +413,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             //items.add(itemPhonetrack);
             //items.add(itemCustom);
             MenuProject mproj = (MenuProject) projects.getSelectedItem();
+            if (mproj == null) {
+                return items;
+            }
             List<DBMember> members = db.getMembersOfProject(mproj.getId());
             for (DBMember m : members) {
                 items.add(new NavigationAdapter.NavigationItem(

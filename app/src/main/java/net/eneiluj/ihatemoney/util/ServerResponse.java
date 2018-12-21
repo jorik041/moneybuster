@@ -2,6 +2,8 @@ package net.eneiluj.ihatemoney.util;
 
 //import android.preference.PreferenceManager;
 
+import net.eneiluj.ihatemoney.model.DBBill;
+import net.eneiluj.ihatemoney.model.DBBillOwer;
 import net.eneiluj.ihatemoney.model.DBMember;
 
 import org.json.JSONArray;
@@ -65,6 +67,16 @@ public class ServerResponse {
 
         public String getStringContent() {
             return getContent();
+        }
+    }
+
+    public static class BillsResponse extends ServerResponse {
+        public BillsResponse(IHateMoneyClient.ResponseData response) {
+            super(response);
+        }
+
+        public List<DBBill> getBills(long projId) throws JSONException {
+            return getBillsFromJSON(new JSONArray(getContent()), projId);
         }
     }
 
@@ -146,5 +158,53 @@ public class ServerResponse {
             name = json.getString("name");
         }
         return new DBMember(0, remoteId, projId, name, activated, weight);
+    }
+
+    protected List<DBBill> getBillsFromJSON(JSONArray json, long projId) throws JSONException {
+        List<DBBill> bills = new ArrayList<>();
+        for (int i = 0; i < json.length(); i++) {
+            JSONObject jsonB = json.getJSONObject(i);
+            bills.add(getBillFromJSON(jsonB, projId));
+        }
+        return bills;
+    }
+
+    protected DBBill getBillFromJSON(JSONObject json, long projId) throws JSONException {
+        long remoteId = 0;
+        long payerRemoteId = 0;
+        double amount = 0;
+        String date = "";
+        String what = "";
+        if (!json.isNull("id")) {
+            remoteId = json.getLong("id");
+        }
+        if (!json.isNull("payer_id")) {
+            payerRemoteId = json.getLong("payer_id");
+        }
+        if (!json.isNull("amount")) {
+            amount = json.getDouble("amount");
+        }
+        if (!json.isNull("date")) {
+            date = json.getString("date");
+        }
+        if (!json.isNull("what")) {
+            what = json.getString("what");
+        }
+        DBBill bill = new DBBill(0, remoteId, projId, payerRemoteId, amount, date, what);
+        bill.setBillOwers(getBillOwersFromJson(json));
+        return bill;
+    }
+
+    protected List<DBBillOwer> getBillOwersFromJson(JSONObject json) throws JSONException {
+        List<DBBillOwer> billOwers = new ArrayList<>();
+
+        if (json.has("owers")) {
+            JSONArray jsonOs = json.getJSONArray("owers");
+            for (int i = 0; i < jsonOs.length(); i++) {
+                JSONObject jsonO = jsonOs.getJSONObject(i);
+                billOwers.add(new DBBillOwer(0,0, jsonO.getLong("id")));
+            }
+        }
+        return billOwers;
     }
 }

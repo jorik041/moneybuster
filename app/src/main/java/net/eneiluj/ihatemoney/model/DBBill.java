@@ -1,6 +1,7 @@
 package net.eneiluj.ihatemoney.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +28,8 @@ public class DBBill implements Serializable {
         this.amount = amount;
         this.date = date;
         this.what = what;
+
+        this.billOwers = new ArrayList<>();
     }
 
     public long getId() {

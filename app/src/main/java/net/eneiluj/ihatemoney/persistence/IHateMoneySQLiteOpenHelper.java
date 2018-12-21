@@ -881,7 +881,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         return new SyncError(ts, msg);
     }
 
-    public void addBill(DBBill b) {
+    public long addBill(DBBill b) {
         // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what
         if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[add bill]"); }
         SQLiteDatabase db = this.getWritableDatabase();
@@ -893,7 +893,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_date, b.getDate());
         values.put(key_what, b.getWhat());
 
-        db.insert(table_bills, null, values);
+        return db.insert(table_bills, null, values);
     }
 
     public void updateBill(long remoteId, long projId, long newPayerRemoteId, double newAmount, @Nullable String newDate, @Nullable String newWhat) {
@@ -1002,7 +1002,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[add billower]"); }
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(key_billId, bo.getBillId());
+        values.put(key_billId, billId);
         values.put(key_member_remoteId, bo.getMemberRemoteId());
 
         db.insert(table_billowers, null, values);

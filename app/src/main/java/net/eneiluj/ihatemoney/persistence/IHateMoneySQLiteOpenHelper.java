@@ -74,6 +74,21 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String key_password = "PASSWORD";
     private static final String key_ihmUrl = "IHMURL";
 
+    private static final String table_bills = "BILLS";
+    //private static final String key_id = "ID";
+    //private static final String key_remoteId = "REMOTEID";
+    //private static final String key_projectId = "PROJECTID";
+    private static final String key_payer_remoteId = "PAYERID";
+    private static final String key_amount = "AMOUNT";
+    private static final String key_date = "DATE";
+    private static final String key_what = "WHAT";
+
+    private static final String table_billowers = "BILLOWERS";
+    //private static final String key_id = "ID";
+    private static final String key_billId = "BILLID";
+    private static final String key_member_remoteId = "MREMOTEID";
+
+
     private static final String[] columnsSessions = {key_id, key_token, key_name, key_nextURL};
     private static final String[] columnsLogjobs = {
             key_id, key_title, key_url, key_token, key_deviceName,
@@ -88,6 +103,14 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String[] columnsProjects = {
             // long id, String remoteId, String password, String name, String ihmUrl, String email
             key_id, key_remoteId, key_password,  key_name, key_ihmUrl, key_email
+    };
+
+    private static final String[] columnsBills = {
+            key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what
+    };
+
+    private static final String[] columnsBillowers = {
+            key_id, key_billId, key_member_remoteId
     };
 
     private static final String default_order = key_id + " DESC";
@@ -125,6 +148,8 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         createTableSessions(db, table_sessions);
         createTableLogjobs(db, table_logjobs);
         createTableMembers(db, table_members);
+        createTableBills(db, table_bills);
+        createTableBillowers(db, table_billowers);
         createTableProjects(db, table_projects);
         createIndexes(db);
     }
@@ -176,6 +201,26 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
                 key_ihmUrl + " TEXT, " +
                 key_password + " TEXT, " +
                 key_email + " TEXT)");
+    }
+
+    //key_id, key_remoteId, key_projectid, key_payerid, key_amount, key_date, key_what
+    private void createTableBills(SQLiteDatabase db, String tableName) {
+        db.execSQL("CREATE TABLE " + tableName + " ( " +
+                key_id + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                key_remoteId + " INTEGER, " +
+                key_projectid + " INTEGER, " +
+                key_payer_remoteId + " INTEGER, " +
+                key_amount + " FLOAT, " +
+                key_what + " TEXT, " +
+                key_date + " TEXT)");
+    }
+
+    //key_id, key_billId, key_member_remoteId
+    private void createTableBillowers(SQLiteDatabase db, String tableName) {
+        db.execSQL("CREATE TABLE " + tableName + " ( " +
+                key_id + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                key_billId + " TEXT, " +
+                key_member_remoteId + " TEXT)");
     }
 
     @Override
@@ -832,6 +877,119 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return new SyncError(ts, msg);
+    }
+
+    public void addBill(DBBill b) {
+        // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what
+        if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[add bill]"); }
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(key_remoteId, b.getRemoteId());
+        values.put(key_projectid, b.getProjectId());
+        values.put(key_payer_remoteId, b.getPayerRemoteId());
+        values.put(key_amount, b.getAmount());
+        values.put(key_date, b.getDate());
+        values.put(key_what, b.getWhat());
+
+        db.insert(table_bills, null, values);
+    }
+
+    public void updateBill(long remoteId, long projId, long newPayerRemoteId, double newAmount, @Nullable String newDate, @Nullable String newWhat) {
+        //debugPrintFullDB();
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        if (newDate != null) {
+            values.put(key_date, newDate);
+        }
+        if (newWhat != null) {
+            values.put(key_what, newWhat);
+        }
+        values.put(key_payer_remoteId, newPayerRemoteId);
+        values.put(key_amount, newAmount);
+        if (values.size() > 0) {
+            int rows = db.update(table_bills, values, key_remoteId + " = ? AND "+key_projectid+" = ?",
+                    new String[]{String.valueOf(remoteId), String.valueOf(projId)});
+        }
+    }
+
+    public void updateBill(long billId, long newPayerRemoteId, double newAmount, @Nullable String newDate, @Nullable String newWhat) {
+        //debugPrintFullDB();
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        if (newDate != null) {
+            values.put(key_date, newDate);
+        }
+        if (newWhat != null) {
+            values.put(key_what, newWhat);
+        }
+        values.put(key_payer_remoteId, newPayerRemoteId);
+        values.put(key_amount, newAmount);
+        if (values.size() > 0) {
+            int rows = db.update(table_bills, values, key_id + " = ?",
+                    new String[]{String.valueOf(billId)});
+        }
+    }
+
+    /**
+     *
+     */
+    public List<DBBill> getBillsOfProject(long projId) {
+        List<DBBill> bills = getBillsCustom(key_projectid + " = ?", new String[]{String.valueOf(projId)}, key_date + " ASC");
+        return bills;
+    }
+
+    public DBBill getBill(long remoteId, long projId) {
+        List<DBBill> bills = getBillsCustom(
+                key_remoteId + " = ? AND " + key_projectid + " = ?",
+                new String[]{String.valueOf(remoteId), String.valueOf(projId)},
+                null
+        );
+        return bills.isEmpty() ? null : bills.get(0);
+    }
+
+    /**
+     *
+     */
+    @NonNull
+    @WorkerThread
+    private List<DBBill> getBillsCustom(@NonNull String selection, @NonNull String[] selectionArgs, @Nullable String orderBy) {
+        SQLiteDatabase db = getReadableDatabase();
+        if (selectionArgs.length > 2) {
+            Log.v("Bill", selection + "   ----   " + selectionArgs[0] + " " + selectionArgs[1] + " " + selectionArgs[2]);
+        }
+        Cursor cursor = db.query(table_bills, columnsBills, selection, selectionArgs, null, null, orderBy);
+        List<DBBill> bills = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            bills.add(getBillFromCursor(cursor));
+        }
+        cursor.close();
+        return bills;
+    }
+
+    /**
+     *
+     */
+    @NonNull
+    private DBBill getBillFromCursor(@NonNull Cursor cursor) {
+        // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what
+        return new DBBill(
+                cursor.getLong(0),
+                cursor.getLong(1),
+                cursor.getLong(2),
+                cursor.getLong(3),
+                cursor.getDouble(4),
+                cursor.getString(5),
+                cursor.getString(6)
+        );
+    }
+
+
+
+    public void deleteBill(long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(table_bills,
+                key_id + " = ?",
+                new String[]{String.valueOf(id)});
     }
 
     /**

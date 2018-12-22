@@ -87,31 +87,11 @@
         </activity>
 
         <activity
-            android:name="net.eneiluj.ihatemoney.android.activity.EditPhoneTrackLogjobActivity"
-            android:label="@string/simple_edit_pt"
+            android:name="net.eneiluj.ihatemoney.android.activity.EditBillActivity"
+            android:label="@string/simple_edit_bill"
             android:parentActivityName="net.eneiluj.ihatemoney.android.activity.BillsListViewActivity"
             android:windowSoftInputMode="stateHidden"
             android:launchMode="singleTask">
-            <!-- this is to receive share action from other apps -->
-            <intent-filter android:label="@string/action_create_share">
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name="net.eneiluj.ihatemoney.android.activity.EditCustomLogjobActivity"
-            android:label="@string/simple_edit_cu"
-            android:parentActivityName="net.eneiluj.ihatemoney.android.activity.BillsListViewActivity"
-            android:windowSoftInputMode="stateHidden"
-            android:launchMode="singleTask">
-            <!-- this is to receive share action from other apps -->
-            <intent-filter android:label="@string/action_create_custom_share">
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
         </activity>
 
         <activity
@@ -120,7 +100,7 @@
             android:parentActivityName="net.eneiluj.ihatemoney.android.activity.BillsListViewActivity" />
 
         <service
-            android:name="net.eneiluj.ihatemoney.android.quicksettings.NewLogjobTileService"
+            android:name="net.eneiluj.ihatemoney.android.quicksettings.NewProjectTileService"
             android:icon="@drawable/ic_quicksettings_new"
             android:label="@string/action_create"
             android:description="@string/action_create"
@@ -129,10 +109,6 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
-
-        <service
-            android:name="net.eneiluj.ihatemoney.service.WebTrackService"
-            android:exported="false" />
 
         <receiver
             android:name="net.eneiluj.ihatemoney.service.BootCompletedReceiver"

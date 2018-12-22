@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -932,6 +933,33 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void updateBillAndSync(DBBill bill, long newPayerRemoteId, double newAmount, @Nullable String newDate, @Nullable String newWhat, @Nullable List<Long> newOwersRemoteIds) {
+        // bill values
+        updateBill(bill.getId(), newPayerRemoteId, newAmount, newDate, newWhat);
+
+        // bill owers
+        List<DBBillOwer> dbBillOwers = getBillowersOfBill(bill.getId());
+        Map<Long, DBBillOwer> dbBillOwersByMemberRemoteId = new ArrayMap<>();
+        for (DBBillOwer bo : dbBillOwers) {
+            dbBillOwersByMemberRemoteId.put(bo.getMemberRemoteId(), bo);
+        }
+        // add the owers who are not in the DB
+        for (long newOwerRemoteId : newOwersRemoteIds) {
+            if (!dbBillOwersByMemberRemoteId.containsKey(newOwerRemoteId)) {
+                addBillower(bill.getId(), new DBBillOwer(0, 0, newOwerRemoteId));
+            }
+        }
+        // delete the db owers that are not in new owers
+        for (DBBillOwer dbBo : dbBillOwers) {
+            if (!newOwersRemoteIds.contains(dbBo.getMemberRemoteId())) {
+                deleteBillOwer(dbBo.getId());
+            }
+        }
+        serverSyncHelper.scheduleSync(true, bill.getProjectId());
+    }
+
+
+
     /**
      *
      */
@@ -944,6 +972,15 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         List<DBBill> bills = getBillsCustom(
                 key_remoteId + " = ? AND " + key_projectid + " = ?",
                 new String[]{String.valueOf(remoteId), String.valueOf(projId)},
+                null
+        );
+        return bills.isEmpty() ? null : bills.get(0);
+    }
+
+    public DBBill getBill(long billId) {
+        List<DBBill> bills = getBillsCustom(
+                key_id + " = ?",
+                new String[]{String.valueOf(billId)},
                 null
         );
         return bills.isEmpty() ? null : bills.get(0);

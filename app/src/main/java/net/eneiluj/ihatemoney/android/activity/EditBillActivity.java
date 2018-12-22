@@ -3,6 +3,7 @@ package net.eneiluj.ihatemoney.android.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -10,14 +11,16 @@ import android.view.MenuItem;
 
 import android.widget.Toast;
 
-import net.eneiluj.ihatemoney.android.fragment.EditLogjobFragment;
+import net.eneiluj.ihatemoney.android.fragment.EditBillFragment;
+import net.eneiluj.ihatemoney.model.DBBill;
 import net.eneiluj.ihatemoney.model.DBLogjob;
 
-public abstract class EditLogjobActivity extends AppCompatActivity implements EditLogjobFragment.LogjobFragmentListener {
+public abstract class EditBillActivity extends AppCompatActivity implements EditBillFragment.BillFragmentListener {
 
-    public static final String PARAM_LOGJOB_ID = "logjobId";
+    public static final String PARAM_BILL_ID = "billId";
+    public static final String PARAM_PROJECT_ID = "projectId";
 
-    protected EditLogjobFragment fragment;
+    protected EditBillFragment fragment;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -26,7 +29,7 @@ public abstract class EditLogjobActivity extends AppCompatActivity implements Ed
         if (savedInstanceState == null) {
             launchLogjobFragment();
         } else {
-            fragment = (EditLogjobFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
+            fragment = (EditBillFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
         }
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -37,7 +40,7 @@ public abstract class EditLogjobActivity extends AppCompatActivity implements Ed
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.d(getClass().getSimpleName(), "onNewIntent: " + intent.getLongExtra(PARAM_LOGJOB_ID, 0));
+        Log.d(getClass().getSimpleName(), "onNewIntent: " + intent.getLongExtra(PARAM_BILL_ID, 0));
         setIntent(intent);
         if (fragment != null) {
             getSupportFragmentManager().beginTransaction().detach(fragment).commit();
@@ -46,8 +49,12 @@ public abstract class EditLogjobActivity extends AppCompatActivity implements Ed
         launchLogjobFragment();
     }
 
-    protected long getLogjobId() {
-        return getIntent().getLongExtra(PARAM_LOGJOB_ID, 0);
+    protected long getBillId() {
+        return getIntent().getLongExtra(PARAM_BILL_ID, 0);
+    }
+
+    protected long getProjectId() {
+        return getIntent().getLongExtra(PARAM_PROJECT_ID, 0);
     }
 
     /**
@@ -55,26 +62,47 @@ public abstract class EditLogjobActivity extends AppCompatActivity implements Ed
      * The actual behavior is triggered by the activity's intent.
      */
     private void launchLogjobFragment() {
-        long logjobId = getLogjobId();
+        long logjobId = getBillId();
         if (logjobId > 0) {
-            launchExistingLogjob(logjobId);
+            launchExistingBill(logjobId);
         } else {
-            launchNewLogjob();
+            launchNewBill(getProjectId());
         }
     }
 
     /**
-     * Starts a {@link EditLogjobFragment} for an existing logjob.
+     * Starts a {@link EditBillFragment} for an existing logjob.
      *
-     * @param logjobId ID of the existing logjob.
+     * @param billId ID of the existing logjob.
      */
-    protected abstract void launchExistingLogjob(long logjobId);
+
+    protected void launchExistingBill(long billId) {
+        // save state of the fragment in order to resume with the same logjob and originalLogjob
+        Fragment.SavedState savedState = null;
+        if (fragment != null) {
+            savedState = getSupportFragmentManager().saveFragmentInstanceState(fragment);
+        }
+        fragment = EditBillFragment.newInstance(billId);
+        if (savedState != null) {
+            fragment.setInitialSavedState(savedState);
+        }
+        getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
+    }
 
     /**
-     * Starts the {@link EditLogjobFragment} with a new logjob.
+     * Starts the {@link EditBillFragment} with a new logjob.
      *
      */
-    protected abstract void launchNewLogjob();
+
+    protected void launchNewBill(long projectId) {
+        Intent intent = getIntent();
+
+        //DBLogjob newLogjob = new DBLogjob(0, "",  "https://yourserver.org/page.php?lat=%LAT", "", "", 60, 5, 50, false, false, 0);
+        DBBill newBill = new DBBill(0, 0, projectId, 0, 0, "2018-12-12", "");
+
+        fragment = EditBillFragment.newInstanceWithNewBill(newBill);
+        getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
+    }
 
     @Override
     public void onBackPressed() {
@@ -103,12 +131,11 @@ public abstract class EditLogjobActivity extends AppCompatActivity implements Ed
      * Send result and closes the Activity
      */
     public void close() {
-        fragment.onCloseLogjob();
+        fragment.onCloseBill();
         finish();
     }
 
-    @Override
-    public void onLogjobUpdated(DBLogjob logjob) {
+    public void onBillUpdated(DBLogjob logjob) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(logjob.getTitle());

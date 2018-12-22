@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="bill_preferences">
+<!--
+xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:key="logjob_preferences"
+    android:summary="Logjob settings"
+    android:title="Logjob settings"
+-->
+
+    <EditTextPreference
+        android:id="@+id/editWhat"
+        android:icon="@drawable/ic_title_grey_24dp"
+        android:dialogMessage="@string/setting_what_long"
+        android:dialogTitle="@string/setting_what"
+        android:key="what"
+        android:singleLine="true"
+        android:selectAllOnFocus="true"
+        android:persistent="false"
+        android:summary=""
+        android:title="@string/setting_what" />
+
+    <net.eneiluj.ihatemoney.util.DatePreference
+        android:id="@+id/editDate"
+        android:icon="@drawable/ic_timer_grey_24dp"
+        android:dialogMessage="@string/setting_date_long"
+        android:dialogTitle="@string/setting_date"
+        android:key="date"
+        android:persistent="false"
+        android:summary=""
+        android:title="@string/setting_date" />
+
+    <ListPreference
+        android:id="@+id/editPayer"
+        android:icon="@drawable/ic_account_circle_grey_24dp"
+        android:dialogMessage="@string/setting_payer_long"
+        android:dialogTitle="@string/setting_payer"
+        android:key="payer"
+        android:singleLine="true"
+        android:selectAllOnFocus="true"
+        android:persistent="false"
+        android:summary=""
+        android:title="@string/setting_payer" />
+
+    <EditTextPreference
+        android:id="@+id/editAmount"
+        android:icon="@drawable/ic_length_grey_24dp"
+        android:dialogMessage="@string/setting_amount_long"
+        android:dialogTitle="@string/setting_amount"
+        android:key="amount"
+        android:selectAllOnFocus="true"
+        android:persistent="false"
+        android:summary=""
+        android:inputType="numberDecimal"
+        android:title="@string/setting_amount" />
+
+    <MultiSelectListPreference
+        android:id="@+id/editOwers"
+        android:icon="@drawable/ic_account_circle_grey_24dp"
+        android:dialogMessage="@string/setting_owers_long"
+        android:dialogTitle="@string/setting_owers"
+        android:key="owers"
+        android:persistent="false"
+        android:summary=""
+        android:title="@string/setting_owers" />
+
+</PreferenceScreen>

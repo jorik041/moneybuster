@@ -52,6 +52,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import net.eneiluj.ihatemoney.R;
+import net.eneiluj.ihatemoney.android.fragment.EditBillFragment;
 import net.eneiluj.ihatemoney.android.fragment.NewProjectFragment;
 import net.eneiluj.ihatemoney.model.Category;
 import net.eneiluj.ihatemoney.model.DBLogjob;
@@ -294,7 +295,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabCreateCustom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent createIntent = new Intent(getApplicationContext(), EditCustomLogjobActivity.class);
+                Intent createIntent = new Intent(getApplicationContext(), EditBillActivity.class);
+                MenuProject mproj = (MenuProject) projects.getSelectedItem();
+                if (mproj != null) {
+                    createIntent.putExtra(EditBillFragment.PARAM_PROJECT_ID, mproj.getId());
+                }
                 startActivityForResult(createIntent, create_logjob_cmd);
                 fabMenu.close(false);
             }
@@ -302,7 +307,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabCreatePhoneTrack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent createIntent = new Intent(getApplicationContext(), EditPhoneTrackLogjobActivity.class);
+                Intent createIntent = new Intent(getApplicationContext(), EditBillActivity.class);
+                MenuProject mproj = (MenuProject) projects.getSelectedItem();
+                if (mproj != null) {
+                    createIntent.putExtra(EditBillFragment.PARAM_PROJECT_ID, mproj.getId());
+                }
                 startActivityForResult(createIntent, create_logjob_cmd);
                 fabMenu.close(false);
             }
@@ -901,13 +910,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         } else {
             DBLogjob logjob = (DBLogjob) adapter.getItem(position);
             Intent intent;
-            if (logjob.getToken().isEmpty() && logjob.getDeviceName().isEmpty()) {
-                intent = new Intent(getApplicationContext(), EditCustomLogjobActivity.class);
-            }
-            else {
-                intent = new Intent(getApplicationContext(), EditPhoneTrackLogjobActivity.class);
-            }
-            intent.putExtra(EditLogjobActivity.PARAM_LOGJOB_ID, logjob.getId());
+            intent = new Intent(getApplicationContext(), EditBillActivity.class);
+            intent.putExtra(EditBillActivity.PARAM_BILL_ID, logjob.getId());
             startActivityForResult(intent, show_single_logjob_cmd);
 
         }

@@ -3,7 +3,6 @@ package net.eneiluj.ihatemoney.android.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,13 +10,7 @@ import android.view.MenuItem;
 
 import android.widget.Toast;
 
-import net.eneiluj.ihatemoney.R;
-import net.eneiluj.ihatemoney.android.fragment.EditCustomLogjobFragment;
-import net.eneiluj.ihatemoney.android.fragment.EditLogjobFragment;
-import net.eneiluj.ihatemoney.android.fragment.EditProjectFragment;
 import net.eneiluj.ihatemoney.android.fragment.NewProjectFragment;
-import net.eneiluj.ihatemoney.model.DBLogjob;
-import net.eneiluj.ihatemoney.model.DBProject;
 
 public class NewProjectActivity extends AppCompatActivity implements NewProjectFragment.NewProjectFragmentListener {
 

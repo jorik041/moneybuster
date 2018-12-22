@@ -180,7 +180,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     @Override
     public void onPause() {
         super.onPause();
-        //saveLogjob(null);
+        //saveBill(null);
     }
 
     @Override
@@ -192,7 +192,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //saveLogjob(null);
+        //saveBill(null);
         outState.putSerializable(SAVEDKEY_PROJECT, project);
     }
 

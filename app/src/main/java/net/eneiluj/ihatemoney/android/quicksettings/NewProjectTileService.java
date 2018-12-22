@@ -6,13 +6,13 @@ import android.os.Build;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 
-import net.eneiluj.ihatemoney.android.activity.EditPhoneTrackLogjobActivity;
+import net.eneiluj.ihatemoney.android.activity.NewProjectActivity;
 
 /**
  * This {@link TileService} adds a quick settings tile that leads to the new logjob view.
  */
 @TargetApi(Build.VERSION_CODES.N)
-public class NewLogjobTileService extends TileService {
+public class NewProjectTileService extends TileService {
 
     @Override
     public void onStartListening() {
@@ -25,15 +25,15 @@ public class NewLogjobTileService extends TileService {
     @Override
     public void onClick() {
         // create new logjob intent
-        final Intent newLogjobIntent = new Intent(getApplicationContext(), EditPhoneTrackLogjobActivity.class);
+        final Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
         // ensure it won't open twice if already running
-        newLogjobIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        newProjectIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         // ask to unlock the screen if locked, then start new logjob intent
         unlockAndRun(new Runnable() {
             @Override
             public void run() {
-                startActivityAndCollapse(newLogjobIntent);
+                startActivityAndCollapse(newProjectIntent);
             }
         });
 

@@ -9,7 +9,7 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="net.eneiluj.ihatemoney"
-            android:targetClass="net.eneiluj.ihatemoney.android.activity.EditPhoneTrackLogjobActivity" />
+            android:targetClass="net.eneiluj.ihatemoney.android.activity.NewProjectActivity" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
 </shortcuts>

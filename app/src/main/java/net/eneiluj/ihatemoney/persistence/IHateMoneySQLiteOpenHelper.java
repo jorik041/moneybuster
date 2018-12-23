@@ -991,6 +991,14 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         return bills;
     }
 
+    public List<DBBill> getBillsOfProjectWithState(long projId, int state) {
+        List<DBBill> bills = getBillsCustom(
+                key_projectid + " = ? AND " + key_state + " = ?",
+                new String[]{String.valueOf(projId), String.valueOf(state)},
+                key_date + " ASC");
+        return bills;
+    }
+
     public DBBill getBill(long remoteId, long projId) {
         List<DBBill> bills = getBillsCustom(
                 key_remoteId + " = ? AND " + key_projectid + " = ?",

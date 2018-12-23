@@ -89,6 +89,12 @@ public class IHateMoneyClient {
         return new ServerResponse.DeleteRemoteProjectResponse(requestServer(ccm, target, METHOD_DELETE, null, null, project.getRemoteId(), project.getPassword()));
     }
 
+    public ServerResponse.DeleteRemoteBillResponse deleteRemoteBill(CustomCertManager ccm, DBProject project, long billRemoteId) throws IOException {
+        String target = project.getIhmUrl().replaceAll("/+$", "")
+                + "/api/projects/" + project.getRemoteId() + "/bills/" + billRemoteId;
+        return new ServerResponse.DeleteRemoteBillResponse(requestServer(ccm, target, METHOD_DELETE, null, null, project.getRemoteId(), project.getPassword()));
+    }
+
     public ServerResponse.CreateRemoteProjectResponse createRemoteProject(CustomCertManager ccm, DBProject project) throws IOException {
         String target = project.getIhmUrl().replaceAll("/+$", "")
                 + "/api/projects";

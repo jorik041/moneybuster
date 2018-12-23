@@ -265,12 +265,43 @@ public class IHateMoneyServerSyncHelper {
             //dbHelper.debugPrintFullDB();
             LoginStatus status = LoginStatus.OK;
             // TODO
-            //pushLocalChanges();
+            status = pushLocalChanges();
             if (!onlyLocalChanges) {
                 status = pullRemoteChanges();
             }
             //dbHelper.debugPrintFullDB();
             Log.i(getClass().getSimpleName(), "SYNCHRONIZATION FINISHED");
+            return status;
+        }
+
+        private LoginStatus pushLocalChanges() {
+            LoginStatus status;
+
+            Log.d(getClass().getSimpleName(), "PUSH LOCAL CHANGES");
+
+            try {
+                // delete what's been deleted
+                List<DBBill> toDelete = dbHelper.getBillsOfProjectWithState(project.getId(), DBBill.STATE_DELETED);
+                for (DBBill bToDel : toDelete) {
+                    ServerResponse.DeleteRemoteBillResponse deleteRemoteBillResponse = client.deleteRemoteBill(customCertManager, project, bToDel.getRemoteId());
+                    if (deleteRemoteBillResponse.getStringContent().equals("OK")) {
+                        dbHelper.deleteBill(bToDel.getId());
+                    }
+                }
+                // edit what's been edited
+                List<DBBill> toEdit = dbHelper.getBillsOfProjectWithState(project.getId(), DBBill.STATE_EDITED);
+                // add what's been added
+                List<DBBill> toAdd = dbHelper.getBillsOfProjectWithState(project.getId(), DBBill.STATE_ADDED);
+                status = LoginStatus.OK;
+            } catch (ServerResponse.NotModifiedException e) {
+                Log.d(getClass().getSimpleName(), "No changes, nothing to do.");
+                status = LoginStatus.OK;
+            } catch (IOException e) {
+                Log.e(getClass().getSimpleName(), "Exception", e);
+                exceptions.add(e);
+                status = LoginStatus.CONNECTION_FAILED;
+            }
+            Log.d(getClass().getSimpleName(), "END PUSH LOCAL CHANGES");
             return status;
         }
 

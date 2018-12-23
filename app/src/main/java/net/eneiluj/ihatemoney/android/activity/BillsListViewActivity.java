@@ -216,6 +216,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         refreshLists();
         swipeRefreshLayout.setRefreshing(false);
         db.getIhateMoneyServerSyncHelper().addCallbackPull(syncCallBack);
+        if (DEBUG) { Log.d(TAG, "[onResume]"); }
         synchronize();
 
         super.onResume();
@@ -574,7 +575,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         projectsAdapter.notifyDataSetChanged();
 
         if (restoredProject != null) {
-            Log.v(TAG, "POSITION OF " + lastId + " : " + projectsAdapter.getPosition(restoredProject));
+            Log.v(TAG, "RESTORE PROJECT SELECTION " + lastId + " : " + projectsAdapter.getPosition(restoredProject));
             projects.setSelection(projectsAdapter.getPosition(restoredProject));
         }
 
@@ -582,7 +583,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int pos, long id) {
                 MenuProject it = (MenuProject) parent.getItemAtPosition(pos);
-                Log.v(TAG, "ITEM SELECTED "+pos+" "+id+" "+it.toString());
+                Log.v(TAG, "PROJECT ITEM SELECTED "+pos+" "+id+" "+it.toString());
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 preferences.edit().putString("last_selected_project", String.valueOf(it.getId())).apply();
                 // get project info from server
@@ -994,6 +995,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     }
 
     private void synchronize() {
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        if (DEBUG) { Log.d(TAG, "CALLER : " + stackTraceElements[3].getMethodName()); }
         if (db.getIhateMoneyServerSyncHelper().isSyncPossible()) {
             swipeRefreshLayout.setRefreshing(true);
             MenuProject proj = (MenuProject) projects.getSelectedItem();

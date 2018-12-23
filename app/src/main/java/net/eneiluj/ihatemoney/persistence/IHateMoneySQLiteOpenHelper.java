@@ -979,6 +979,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
                 deleteBillOwer(dbBo.getId());
             }
         }
+        Log.v(TAG, "UPDATE BILL AND SYNC");
         serverSyncHelper.scheduleSync(true, bill.getProjectId());
     }
 

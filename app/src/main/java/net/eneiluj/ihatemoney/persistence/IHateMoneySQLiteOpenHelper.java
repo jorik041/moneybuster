@@ -920,6 +920,14 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void setBillDeleted(long billId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(key_state, DBBill.STATE_DELETED);
+        int rows = db.update(table_bills, values, key_id + " = ?",
+                    new String[]{String.valueOf(billId)});
+    }
+
     public void updateBill(long billId, long newPayerRemoteId, double newAmount, @Nullable String newDate, @Nullable String newWhat, int newState) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
@@ -993,6 +1001,23 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
                 null
         );
         return bills.isEmpty() ? null : bills.get(0);
+    }
+
+    @NonNull
+    @WorkerThread
+    public List<DBBill> searchBills(@Nullable CharSequence query) {
+        List<String> where = new ArrayList<>();
+        List<String> args = new ArrayList<>();
+
+        if (query != null) {
+            where.add("(" + key_what + " LIKE ? OR " + key_date + " LIKE ?)");
+            args.add("%" + query + "%");
+            args.add("%" + query + "%");
+        }
+
+
+        String order = key_date;
+        return getBillsCustom(TextUtils.join(" AND ", where), args.toArray(new String[]{}), order);
     }
 
     /**

@@ -48,6 +48,8 @@ public class EditBillFragment extends PreferenceFragmentCompat {
     public interface BillFragmentListener {
         void close();
 
+        void closeOnDelete(long billId);
+
         void onBillUpdated(DBBill bill);
     }
 
@@ -182,8 +184,9 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                 switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
                         //Yes button clicked
-                        db.deleteBill(bill.getId());
-                        listener.close();
+                        //db.deleteBill(bill.getId());
+                        db.setBillDeleted(bill.getId());
+                        listener.closeOnDelete(bill.getId());
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:

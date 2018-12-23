@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * DBLogjob represents a single logjob from the local SQLite database with all attributes.
  */
-public class DBBill implements Serializable {
+public class DBBill implements Item, Serializable {
 
     // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what
     private long id;
@@ -127,5 +127,10 @@ public class DBBill implements Serializable {
         return "#DBBill" + getId() + "/" + this.remoteId + "," + this.projectId
                 + ", " + this.payerRemoteId + ", " + this.amount + ", " + this.date + ", "
                 + this.what + ", " + this.state;
+    }
+
+    @Override
+    public boolean isSection() {
+        return false;
     }
 }

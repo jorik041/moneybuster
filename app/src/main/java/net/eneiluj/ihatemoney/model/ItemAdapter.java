@@ -12,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Space;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -136,7 +134,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             nvHolder.infoButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    logjobClickListener.onLogjobInfoButtonClick(holder.getAdapterPosition(), view);
+                    logjobClickListener.onBillInfoButtonClick(holder.getAdapterPosition(), view);
                 }
             });
 
@@ -218,13 +216,13 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public interface LogjobClickListener {
-        void onLogjobClick(int position, View v);
+        void onBillClick(int position, View v);
 
-        void onLogjobEnabledClick(int position, View v);
+        //void onLogjobEnabledClick(int position, View v);
 
-        void onLogjobInfoButtonClick(int position, View v);
+        void onBillInfoButtonClick(int position, View v);
 
-        boolean onLogjobLongClick(int position, View v);
+        boolean onBillLongClick(int position, View v);
     }
 
     public class LogjobViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener {
@@ -256,13 +254,13 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public void onClick(View v) {
             final int adapterPosition = getAdapterPosition();
             if (adapterPosition != NO_POSITION) {
-                logjobClickListener.onLogjobClick(adapterPosition, v);
+                logjobClickListener.onBillClick(adapterPosition, v);
             }
         }
 
         @Override
         public boolean onLongClick(View v) {
-            return logjobClickListener.onLogjobLongClick(getAdapterPosition(), v);
+            return logjobClickListener.onBillLongClick(getAdapterPosition(), v);
         }
 
         public void showSwipe(boolean left) {

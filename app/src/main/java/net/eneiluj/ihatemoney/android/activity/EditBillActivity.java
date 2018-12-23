@@ -135,6 +135,14 @@ public abstract class EditBillActivity extends AppCompatActivity implements Edit
         finish();
     }
 
+    public void closeOnDelete(long billId) {
+        fragment.onCloseBill();
+        final Intent data = new Intent();
+        data.putExtra(BillsListViewActivity.DELETED_BILL, billId);
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
     public void onBillUpdated(DBLogjob logjob) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

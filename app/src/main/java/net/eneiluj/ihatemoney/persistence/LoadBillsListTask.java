@@ -19,16 +19,16 @@ import java.util.regex.Pattern;
 import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
 import net.eneiluj.ihatemoney.model.Category;
-import net.eneiluj.ihatemoney.model.DBLogjob;
+import net.eneiluj.ihatemoney.model.DBBill;
 import net.eneiluj.ihatemoney.model.Item;
 
-public class LoadLogjobsListTask extends AsyncTask<Void, Void, List<Item>> {
+public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
 
     private final Context context;
-    private final LogjobsLoadedListener callback;
+    private final BillsLoadedListener callback;
     private final Category category;
     private final CharSequence searchQuery;
-    public LoadLogjobsListTask(@NonNull Context context, @NonNull LogjobsLoadedListener callback, @NonNull Category category, @Nullable CharSequence searchQuery) {
+    public LoadBillsListTask(@NonNull Context context, @NonNull BillsLoadedListener callback, @NonNull Category category, @Nullable CharSequence searchQuery) {
         this.context = context;
         this.callback = callback;
         this.category = category;
@@ -37,11 +37,12 @@ public class LoadLogjobsListTask extends AsyncTask<Void, Void, List<Item>> {
 
     @Override
     protected List<Item> doInBackground(Void... voids) {
-        List<DBLogjob> logjobList;
+        List<DBBill> billList;
         IHateMoneySQLiteOpenHelper db = IHateMoneySQLiteOpenHelper.getInstance(context);
-        logjobList = db.searchLogjobs(searchQuery, null);
+        // TODO
+        billList = db.searchBills(searchQuery);
 
-        return fillListTitle(logjobList);
+        return fillListTitle(billList);
         /*if (category.category == null) {
             return fillListByTime(logjobList);
         } else {
@@ -49,9 +50,9 @@ public class LoadLogjobsListTask extends AsyncTask<Void, Void, List<Item>> {
         }*/
     }
 
-    private DBLogjob colorTheLogjob(DBLogjob dbLogjob) {
+    private DBBill colorTheBill(DBBill dbBill) {
         if (!TextUtils.isEmpty(searchQuery)) {
-            SpannableString spannableString = new SpannableString(dbLogjob.getTitle());
+            SpannableString spannableString = new SpannableString(dbBill.getWhat());
             Matcher matcher = Pattern.compile("(" + searchQuery + ")", Pattern.CASE_INSENSITIVE).matcher(spannableString);
             while (matcher.find()) {
                 spannableString.setSpan(
@@ -62,7 +63,7 @@ public class LoadLogjobsListTask extends AsyncTask<Void, Void, List<Item>> {
                         matcher.start(), matcher.end(), 0);
             }
 
-            dbLogjob.setTitle(Html.toHtml(spannableString, Html.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE));
+            dbBill.setWhat(Html.toHtml(spannableString, Html.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE));
             // TODO search by sub title
             /*spannableString = new SpannableString(dbLogjob.getCategory());
             matcher = Pattern.compile("(" + searchQuery + ")", Pattern.CASE_INSENSITIVE).matcher(spannableString);
@@ -73,7 +74,7 @@ public class LoadLogjobsListTask extends AsyncTask<Void, Void, List<Item>> {
 
             dbLogjob.setCategory(Html.toHtml(spannableString));
             */
-            spannableString = new SpannableString(dbLogjob.getUrl());
+            spannableString = new SpannableString(dbBill.getDate());
             matcher = Pattern.compile("(" + searchQuery + ")", Pattern.CASE_INSENSITIVE).matcher(spannableString);
             while (matcher.find()) {
                 spannableString.setSpan(
@@ -84,41 +85,30 @@ public class LoadLogjobsListTask extends AsyncTask<Void, Void, List<Item>> {
                         matcher.start(), matcher.end(), 0);
             }
 
-            dbLogjob.setUrl(Html.toHtml(spannableString, Html.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE));
+            dbBill.setDate(Html.toHtml(spannableString, Html.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE));
 
-            spannableString = new SpannableString(dbLogjob.getDeviceName());
-            matcher = Pattern.compile("(" + searchQuery + ")", Pattern.CASE_INSENSITIVE).matcher(spannableString);
-            while (matcher.find()) {
-                spannableString.setSpan(
-                        new ForegroundColorSpan(
-                                //context.getResources().getColor(R.color.primary_dark)
-                                ContextCompat.getColor(context, R.color.bg_attention)
-                        ),
-                        matcher.start(), matcher.end(), 0);
-            }
-
-            dbLogjob.setDeviceName(Html.toHtml(spannableString, Html.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE));
         }
 
-        return dbLogjob;
+        return dbBill;
     }
 
     @NonNull
     @WorkerThread
-    private List<Item> fillListTitle(@NonNull List<DBLogjob> logjobList) {
+    private List<Item> fillListTitle(@NonNull List<DBBill> billList) {
         List<Item> itemList = new ArrayList<>();
-        for (DBLogjob logjob : logjobList) {
-            if (category.favorite != null && category.favorite && logjob.isEnabled()) {
-                itemList.add(colorTheLogjob(logjob));
+        // TODO filter with selected member
+        for (DBBill bill : billList) {
+            if (category.favorite != null && category.favorite && bill.isEnabled()) {
+                itemList.add(colorTheBill(bill));
             }
-            else if (category.category == BillsListViewActivity.CATEGORY_PHONETRACK && !logjob.getToken().isEmpty() && !logjob.getDeviceName().isEmpty()) {
-                itemList.add(colorTheLogjob(logjob));
+            else if (category.category == BillsListViewActivity.CATEGORY_PHONETRACK && !bill.getToken().isEmpty() && !bill.getDeviceName().isEmpty()) {
+                itemList.add(colorTheBill(bill));
             }
-            else if (category.category == BillsListViewActivity.CATEGORY_CUSTOM && logjob.getToken().isEmpty() && logjob.getDeviceName().isEmpty()) {
-                itemList.add(colorTheLogjob(logjob));
+            else if (category.category == BillsListViewActivity.CATEGORY_CUSTOM && bill.getToken().isEmpty() && bill.getDeviceName().isEmpty()) {
+                itemList.add(colorTheBill(bill));
             }
             else if (category.favorite == null && category.category == null) {
-                itemList.add(colorTheLogjob(logjob));
+                itemList.add(colorTheBill(bill));
             }
         }
         return itemList;
@@ -126,10 +116,10 @@ public class LoadLogjobsListTask extends AsyncTask<Void, Void, List<Item>> {
 
     @Override
     protected void onPostExecute(List<Item> ljItems) {
-        callback.onLogjobsLoaded(ljItems, category.category == null);
+        callback.onBillsLoaded(ljItems, category.category == null);
     }
 
-    public interface LogjobsLoadedListener {
-        void onLogjobsLoaded(List<Item> ljItems, boolean showCategory);
+    public interface BillsLoadedListener {
+        void onBillsLoaded(List<Item> ljItems, boolean showCategory);
     }
 }

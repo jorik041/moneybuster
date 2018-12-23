@@ -40,21 +40,18 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import net.eneiluj.ihatemoney.R;
-import net.eneiluj.ihatemoney.android.fragment.EditBillFragment;
 import net.eneiluj.ihatemoney.android.fragment.NewProjectFragment;
 import net.eneiluj.ihatemoney.model.Category;
+import net.eneiluj.ihatemoney.model.DBBill;
 import net.eneiluj.ihatemoney.model.DBLogjob;
 import net.eneiluj.ihatemoney.model.DBMember;
 import net.eneiluj.ihatemoney.model.DBProject;
@@ -62,10 +59,9 @@ import net.eneiluj.ihatemoney.model.Item;
 import net.eneiluj.ihatemoney.model.ItemAdapter;
 import net.eneiluj.ihatemoney.model.MenuProject;
 import net.eneiluj.ihatemoney.model.NavigationAdapter;
-import net.eneiluj.ihatemoney.model.SyncError;
 import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
 import net.eneiluj.ihatemoney.persistence.IHateMoneyServerSyncHelper;
-import net.eneiluj.ihatemoney.persistence.LoadLogjobsListTask;
+import net.eneiluj.ihatemoney.persistence.LoadBillsListTask;
 import net.eneiluj.ihatemoney.util.ICallback;
 import net.eneiluj.ihatemoney.util.PhoneTrackClientUtil;
 
@@ -85,6 +81,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     public final static String CREATED_LOGJOB = "net.eneiluj.ihatemoney.created_logjob";
     public final static String CREATED_PROJECT = "net.eneiluj.ihatemoney.created_project";
     public final static String DELETED_PROJECT = "net.eneiluj.ihatemoney.deleted_project";
+    public final static String DELETED_BILL = "net.eneiluj.ihatemoney.deleted_bill";
     public final static String CREDENTIALS_CHANGED = "net.eneiluj.ihatemoney.CREDENTIALS_CHANGED";
     public static final String ADAPTER_KEY_ALL = "all";
     public static final String ADAPTER_KEY_ENABLED = "enabled";
@@ -101,7 +98,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private static final String SAVED_STATE_NAVIGATION_OPEN = "navigationOpen";
 
     private final static int create_logjob_cmd = 0;
-    private final static int show_single_logjob_cmd = 1;
+    private final static int show_single_bill_cmd = 1;
     private final static int server_settings = 2;
     private final static int about = 3;
     private final static int addproject = 4;
@@ -702,6 +699,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     }
     private void refreshLists(final boolean scrollToTop) {
         String subtitle;
+        // TODO filter with selected member
         if (navigationSelection.favorite != null && navigationSelection.favorite) {
             subtitle = getString(R.string.app_name) + " - " + getString(R.string.label_enabled);
         } else if (navigationSelection.category == CATEGORY_PHONETRACK) {
@@ -717,17 +715,17 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             query = searchView.getQuery();
         }
 
-        LoadLogjobsListTask.LogjobsLoadedListener callback = new LoadLogjobsListTask.LogjobsLoadedListener() {
+        LoadBillsListTask.BillsLoadedListener callback = new LoadBillsListTask.BillsLoadedListener() {
             @Override
-            public void onLogjobsLoaded(List<Item> ljItems, boolean showCategory) {
+            public void onBillsLoaded(List<Item> billItems, boolean showCategory) {
                 adapter.setShowCategory(showCategory);
-                adapter.setItemList(ljItems);
+                adapter.setItemList(billItems);
                 if(scrollToTop) {
                     listView.scrollToPosition(0);
                 }
             }
         };
-        new LoadLogjobsListTask(getApplicationContext(), callback, navigationSelection, query).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new LoadBillsListTask(getApplicationContext(), callback, navigationSelection, query).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         new LoadCategoryListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
@@ -865,6 +863,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     projectsAdapter.notifyDataSetChanged();
                 }
             }
+        } else if (requestCode == show_single_bill_cmd) {
+            // TODO check if bill was added, edited or deleted
+            // => apply changes
         }
     }
 
@@ -881,7 +882,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     }
 
     @Override
-    public void onLogjobClick(int position, View v) {
+    public void onBillClick(int position, View v) {
         if (mActionMode != null) {
             if (!adapter.select(position)) {
                 v.setSelected(false);
@@ -908,16 +909,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 mActionMode.finish();
             }
         } else {
-            DBLogjob logjob = (DBLogjob) adapter.getItem(position);
+            DBBill bill = (DBBill) adapter.getItem(position);
             Intent intent;
             intent = new Intent(getApplicationContext(), EditBillActivity.class);
-            intent.putExtra(EditBillActivity.PARAM_BILL_ID, logjob.getId());
-            startActivityForResult(intent, show_single_logjob_cmd);
+            intent.putExtra(EditBillActivity.PARAM_BILL_ID, bill.getId());
+            startActivityForResult(intent, show_single_bill_cmd);
 
         }
     }
 
-    @Override
+    /*@Override
     public void onLogjobEnabledClick(int position, View view) {
         DBLogjob logjob = (DBLogjob) adapter.getItem(position);
         if (logjob != null) {
@@ -928,70 +929,22 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
             notifyLoggerService(logjob.getId());
         }
-    }
+    }*/
 
     @Override
-    public void onLogjobInfoButtonClick(int position, View view) {
-        DBLogjob logjob = (DBLogjob) adapter.getItem(position);
-        if (logjob != null) {
-            String ljId = String.valueOf(logjob.getId());
+    public void onBillInfoButtonClick(int position, View view) {
+        DBBill bill = (DBBill) adapter.getItem(position);
+        if (bill != null) {
+
             IHateMoneySQLiteOpenHelper db = IHateMoneySQLiteOpenHelper.getInstance(view.getContext());
-            long tsLastLoc = db.getLastLocTimestamp(ljId);
-            long tsLastSync = db.getLastSyncTimestamp(ljId);
-            SyncError lastSyncErr = db.getLastSyncError(ljId);
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
-
-            if (DEBUG) { Log.d(TAG, "[LAST " + tsLastLoc + " "+tsLastSync+ "]"); }
-
-            String nbsyncText = view.getContext().getString(R.string.logjob_info_nbsync, logjob.getNbSync());
-            String nbnotsyncText = "";
-            //String nbnotsyncText = view.getContext().getString(R.string.logjob_info_nbnotsync, db.getLogjobLocationCount(logjob.getId()));
-            String lastLocText = "";
-            String lastSyncText = "";
-            String lastSyncErrText = "";
+            DBBill dbBill = db.getBill(bill.getId());
 
             View iView = LayoutInflater.from(this).inflate(R.layout.items_infodialog, null);
-            TextView tv = iView.findViewById(R.id.infoNbsyncText);
-            tv.setText(nbsyncText);
-            TextView tv2 = iView.findViewById(R.id.infoNbnotsyncText);
-            tv2.setText(nbnotsyncText);
 
-            if (tsLastLoc != 0) {
-                Date d = new Date(tsLastLoc*1000);
-                lastLocText = view.getContext().getString(R.string.logjob_info_lastloc, sdf.format(d));
-
-                TextView tv3 = iView.findViewById(R.id.infoLastLocText);
-                tv3.setText(lastLocText);
-            }
-            else {
-                iView.findViewById(R.id.infoLastLocLayout).setVisibility(View.GONE);
-            }
-            if (tsLastSync != 0) {
-                Date d = new Date(tsLastSync*1000);
-                lastSyncText = view.getContext().getString(R.string.logjob_info_lastsync, sdf.format(d));
-
-                TextView tv4 = iView.findViewById(R.id.infoLastSyncText);
-                tv4.setText(lastSyncText);
-            }
-            else {
-                iView.findViewById(R.id.infoLastSyncLayout).setVisibility(View.GONE);
-            }
-
-            if (lastSyncErr.getTimestamp() != 0) {
-                Date d = new Date(lastSyncErr.getTimestamp()*1000);
-                lastSyncErrText = view.getContext().getString(R.string.logjob_info_lastsync_error, sdf.format(d), lastSyncErr.getMessage());
-
-                TextView tv5 = iView.findViewById(R.id.infoLastSyncErrText);
-                tv5.setText(lastSyncErrText);
-            }
-            else {
-                iView.findViewById(R.id.infoLastSyncErrLayout).setVisibility(View.GONE);
-            }
 
             AlertDialog.Builder builder;
             builder = new AlertDialog.Builder(view.getContext(), android.R.style.Theme_Material_Dialog_Alert);
-            builder.setTitle(view.getContext().getString(R.string.logjob_info_dialog_title, logjob.getTitle()))
+            builder.setTitle(view.getContext().getString(R.string.logjob_info_dialog_title, dbBill.getWhat()))
                     //.setMessage(infoText)
                     .setView(iView)
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -1005,7 +958,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     }
 
     @Override
-    public boolean onLogjobLongClick(int position, View v) {
+    public boolean onBillLongClick(int position, View v) {
         boolean selected = adapter.select(position);
         if (selected) {
             v.setSelected(true);

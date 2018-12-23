@@ -1016,7 +1016,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
             args.add("%" + query + "%");
         }
 
-        String order = key_date + "DESC";
+        String order = key_date + " DESC";
         return getBillsCustom(TextUtils.join(" AND ", where), args.toArray(new String[]{}), order);
     }
 

@@ -8,7 +8,8 @@ import android.os.Handler;
 import android.os.Looper;
 //import android.preference.EditTextPreference;
 
-import android.preference.MultiSelectListPreference;
+//import android.preference.MultiSelectListPreference;
+import android.support.v14.preference.MultiSelectListPreference;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.EditTextPreference;
 //import android.preference.ListPreference;
@@ -20,6 +21,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,6 +44,7 @@ import net.eneiluj.ihatemoney.util.ICallback;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
 
 public class EditBillFragment extends PreferenceFragmentCompat {
 
@@ -159,7 +162,9 @@ public class EditBillFragment extends PreferenceFragmentCompat {
             @Override
             public boolean onPreferenceChange(Preference preference,
                                               Object newValue) {
-                preference.setSummary((CharSequence) newValue);
+                ListPreference pref = (ListPreference) findPreference("payer");
+                int index = pref.findIndexOfValue((String)newValue);
+                preference.setSummary(pref.getEntries()[index]);
                 return true;
             }
 
@@ -170,8 +175,17 @@ public class EditBillFragment extends PreferenceFragmentCompat {
             @Override
             public boolean onPreferenceChange(Preference preference,
                                               Object newValue) {
-                EditTextPreference pref = (EditTextPreference) findPreference("owers");
-                pref.setSummary((CharSequence) newValue);
+                MultiSelectListPreference pref = (MultiSelectListPreference) findPreference("owers");
+                //CharSequence[] selectedValuesArray = pref.getEntryValues();
+                List<String> selectedValuesList = new ArrayList<>((HashSet<String>) newValue);
+                CharSequence[] allEntriesArray = pref.getEntries();
+                String summary = "";
+                //for (int i=0; i < selectedValuesArray.length; i++) {
+                for (String selectedValue : selectedValuesList) {
+                    int owerIndex = pref.findIndexOfValue(selectedValue);
+                    summary += allEntriesArray[owerIndex] + ", ";
+                }
+                pref.setSummary(summary.replaceAll(", $", ""));
                 return true;
             }
 
@@ -392,6 +406,9 @@ public class EditBillFragment extends PreferenceFragmentCompat {
 
         // manage payer and owers
 
+        editPayer = (ListPreference) this.findPreference("payer");
+        editOwers = (MultiSelectListPreference) this.findPreference("owers");
+
         if (memberNameList.size() > 0) {
             CharSequence[] memberNameArray = memberNameList.toArray(new CharSequence[memberNameList.size()]);
             CharSequence[] memberRemoteIdArray = memberRemoteIdList.toArray(new CharSequence[memberNameList.size()]);
@@ -401,6 +418,27 @@ public class EditBillFragment extends PreferenceFragmentCompat {
 
             editOwers.setEntries(memberNameArray);
             editOwers.setEntryValues(memberRemoteIdArray);
+
+            // set selected value for payer
+            if (bill.getPayerRemoteId() != 0) {
+                String payerRemoteId = String.valueOf(bill.getPayerRemoteId());
+                editPayer.setValue(payerRemoteId);
+                int payerIndex = memberRemoteIdList.indexOf(payerRemoteId);
+                editPayer.setSummary(memberNameList.get(payerIndex));
+            }
+
+            // set selected values for owers
+            if (bill.getBillOwersRemoteIds().size() > 0) {
+                Set<String> ridSet = new HashSet<String>();
+                List<String> selectedNames = new ArrayList<>();
+                for (long rid : bill.getBillOwersRemoteIds()) {
+                    ridSet.add(String.valueOf(rid));
+                    int owerIndex = memberRemoteIdList.indexOf(String.valueOf(rid));
+                    selectedNames.add(memberNameList.get(owerIndex));
+                }
+                editOwers.setValues(ridSet);
+                editOwers.setSummary(TextUtils.join(", ", selectedNames));
+            }
         }
 
         editWhat = (EditTextPreference) this.findPreference("what");

@@ -113,18 +113,19 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final DBBill bill = (DBBill) item;
             final BillViewHolder nvHolder = ((BillViewHolder) holder);
             nvHolder.billSwipeable.setAlpha(1.0f);
-            String title = bill.getDate();
+            String title = "[" + bill.getDate() + "]";
             title += " " + bill.getAmount();
-            title += " " + bill.getWhat();
+            title += " (" + bill.getWhat() + ")";
             nvHolder.billTitle.setText(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
 
-            String subtitle = db.getMember(bill.getProjectId(), bill.getPayerRemoteId()).getName();
+            Log.d(TAG, "[get member of project " + bill.getProjectId() + " with remoteid : "+bill.getPayerRemoteId()+"]");
+            String subtitle = db.getMember(bill.getPayerRemoteId(), bill.getProjectId()).getName();
             subtitle += " => ";
             for (long boRId : bill.getBillOwersRemoteIds()) {
-                String name = db.getMember(bill.getProjectId(), boRId).getName();
-                subtitle += name + "|";
+                String name = db.getMember(boRId, bill.getProjectId()).getName();
+                subtitle += name + ", ";
             }
-            subtitle.replaceAll("\\|+$", "");
+            subtitle = subtitle.replaceAll(", $", "");
 
             nvHolder.billSubtitle.setText(Html.fromHtml(
                         subtitle, Html.FROM_HTML_MODE_COMPACT)

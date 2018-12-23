@@ -33,10 +33,9 @@ xmlns:tools="http://schemas.android.com/tools"
         android:summary=""
         android:title="@string/setting_date" />
 
-    <ListPreference
+    <android.support.v7.preference.ListPreference
         android:id="@+id/editPayer"
         android:icon="@drawable/ic_account_circle_grey_24dp"
-        android:dialogMessage="@string/setting_payer_long"
         android:dialogTitle="@string/setting_payer"
         android:key="payer"
         android:singleLine="true"
@@ -56,10 +55,9 @@ xmlns:tools="http://schemas.android.com/tools"
         android:selectAllOnFocus="true"
         android:title="@string/setting_amount" />
 
-    <MultiSelectListPreference
+    <android.support.v14.preference.MultiSelectListPreference
         android:id="@+id/editOwers"
         android:icon="@drawable/ic_account_circle_grey_24dp"
-        android:dialogMessage="@string/setting_owers_long"
         android:dialogTitle="@string/setting_owers"
         android:key="owers"
         android:persistent="false"

@@ -96,7 +96,6 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
     @WorkerThread
     private List<Item> fillListTitle(@NonNull List<DBBill> billList) {
         List<Item> itemList = new ArrayList<>();
-        // TODO filter with selected member
         for (DBBill bill : billList) {
             if (category.memberName == null || category.memberRemoteId.equals(bill.getPayerRemoteId())) {
                 itemList.add(colorTheBill(bill));

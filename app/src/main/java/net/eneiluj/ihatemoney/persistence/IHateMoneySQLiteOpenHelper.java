@@ -1014,8 +1014,8 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         List<String> where = new ArrayList<>();
         List<String> args = new ArrayList<>();
 
+        where.add("(" + key_state + " != " + DBBill.STATE_DELETED + ")");
         if (query != null) {
-            where.add("(" + key_state + " != " + DBBill.STATE_DELETED + ")");
             where.add("(" + key_what + " LIKE ? OR " + key_date + " LIKE ?)");
             args.add("%" + query + "%");
             args.add("%" + query + "%");

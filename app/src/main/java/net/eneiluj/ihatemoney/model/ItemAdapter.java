@@ -146,9 +146,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
 
-            if (bill.getState() != DBBill.STATE_OK) {
-                // TODO show "needsync" if needed
-            }
+            nvHolder.syncIcon.setVisibility(bill.getState() == DBBill.STATE_OK ? View.INVISIBLE : View.VISIBLE);
 
             //int nb = db.getLogjobLocationCount(bill.getId());
             // TODO show "needsync" if needed
@@ -248,6 +246,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         TextView billSubtitle;
         @BindView(R.id.infoButton)
         ImageButton infoButton;
+        ImageView syncIcon;
 
         private BillViewHolder(View v) {
             super(v);
@@ -258,6 +257,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             this.billTitle = v.findViewById(R.id.billTitle);
             this.billSubtitle = v.findViewById(R.id.billExcerpt);
             this.infoButton = v.findViewById(R.id.infoButton);
+            this.syncIcon = v.findViewById(R.id.syncIcon);
             v.setOnClickListener(this);
             v.setOnLongClickListener(this);
         }

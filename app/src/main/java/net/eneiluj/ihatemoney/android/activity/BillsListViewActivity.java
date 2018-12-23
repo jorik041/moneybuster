@@ -216,9 +216,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         refreshLists();
         swipeRefreshLayout.setRefreshing(false);
         db.getIhateMoneyServerSyncHelper().addCallbackPull(syncCallBack);
-        if (db.getIhateMoneyServerSyncHelper().isSyncPossible()) {
-            synchronize();
-        }
+        synchronize();
+
         super.onResume();
 
         registerBroadcastReceiver();
@@ -270,14 +269,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                if (DEBUG) { Log.d(TAG, "[onRefresh]"); }
                 if (db.getIhateMoneyServerSyncHelper().isSyncPossible()) {
                     synchronize();
                 } else {
-                    //swipeRefreshLayout.setRefreshing(false);
-                    // don't bother user if no conf
-                    if (IHateMoneyServerSyncHelper.isConfigured(getApplicationContext())) {
-                        Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(PhoneTrackClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
-                    }
+                    swipeRefreshLayout.setRefreshing(false);
+                    Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(PhoneTrackClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
                 }
                 // TODO synchronize
                 /*if (db.getLocationCount() > 0) {
@@ -589,9 +586,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 preferences.edit().putString("last_selected_project", String.valueOf(it.getId())).apply();
                 // get project info from server
-                if (db.getIhateMoneyServerSyncHelper().isSyncPossible()) {
-                    synchronize();
-                }
+                synchronize();
+
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
@@ -998,11 +994,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     }
 
     private void synchronize() {
-        swipeRefreshLayout.setRefreshing(true);
-        MenuProject proj = (MenuProject) projects.getSelectedItem();
-        long projId = proj.getId();
-        db.getIhateMoneyServerSyncHelper().addCallbackPull(syncCallBack);
-        db.getIhateMoneyServerSyncHelper().scheduleSync(false, projId);
+        if (db.getIhateMoneyServerSyncHelper().isSyncPossible()) {
+            swipeRefreshLayout.setRefreshing(true);
+            MenuProject proj = (MenuProject) projects.getSelectedItem();
+            long projId = proj.getId();
+            db.getIhateMoneyServerSyncHelper().addCallbackPull(syncCallBack);
+            db.getIhateMoneyServerSyncHelper().scheduleSync(false, projId);
+        }
     }
 
     private void notifyLoggerService(long jobId) {

@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 //import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v7.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -52,6 +53,7 @@ import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.fragment.NewProjectFragment;
 import net.eneiluj.ihatemoney.model.Category;
 import net.eneiluj.ihatemoney.model.DBBill;
+import net.eneiluj.ihatemoney.model.DBBillOwer;
 import net.eneiluj.ihatemoney.model.DBLogjob;
 import net.eneiluj.ihatemoney.model.DBMember;
 import net.eneiluj.ihatemoney.model.DBProject;
@@ -634,36 +636,62 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 switch(direction) {
                     case ItemTouchHelper.LEFT: {
-                        final DBLogjob dbLogjob = (DBLogjob) adapter.getItem(viewHolder.getAdapterPosition());
-                        // get locations
-                        /*final List<DBLocation> locations = db.getLocationOfLogjob(String.valueOf(dbLogjob.getId()));
-                        db.deleteLogjob(dbLogjob.getId());
-                        adapter.remove(dbLogjob);
+                        final DBBill bill = (DBBill) adapter.getItem(viewHolder.getAdapterPosition());
+                        final DBBill dbBill = db.getBill(bill.getId());
+                        // get real original state to potentially restore it
+                        final int originalState = dbBill.getState();
+
+                        if (originalState == DBBill.STATE_ADDED) {
+                            db.deleteBill(dbBill.getId());
+                        }
+                        else {
+                            db.setBillState(dbBill.getId(), DBBill.STATE_DELETED);
+                        }
+                        adapter.remove(dbBill);
                         refreshLists();
                         Log.v(TAG, "Item deleted through swipe ----------------------------------------------");
-                        Snackbar.make(swipeRefreshLayout, R.string.action_logjob_deleted, Snackbar.LENGTH_LONG)
+                        Snackbar.make(swipeRefreshLayout, R.string.action_bill_deleted, Snackbar.LENGTH_LONG)
                                 .setAction(R.string.action_undo, new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        db.addLogjob(dbLogjob);
-                                        for (DBLocation dbloc : locations) {
-                                            db.addLocation(dbloc);
+                                        if (originalState == DBBill.STATE_ADDED) {
+                                            db.addBill(dbBill);
+                                        }
+                                        else {
+                                            db.setBillState(dbBill.getId(), originalState);
                                         }
                                         refreshLists();
-                                        Snackbar.make(swipeRefreshLayout, R.string.action_logjob_restored, Snackbar.LENGTH_SHORT)
+                                        Snackbar.make(swipeRefreshLayout, R.string.action_bill_restored, Snackbar.LENGTH_SHORT)
                                                 .show();
-                                        notifyLoggerService(dbLogjob.getId());
+                                        synchronize();
+                                        //notifyLoggerService(dbBill.getId());
+                                    }
+                                })
+                                .addCallback(new Snackbar.Callback() {
+
+                                    @Override
+                                    public void onDismissed(Snackbar snackbar, int event) {
+                                        //see Snackbar.Callback docs for event details
+                                        Log.v(TAG, "DISMISSED "+event);
+                                        if (event == DISMISS_EVENT_TIMEOUT) {
+                                            synchronize();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onShown(Snackbar snackbar) {
+                                        Log.v(TAG, "SHOWN");
                                     }
                                 })
                                 .show();
-                        notifyLoggerService(dbLogjob.getId());*/
+                        //notifyLoggerService(dbBill.getId());
                         break;
                     }
                     case ItemTouchHelper.RIGHT: {
-                        final DBLogjob dbLogjob = (DBLogjob) adapter.getItem(viewHolder.getAdapterPosition());
-                        db.toggleEnabled(dbLogjob, syncCallBack);
+                        final DBBill dbBill = (DBBill) adapter.getItem(viewHolder.getAdapterPosition());
+                        //db.toggleEnabled(dbBill, syncCallBack);
                         refreshLists();
-                        notifyLoggerService(dbLogjob.getId());
+                        //notifyLoggerService(dbBill.getId());
                         break;
                     }
                 }

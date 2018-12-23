@@ -898,7 +898,12 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_what, b.getWhat());
         values.put(key_state, b.getState());
 
-        return db.insert(table_bills, null, values);
+        long id = db.insert(table_bills, null, values);
+
+        for (DBBillOwer bo : b.getBillOwers()) {
+            addBillower(id, bo);
+        }
+        return id;
     }
 
     public void updateBill(long remoteId, long projId, long newPayerRemoteId, double newAmount, @Nullable String newDate, @Nullable String newWhat, int newState) {
@@ -920,10 +925,10 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void setBillDeleted(long billId) {
+    public void setBillState(long billId, int state) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(key_state, DBBill.STATE_DELETED);
+        values.put(key_state, state);
         int rows = db.update(table_bills, values, key_id + " = ?",
                     new String[]{String.valueOf(billId)});
     }

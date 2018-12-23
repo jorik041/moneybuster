@@ -47,8 +47,8 @@
     <string name="simple_edit_project">Edit remote project</string>
     <string name="simple_edit_cu">Edit custom log job</string>
     <string name="simple_about">About</string>
-    <string name="action_logjob_deleted">Log job deleted</string>
-    <string name="action_logjob_restored">Log job restored</string>
+    <string name="action_bill_deleted">Bill deleted</string>
+    <string name="action_bill_restored">Bill restored</string>
     <string name="action_undo">Undo</string>
     <string name="action_drawer_open">open side menu</string>
     <string name="action_drawer_close">close side menu</string>

@@ -336,10 +336,10 @@ public class IHateMoneyServerSyncHelper {
                     if (!localBillsByRemoteId.containsKey(remoteBill.getRemoteId())) {
                         long billId = dbHelper.addBill(remoteBill);
                         Log.d(getClass().getSimpleName(), "Add bill : " + remoteBill);
-                        //////// billowers
+                        /*//////// billowers
                         for (DBBillOwer rbo : remoteBill.getBillOwers()) {
                             dbHelper.addBillower(billId, rbo);
-                        }
+                        }*/
                     }
                     // update bill if necessary
                     // and billOwers if necessary

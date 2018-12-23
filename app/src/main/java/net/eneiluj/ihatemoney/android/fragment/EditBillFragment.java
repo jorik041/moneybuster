@@ -198,8 +198,12 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                 switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
                         //Yes button clicked
-                        //db.deleteBill(bill.getId());
-                        db.setBillDeleted(bill.getId());
+                        if (db.getBill(bill.getId()).getState() == DBBill.STATE_ADDED) {
+                            db.deleteBill(bill.getId());
+                        }
+                        else {
+                            db.setBillState(bill.getId(), DBBill.STATE_DELETED);
+                        }
                         listener.closeOnDelete(bill.getId());
                         break;
 
@@ -362,10 +366,13 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         else {
             // add the bill
             DBBill newBill = new DBBill(0, 0, bill.getProjectId(), newPayerRemoteId, newAmount, newDate, newWhat, DBBill.STATE_ADDED);
-            long newBillId = db.addBill(newBill);
             for (long newOwerRemoteid : newOwersRemoteIds) {
-                db.addBillower(newBillId, new DBBillOwer(0, newBillId, newOwerRemoteid));
+                newBill.getBillOwers().add(new DBBillOwer(0, 0, newOwerRemoteid));
             }
+            long newBillId = db.addBill(newBill);
+            /*for (long newOwerRemoteid : newOwersRemoteIds) {
+                db.addBillower(newBillId, new DBBillOwer(0, newBillId, newOwerRemoteid));
+            }*/
             db.getIhateMoneyServerSyncHelper().scheduleSync(true, bill.getProjectId());
         }
     }

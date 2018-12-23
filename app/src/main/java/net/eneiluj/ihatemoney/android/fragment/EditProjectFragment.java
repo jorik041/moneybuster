@@ -36,7 +36,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
 
         void closeOnDelete(long projId);
 
-        void onProjectUpdated(DBLogjob logjob);
+        void onProjectUpdated(DBProject project);
     }
 
     public static final String PARAM_PROJECT_ID = "projectId";

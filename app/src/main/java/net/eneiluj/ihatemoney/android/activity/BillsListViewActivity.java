@@ -67,7 +67,7 @@ import net.eneiluj.ihatemoney.util.PhoneTrackClientUtil;
 
 import static net.eneiluj.ihatemoney.android.activity.EditProjectActivity.PARAM_PROJECT_ID;
 
-public class BillsListViewActivity extends AppCompatActivity implements ItemAdapter.LogjobClickListener {
+public class BillsListViewActivity extends AppCompatActivity implements ItemAdapter.BillClickListener {
 
     private final static int PERMISSION_LOCATION = 1;
     public static boolean DEBUG = true;
@@ -78,7 +78,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     private static final String TAG = BillsListViewActivity.class.getSimpleName();
 
-    public final static String CREATED_LOGJOB = "net.eneiluj.ihatemoney.created_logjob";
+    public final static String CREATED_BILL = "net.eneiluj.ihatemoney.created_bill";
     public final static String CREATED_PROJECT = "net.eneiluj.ihatemoney.created_project";
     public final static String DELETED_PROJECT = "net.eneiluj.ihatemoney.deleted_project";
     public final static String DELETED_BILL = "net.eneiluj.ihatemoney.deleted_bill";
@@ -97,7 +97,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private static final String SAVED_STATE_NAVIGATION_ADAPTER_SLECTION = "navigationAdapterSelection";
     private static final String SAVED_STATE_NAVIGATION_OPEN = "navigationOpen";
 
-    private final static int create_logjob_cmd = 0;
+    private final static int create_bill_cmd = 0;
     private final static int show_single_bill_cmd = 1;
     private final static int server_settings = 2;
     private final static int about = 3;
@@ -297,7 +297,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 if (mproj != null) {
                     createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, mproj.getId());
                 }
-                startActivityForResult(createIntent, create_logjob_cmd);
+                startActivityForResult(createIntent, create_bill_cmd);
                 fabMenu.close(false);
             }
         });
@@ -309,7 +309,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 if (mproj != null) {
                     createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, mproj.getId());
                 }
-                startActivityForResult(createIntent, create_logjob_cmd);
+                startActivityForResult(createIntent, create_bill_cmd);
                 fabMenu.close(false);
             }
         });
@@ -330,26 +330,18 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 // update current selection
                 if (itemAll == item) {
                     navigationSelection = new Category(null, null);
-                } else if (itemEnabled == item) {
-                    navigationSelection = new Category(null, true);
-                } else if (itemUncategorized == item) {
-                    navigationSelection = new Category("", null);
-                } else if (itemPhonetrack == item) {
-                    navigationSelection = new Category(CATEGORY_PHONETRACK, null);
-                } else if (itemCustom == item) {
-                    navigationSelection = new Category(CATEGORY_CUSTOM, null);
                 } else {
-                    navigationSelection = new Category(item.label, null);
+                    navigationSelection = new Category(item.label, Long.valueOf(item.id));
                 }
 
                 // auto-close sub-folder in Navigation if selection is outside of that folder
-                if (navigationOpen != null) {
+                /*if (navigationOpen != null) {
                     int slashIndex = navigationSelection.category == null ? -1 : navigationSelection.category.indexOf('/');
                     String rootCategory = slashIndex < 0 ? navigationSelection.category : navigationSelection.category.substring(0, slashIndex);
                     if (!navigationOpen.equals(rootCategory)) {
                         navigationOpen = null;
                     }
-                }
+                }*/
 
                 // update views
                 if (closeNavigation) {
@@ -425,7 +417,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             List<DBMember> members = db.getMembersOfProject(mproj.getId());
             for (DBMember m : members) {
                 items.add(new NavigationAdapter.NavigationItem(
-                        String.valueOf(m.getId()),
+                        String.valueOf(m.getRemoteId()),
                         m.getName(),
                         null,
                         R.drawable.ic_account_circle_grey_24dp)
@@ -679,16 +671,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
             @Override
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-                ItemAdapter.LogjobViewHolder logjobViewHolder = (ItemAdapter.LogjobViewHolder) viewHolder;
+                ItemAdapter.BillViewHolder billViewHolder = (ItemAdapter.BillViewHolder) viewHolder;
                 // show swipe icon on the side
-                logjobViewHolder.showSwipe(dX>0);
+                billViewHolder.showSwipe(dX>0);
                 // move only swipeable part of item (not leave-behind)
-                getDefaultUIUtil().onDraw(c, recyclerView, logjobViewHolder.billSwipeable, dX, dY, actionState, isCurrentlyActive);
+                getDefaultUIUtil().onDraw(c, recyclerView, billViewHolder.billSwipeable, dX, dY, actionState, isCurrentlyActive);
             }
 
             @Override
             public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-                getDefaultUIUtil().clearView(((ItemAdapter.LogjobViewHolder) viewHolder).billSwipeable);
+                getDefaultUIUtil().clearView(((ItemAdapter.BillViewHolder) viewHolder).billSwipeable);
             }
         });
         touchHelper.attachToRecyclerView(listView);
@@ -699,16 +691,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     }
     private void refreshLists(final boolean scrollToTop) {
         String subtitle;
-        // TODO filter with selected member
-        if (navigationSelection.favorite != null && navigationSelection.favorite) {
-            subtitle = getString(R.string.app_name) + " - " + getString(R.string.label_enabled);
-        } else if (navigationSelection.category == CATEGORY_PHONETRACK) {
-            subtitle = getString(R.string.app_name);
-        } else if (navigationSelection.category == CATEGORY_CUSTOM) {
-            subtitle = getString(R.string.app_name) + " - " + getString(R.string.label_custom);
-        } else {
-            subtitle = getString(R.string.app_name) + " - " + getString(R.string.label_all_logjobs);
+        // TODO
+        if (navigationSelection.memberName != null) {
+            subtitle = "proj - " + navigationSelection.memberName;
         }
+        else {
+            subtitle = "proj - All bills";
+        }
+
         setTitle(subtitle);
         CharSequence query = null;
         if (searchView != null && !searchView.isIconified() && searchView.getQuery().length() != 0) {
@@ -811,28 +801,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (DEBUG) { Log.d(TAG, "[ACT RESULT]"); }
         // Check which request we're responding to
-        if (requestCode == create_logjob_cmd) {
+        if (requestCode == create_bill_cmd) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 //not need because of db.synchronisation in createActivity
 
-                DBLogjob createdLogjob = (DBLogjob) data.getExtras().getSerializable(CREATED_LOGJOB);
-                if (DEBUG) { Log.d(TAG, "[ACT RESULT CREATED LOGJOB ] " + createdLogjob.getTitle()); }
-                adapter.add(createdLogjob);
+                DBBill createdBill = (DBBill) data.getExtras().getSerializable(CREATED_BILL);
+                if (DEBUG) { Log.d(TAG, "[ACT RESULT CREATED BILL ] " + createdBill.getWhat()); }
+                adapter.add(createdBill);
             }
             listView.scrollToPosition(0);
-        } else if (requestCode == server_settings) {
-            // Create new Instance with new URL and credentials
-            db = IHateMoneySQLiteOpenHelper.getInstance(this);
-            if (db.getIhateMoneyServerSyncHelper().isSyncPossible()) {
-                this.updateUsernameInDrawer();
-                adapter.removeAll();
-                synchronize();
-            } else {
-                if (IHateMoneyServerSyncHelper.isConfigured(getApplicationContext())) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(PhoneTrackClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
-                }
-            }
         } else if (requestCode == addproject) {
             long pid = data.getLongExtra(CREATED_PROJECT, 0);
             //DBProject createdProject = db.getProject();
@@ -867,6 +845,19 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             // TODO check if bill was added, edited or deleted
             // => apply changes
         }
+        /*else if (requestCode == server_settings) {
+            // Create new Instance with new URL and credentials
+            db = IHateMoneySQLiteOpenHelper.getInstance(this);
+            if (db.getIhateMoneyServerSyncHelper().isSyncPossible()) {
+                this.updateUsernameInDrawer();
+                adapter.removeAll();
+                synchronize();
+            } else {
+                if (IHateMoneyServerSyncHelper.isConfigured(getApplicationContext())) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(PhoneTrackClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
+                }
+            }
+        }*/
     }
 
     private void updateUsernameInDrawer() {

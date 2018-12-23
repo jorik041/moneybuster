@@ -98,16 +98,7 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
         List<Item> itemList = new ArrayList<>();
         // TODO filter with selected member
         for (DBBill bill : billList) {
-            if (category.favorite != null && category.favorite && bill.isEnabled()) {
-                itemList.add(colorTheBill(bill));
-            }
-            else if (category.category == BillsListViewActivity.CATEGORY_PHONETRACK && !bill.getToken().isEmpty() && !bill.getDeviceName().isEmpty()) {
-                itemList.add(colorTheBill(bill));
-            }
-            else if (category.category == BillsListViewActivity.CATEGORY_CUSTOM && bill.getToken().isEmpty() && bill.getDeviceName().isEmpty()) {
-                itemList.add(colorTheBill(bill));
-            }
-            else if (category.favorite == null && category.category == null) {
+            if (category.memberName == null || category.memberRemoteId.equals(bill.getPayerRemoteId())) {
                 itemList.add(colorTheBill(bill));
             }
         }
@@ -116,7 +107,7 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
 
     @Override
     protected void onPostExecute(List<Item> ljItems) {
-        callback.onBillsLoaded(ljItems, category.category == null);
+        callback.onBillsLoaded(ljItems, category.memberName == null);
     }
 
     public interface BillsLoadedListener {

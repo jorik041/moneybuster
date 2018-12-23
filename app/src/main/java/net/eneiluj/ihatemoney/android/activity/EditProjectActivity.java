@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import net.eneiluj.ihatemoney.android.fragment.EditProjectFragment;
 import net.eneiluj.ihatemoney.model.DBLogjob;
+import net.eneiluj.ihatemoney.model.DBProject;
 
 public class EditProjectActivity extends AppCompatActivity implements EditProjectFragment.EditProjectFragmentListener {
 
@@ -101,11 +102,11 @@ public class EditProjectActivity extends AppCompatActivity implements EditProjec
         finish();
     }
 
-    public void onProjectUpdated(DBLogjob logjob) {
+    public void onProjectUpdated(DBProject project) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(logjob.getTitle());
-            actionBar.setSubtitle(logjob.getDeviceName());
+            actionBar.setTitle(project.getName());
+            actionBar.setSubtitle(project.getIhmUrl());
         }
     }
 

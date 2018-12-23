@@ -7,12 +7,12 @@ import java.io.Serializable;
 public class Category implements Serializable {
 
     @Nullable
-    public final String category;
+    public final String memberName;
     @Nullable
-    public final Boolean favorite;
+    public final Long memberRemoteId;
 
-    public Category(@Nullable String category, @Nullable Boolean favorite) {
-        this.category = category;
-        this.favorite = favorite;
+    public Category(@Nullable String memberName, @Nullable Long memberRemoteId) {
+        this.memberName = memberName;
+        this.memberRemoteId = memberRemoteId;
     }
 }

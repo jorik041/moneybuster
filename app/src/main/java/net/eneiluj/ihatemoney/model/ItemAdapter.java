@@ -30,18 +30,18 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = ItemAdapter.class.getSimpleName();
 
     private static final int section_type = 0;
-    private static final int logjob_type = 1;
-    private final LogjobClickListener logjobClickListener;
+    private static final int bill_type = 1;
+    private final BillClickListener billClickListener;
     private List<Item> itemList;
     private boolean showCategory = true;
     private List<Integer> selected;
     private IHateMoneySQLiteOpenHelper db;
     private SharedPreferences prefs;
 
-    public ItemAdapter(@NonNull LogjobClickListener logjobClickListener, IHateMoneySQLiteOpenHelper db) {
+    public ItemAdapter(@NonNull BillClickListener billClickListener, IHateMoneySQLiteOpenHelper db) {
         this.itemList = new ArrayList<>();
         this.selected = new ArrayList<>();
-        this.logjobClickListener = logjobClickListener;
+        this.billClickListener = billClickListener;
         this.db = db;
         this.prefs = PreferenceManager.getDefaultSharedPreferences(db.getContext());
     }
@@ -57,24 +57,24 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     /**
-     * Adds the given logjob to the top of the list.
+     * Adds the given bill to the top of the list.
      *
-     * @param logjob log job that should be added.
+     * @param bill log job that should be added.
      */
-    public void add(@NonNull DBLogjob logjob) {
-        itemList.add(0, logjob);
+    public void add(@NonNull DBBill bill) {
+        itemList.add(0, bill);
         notifyItemInserted(0);
         notifyItemChanged(0);
     }
 
     /**
-     * Replaces a logjob with an updated version
+     * Replaces a bill with an updated version
      *
-     * @param logjob     log job with the changes.
+     * @param bill     log job with the changes.
      * @param position position in the list of the node
      */
-    public void replace(@NonNull DBLogjob logjob, int position) {
-        itemList.set(position, logjob);
+    public void replace(@NonNull DBBill bill, int position) {
+        itemList.set(position, bill);
         notifyItemChanged(position);
     }
 
@@ -91,12 +91,12 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
         if (viewType == section_type) {
-            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_logjobs_list_section_item, parent, false);
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_bills_list_section_item, parent, false);
             return new SectionViewHolder(v);
         } else {
             v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.fragment_logjobs_list_logjob_item, parent, false);
-            return new LogjobViewHolder(v);
+                    .inflate(R.layout.fragment_bills_list_bill_item, parent, false);
+            return new BillViewHolder(v);
         }
     }
 
@@ -110,39 +110,50 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             SectionItem section = (SectionItem) item;
             ((SectionViewHolder) holder).sectionTitle.setText(section.geTitle());
         } else {
-            final DBLogjob logjob = (DBLogjob) item;
-            final LogjobViewHolder nvHolder = ((LogjobViewHolder) holder);
+            final DBBill bill = (DBBill) item;
+            final BillViewHolder nvHolder = ((BillViewHolder) holder);
             nvHolder.billSwipeable.setAlpha(1.0f);
-            nvHolder.billTitle.setText(Html.fromHtml(logjob.getTitle(), Html.FROM_HTML_MODE_COMPACT));
-            if (!logjob.getDeviceName().isEmpty()) {
-                nvHolder.billSubtitle.setText(Html.fromHtml(
-                        logjob.getDeviceName() + " => " + logjob.getUrl(), Html.FROM_HTML_MODE_COMPACT)
-                );
-            }
-            else {
-                nvHolder.billSubtitle.setText(Html.fromHtml(logjob.getUrl(), Html.FROM_HTML_MODE_COMPACT));
-            }
+            String title = bill.getDate();
+            title += " " + bill.getAmount();
+            title += " " + bill.getWhat();
+            nvHolder.billTitle.setText(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
 
-            /*nvHolder.logjobEnabled.setChecked(logjob.isEnabled());
+            String subtitle = db.getMember(bill.getProjectId(), bill.getPayerRemoteId()).getName();
+            subtitle += " => ";
+            for (long boRId : bill.getBillOwersRemoteIds()) {
+                String name = db.getMember(bill.getProjectId(), boRId).getName();
+                subtitle += name + "|";
+            }
+            subtitle.replaceAll("\\|+$", "");
+
+            nvHolder.billSubtitle.setText(Html.fromHtml(
+                        subtitle, Html.FROM_HTML_MODE_COMPACT)
+            );
+
+            /*nvHolder.logjobEnabled.setChecked(bill.isEnabled());
             nvHolder.logjobEnabled.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    logjobClickListener.onLogjobEnabledClick(holder.getAdapterPosition(), view);
+                    billClickListener.onLogjobEnabledClick(holder.getAdapterPosition(), view);
                 }
             });*/
 
             nvHolder.infoButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    logjobClickListener.onBillInfoButtonClick(holder.getAdapterPosition(), view);
+                    billClickListener.onBillInfoButtonClick(holder.getAdapterPosition(), view);
                 }
             });
 
-            //int nb = db.getLogjobLocationCount(logjob.getId());
+            if (bill.getState() != DBBill.STATE_OK) {
+                // TODO show "needsync" if needed
+            }
+
+            //int nb = db.getLogjobLocationCount(bill.getId());
             // TODO show "needsync" if needed
 
             /*if (prefs.getBoolean(db.getContext().getString(R.string.pref_key_shownbsynced), false)) {
-                int nbSent = db.getNbSync(logjob.getId());
+                int nbSent = db.getNbSync(bill.getId());
                 nbTxt = (nbSent == 0) ? "" : String.valueOf(nbSent);
                 if (BillsListViewActivity.DEBUG) {
                     Log.d(TAG, "[onBind : " + nbSent + " nbSync]");
@@ -186,10 +197,10 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return false;
     }
 
-    public Item getItem(int logjobPosition) {
-        if (logjobPosition >= 0 && logjobPosition < itemList.size()) {
-            if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[GETITEM " + logjobPosition + "/"+itemList.size()+"]"); }
-            return itemList.get(logjobPosition);
+    public Item getItem(int billPosition) {
+        if (billPosition >= 0 && billPosition < itemList.size()) {
+            if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[GETITEM " + billPosition + "/"+itemList.size()+"]"); }
+            return itemList.get(billPosition);
         }
         else {
             return null;
@@ -212,10 +223,10 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return getItem(position).isSection() ? section_type : logjob_type;
+        return getItem(position).isSection() ? section_type : bill_type;
     }
 
-    public interface LogjobClickListener {
+    public interface BillClickListener {
         void onBillClick(int position, View v);
 
         //void onLogjobEnabledClick(int position, View v);
@@ -225,7 +236,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         boolean onBillLongClick(int position, View v);
     }
 
-    public class LogjobViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener {
+    public class BillViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener {
         @BindView(R.id.billSwipeable)
         public View billSwipeable;
         View billSwipeFrame;
@@ -237,7 +248,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         @BindView(R.id.infoButton)
         ImageButton infoButton;
 
-        private LogjobViewHolder(View v) {
+        private BillViewHolder(View v) {
             super(v);
             this.billSwipeFrame = v.findViewById(R.id.billSwipeFrame);
             this.billSwipeable = v.findViewById(R.id.billSwipeable);
@@ -254,13 +265,13 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public void onClick(View v) {
             final int adapterPosition = getAdapterPosition();
             if (adapterPosition != NO_POSITION) {
-                logjobClickListener.onBillClick(adapterPosition, v);
+                billClickListener.onBillClick(adapterPosition, v);
             }
         }
 
         @Override
         public boolean onLongClick(View v) {
-            return logjobClickListener.onBillLongClick(getAdapterPosition(), v);
+            return billClickListener.onBillLongClick(getAdapterPosition(), v);
         }
 
         public void showSwipe(boolean left) {

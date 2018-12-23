@@ -15,7 +15,7 @@ import net.eneiluj.ihatemoney.android.fragment.EditBillFragment;
 import net.eneiluj.ihatemoney.model.DBBill;
 import net.eneiluj.ihatemoney.model.DBLogjob;
 
-public abstract class EditBillActivity extends AppCompatActivity implements EditBillFragment.BillFragmentListener {
+public class EditBillActivity extends AppCompatActivity implements EditBillFragment.BillFragmentListener {
 
     public static final String PARAM_BILL_ID = "billId";
     public static final String PARAM_PROJECT_ID = "projectId";
@@ -143,11 +143,11 @@ public abstract class EditBillActivity extends AppCompatActivity implements Edit
         finish();
     }
 
-    public void onBillUpdated(DBLogjob logjob) {
+    public void onBillUpdated(DBBill bill) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(logjob.getTitle());
-            actionBar.setSubtitle(logjob.getDeviceName());
+            actionBar.setTitle(bill.getWhat());
+            actionBar.setSubtitle(String.valueOf(bill.getAmount()));
         }
     }
 

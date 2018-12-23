@@ -53,7 +53,7 @@
                 android:resource="@xml/searchable" />
             <meta-data
                 android:name="android.app.default_searchable"
-                android:value="net.eneiluj.ihatemoney.android.activity.LogjobsListViewActivity" />
+                android:value="net.eneiluj.ihatemoney.android.activity.BillsListViewActivity" />
         </activity>
 
         <activity

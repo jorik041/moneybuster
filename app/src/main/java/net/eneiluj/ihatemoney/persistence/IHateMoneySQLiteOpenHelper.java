@@ -933,7 +933,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
                     new String[]{String.valueOf(billId)});
     }
 
-    public void updateBill(long billId, long newPayerRemoteId, double newAmount, @Nullable String newDate, @Nullable String newWhat, int newState) {
+    public void updateBill(long billId, @Nullable Long newRemoteId, @Nullable Long newPayerRemoteId, @Nullable Double newAmount, @Nullable String newDate, @Nullable String newWhat, @Nullable Integer newState) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -943,9 +943,18 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         if (newWhat != null) {
             values.put(key_what, newWhat);
         }
-        values.put(key_payer_remoteId, newPayerRemoteId);
-        values.put(key_amount, newAmount);
-        values.put(key_state, newState);
+        if (newRemoteId != null) {
+            values.put(key_remoteId, newRemoteId);
+        }
+        if (newPayerRemoteId != null) {
+            values.put(key_payer_remoteId, newPayerRemoteId);
+        }
+        if (newAmount != null) {
+            values.put(key_amount, newAmount);
+        }
+        if (newState != null) {
+            values.put(key_state, newState);
+        }
         if (values.size() > 0) {
             int rows = db.update(table_bills, values, key_id + " = ?",
                     new String[]{String.valueOf(billId)});
@@ -959,7 +968,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         if (bill.getState() == DBBill.STATE_ADDED) {
             newState = DBBill.STATE_ADDED;
         }
-        updateBill(bill.getId(), newPayerRemoteId, newAmount, newDate, newWhat, newState);
+        updateBill(bill.getId(), null, newPayerRemoteId, newAmount, newDate, newWhat, newState);
 
         // bill owers
         List<DBBillOwer> dbBillOwers = getBillowersOfBill(bill.getId());

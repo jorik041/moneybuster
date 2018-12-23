@@ -15,10 +15,14 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import at.bitfire.cert4android.CustomCertManager;
 import net.eneiluj.ihatemoney.BuildConfig;
+import net.eneiluj.ihatemoney.model.DBBill;
+import net.eneiluj.ihatemoney.model.DBBillOwer;
 import net.eneiluj.ihatemoney.model.DBProject;
 
 @WorkerThread
@@ -69,48 +73,101 @@ public class IHateMoneyClient {
         String target = project.getIhmUrl().replaceAll("/+$", "")
                 + "/api/projects/" + project.getRemoteId();
         //https://ihatemoney.org/api/projects/demo
-        return new ServerResponse.ProjectResponse(requestServer(ccm, target, METHOD_GET, null, lastETag, project.getRemoteId(), project.getPassword()));
+        return new ServerResponse.ProjectResponse(requestServer(ccm, target, METHOD_GET, null, null, lastETag, project.getRemoteId(), project.getPassword()));
     }
 
     public ServerResponse.EditRemoteProjectResponse editRemoteProject(CustomCertManager ccm, DBProject project, String newName, String newEmail, String newPassword) throws IOException {
         String target = project.getIhmUrl().replaceAll("/+$", "")
                 + "/api/projects/" + project.getRemoteId();
         //https://ihatemoney.org/api/projects/demo
-        Map<String, String> params = new ArrayMap<>();
-        params.put("name", newName == null ? "" : newName);
-        params.put("contact_email", newEmail == null ? "" : newEmail);
-        params.put("password", newPassword == null ? "" : newPassword);
-        return new ServerResponse.EditRemoteProjectResponse(requestServer(ccm, target, METHOD_PUT, params, null, project.getRemoteId(), project.getPassword()));
+        List<String> paramKeys = new ArrayList<>();
+        List<String> paramValues = new ArrayList<>();
+        paramKeys.add("name");
+        paramValues.add(newName == null ? "" : newName);
+        paramKeys.add("contact_email");
+        paramValues.add(newEmail == null ? "" : newEmail);
+        paramKeys.add("password");
+        paramValues.add(newPassword == null ? "" : newPassword);
+        return new ServerResponse.EditRemoteProjectResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, project.getRemoteId(), project.getPassword()));
+    }
+
+    public ServerResponse.EditRemoteBillResponse editRemoteBill(CustomCertManager ccm, DBProject project, DBBill bill) throws IOException {
+        String target = project.getIhmUrl().replaceAll("/+$", "")
+                + "/api/projects/" + project.getRemoteId() + "/bills/" + bill.getRemoteId();
+        //https://ihatemoney.org/api/projects/demo/bills/12
+        // "date=2011-09-10&what=raclette&payer=31&payed_for=31&amount=250"
+        List<String> paramKeys = new ArrayList<>();
+        List<String> paramValues = new ArrayList<>();
+        paramKeys.add("date");
+        paramValues.add(bill.getDate());
+        paramKeys.add("what");
+        paramValues.add(bill.getWhat());
+        paramKeys.add("payer");
+        paramValues.add(String.valueOf(bill.getPayerRemoteId()));
+        paramKeys.add("amount");
+        paramValues.add(String.valueOf(bill.getAmount()));
+        for (long boRemoteId : bill.getBillOwersRemoteIds()) {
+            paramKeys.add("payed_for");
+            paramValues.add(String.valueOf(boRemoteId));
+        }
+        return new ServerResponse.EditRemoteBillResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, project.getRemoteId(), project.getPassword()));
     }
 
     public ServerResponse.DeleteRemoteProjectResponse deleteRemoteProject(CustomCertManager ccm, DBProject project) throws IOException {
         String target = project.getIhmUrl().replaceAll("/+$", "")
                 + "/api/projects/" + project.getRemoteId();
-        return new ServerResponse.DeleteRemoteProjectResponse(requestServer(ccm, target, METHOD_DELETE, null, null, project.getRemoteId(), project.getPassword()));
+        return new ServerResponse.DeleteRemoteProjectResponse(requestServer(ccm, target, METHOD_DELETE, null,null, null, project.getRemoteId(), project.getPassword()));
     }
 
     public ServerResponse.DeleteRemoteBillResponse deleteRemoteBill(CustomCertManager ccm, DBProject project, long billRemoteId) throws IOException {
         String target = project.getIhmUrl().replaceAll("/+$", "")
                 + "/api/projects/" + project.getRemoteId() + "/bills/" + billRemoteId;
-        return new ServerResponse.DeleteRemoteBillResponse(requestServer(ccm, target, METHOD_DELETE, null, null, project.getRemoteId(), project.getPassword()));
+        return new ServerResponse.DeleteRemoteBillResponse(requestServer(ccm, target, METHOD_DELETE, null,null, null, project.getRemoteId(), project.getPassword()));
     }
 
     public ServerResponse.CreateRemoteProjectResponse createRemoteProject(CustomCertManager ccm, DBProject project) throws IOException {
         String target = project.getIhmUrl().replaceAll("/+$", "")
                 + "/api/projects";
-        Map<String, String> params = new ArrayMap<>();
-        params.put("name", project.getName() == null ? "" : project.getName());
-        params.put("contact_email", project.getEmail() == null ? "" : project.getEmail());
-        params.put("password", project.getPassword() == null ? "" : project.getPassword());
-        params.put("id", project.getRemoteId() == null ? "" : project.getRemoteId());
-        return new ServerResponse.CreateRemoteProjectResponse(requestServer(ccm, target, METHOD_POST, params, null, null, null));
+        List<String> paramKeys = new ArrayList<>();
+        List<String> paramValues = new ArrayList<>();
+        paramKeys.add("name");
+        paramValues.add(project.getName() == null ? "" : project.getName());
+        paramKeys.add("contact_email");
+        paramValues.add(project.getEmail() == null ? "" : project.getEmail());
+        paramKeys.add("password");
+        paramValues.add(project.getPassword() == null ? "" : project.getPassword());
+        paramKeys.add("id");
+        paramValues.add(project.getRemoteId() == null ? "" : project.getRemoteId());
+        return new ServerResponse.CreateRemoteProjectResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, null, null));
+    }
+
+    public ServerResponse.CreateRemoteBillResponse createRemoteBill(CustomCertManager ccm, DBProject project, DBBill bill) throws IOException {
+        String target = project.getIhmUrl().replaceAll("/+$", "")
+                + "/api/projects/" + project.getRemoteId() + "/bills";
+        //https://ihatemoney.org/api/projects/demo/bills/12
+        // "date=2011-09-10&what=raclette&payer=31&payed_for=31&amount=250"
+        List<String> paramKeys = new ArrayList<>();
+        List<String> paramValues = new ArrayList<>();
+        paramKeys.add("date");
+        paramValues.add(bill.getDate());
+        paramKeys.add("what");
+        paramValues.add(bill.getWhat());
+        paramKeys.add("payer");
+        paramValues.add(String.valueOf(bill.getPayerRemoteId()));
+        paramKeys.add("amount");
+        paramValues.add(String.valueOf(bill.getAmount()));
+        for (long boRemoteId : bill.getBillOwersRemoteIds()) {
+            paramKeys.add("payed_for");
+            paramValues.add(String.valueOf(boRemoteId));
+        }
+        return new ServerResponse.CreateRemoteBillResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, project.getRemoteId(), project.getPassword()));
     }
 
     public ServerResponse.BillsResponse getBills(CustomCertManager ccm, DBProject project) throws JSONException, IOException {
         String target = project.getIhmUrl().replaceAll("/+$", "")
                 + "/api/projects/" + project.getRemoteId() + "/bills";
         //https://ihatemoney.org/api/projects/demo/bills
-        return new ServerResponse.BillsResponse(requestServer(ccm, target, METHOD_GET, null, null, project.getRemoteId(), project.getPassword()));
+        return new ServerResponse.BillsResponse(requestServer(ccm, target, METHOD_GET, null, null,null, project.getRemoteId(), project.getPassword()));
     }
 
     /**
@@ -118,12 +175,11 @@ public class IHateMoneyClient {
      *
      * @param target Filepath to the wanted function
      * @param method GET, POST, DELETE or PUT
-     * @param params JSON Object which shall be transferred to the server.
      * @return Body of answer
      * @throws MalformedURLException
      * @throws IOException
      */
-    private ResponseData requestServer(CustomCertManager ccm, String target, String method, Map<String, String>  params, String lastETag, String username, String password)
+    private ResponseData requestServer(CustomCertManager ccm, String target, String method, List<String> paramKeys, List<String> paramValues, String lastETag, String username, String password)
             throws IOException {
         StringBuffer result = new StringBuffer();
         // setup connection
@@ -144,11 +200,11 @@ public class IHateMoneyClient {
         Log.d(getClass().getSimpleName(), method + " " + targetURL);
         // send request data (optional)
         byte[] paramData = null;
-        if (params != null) {
+        if (paramKeys != null) {
             String dataString = "";
-            for (Map.Entry<String, String> p : params.entrySet()) {
-                String key = p.getKey();
-                String value = p.getValue();
+            for (int i=0; i < paramKeys.size(); i++) {
+                String key = paramKeys.get(i);
+                String value = paramValues.get(i);
                 if (dataString.length() > 0) {
                     dataString += "&";
                 }
@@ -157,7 +213,7 @@ public class IHateMoneyClient {
             }
             byte[] data = dataString.getBytes();
 
-            Log.d(getClass().getSimpleName(), "Params: " + params);
+            Log.d(getClass().getSimpleName(), "Params: " + dataString);
             con.setFixedLengthStreamingMode(data.length);
             con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             con.setRequestProperty("Content-Length", Integer.toString(data.length));

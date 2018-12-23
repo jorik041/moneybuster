@@ -290,8 +290,24 @@ public class IHateMoneyServerSyncHelper {
                 }
                 // edit what's been edited
                 List<DBBill> toEdit = dbHelper.getBillsOfProjectWithState(project.getId(), DBBill.STATE_EDITED);
+                for (DBBill bToEdit : toEdit) {
+                    ServerResponse.EditRemoteBillResponse editRemoteBillResponse = client.editRemoteBill(customCertManager, project, bToEdit);
+                    if (editRemoteBillResponse.getStringContent().equals(String.valueOf(bToEdit.getRemoteId()))) {
+                        dbHelper.setBillState(bToEdit.getId(), DBBill.STATE_OK);
+                    }
+                }
                 // add what's been added
                 List<DBBill> toAdd = dbHelper.getBillsOfProjectWithState(project.getId(), DBBill.STATE_ADDED);
+                for (DBBill bToAdd : toAdd) {
+                    ServerResponse.CreateRemoteBillResponse createRemoteBillResponse = client.createRemoteBill(customCertManager, project, bToAdd);
+                    long newRemoteId = Long.valueOf(createRemoteBillResponse.getStringContent());
+                    if (newRemoteId > 0) {
+                        dbHelper.updateBill(
+                                bToAdd.getId(), newRemoteId, null,
+                                null, null, null, DBBill.STATE_OK
+                        );
+                    }
+                }
                 status = LoginStatus.OK;
             } catch (ServerResponse.NotModifiedException e) {
                 Log.d(getClass().getSimpleName(), "No changes, nothing to do.");
@@ -385,8 +401,11 @@ public class IHateMoneyServerSyncHelper {
                             Log.d(getClass().getSimpleName(), "Nothing to do for bill : "+localBill);
                         }
                         else {
-                            dbHelper.updateBill(localBill.getId(), remoteBill.getPayerRemoteId(),
-                                    remoteBill.getAmount(), remoteBill.getDate(), remoteBill.getWhat(), DBBill.STATE_OK);
+                            dbHelper.updateBill(
+                                    localBill.getId(), null, remoteBill.getPayerRemoteId(),
+                                    remoteBill.getAmount(), remoteBill.getDate(),
+                                    remoteBill.getWhat(), DBBill.STATE_OK
+                            );
                             Log.d(getClass().getSimpleName(), "Update bill : "+remoteBill);
                         }
                         //////// billowers

@@ -50,6 +50,26 @@ public class ServerResponse {
         }
     }
 
+    public static class EditRemoteBillResponse extends ServerResponse {
+        public EditRemoteBillResponse(IHateMoneyClient.ResponseData response) {
+            super(response);
+        }
+
+        public String getStringContent() {
+            return getContent();
+        }
+    }
+
+    public static class CreateRemoteBillResponse extends ServerResponse {
+        public CreateRemoteBillResponse(IHateMoneyClient.ResponseData response) {
+            super(response);
+        }
+
+        public String getStringContent() {
+            return getContent();
+        }
+    }
+
     public static class DeleteRemoteBillResponse extends ServerResponse {
         public DeleteRemoteBillResponse(IHateMoneyClient.ResponseData response) {
             super(response);

@@ -99,6 +99,14 @@
                 android:background="#00000000"
                 android:textColor="#000000" />
 
+            <ImageView
+                android:id="@+id/syncIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|left"
+                android:tint="@color/primary"
+                app:srcCompat="@android:drawable/stat_notify_sync" />
+
         </FrameLayout>
     </android.support.v7.widget.LinearLayoutCompat>
 

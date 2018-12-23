@@ -190,7 +190,7 @@ public class ServerResponse {
         if (!json.isNull("what")) {
             what = json.getString("what");
         }
-        DBBill bill = new DBBill(0, remoteId, projId, payerRemoteId, amount, date, what);
+        DBBill bill = new DBBill(0, remoteId, projId, payerRemoteId, amount, date, what, DBBill.STATE_OK);
         bill.setBillOwers(getBillOwersFromJson(json));
         return bill;
     }

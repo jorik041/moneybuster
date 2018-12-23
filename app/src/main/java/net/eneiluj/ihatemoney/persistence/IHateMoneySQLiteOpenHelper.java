@@ -85,6 +85,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String key_amount = "AMOUNT";
     private static final String key_date = "DATE";
     private static final String key_what = "WHAT";
+    private static final String key_state = "STATE";
 
     private static final String table_billowers = "BILLOWERS";
     //private static final String key_id = "ID";
@@ -109,7 +110,8 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     };
 
     private static final String[] columnsBills = {
-            key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what
+            key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount,
+            key_date, key_what, key_state
     };
 
     private static final String[] columnsBillowers = {
@@ -215,6 +217,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
                 key_payer_remoteId + " INTEGER, " +
                 key_amount + " FLOAT, " +
                 key_what + " TEXT, " +
+                key_state + " INTEGER, " +
                 key_date + " TEXT)");
     }
 
@@ -883,7 +886,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     public long addBill(DBBill b) {
-        // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what
+        // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what, key_state
         if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[add bill]"); }
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -893,11 +896,12 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_amount, b.getAmount());
         values.put(key_date, b.getDate());
         values.put(key_what, b.getWhat());
+        values.put(key_state, b.getState());
 
         return db.insert(table_bills, null, values);
     }
 
-    public void updateBill(long remoteId, long projId, long newPayerRemoteId, double newAmount, @Nullable String newDate, @Nullable String newWhat) {
+    public void updateBill(long remoteId, long projId, long newPayerRemoteId, double newAmount, @Nullable String newDate, @Nullable String newWhat, int newState) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -909,13 +913,14 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         }
         values.put(key_payer_remoteId, newPayerRemoteId);
         values.put(key_amount, newAmount);
+        values.put(key_state, newState);
         if (values.size() > 0) {
             int rows = db.update(table_bills, values, key_remoteId + " = ? AND "+key_projectid+" = ?",
                     new String[]{String.valueOf(remoteId), String.valueOf(projId)});
         }
     }
 
-    public void updateBill(long billId, long newPayerRemoteId, double newAmount, @Nullable String newDate, @Nullable String newWhat) {
+    public void updateBill(long billId, long newPayerRemoteId, double newAmount, @Nullable String newDate, @Nullable String newWhat, int newState) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -927,6 +932,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         }
         values.put(key_payer_remoteId, newPayerRemoteId);
         values.put(key_amount, newAmount);
+        values.put(key_state, newState);
         if (values.size() > 0) {
             int rows = db.update(table_bills, values, key_id + " = ?",
                     new String[]{String.valueOf(billId)});
@@ -935,7 +941,12 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
 
     public void updateBillAndSync(DBBill bill, long newPayerRemoteId, double newAmount, @Nullable String newDate, @Nullable String newWhat, @Nullable List<Long> newOwersRemoteIds) {
         // bill values
-        updateBill(bill.getId(), newPayerRemoteId, newAmount, newDate, newWhat);
+        // state
+        int newState = DBBill.STATE_EDITED;
+        if (bill.getState() == DBBill.STATE_ADDED) {
+            newState = DBBill.STATE_ADDED;
+        }
+        updateBill(bill.getId(), newPayerRemoteId, newAmount, newDate, newWhat, newState);
 
         // bill owers
         List<DBBillOwer> dbBillOwers = getBillowersOfBill(bill.getId());
@@ -957,8 +968,6 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         }
         serverSyncHelper.scheduleSync(true, bill.getProjectId());
     }
-
-
 
     /**
      *
@@ -1012,7 +1021,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
      */
     @NonNull
     private DBBill getBillFromCursor(@NonNull Cursor cursor) {
-        // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what
+        // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what, key_state
         return new DBBill(
                 cursor.getLong(0),
                 cursor.getLong(1),
@@ -1020,7 +1029,8 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
                 cursor.getLong(3),
                 cursor.getDouble(4),
                 cursor.getString(5),
-                cursor.getString(6)
+                cursor.getString(6),
+                cursor.getInt(7)
         );
     }
 

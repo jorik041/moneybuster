@@ -17,10 +17,17 @@ public class DBBill implements Serializable {
     private double amount;
     private String date;
     private String what;
+    // OK, ADDED, EDITED, DELETED
+    private int state;
 
     private List<DBBillOwer> billOwers;
 
-    public DBBill(long id, long remoteId, long projectId, long payerRemoteId, double amount, String date, String what) {
+    public static final int STATE_OK = 0;
+    public static final int STATE_ADDED = 1;
+    public static final int STATE_EDITED = 2;
+    public static final int STATE_DELETED = 3;
+
+    public DBBill(long id, long remoteId, long projectId, long payerRemoteId, double amount, String date, String what, int state) {
         this.id = id;
         this.remoteId = remoteId;
         this.projectId = projectId;
@@ -30,6 +37,24 @@ public class DBBill implements Serializable {
         this.what = what;
 
         this.billOwers = new ArrayList<>();
+
+        this.state = state;
+    }
+
+    public List<Long> getBillOwersRemoteIds() {
+        List<Long> result = new ArrayList<>();
+        for (DBBillOwer bo : billOwers) {
+            result.add(bo.getMemberRemoteId());
+        }
+        return result;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     public long getId() {
@@ -100,6 +125,7 @@ public class DBBill implements Serializable {
     public String toString() {
         // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what
         return "#DBBill" + getId() + "/" + this.remoteId + "," + this.projectId
-                + ", " + this.payerRemoteId + ", " + this.amount + ", " + this.date + ", " + this.what;
+                + ", " + this.payerRemoteId + ", " + this.amount + ", " + this.date + ", "
+                + this.what + ", " + this.state;
     }
 }

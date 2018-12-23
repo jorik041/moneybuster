@@ -355,7 +355,7 @@ public class IHateMoneyServerSyncHelper {
                         }
                         else {
                             dbHelper.updateBill(localBill.getId(), remoteBill.getPayerRemoteId(),
-                                    remoteBill.getAmount(), remoteBill.getDate(), remoteBill.getWhat());
+                                    remoteBill.getAmount(), remoteBill.getDate(), remoteBill.getWhat(), DBBill.STATE_OK);
                             Log.d(getClass().getSimpleName(), "Update bill : "+remoteBill);
                         }
                         //////// billowers

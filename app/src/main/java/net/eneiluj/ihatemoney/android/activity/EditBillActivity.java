@@ -98,7 +98,7 @@ public abstract class EditBillActivity extends AppCompatActivity implements Edit
         Intent intent = getIntent();
 
         //DBLogjob newLogjob = new DBLogjob(0, "",  "https://yourserver.org/page.php?lat=%LAT", "", "", 60, 5, 50, false, false, 0);
-        DBBill newBill = new DBBill(0, 0, projectId, 0, 0, "2018-12-12", "");
+        DBBill newBill = new DBBill(0, 0, projectId, 0, 0, "2018-12-12", "", DBBill.STATE_ADDED);
 
         fragment = EditBillFragment.newInstanceWithNewBill(newBill);
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();

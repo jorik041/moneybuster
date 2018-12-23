@@ -263,6 +263,24 @@ public class EditBillFragment extends PreferenceFragmentCompat {
             case R.id.menu_cancel:
                 listener.close();
                 return true;
+            case R.id.menu_save:
+                if (getWhat().isEmpty()) {
+
+                }
+                else if (getDate().isEmpty()) {
+
+                }
+                else if (getAmount() == 0) {
+
+                }
+                else if (getOwersRemoteIds().size() == 0) {
+
+                }
+                else {
+                    saveBill(null);
+                    listener.close();
+                }
+                return true;
             case R.id.menu_delete:
                 confirmDeleteAlertBuilder.show();
                 return true;
@@ -291,12 +309,28 @@ public class EditBillFragment extends PreferenceFragmentCompat {
 
         List<Long> newOwersRemoteIds = getOwersRemoteIds();
 
+        // check if owers have changed
+        boolean owersChanged = false;
+        List<Long> billOwersRemoteIds = bill.getBillOwersRemoteIds();
+        if (newOwersRemoteIds.size() != billOwersRemoteIds.size()) {
+            owersChanged = true;
+        }
+        else {
+            if (!newOwersRemoteIds.containsAll(billOwersRemoteIds)) {
+                owersChanged = true;
+            }
+            if (!billOwersRemoteIds.containsAll(newOwersRemoteIds)) {
+                owersChanged = true;
+            }
+        }
+
         // if this is an existing bill
         if (bill.getId() != 0) {
             if (bill.getWhat().equals(newWhat) &&
                     bill.getDate().equals(newDate) &&
                     bill.getAmount() == newAmount &&
-                    bill.getPayerRemoteId() == newPayerRemoteId
+                    bill.getPayerRemoteId() == newPayerRemoteId &&
+                    !owersChanged
                     ) {
                 Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed");
             } else {
@@ -304,13 +338,13 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                 db.updateBillAndSync(bill, newPayerRemoteId, newAmount, newDate, newWhat, newOwersRemoteIds);
                 //System.out.println("AFFFFFFTTTTTTEEERRRRR : "+logjob);
                 //listener.onBillUpdated(bill);
-                listener.close();
+                //listener.close();
             }
         }
         // this is a new bill
         else {
             // add the bill
-            DBBill newBill = new DBBill(0, 0, bill.getProjectId(), newPayerRemoteId, newAmount, newDate, newWhat);
+            DBBill newBill = new DBBill(0, 0, bill.getProjectId(), newPayerRemoteId, newAmount, newDate, newWhat, DBBill.STATE_ADDED);
             long newBillId = db.addBill(newBill);
             for (long newOwerRemoteid : newOwersRemoteIds) {
                 db.addBillower(newBillId, new DBBillOwer(0, newBillId, newOwerRemoteid));

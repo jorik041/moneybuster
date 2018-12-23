@@ -22,9 +22,10 @@ xmlns:tools="http://schemas.android.com/tools"
         android:summary=""
         android:title="@string/setting_what" />
 
-    <net.eneiluj.ihatemoney.util.DatePreference
+    <!--net.eneiluj.ihatemoney.util.DatePreference -->
+    <EditTextPreference
         android:id="@+id/editDate"
-        android:icon="@drawable/ic_timer_grey_24dp"
+        android:icon="@android:drawable/ic_menu_today"
         android:dialogMessage="@string/setting_date_long"
         android:dialogTitle="@string/setting_date"
         android:key="date"
@@ -46,14 +47,13 @@ xmlns:tools="http://schemas.android.com/tools"
 
     <EditTextPreference
         android:id="@+id/editAmount"
-        android:icon="@drawable/ic_length_grey_24dp"
         android:dialogMessage="@string/setting_amount_long"
         android:dialogTitle="@string/setting_amount"
-        android:key="amount"
-        android:selectAllOnFocus="true"
-        android:persistent="false"
-        android:summary=""
+        android:icon="@android:drawable/ic_menu_compass"
         android:inputType="numberDecimal"
+        android:key="amount"
+        android:persistent="false"
+        android:selectAllOnFocus="true"
         android:title="@string/setting_amount" />
 
     <MultiSelectListPreference

@@ -41,6 +41,7 @@ import net.eneiluj.ihatemoney.util.ICallback;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class EditBillFragment extends PreferenceFragmentCompat {
 
@@ -56,22 +57,21 @@ public class EditBillFragment extends PreferenceFragmentCompat {
     private static final String SAVEDKEY_ORIGINAL_BILL = "original_bill";
 
     protected DBBill bill;
-    @Nullable
-    protected DBBill originalBill;
+
     protected IHateMoneySQLiteOpenHelper db;
     protected BillFragmentListener listener;
 
     private Handler handler;
 
     protected EditTextPreference editWhat;
-    protected DatePreference editDate;
+    protected EditTextPreference editDate;
     protected ListPreference editPayer;
     protected EditTextPreference editAmount;
     protected MultiSelectListPreference editOwers;
 
     private List<DBMember> memberList;
     private List<String> memberNameList;
-    private List<String> memberIdList;
+    private List<String> memberRemoteIdList;
 
     private DialogInterface.OnClickListener deleteDialogClickListener;
     private AlertDialog.Builder confirmDeleteAlertBuilder;
@@ -97,18 +97,17 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         if (savedInstanceState == null) {
             long id = getArguments().getLong(PARAM_BILL_ID);
             if (id > 0) {
-                bill = originalBill = db.getBill(id);
+                bill = db.getBill(id);
             } else {
-                DBBill cloudBill = (DBBill) getArguments().getSerializable(PARAM_NEWBILL);
-                if (cloudBill == null) {
+                DBBill newBill = (DBBill) getArguments().getSerializable(PARAM_NEWBILL);
+                if (newBill == null) {
                     throw new IllegalArgumentException(PARAM_BILL_ID + " is not given and argument " + PARAM_NEWBILL + " is missing.");
                 }
-                bill = db.getBill(db.addBill(cloudBill));
-                originalBill = null;
+                //bill = db.getBill(db.addBill(cloudBill));
+                bill = newBill;
             }
         } else {
             bill = (DBBill) savedInstanceState.getSerializable(SAVEDKEY_BILL);
-            originalBill = (DBBill) savedInstanceState.getSerializable(SAVEDKEY_ORIGINAL_BILL);
         }
         setHasOptionsMenu(true);
         System.out.println("BILL on create : " + bill);
@@ -243,7 +242,6 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         super.onSaveInstanceState(outState);
         //saveBill(null);
         outState.putSerializable(SAVEDKEY_BILL, bill);
-        outState.putSerializable(SAVEDKEY_ORIGINAL_BILL, originalBill);
     }
 
     @Override
@@ -340,96 +338,70 @@ public class EditBillFragment extends PreferenceFragmentCompat {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        System.out.println("ACT CREATEDDDDDDD");
+        System.out.println("ACT EDIT BILL CREATEDDDDDDD");
         ButterKnife.bind(this, getView());
 
         // hide the keyboard when this window gets the focus
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        // manage session list
-        sessionList = db.getSessions();
-        sessionNameList = new ArrayList<>();
-        sessionIdList = new ArrayList<>();
-        for (DBSession session : sessionList) {
-            sessionNameList.add(session.getName());
-            sessionIdList.add(String.valueOf(session.getId()));
+        // manage member list
+        memberList = db.getMembersOfProject(bill.getProjectId());
+        memberNameList = new ArrayList<>();
+        memberRemoteIdList = new ArrayList<>();
+        for (DBMember member : memberList) {
+            memberNameList.add(member.getName());
+            memberRemoteIdList.add(String.valueOf(member.getRemoteId()));
         }
 
-        // manage session list DIALOG
+        // manage payer and owers
 
-        if (sessionNameList.size() > 0) {
-            CharSequence[] entcs = sessionNameList.toArray(new CharSequence[sessionNameList.size()]);
-            selectBuilder.setSingleChoiceItems(entcs, -1, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // user checked an item
-                    System.out.println("CHECKED :" + which);
-                    setFieldsFromSession(sessionList.get(which));
-                    saveBill(null);
-                    dialog.dismiss();
-                }
-            });
+        if (memberNameList.size() > 0) {
+            CharSequence[] memberNameArray = memberNameList.toArray(new CharSequence[memberNameList.size()]);
+            CharSequence[] memberRemoteIdArray = memberRemoteIdList.toArray(new CharSequence[memberNameList.size()]);
 
-            // add OK and Cancel buttons
-            selectBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // user clicked OK
-                    System.out.println("CHECKED OK :" + which);
-                }
-            });
-            selectBuilder.setNegativeButton("Cancel", null);
+            editPayer.setEntries(memberNameArray);
+            editPayer.setEntryValues(memberRemoteIdArray);
 
-            // create the alert dialog
-            System.out.println("I SET THE DIALOGGGGGGGG");
-            selectDialog = selectBuilder.create();
+            editOwers.setEntries(memberNameArray);
+            editOwers.setEntryValues(memberRemoteIdArray);
         }
 
-        editTitle = (EditTextPreference) this.findPreference("title");
-        editTitle.setText(logjob.getTitle());
-        if (logjob.getTitle().isEmpty()) {
-            editTitle.setSummary(getString(R.string.mandatory));
+        editWhat = (EditTextPreference) this.findPreference("what");
+        editWhat.setText(bill.getWhat());
+        if (bill.getWhat().isEmpty()) {
+            editWhat.setSummary(getString(R.string.mandatory));
         }
         else {
-            editTitle.setSummary(logjob.getTitle());
+            editWhat.setSummary(bill.getWhat());
         }
-        editURL = (EditTextPreference) this.findPreference("URL");
-        editURL.setText(logjob.getUrl());
-        editURL.setSummary(logjob.getUrl());
+        editDate = (EditTextPreference) this.findPreference("date");
+        editDate.setText(bill.getDate());
+        editDate.setSummary(bill.getDate());
 
-        editMintime = (EditTextPreference) this.findPreference("mintime");
-        editMintime.setText(String.valueOf(logjob.getMinTime()));
-        editMintime.setSummary(String.valueOf(logjob.getMinTime()));
-
-        editMindistance = (EditTextPreference) this.findPreference("mindistance");
-        editMindistance.setText(String.valueOf(logjob.getMinDistance()));
-        editMindistance.setSummary(String.valueOf(logjob.getMinDistance()));
-
-        editMinaccuracy = (EditTextPreference) this.findPreference("minaccuracy");
-        editMinaccuracy.setText(String.valueOf(logjob.getMinAccuracy()));
-        editMinaccuracy.setSummary(String.valueOf(logjob.getMinAccuracy()));
-
-        editPost = (CheckBoxPreference) this.findPreference("post");
-        editPost.setChecked(logjob.getPost());
+        editAmount = (EditTextPreference) this.findPreference("amount");
+        editAmount.setText(String.valueOf(bill.getAmount()));
+        editAmount.setSummary(String.valueOf(bill.getAmount()));
     }
 
-    protected String getTitle() {
-        return editTitle.getText();
+    protected String getWhat() {
+        return editWhat.getText();
     }
-    protected String getURL() {
-        return editURL.getText();
+    protected String getDate() {
+        return editDate.getText();
     }
-    protected String getMintime() {
-        return editMintime.getText();
+    protected double getAmount() {
+        return Double.valueOf(editAmount.getText());
     }
-    protected String getMindistance() {
-        return editMindistance.getText();
+    protected long getPayerRemoteId() {
+        return Long.valueOf(editPayer.getValue());
     }
-    protected String getMinaccuracy() {
-        return editMinaccuracy.getText();
-    }
-    private boolean getPost() {
-        return editPost.isChecked();
+    protected List<Long> getOwersRemoteIds() {
+        Set<String> strValues =  editOwers.getValues();
+        List<Long> owersRemoteIds = new ArrayList<>();
+        for (String strValue : strValues) {
+            owersRemoteIds.add(Long.valueOf(strValue));
+        }
+        return owersRemoteIds;
     }
 
     protected void showToast(CharSequence text, int duration) {

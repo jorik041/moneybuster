@@ -114,24 +114,24 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else {
             final DBLogjob logjob = (DBLogjob) item;
             final LogjobViewHolder nvHolder = ((LogjobViewHolder) holder);
-            nvHolder.logjobSwipeable.setAlpha(1.0f);
-            nvHolder.logjobTitle.setText(Html.fromHtml(logjob.getTitle(), Html.FROM_HTML_MODE_COMPACT));
+            nvHolder.billSwipeable.setAlpha(1.0f);
+            nvHolder.billTitle.setText(Html.fromHtml(logjob.getTitle(), Html.FROM_HTML_MODE_COMPACT));
             if (!logjob.getDeviceName().isEmpty()) {
-                nvHolder.logjobSubtitle.setText(Html.fromHtml(
+                nvHolder.billSubtitle.setText(Html.fromHtml(
                         logjob.getDeviceName() + " => " + logjob.getUrl(), Html.FROM_HTML_MODE_COMPACT)
                 );
             }
             else {
-                nvHolder.logjobSubtitle.setText(Html.fromHtml(logjob.getUrl(), Html.FROM_HTML_MODE_COMPACT));
+                nvHolder.billSubtitle.setText(Html.fromHtml(logjob.getUrl(), Html.FROM_HTML_MODE_COMPACT));
             }
 
-            nvHolder.logjobEnabled.setChecked(logjob.isEnabled());
+            /*nvHolder.logjobEnabled.setChecked(logjob.isEnabled());
             nvHolder.logjobEnabled.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     logjobClickListener.onLogjobEnabledClick(holder.getAdapterPosition(), view);
                 }
-            });
+            });*/
 
             nvHolder.infoButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -141,13 +141,9 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
 
             //int nb = db.getLogjobLocationCount(logjob.getId());
-            int nb = 0;
-            String nbTxt = (nb == 0) ? "" : String.valueOf(nb);
-            nvHolder.nbNotSync.setText(nbTxt);
-            int visible = (nb == 0) ? View.INVISIBLE : View.VISIBLE;
-            nvHolder.nosyncIcon.setVisibility(visible);
+            // TODO show "needsync" if needed
 
-            if (prefs.getBoolean(db.getContext().getString(R.string.pref_key_shownbsynced), false)) {
+            /*if (prefs.getBoolean(db.getContext().getString(R.string.pref_key_shownbsynced), false)) {
                 int nbSent = db.getNbSync(logjob.getId());
                 nbTxt = (nbSent == 0) ? "" : String.valueOf(nbSent);
                 if (BillsListViewActivity.DEBUG) {
@@ -163,7 +159,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 nvHolder.syncIcon.setVisibility(View.GONE);
                 nvHolder.nbSync.setVisibility(View.GONE);
                 //nvHolder.syncSpacer.setVisibility(View.GONE);
-            }
+            }*/
         }
     }
 
@@ -232,43 +228,25 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public class LogjobViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener {
-        @BindView(R.id.logjobSwipeable)
-        public View logjobSwipeable;
-        View logjobSwipeFrame;
-        TextView logjobTextToggleLeft;
-        ImageView logjobDeleteRight;
-        TextView logjobTitle;
-        @BindView(R.id.logjobExcerpt)
-        TextView logjobSubtitle;
-        @BindView(R.id.nosyncIcon)
-        ImageView nosyncIcon;
-        @BindView(R.id.syncIcon)
-        ImageView syncIcon;
-        @BindView(R.id.logjobEnabled)
-        Switch logjobEnabled;
-        @BindView(R.id.nbNotSync)
-        TextView nbNotSync;
-        @BindView(R.id.nbSync)
-        TextView nbSync;
-        @BindView(R.id.syncSpacer)
-        Space syncSpacer;
+        @BindView(R.id.billSwipeable)
+        public View billSwipeable;
+        View billSwipeFrame;
+        TextView billTextToggleLeft;
+        ImageView billDeleteRight;
+        TextView billTitle;
+        @BindView(R.id.billExcerpt)
+        TextView billSubtitle;
         @BindView(R.id.infoButton)
         ImageButton infoButton;
 
         private LogjobViewHolder(View v) {
             super(v);
-            this.logjobSwipeFrame = v.findViewById(R.id.logjobSwipeFrame);
-            this.logjobSwipeable = v.findViewById(R.id.logjobSwipeable);
-            this.logjobTextToggleLeft = v.findViewById(R.id.logjobTextToggleLeft);
-            this.logjobDeleteRight = v.findViewById(R.id.logjobDeleteRight);
-            this.logjobTitle = v.findViewById(R.id.logjobTitle);
-            this.logjobSubtitle = v.findViewById(R.id.logjobExcerpt);
-            this.nosyncIcon = v.findViewById(R.id.nosyncIcon);
-            this.syncIcon = v.findViewById(R.id.syncIcon);
-            this.logjobEnabled = v.findViewById(R.id.logjobEnabled);
-            this.nbNotSync = v.findViewById(R.id.nbNotSync);
-            this.nbSync = v.findViewById(R.id.nbSync);
-            this.syncSpacer = v.findViewById(R.id.syncSpacer);
+            this.billSwipeFrame = v.findViewById(R.id.billSwipeFrame);
+            this.billSwipeable = v.findViewById(R.id.billSwipeable);
+            this.billTextToggleLeft = v.findViewById(R.id.billTextToggleLeft);
+            this.billDeleteRight = v.findViewById(R.id.billDeleteRight);
+            this.billTitle = v.findViewById(R.id.billTitle);
+            this.billSubtitle = v.findViewById(R.id.billExcerpt);
             this.infoButton = v.findViewById(R.id.infoButton);
             v.setOnClickListener(this);
             v.setOnLongClickListener(this);
@@ -288,9 +266,9 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         public void showSwipe(boolean left) {
-            logjobTextToggleLeft.setVisibility(left ? View.VISIBLE : View.INVISIBLE);
-            logjobDeleteRight.setVisibility(left ? View.INVISIBLE : View.VISIBLE);
-            logjobSwipeFrame.setBackgroundResource(left ? R.color.bg_warning : R.color.bg_attention);
+            billTextToggleLeft.setVisibility(left ? View.VISIBLE : View.INVISIBLE);
+            billDeleteRight.setVisibility(left ? View.INVISIBLE : View.VISIBLE);
+            billSwipeFrame.setBackgroundResource(left ? R.color.bg_warning : R.color.bg_attention);
         }
     }
 

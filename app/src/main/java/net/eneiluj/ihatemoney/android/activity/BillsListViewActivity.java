@@ -298,7 +298,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 Intent createIntent = new Intent(getApplicationContext(), EditBillActivity.class);
                 MenuProject mproj = (MenuProject) projects.getSelectedItem();
                 if (mproj != null) {
-                    createIntent.putExtra(EditBillFragment.PARAM_PROJECT_ID, mproj.getId());
+                    createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, mproj.getId());
                 }
                 startActivityForResult(createIntent, create_logjob_cmd);
                 fabMenu.close(false);
@@ -310,7 +310,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 Intent createIntent = new Intent(getApplicationContext(), EditBillActivity.class);
                 MenuProject mproj = (MenuProject) projects.getSelectedItem();
                 if (mproj != null) {
-                    createIntent.putExtra(EditBillFragment.PARAM_PROJECT_ID, mproj.getId());
+                    createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, mproj.getId());
                 }
                 startActivityForResult(createIntent, create_logjob_cmd);
                 fabMenu.close(false);
@@ -686,12 +686,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 // show swipe icon on the side
                 logjobViewHolder.showSwipe(dX>0);
                 // move only swipeable part of item (not leave-behind)
-                getDefaultUIUtil().onDraw(c, recyclerView, logjobViewHolder.logjobSwipeable, dX, dY, actionState, isCurrentlyActive);
+                getDefaultUIUtil().onDraw(c, recyclerView, logjobViewHolder.billSwipeable, dX, dY, actionState, isCurrentlyActive);
             }
 
             @Override
             public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-                getDefaultUIUtil().clearView(((ItemAdapter.LogjobViewHolder) viewHolder).logjobSwipeable);
+                getDefaultUIUtil().clearView(((ItemAdapter.LogjobViewHolder) viewHolder).billSwipeable);
             }
         });
         touchHelper.attachToRecyclerView(listView);

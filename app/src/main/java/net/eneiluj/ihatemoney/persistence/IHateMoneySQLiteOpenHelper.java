@@ -1028,10 +1028,11 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
 
     @NonNull
     @WorkerThread
-    public List<DBBill> searchBills(@Nullable CharSequence query) {
+    public List<DBBill> searchBills(@Nullable CharSequence query, long projectId) {
         List<String> where = new ArrayList<>();
         List<String> args = new ArrayList<>();
 
+        where.add("(" + key_projectid + " = " + projectId + ")");
         where.add("(" + key_state + " != " + DBBill.STATE_DELETED + ")");
         if (query != null) {
             where.add("(" + key_what + " LIKE ? OR " + key_date + " LIKE ?)");

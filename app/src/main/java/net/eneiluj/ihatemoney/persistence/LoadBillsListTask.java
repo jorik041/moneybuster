@@ -28,11 +28,13 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
     private final BillsLoadedListener callback;
     private final Category category;
     private final CharSequence searchQuery;
-    public LoadBillsListTask(@NonNull Context context, @NonNull BillsLoadedListener callback, @NonNull Category category, @Nullable CharSequence searchQuery) {
+    private final long projectId;
+    public LoadBillsListTask(@NonNull Context context, @NonNull BillsLoadedListener callback, @NonNull Category category, @Nullable CharSequence searchQuery, @NonNull Long projectId) {
         this.context = context;
         this.callback = callback;
         this.category = category;
         this.searchQuery = searchQuery;
+        this.projectId = projectId;
     }
 
     @Override
@@ -40,7 +42,7 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
         List<DBBill> billList;
         IHateMoneySQLiteOpenHelper db = IHateMoneySQLiteOpenHelper.getInstance(context);
         // TODO
-        billList = db.searchBills(searchQuery);
+        billList = db.searchBills(searchQuery, projectId);
 
         return fillListTitle(billList);
         /*if (category.category == null) {

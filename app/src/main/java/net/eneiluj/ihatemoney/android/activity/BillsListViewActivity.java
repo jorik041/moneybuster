@@ -53,7 +53,6 @@ import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.fragment.NewProjectFragment;
 import net.eneiluj.ihatemoney.model.Category;
 import net.eneiluj.ihatemoney.model.DBBill;
-import net.eneiluj.ihatemoney.model.DBBillOwer;
 import net.eneiluj.ihatemoney.model.DBLogjob;
 import net.eneiluj.ihatemoney.model.DBMember;
 import net.eneiluj.ihatemoney.model.DBProject;
@@ -181,7 +180,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         db = IHateMoneySQLiteOpenHelper.getInstance(this);
 
         setupActionBar();
-        setupLogjobsList();
+        setupBillsList();
         setupNavigationMenu();
         setupMembersNavigationList(categoryAdapterSelectedItem);
 
@@ -264,7 +263,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         drawerLayout.addDrawerListener(drawerToggle);
     }
 
-    private void setupLogjobsList() {
+    private void setupBillsList() {
         initList();
         // Pull to Refresh
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -587,8 +586,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 preferences.edit().putString("last_selected_project", String.valueOf(it.getId())).apply();
                 // get project info from server
+                refreshLists();
                 synchronize();
-
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
@@ -715,13 +714,17 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         refreshLists(false);
     }
     private void refreshLists(final boolean scrollToTop) {
+        MenuProject proj = (MenuProject) projects.getSelectedItem();
+        long projId = proj.getId();
+        String projName = proj.getName();
+
         String subtitle;
         // TODO
         if (navigationSelection.memberName != null) {
-            subtitle = "proj - " + navigationSelection.memberName;
+            subtitle = projName + " - " + navigationSelection.memberName;
         }
         else {
-            subtitle = "proj - All bills";
+            subtitle = projName + " - All bills";
         }
 
         setTitle(subtitle);
@@ -740,7 +743,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 }
             }
         };
-        new LoadBillsListTask(getApplicationContext(), callback, navigationSelection, query).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new LoadBillsListTask(getApplicationContext(), callback, navigationSelection, query, projId).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         new LoadCategoryListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 

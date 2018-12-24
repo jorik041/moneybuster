@@ -1,17 +1,15 @@
 package net.eneiluj.ihatemoney.model;
 
-
-/**
- * DBLogjob represents a single logjob from the local SQLite database with all attributes.
- */
 public class MenuProject {
 
     private long id;
+    private String label;
     private String name;
 
-    public MenuProject(long id, String name) {
+    public MenuProject(long id, String name, String label) {
         this.id = id;
         this.name = name;
+        this.label = label;
     }
 
     public long getId() {
@@ -30,8 +28,16 @@ public class MenuProject {
         this.name = name;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     @Override
     public String toString() {
-        return this.name;
+        return this.label;
     }
 }

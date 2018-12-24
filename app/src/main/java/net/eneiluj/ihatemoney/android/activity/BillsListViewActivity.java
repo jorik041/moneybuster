@@ -588,6 +588,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 preferences.edit().putString("last_selected_project", String.valueOf(it.getId())).apply();
                 // get project info from server
+                drawerLayout.closeDrawers();
                 refreshLists();
                 synchronize();
             }

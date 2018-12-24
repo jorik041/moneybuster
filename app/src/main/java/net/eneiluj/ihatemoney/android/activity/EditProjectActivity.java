@@ -102,6 +102,14 @@ public class EditProjectActivity extends AppCompatActivity implements EditProjec
         finish();
     }
 
+    public void closeOnEdit(long pid) {
+        fragment.onCloseProject();
+        final Intent data = new Intent();
+        data.putExtra(BillsListViewActivity.EDITED_PROJECT, pid);
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
     public void onProjectUpdated(DBProject project) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

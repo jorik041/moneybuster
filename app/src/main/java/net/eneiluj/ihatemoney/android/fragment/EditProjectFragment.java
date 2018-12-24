@@ -36,6 +36,8 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
 
         void closeOnDelete(long projId);
 
+        void closeOnEdit(long projId);
+
         void onProjectUpdated(DBProject project);
     }
 
@@ -277,7 +279,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
 
         public void onFinish(String result, String message) {
             if (message.isEmpty()) {
-                listener.close();
+                listener.closeOnEdit(project.getId());
             }
             else {
                 showToast(getString(R.string.error_share_dev_helper, message), Toast.LENGTH_LONG);

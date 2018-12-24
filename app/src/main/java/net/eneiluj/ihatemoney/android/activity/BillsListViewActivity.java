@@ -81,6 +81,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     public final static String CREATED_BILL = "net.eneiluj.ihatemoney.created_bill";
     public final static String CREATED_PROJECT = "net.eneiluj.ihatemoney.created_project";
+    public final static String EDITED_PROJECT = "net.eneiluj.ihatemoney.edited_project";
     public final static String DELETED_PROJECT = "net.eneiluj.ihatemoney.deleted_project";
     public final static String DELETED_BILL = "net.eneiluj.ihatemoney.deleted_bill";
     public final static String CREDENTIALS_CHANGED = "net.eneiluj.ihatemoney.CREDENTIALS_CHANGED";
@@ -853,6 +854,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         } else if (requestCode == editproject) {
             if (data != null) {
+                // adapt after project has been deleted
                 long pid = data.getLongExtra(DELETED_PROJECT, 0);
                 if (pid != 0) {
                     MenuProject mp;
@@ -868,6 +870,19 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     }
                     projects.setSelection(0);
                     projectsAdapter.notifyDataSetChanged();
+                }
+                // adapt after project has been edited
+                pid = data.getLongExtra(EDITED_PROJECT, 0);
+                if (pid != 0) {
+                    DBProject proj = db.getProject(pid);
+                    MenuProject mp;
+                    for (int i = 0; i < projectsAdapter.getCount(); i++) {
+                        mp = projectsAdapter.getItem(i);
+                        if (mp.getId() == pid) {
+                            mp.setName(proj.getName());
+                            projectsAdapter.notifyDataSetChanged();
+                        }
+                    }
                 }
             }
         } else if (requestCode == show_single_bill_cmd) {

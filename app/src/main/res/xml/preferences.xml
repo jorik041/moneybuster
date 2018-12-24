@@ -2,37 +2,6 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Preference
-        android:icon="@drawable/ic_account_circle_grey_24dp"
-        android:title="@string/settings_server_settings">
-        <intent
-            android:targetClass="net.eneiluj.nextcloud.phonetrack.android.activity.SettingsActivity"
-            android:targetPackage="net.eneiluj.nextcloud.phonetrack" />
-    </Preference>
-
-    <ListPreference
-        android:icon="@android:drawable/ic_menu_mylocation"
-        android:key="@string/pref_key_providers"
-        android:summary=""
-        android:title="@string/settings_providers_title"
-        android:entries="@array/providersEntries"
-        android:entryValues="@array/providersValues"
-        android:defaultValue="@string/pref_value_providers" />
-
-    <CheckBoxPreference
-        android:icon="@android:drawable/ic_lock_power_off"
-        android:key="@string/pref_key_autostart"
-        android:title="@string/pref_autostart_title"
-        android:summary="@string/pref_autostart_summary"
-        android:defaultValue="@string/pref_autostart_default" />
-
-    <CheckBoxPreference
-        android:icon="@drawable/ic_filter_3_grey_24dp"
-        android:key="@string/pref_key_shownbsynced"
-        android:title="@string/pref_shownbsynced_title"
-        android:summary="@string/pref_shownbsynced_summary"
-        android:defaultValue="@string/pref_shownbsynced_default" />
-
     <SwitchPreferenceCompat
         android:defaultValue="@string/pref_value_theme_light"
         android:icon="@drawable/ic_brightness_2_grey_24dp"

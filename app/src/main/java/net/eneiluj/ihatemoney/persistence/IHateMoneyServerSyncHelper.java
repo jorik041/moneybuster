@@ -27,7 +27,7 @@ import at.bitfire.cert4android.CustomCertManager;
 import at.bitfire.cert4android.CustomCertService;
 import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
-import net.eneiluj.ihatemoney.android.activity.SettingsActivity;
+
 import net.eneiluj.ihatemoney.model.DBBill;
 import net.eneiluj.ihatemoney.model.DBBillOwer;
 import net.eneiluj.ihatemoney.model.DBMember;
@@ -138,9 +138,9 @@ public class IHateMoneyServerSyncHelper {
         super.finalize();
     }
 
-    public static boolean isConfigured(Context context) {
+    /*public static boolean isConfigured(Context context) {
         return !PreferenceManager.getDefaultSharedPreferences(context).getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS).isEmpty();
-    }
+    }*/
 
     /**
      * Synchronization is only possible, if there is an active network connection and
@@ -328,8 +328,8 @@ public class IHateMoneyServerSyncHelper {
             // TODO add/remove sessions
             Log.d(getClass().getSimpleName(), "pullRemoteChanges("+project+")");
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
-            String lastETag = preferences.getString(SettingsActivity.SETTINGS_KEY_ETAG, null);
-            long lastModified = preferences.getLong(SettingsActivity.SETTINGS_KEY_LAST_MODIFIED, 0);
+            String lastETag = null;
+            long lastModified = 0;
             LoginStatus status;
             try {
                 Map<String, Long> locIdMap = dbHelper.getTokenMap();
@@ -441,24 +441,7 @@ public class IHateMoneyServerSyncHelper {
                         Log.d(getClass().getSimpleName(), "Delete bill : " + localBill);
                     }
                 }
-
                 status = LoginStatus.OK;
-
-                // update ETag and Last-Modified in order to reduce size of next response
-                SharedPreferences.Editor editor = preferences.edit();
-                String etag = projResponse.getETag();
-                if (etag != null && !etag.isEmpty()) {
-                    editor.putString(SettingsActivity.SETTINGS_KEY_ETAG, etag);
-                } else {
-                    editor.remove(SettingsActivity.SETTINGS_KEY_ETAG);
-                }
-                long modified = projResponse.getLastModified();
-                if (modified != 0) {
-                    editor.putLong(SettingsActivity.SETTINGS_KEY_LAST_MODIFIED, modified);
-                } else {
-                    editor.remove(SettingsActivity.SETTINGS_KEY_LAST_MODIFIED);
-                }
-                editor.apply();
             } catch (ServerResponse.NotModifiedException e) {
                 Log.d(getClass().getSimpleName(), "No changes, nothing to do.");
                 status = LoginStatus.OK;

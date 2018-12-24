@@ -848,10 +848,18 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             System.out.println("BILLS request code : addproject " + pid);
             if (pid != 0) {
                 DBProject proj = db.getProject(pid);
-                MenuProject mproj = new MenuProject(proj.getId(), proj.getName(), proj.getRemoteId() + "@" + proj.getIhmUrl());
+                MenuProject mproj = new MenuProject(
+                        proj.getId(),
+                        proj.getName(),
+                        proj.getRemoteId() + "@" + proj.getIhmUrl()
+                                .replace("https://", "")
+                                .replace("http://", "")
+                );
                 projectsAdapter.add(mproj);
                 projects.setSelection(projectsAdapter.getPosition(mproj));
                 projectsAdapter.notifyDataSetChanged();
+                // TODO : get project info just after created so that name is not null
+                // TODO : update view when project removed, refresh the shit
             }
         } else if (requestCode == editproject) {
             if (data != null) {

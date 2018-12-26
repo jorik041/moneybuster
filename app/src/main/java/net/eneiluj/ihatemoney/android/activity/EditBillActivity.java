@@ -11,6 +11,7 @@ import android.view.MenuItem;
 
 import android.widget.Toast;
 
+import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.fragment.EditBillFragment;
 import net.eneiluj.ihatemoney.model.DBBill;
 import net.eneiluj.ihatemoney.model.DBLogjob;
@@ -87,6 +88,9 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
             fragment.setInitialSavedState(savedState);
         }
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(R.string.simple_edit_bill);
     }
 
     /**
@@ -102,6 +106,9 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
 
         fragment = EditBillFragment.newInstanceWithNewBill(newBill);
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(R.string.simple_new_bill);
     }
 
     @Override
@@ -126,7 +133,6 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         }
     }
 
-
     /**
      * Send result and closes the Activity
      */
@@ -146,8 +152,8 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
     public void onBillUpdated(DBBill bill) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(bill.getWhat());
-            actionBar.setSubtitle(String.valueOf(bill.getAmount()));
+            //actionBar.setTitle();
+            actionBar.setSubtitle("[" + bill.getDate() + "] " + bill.getAmount() + " (" + bill.getWhat() + ")");
         }
     }
 

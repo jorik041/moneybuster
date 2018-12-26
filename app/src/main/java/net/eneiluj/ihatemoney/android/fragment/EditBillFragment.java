@@ -129,6 +129,8 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                                               Object newValue) {
                 EditTextPreference pref = (EditTextPreference) findPreference("what");
                 pref.setSummary((CharSequence) newValue);
+                bill.setWhat((String)newValue);
+                listener.onBillUpdated(bill);
                 return true;
             }
 
@@ -141,6 +143,8 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                                               Object newValue) {
                 EditTextPreference pref = (EditTextPreference) findPreference("amount");
                 pref.setSummary((CharSequence) newValue);
+                bill.setAmount(Double.valueOf((String) newValue));
+                listener.onBillUpdated(bill);
                 return true;
             }
 
@@ -153,6 +157,8 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                                               Object newValue) {
                 EditTextPreference pref = (EditTextPreference) findPreference("date");
                 pref.setSummary((CharSequence) newValue);
+                bill.setDate((String)newValue);
+                listener.onBillUpdated(bill);
                 return true;
             }
 

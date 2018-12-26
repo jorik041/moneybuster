@@ -18,6 +18,7 @@ import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 //import android.preference.PreferenceFragment;
 //import android.support.v7.preference.PreferenceFragmentCompat;
+import com.takisoft.fix.support.v7.preference.DatePickerPreference;
 import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 import android.support.annotation.Nullable;
 import android.support.v7.view.ContextThemeWrapper;
@@ -43,7 +44,10 @@ import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
 import net.eneiluj.ihatemoney.util.DatePreference;
 import net.eneiluj.ihatemoney.util.ICallback;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
@@ -71,7 +75,7 @@ public class EditBillFragment extends PreferenceFragmentCompat {
     private Handler handler;
 
     protected EditTextPreference editWhat;
-    protected EditTextPreference editDate;
+    protected DatePickerPreference editDate;
     protected ListPreference editPayer;
     protected EditTextPreference editAmount;
     protected MultiSelectListPreference editOwers;
@@ -82,6 +86,8 @@ public class EditBillFragment extends PreferenceFragmentCompat {
 
     private DialogInterface.OnClickListener deleteDialogClickListener;
     private AlertDialog.Builder confirmDeleteAlertBuilder;
+
+    SimpleDateFormat sdf;
 
     @Override
     public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
@@ -102,6 +108,8 @@ public class EditBillFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         if (savedInstanceState == null) {
             long id = getArguments().getLong(PARAM_BILL_ID);
@@ -158,9 +166,11 @@ public class EditBillFragment extends PreferenceFragmentCompat {
             @Override
             public boolean onPreferenceChange(Preference preference,
                                               Object newValue) {
-                EditTextPreference pref = (EditTextPreference) findPreference("date");
-                pref.setSummary((CharSequence) newValue);
-                bill.setDate((String)newValue);
+                DatePickerPreference pref = (DatePickerPreference) findPreference("date");
+                DatePickerPreference.DateWrapper dw = (DatePickerPreference.DateWrapper) newValue;
+
+                //pref.setSummary(dw.year+"-"+dw.month+"-"+dw.day);
+                bill.setDate(dw.year+"-"+(dw.month+1)+"-"+dw.day);
                 listener.onBillUpdated(bill);
                 return true;
             }
@@ -466,8 +476,15 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         else {
             editWhat.setSummary(bill.getWhat());
         }
-        editDate = (EditTextPreference) this.findPreference("date");
-        editDate.setText(bill.getDate());
+        editDate = (DatePickerPreference) this.findPreference("date");
+        try {
+            editDate.setDate(
+                    sdf.parse(bill.getDate())
+            );
+        }
+        catch (ParseException e) {
+
+        }
         editDate.setSummary(bill.getDate());
 
         editAmount = (EditTextPreference) this.findPreference("amount");
@@ -479,7 +496,7 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         return editWhat.getText();
     }
     protected String getDate() {
-        return editDate.getText();
+        return sdf.format(editDate.getDate());
     }
     protected double getAmount() {
         return Double.valueOf(editAmount.getText());

@@ -23,7 +23,7 @@ xmlns:tools="http://schemas.android.com/tools"
         android:title="@string/setting_what" />
 
     <!--net.eneiluj.ihatemoney.util.DatePreference -->
-    <EditTextPreference
+    <DatePickerPreference
         android:id="@+id/editDate"
         android:icon="@android:drawable/ic_menu_today"
         android:dialogMessage="@string/setting_date_long"

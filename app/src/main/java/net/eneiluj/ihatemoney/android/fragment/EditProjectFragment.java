@@ -9,7 +9,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
+//import android.support.v7.preference.PreferenceFragmentCompat;
+import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 import android.support.annotation.Nullable;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.DividerItemDecoration;
@@ -67,8 +68,8 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     }
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootkey) {
-
+    public void onCreatePreferencesFix(Bundle savedInstanceState, String rootkey) {
+        addPreferencesFromResource(R.xml.activity_edit_project);
     }
 
     @Override
@@ -83,8 +84,6 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        addPreferencesFromResource(R.xml.activity_edit_project);
 
         Preference namePref = findPreference("name");
         namePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -208,6 +207,13 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
         super.onPrepareOptionsMenu(menu);
     }
 
+    public final static boolean isValidEmail(CharSequence target) {
+        if (target == null)
+            return false;
+
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
+
     /**
      * Main-Menu-Handler
      */
@@ -219,8 +225,13 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                 return true;
             case R.id.menu_save:
                 // TODO network and local save
-                //saveProject(null);
-                db.getIhateMoneyServerSyncHelper().editRemoteProject(project.getId(), getName(), getEmail(), getPassword(), editCallBack);
+                if (!isValidEmail(getEmail())) {
+                    showToast(getString(R.string.error_invalid_email), Toast.LENGTH_LONG);
+                }
+                else {
+                    //saveProject(null);
+                    db.getIhateMoneyServerSyncHelper().editRemoteProject(project.getId(), getName(), getEmail(), getPassword(), editCallBack);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

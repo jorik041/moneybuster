@@ -11,7 +11,8 @@ import android.support.v7.preference.EditTextPreference;
 //import android.preference.Preference;
 import android.support.v7.preference.Preference;
 //import android.preference.PreferenceFragment;
-import android.support.v7.preference.PreferenceFragmentCompat;
+//import android.support.v7.preference.PreferenceFragmentCompat;
+import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
@@ -60,8 +61,8 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     }
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootkey) {
-
+    public void onCreatePreferencesFix(Bundle savedInstanceState, String rootkey) {
+        addPreferencesFromResource(R.xml.activity_new_project);
     }
 
     @Override
@@ -76,8 +77,6 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        addPreferencesFromResource(R.xml.activity_new_project);
 
         Preference idPref = findPreference("id");
         idPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {

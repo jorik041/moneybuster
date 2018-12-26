@@ -148,6 +148,7 @@
     <string name="error_username_password_invalid">wrong username or password</string>
     <string name="error_invalid_pt_url">Invalid PhoneTrack logging URL</string>
     <string name="error_invalid_url">Invalid URL</string>
+    <string name="error_invalid_email">Invalid email address</string>
 
     <!-- Snackbar Actions -->
 

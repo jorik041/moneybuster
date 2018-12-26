@@ -36,6 +36,7 @@
         android:singleLine="true"
         android:selectAllOnFocus="true"
         android:persistent="false"
+        android:inputType="textEmailAddress"
         android:summary=""
         android:title="@string/setting_email" />
 

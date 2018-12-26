@@ -17,7 +17,8 @@ import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 //import android.preference.PreferenceFragment;
-import android.support.v7.preference.PreferenceFragmentCompat;
+//import android.support.v7.preference.PreferenceFragmentCompat;
+import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 import android.support.annotation.Nullable;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.DividerItemDecoration;
@@ -83,8 +84,10 @@ public class EditBillFragment extends PreferenceFragmentCompat {
     private AlertDialog.Builder confirmDeleteAlertBuilder;
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootkey) {
-
+    public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
+        //setPreferencesFromResource(R.xml.settings, rootKey);
+        addPreferencesFromResource(R.xml.activity_edit_bill);
+        // additional setup
     }
 
     @Override
@@ -119,7 +122,7 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         System.out.println("BILL on create : " + bill);
 
         ///////////////
-        addPreferencesFromResource(R.xml.activity_edit_bill);
+        //addPreferencesFromResource(R.xml.activity_edit_bill);
 
         Preference whatPref = findPreference("what");
         whatPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {

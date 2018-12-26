@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 //import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -117,12 +118,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     ArrayAdapter<MenuProject> projectsAdapter;
     @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.fab_create_phonetrack)
-    com.github.clans.fab.FloatingActionButton fabCreatePhoneTrack;
-    @BindView(R.id.fab_create_custom)
-    com.github.clans.fab.FloatingActionButton fabCreateCustom;
-    @BindView(R.id.floatingMenu)
-    com.github.clans.fab.FloatingActionMenu fabMenu;
+    @BindView(R.id.fabDrawer_add_project)
+    com.github.clans.fab.FloatingActionButton fabAddProject;
+    @BindView(R.id.fabDrawer_add_member)
+    com.github.clans.fab.FloatingActionButton fabAddMember;
+    @BindView(R.id.floatingMenuDrawer)
+    com.github.clans.fab.FloatingActionMenu fabMenuDrawer;
+    @BindView(R.id.fab_add_bill)
+    android.support.design.widget.FloatingActionButton fabMenu;
     @BindView(R.id.navigationList)
     RecyclerView listNavigationMembers;
     @BindView(R.id.navigationMenu)
@@ -289,19 +292,26 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         });
 
-        fabCreateCustom.setOnClickListener(new View.OnClickListener() {
+        fabAddProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent createIntent = new Intent(getApplicationContext(), EditBillActivity.class);
-                MenuProject mproj = (MenuProject) projects.getSelectedItem();
-                if (mproj != null) {
-                    createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, mproj.getId());
+                Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
+                if (projectsAdapter.getCount() > 0) {
+                    long pid = projectsAdapter.getItem(0).getId();
+                    String url = db.getProject(pid).getIhmUrl();
+                    newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, url);
                 }
-                startActivityForResult(createIntent, create_bill_cmd);
-                fabMenu.close(false);
+                startActivityForResult(newProjectIntent, addproject);
+                fabMenuDrawer.close(false);
             }
         });
-        fabCreatePhoneTrack.setOnClickListener(new View.OnClickListener() {
+        fabAddMember.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        fabMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent createIntent = new Intent(getApplicationContext(), EditBillActivity.class);
@@ -310,7 +320,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, mproj.getId());
                 }
                 startActivityForResult(createIntent, create_bill_cmd);
-                fabMenu.close(false);
             }
         });
     }

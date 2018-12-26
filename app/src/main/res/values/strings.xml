@@ -60,8 +60,8 @@
     <string name="menu_delete_project_local">Remove local project</string>
     <string name="menu_save_project">Save project</string>
     <string name="menu_save_bill">Save bill</string>
-    <string name="fab_create_phonetrack">New PhoneTrack log job</string>
-    <string name="fab_create_custom">New Custom log job</string>
+    <string name="fab_add_project">Add a Project</string>
+    <string name="fab_add_member">Add a member</string>
     <string name="setting_min_distance">Minimum distance</string>
     <string name="setting_min_distance_long">Minimum distance between two logged points (meters)</string>
     <string name="setting_min_time">Minimum time</string>

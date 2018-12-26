@@ -136,28 +136,28 @@
 
 
                     <com.github.clans.fab.FloatingActionButton
-                        android:id="@+id/fabDrawer_create_phonetrack"
+                        android:id="@+id/fabDrawer_add_project"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_notify_24dp"
-                        fab:fab_size="normal"
+                        android:src="@android:drawable/ic_menu_add"
                         app:fab_colorNormal="@color/primary"
                         app:fab_colorPressed="@color/primary"
-                        app:fab_showAnimation="@anim/fab_slide_in_from_right"
                         app:fab_hideAnimation="@anim/fab_slide_out_to_right"
-                        fab:fab_label="@string/fab_create_phonetrack"/>
+                        app:fab_showAnimation="@anim/fab_slide_in_from_right"
+                        fab:fab_label="@string/fab_add_project"
+                        fab:fab_size="normal" />
 
                     <com.github.clans.fab.FloatingActionButton
-                        android:id="@+id/fabDrawer_create_custom"
+                        android:id="@+id/fabDrawer_add_member"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_link_white_24dp"
+                        android:src="@drawable/ic_account_circle_white_24dp"
                         fab:fab_size="normal"
                         app:fab_colorNormal="@color/primary"
                         app:fab_colorPressed="@color/primary"
                         app:fab_showAnimation="@anim/fab_slide_in_from_right"
                         app:fab_hideAnimation="@anim/fab_slide_out_to_right"
-                        fab:fab_label="@string/fab_create_custom"/>
+                        fab:fab_label="@string/fab_add_member"/>
 
                 </com.github.clans.fab.FloatingActionMenu>
 

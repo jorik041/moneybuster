@@ -424,9 +424,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 items.add(new NavigationAdapter.NavigationItem(
                         String.valueOf(m.getRemoteId()),
                         m.getName(),
-                        membersNbBills.get(m.getId()),
+                        membersNbBills.get(m.getRemoteId()),
                         R.drawable.ic_account_circle_grey_24dp)
                 );
+                //System.out.println(m.getName()+" !!");
             }
 
 

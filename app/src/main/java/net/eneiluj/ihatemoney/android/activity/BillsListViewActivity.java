@@ -32,6 +32,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.support.v7.widget.helper.ItemTouchHelper.SimpleCallback;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -386,102 +387,50 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private class LoadCategoryListTask extends AsyncTask<Void, Void, List<NavigationAdapter.NavigationItem>> {
         @Override
         protected List<NavigationAdapter.NavigationItem> doInBackground(Void... voids) {
-            /*List<NavigationAdapter.NavigationItem> categories = db.getCategories();
-            if (!categories.isEmpty() && categories.get(0).label.isEmpty()) {
-                itemUncategorized = categories.get(0);
-                itemUncategorized.label = getString(R.string.action_uncategorized);
-                itemUncategorized.icon = NavigationAdapter.ICON_NOFOLDER;
-            } else {
-                itemUncategorized = null;
-            }*/
             itemUncategorized = null;
+            MenuProject mproj = (MenuProject) projects.getSelectedItem();
 
-            int nbPT = 0;
-            int nbCU = 0;
-            List<DBLogjob> ljs = db.getLogjobs();
-            for (DBLogjob lj : ljs) {
-                if (lj.getToken().isEmpty() && lj.getDeviceName().isEmpty()) {
-                    nbCU++;
-                }
-                else {
-                    nbPT++;
+            List<DBBill> dbBills = db.getBillsOfProject(mproj.getId());
+            List<DBMember> dbMembers = db.getMembersOfProject(mproj.getId());
+
+            Map<Long, Integer> membersNbBills = new ArrayMap<>();
+            // init
+            for (DBMember m : dbMembers) {
+                membersNbBills.put(m.getRemoteId(), 0);
+            }
+
+            int nbBills = 0;
+
+            for (DBBill b : dbBills) {
+                if (b.getState() != DBBill.STATE_DELETED) {
+                    nbBills++;
+                    membersNbBills.put(
+                            b.getPayerRemoteId(),
+                            membersNbBills.get(b.getPayerRemoteId()) + 1
+                    );
                 }
             }
 
-            Map<String, Integer> favorites = db.getEnabledCount();
-            int numFavorites = favorites.containsKey("1") ? favorites.get("1") : 0;
-            int numNonFavorites = favorites.containsKey("0") ? favorites.get("0") : 0;
-
-            itemAll.count = numFavorites + numNonFavorites;
-
-
             ArrayList<NavigationAdapter.NavigationItem> items = new ArrayList<>();
+
+            itemAll.count = nbBills;
             items.add(itemAll);
-            //items.add(itemEnabled);
-            //items.add(itemPhonetrack);
-            //items.add(itemCustom);
-            MenuProject mproj = (MenuProject) projects.getSelectedItem();
+
             if (mproj == null) {
                 return items;
             }
-            List<DBMember> members = db.getMembersOfProject(mproj.getId());
-            for (DBMember m : members) {
+
+            for (DBMember m : dbMembers) {
                 items.add(new NavigationAdapter.NavigationItem(
                         String.valueOf(m.getRemoteId()),
                         m.getName(),
-                        null,
+                        membersNbBills.get(m.getId()),
                         R.drawable.ic_account_circle_grey_24dp)
                 );
             }
-            NavigationAdapter.NavigationItem lastPrimaryCategory = null, lastSecondaryCategory = null;
-            /*for (NavigationAdapter.NavigationItem item : categories) {
-                int slashIndex = item.label.indexOf('/');
-                String currentPrimaryCategory = slashIndex < 0 ? item.label : item.label.substring(0, slashIndex);
-                String currentSecondaryCategory = null;
-                boolean isCategoryOpen = currentPrimaryCategory.equals(navigationOpen);
 
-                if (isCategoryOpen && !currentPrimaryCategory.equals(item.label)) {
-                    String currentCategorySuffix = item.label.substring(navigationOpen.length() + 1);
-                    int subSlashIndex = currentCategorySuffix.indexOf('/');
-                    currentSecondaryCategory = subSlashIndex < 0 ? currentCategorySuffix : currentCategorySuffix.substring(0, subSlashIndex);
-                }
 
-                boolean belongsToLastPrimaryCategory = lastPrimaryCategory != null && currentPrimaryCategory.equals(lastPrimaryCategory.label);
-                boolean belongsToLastSecondaryCategory = belongsToLastPrimaryCategory && lastSecondaryCategory != null && lastSecondaryCategory.label.equals(currentPrimaryCategory + "/" + currentSecondaryCategory);
 
-                if (isCategoryOpen && !belongsToLastPrimaryCategory && currentSecondaryCategory != null) {
-                    lastPrimaryCategory = new NavigationAdapter.NavigationItem("category:" + currentPrimaryCategory, currentPrimaryCategory, 0, NavigationAdapter.ICON_MULTIPLE_OPEN);
-                    items.add(lastPrimaryCategory);
-                    belongsToLastPrimaryCategory = true;
-                }
-
-                if (belongsToLastPrimaryCategory && belongsToLastSecondaryCategory) {
-                    lastSecondaryCategory.count += item.count;
-                    lastSecondaryCategory.icon = NavigationAdapter.ICON_SUB_MULTIPLE;
-                } else if (belongsToLastPrimaryCategory) {
-                    if (isCategoryOpen) {
-                        item.label = currentPrimaryCategory + "/" + currentSecondaryCategory;
-                        item.id = "category:" + item.label;
-                        item.icon = NavigationAdapter.ICON_SUB_FOLDER;
-                        items.add(item);
-                        lastSecondaryCategory = item;
-                    } else {
-                        lastPrimaryCategory.count += item.count;
-                        lastPrimaryCategory.icon = NavigationAdapter.ICON_MULTIPLE;
-                        lastSecondaryCategory = null;
-                    }
-                } else {
-                    if (isCategoryOpen) {
-                        item.icon = NavigationAdapter.ICON_MULTIPLE_OPEN;
-                    } else {
-                        item.label = currentPrimaryCategory;
-                        item.id = "category:" + item.label;
-                    }
-                    items.add(item);
-                    lastPrimaryCategory = item;
-                    lastSecondaryCategory = null;
-                }
-            }*/
             return items;
         }
 

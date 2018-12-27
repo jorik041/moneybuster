@@ -379,6 +379,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         });
         adapterMembers.setSelectedItem(selectedItem);
         listNavigationMembers.setAdapter(adapterMembers);
+        listNavigationMembers.setNestedScrollingEnabled(false);
     }
 
 
@@ -555,6 +556,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         adapterMenu.setItems(itemsMenu);
         listNavigationMenu.setAdapter(adapterMenu);
+        listNavigationMenu.setNestedScrollingEnabled(false);
 
         // projects
 

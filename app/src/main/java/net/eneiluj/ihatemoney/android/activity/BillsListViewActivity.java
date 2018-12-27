@@ -421,12 +421,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
 
             for (DBMember m : dbMembers) {
-                items.add(new NavigationAdapter.NavigationItem(
-                        String.valueOf(m.getRemoteId()),
-                        m.getName(),
-                        membersNbBills.get(m.getRemoteId()),
-                        R.drawable.ic_account_circle_grey_24dp)
-                );
+                // TODO if activated and balance != 0
+                // TODO only use id instead of remoteId (member might not have one yet...)
+                if (m.isActivated()) {
+                    items.add(new NavigationAdapter.NavigationItem(
+                            String.valueOf(m.getRemoteId()),
+                            m.getName(),
+                            membersNbBills.get(m.getRemoteId()),
+                            R.drawable.ic_account_circle_grey_24dp)
+                    );
+                }
                 //System.out.println(m.getName()+" !!");
             }
 

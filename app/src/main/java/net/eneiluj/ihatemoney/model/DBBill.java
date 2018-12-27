@@ -44,7 +44,7 @@ public class DBBill implements Item, Serializable {
     public List<Long> getBillOwersRemoteIds() {
         List<Long> result = new ArrayList<>();
         for (DBBillOwer bo : billOwers) {
-            result.add(bo.getMemberRemoteId());
+            result.add(bo.getMemberId());
         }
         return result;
     }

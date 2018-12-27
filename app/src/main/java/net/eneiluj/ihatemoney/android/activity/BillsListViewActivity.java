@@ -421,7 +421,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
 
             for (DBMember m : dbMembers) {
-                // TODO if activated and balance != 0
+                // TODO if activated OR balance != 0
                 // TODO only use id instead of remoteId (member might not have one yet...)
                 if (m.isActivated()) {
                     items.add(new NavigationAdapter.NavigationItem(
@@ -1034,11 +1034,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 case R.id.menu_delete:
                     List<Integer> selection = adapter.getSelected();
                     for (Integer i : selection) {
-                        DBLogjob logjob = (DBLogjob) adapter.getItem(i);
-                        db.deleteLogjob(logjob.getId());
+                        DBBill bill = (DBBill) adapter.getItem(i);
+                        db.deleteBill(bill.getId());
                         // Not needed because of dbsync
                         //adapter.remove(logjob);
-                        notifyLoggerService(logjob.getId());
+                        //notifyLoggerService(logjob.getId());
                     }
                     mode.finish(); // Action picked, so close the CAB
                     //after delete selection has to be cleared

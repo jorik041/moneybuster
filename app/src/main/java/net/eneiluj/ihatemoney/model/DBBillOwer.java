@@ -10,12 +10,12 @@ public class DBBillOwer implements Serializable {
     // key_id, key_billId, key_member_remoteId
     private long id;
     private long billId;
-    private long memberRemoteId;
+    private long memberId;
 
-    public DBBillOwer(long id, long billId, long memberRemoteId) {
+    public DBBillOwer(long id, long billId, long memberId) {
         this.id = id;
         this.billId = billId;
-        this.memberRemoteId = memberRemoteId;
+        this.memberId = memberId;
     }
 
     public long getId() {
@@ -34,16 +34,16 @@ public class DBBillOwer implements Serializable {
         this.billId = billId;
     }
 
-    public long getMemberRemoteId() {
-        return memberRemoteId;
+    public long getMemberId() {
+        return memberId;
     }
 
-    public void setMemberRemoteId(long memberRemoteId) {
-        this.memberRemoteId = memberRemoteId;
+    public void setMemberId(long memberId) {
+        this.memberId = memberId;
     }
 
     @Override
     public String toString() {
-        return "#DBBillOwer" + getId() + "/" + this.billId + "," + this.memberRemoteId;
+        return "#DBBillOwer" + getId() + "/" + this.billId + "," + this.memberId;
     }
 }

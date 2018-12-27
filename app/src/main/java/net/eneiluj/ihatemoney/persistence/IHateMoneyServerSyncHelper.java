@@ -332,7 +332,6 @@ public class IHateMoneyServerSyncHelper {
             long lastModified = 0;
             LoginStatus status;
             try {
-                Map<String, Long> locIdMap = dbHelper.getTokenMap();
                 ServerResponse.ProjectResponse projResponse = client.getProject(customCertManager, project, lastModified, lastETag);
                 String name = projResponse.getName();
                 String email = projResponse.getEmail();
@@ -411,22 +410,22 @@ public class IHateMoneyServerSyncHelper {
                         //////// billowers
                         Map<Long, DBBillOwer> localBillOwersByRemoteIds = new ArrayMap<>();
                         for (DBBillOwer bo : localBill.getBillOwers()) {
-                            localBillOwersByRemoteIds.put(bo.getMemberRemoteId(), bo);
+                            localBillOwersByRemoteIds.put(bo.getMemberId(), bo);
                         }
                         Map<Long, DBBillOwer> remoteBillOwersByRemoteIds = new ArrayMap<>();
                         for (DBBillOwer bo : remoteBill.getBillOwers()) {
-                            remoteBillOwersByRemoteIds.put(bo.getMemberRemoteId(), bo);
+                            remoteBillOwersByRemoteIds.put(bo.getMemberId(), bo);
                         }
                         // add remote which are not here
                         for (DBBillOwer rbo : remoteBill.getBillOwers()) {
-                            if (!localBillOwersByRemoteIds.containsKey(rbo.getMemberRemoteId())) {
+                            if (!localBillOwersByRemoteIds.containsKey(rbo.getMemberId())) {
                                 dbHelper.addBillower(localBill.getId(), rbo);
                                 Log.d(getClass().getSimpleName(), "Add billOwer : " + rbo);
                             }
                         }
                         // delete local which are not there remotely
                         for (DBBillOwer lbo : localBill.getBillOwers()) {
-                            if (!remoteBillOwersByRemoteIds.containsKey(lbo.getMemberRemoteId())) {
+                            if (!remoteBillOwersByRemoteIds.containsKey(lbo.getMemberId())) {
                                 dbHelper.deleteBillOwer(lbo.getId());
                                 Log.d(getClass().getSimpleName(), "Delete billOwer : " + lbo);
                             }

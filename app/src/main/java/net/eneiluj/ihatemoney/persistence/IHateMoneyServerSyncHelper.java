@@ -304,6 +304,10 @@ public class IHateMoneyServerSyncHelper {
                     ServerResponse.EditRemoteBillResponse editRemoteBillResponse = client.editRemoteBill(customCertManager, project, bToEdit, memberIdToRemoteId);
                     if (editRemoteBillResponse.getStringContent().equals(String.valueOf(bToEdit.getRemoteId()))) {
                         dbHelper.setBillState(bToEdit.getId(), DBBill.STATE_OK);
+                        Log.d(getClass().getSimpleName(), "SUCESS to edit bill ("+editRemoteBillResponse.getStringContent()+")");
+                    }
+                    else {
+                        Log.d(getClass().getSimpleName(), "FAILED to edit bill ("+editRemoteBillResponse.getStringContent()+")");
                     }
                 }
                 // add what's been added

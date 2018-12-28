@@ -410,7 +410,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             for (DBBill b : dbBills) {
                 if (b.getState() != DBBill.STATE_DELETED) {
                     nbBills++;
-                    System.out.println("LALA "+b.getPayerId());
+                    //System.out.println("LALA "+b.getPayerId());
                     membersNbBills.put(
                             b.getPayerId(),
                             membersNbBills.get(b.getPayerId()) + 1

@@ -135,8 +135,8 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                                               Object newValue) {
                 EditTextPreference pref = (EditTextPreference) findPreference("what");
                 pref.setSummary((CharSequence) newValue);
-                bill.setWhat((String)newValue);
-                listener.onBillUpdated(bill);
+                //bill.setWhat((String)newValue);
+                //listener.onBillUpdated(bill);
                 return true;
             }
 
@@ -149,8 +149,8 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                                               Object newValue) {
                 EditTextPreference pref = (EditTextPreference) findPreference("amount");
                 pref.setSummary((CharSequence) newValue);
-                bill.setAmount(Double.valueOf((String) newValue));
-                listener.onBillUpdated(bill);
+                //bill.setAmount(Double.valueOf((String) newValue));
+                //listener.onBillUpdated(bill);
                 return true;
             }
 
@@ -165,8 +165,8 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                 DatePickerPreference.DateWrapper dw = (DatePickerPreference.DateWrapper) newValue;
 
                 //pref.setSummary(dw.year+"-"+dw.month+"-"+dw.day);
-                bill.setDate(dw.year+"-"+(dw.month+1)+"-"+dw.day);
-                listener.onBillUpdated(bill);
+                //bill.setDate(dw.year+"-"+(dw.month+1)+"-"+dw.day);
+                //listener.onBillUpdated(bill);
                 return true;
             }
 
@@ -368,7 +368,7 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                     bill.getPayerId() == newPayerId &&
                     !owersChanged
                     ) {
-                Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed");
+                Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed "+bill.getWhat()+" "+newWhat);
             } else {
                 System.out.println("====== update bill");
                 db.updateBillAndSync(bill, newPayerId, newAmount, newDate, newWhat, newOwersIds);

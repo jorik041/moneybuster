@@ -119,10 +119,10 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             nvHolder.billTitle.setText(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
 
             Log.d(TAG, "[get member of project " + bill.getProjectId() + " with remoteid : "+bill.getPayerId()+"]");
-            String subtitle = db.getMember(bill.getPayerId(), bill.getProjectId()).getName();
+            String subtitle = db.getMember(bill.getPayerId()).getName();
             subtitle += " => ";
             for (long boRId : bill.getBillOwersIds()) {
-                String name = db.getMember(boRId, bill.getProjectId()).getName();
+                String name = db.getMember(boRId).getName();
                 subtitle += name + ", ";
             }
             subtitle = subtitle.replaceAll(", $", "");

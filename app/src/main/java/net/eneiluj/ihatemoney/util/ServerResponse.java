@@ -213,6 +213,7 @@ public class ServerResponse {
         if (!json.isNull("payer_id")) {
             payerRemoteId = json.getLong("payer_id");
             payerId = memberRemoteIdToId.get(payerRemoteId);
+            System.out.println("WTF : "+payerId);
         }
         if (!json.isNull("amount")) {
             amount = json.getDouble("amount");

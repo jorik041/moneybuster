@@ -350,11 +350,7 @@ public class IHateMoneyServerSyncHelper {
 
                 // get members
                 List<DBMember> members = projResponse.getMembers(project.getId());
-                // get member id map
-                Map<Long, Long> memberRemoteIdToId = new ArrayMap<>();
-                for (DBMember m : members) {
-                    memberRemoteIdToId.put(m.getRemoteId(), m.getId());
-                }
+
                 // add/update members
                 for (DBMember m : members) {
                     DBMember localMember = dbHelper.getMember(m.getRemoteId(), project.getId());
@@ -377,6 +373,14 @@ public class IHateMoneyServerSyncHelper {
                             dbHelper.updateMember(m.getRemoteId(), project.getId(), m.getName(), m.getWeight(), m.isActivated());
                         }
                     }
+                }
+
+                // get up-to-date DB members
+                List<DBMember> dbMembers = dbHelper.getMembersOfProject(project.getId());
+                // get member id map
+                Map<Long, Long> memberRemoteIdToId = new ArrayMap<>();
+                for (DBMember m : dbMembers) {
+                    memberRemoteIdToId.put(m.getRemoteId(), m.getId());
                 }
 
                 // get bills

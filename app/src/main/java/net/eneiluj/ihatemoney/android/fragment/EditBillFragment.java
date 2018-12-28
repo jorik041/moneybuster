@@ -77,7 +77,7 @@ public class EditBillFragment extends PreferenceFragmentCompat {
 
     private List<DBMember> memberList;
     private List<String> memberNameList;
-    private List<String> memberRemoteIdList;
+    private List<String> memberIdList;
 
     private DialogInterface.OnClickListener deleteDialogClickListener;
     private AlertDialog.Builder confirmDeleteAlertBuilder;
@@ -309,7 +309,7 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                 else if (getAmount() == 0) {
 
                 }
-                else if (getOwersRemoteIds().size() == 0) {
+                else if (getOwersIds().size() == 0) {
 
                 }
                 else {
@@ -341,21 +341,21 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         String newWhat = getWhat();
         String newDate = getDate();
         double newAmount = getAmount();
-        long newPayerRemoteId = getPayerRemoteId();
+        long newPayerId = getPayerId();
 
-        List<Long> newOwersRemoteIds = getOwersRemoteIds();
+        List<Long> newOwersIds = getOwersIds();
 
         // check if owers have changed
         boolean owersChanged = false;
-        List<Long> billOwersRemoteIds = bill.getBillOwersIds();
-        if (newOwersRemoteIds.size() != billOwersRemoteIds.size()) {
+        List<Long> billOwersIds = bill.getBillOwersIds();
+        if (newOwersIds.size() != billOwersIds.size()) {
             owersChanged = true;
         }
         else {
-            if (!newOwersRemoteIds.containsAll(billOwersRemoteIds)) {
+            if (!newOwersIds.containsAll(billOwersIds)) {
                 owersChanged = true;
             }
-            if (!billOwersRemoteIds.containsAll(newOwersRemoteIds)) {
+            if (!billOwersIds.containsAll(newOwersIds)) {
                 owersChanged = true;
             }
         }
@@ -365,13 +365,13 @@ public class EditBillFragment extends PreferenceFragmentCompat {
             if (bill.getWhat().equals(newWhat) &&
                     bill.getDate().equals(newDate) &&
                     bill.getAmount() == newAmount &&
-                    bill.getPayerId() == newPayerRemoteId &&
+                    bill.getPayerId() == newPayerId &&
                     !owersChanged
                     ) {
                 Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed");
             } else {
                 System.out.println("====== update bill");
-                db.updateBillAndSync(bill, newPayerRemoteId, newAmount, newDate, newWhat, newOwersRemoteIds);
+                db.updateBillAndSync(bill, newPayerId, newAmount, newDate, newWhat, newOwersIds);
                 //System.out.println("AFFFFFFTTTTTTEEERRRRR : "+logjob);
                 //listener.onBillUpdated(bill);
                 //listener.close();
@@ -380,13 +380,13 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         // this is a new bill
         else {
             // add the bill
-            DBBill newBill = new DBBill(0, 0, bill.getProjectId(), newPayerRemoteId, newAmount, newDate, newWhat, DBBill.STATE_ADDED);
-            for (long newOwerRemoteid : newOwersRemoteIds) {
-                newBill.getBillOwers().add(new DBBillOwer(0, 0, newOwerRemoteid));
+            DBBill newBill = new DBBill(0, 0, bill.getProjectId(), newPayerId, newAmount, newDate, newWhat, DBBill.STATE_ADDED);
+            for (long newOwerId : newOwersIds) {
+                newBill.getBillOwers().add(new DBBillOwer(0, 0, newOwerId));
             }
             long newBillId = db.addBill(newBill);
-            /*for (long newOwerRemoteid : newOwersRemoteIds) {
-                db.addBillower(newBillId, new DBBillOwer(0, newBillId, newOwerRemoteid));
+            /*for (long newOwerId : newOwersIds) {
+                db.addBillower(newBillId, new DBBillOwer(0, newBillId, newOwerId));
             }*/
             db.getIhateMoneyServerSyncHelper().scheduleSync(true, bill.getProjectId());
         }
@@ -420,10 +420,10 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         // manage member list
         memberList = db.getMembersOfProject(bill.getProjectId());
         memberNameList = new ArrayList<>();
-        memberRemoteIdList = new ArrayList<>();
+        memberIdList = new ArrayList<>();
         for (DBMember member : memberList) {
             memberNameList.add(member.getName());
-            memberRemoteIdList.add(String.valueOf(member.getRemoteId()));
+            memberIdList.add(String.valueOf(member.getId()));
         }
 
         // manage payer and owers
@@ -433,32 +433,32 @@ public class EditBillFragment extends PreferenceFragmentCompat {
 
         if (memberNameList.size() > 0) {
             CharSequence[] memberNameArray = memberNameList.toArray(new CharSequence[memberNameList.size()]);
-            CharSequence[] memberRemoteIdArray = memberRemoteIdList.toArray(new CharSequence[memberNameList.size()]);
+            CharSequence[] memberIdArray = memberIdList.toArray(new CharSequence[memberNameList.size()]);
 
             editPayer.setEntries(memberNameArray);
-            editPayer.setEntryValues(memberRemoteIdArray);
+            editPayer.setEntryValues(memberIdArray);
 
             editOwers.setEntries(memberNameArray);
-            editOwers.setEntryValues(memberRemoteIdArray);
+            editOwers.setEntryValues(memberIdArray);
 
             // set selected value for payer
             if (bill.getPayerId() != 0) {
-                String payerRemoteId = String.valueOf(bill.getPayerId());
-                editPayer.setValue(payerRemoteId);
-                int payerIndex = memberRemoteIdList.indexOf(payerRemoteId);
+                String payerId = String.valueOf(bill.getPayerId());
+                editPayer.setValue(payerId);
+                int payerIndex = memberIdList.indexOf(payerId);
                 editPayer.setSummary(memberNameList.get(payerIndex));
             }
 
             // set selected values for owers
             if (bill.getBillOwersIds().size() > 0) {
-                Set<String> ridSet = new HashSet<String>();
+                Set<String> owerIdSet = new HashSet<String>();
                 List<String> selectedNames = new ArrayList<>();
-                for (long rid : bill.getBillOwersIds()) {
-                    ridSet.add(String.valueOf(rid));
-                    int owerIndex = memberRemoteIdList.indexOf(String.valueOf(rid));
+                for (long owerId : bill.getBillOwersIds()) {
+                    owerIdSet.add(String.valueOf(owerId));
+                    int owerIndex = memberIdList.indexOf(String.valueOf(owerId));
                     selectedNames.add(memberNameList.get(owerIndex));
                 }
-                editOwers.setValues(ridSet);
+                editOwers.setValues(owerIdSet);
                 editOwers.setSummary(TextUtils.join(", ", selectedNames));
             }
         }
@@ -496,16 +496,16 @@ public class EditBillFragment extends PreferenceFragmentCompat {
     protected double getAmount() {
         return Double.valueOf(editAmount.getText());
     }
-    protected long getPayerRemoteId() {
+    protected long getPayerId() {
         return Long.valueOf(editPayer.getValue());
     }
-    protected List<Long> getOwersRemoteIds() {
+    protected List<Long> getOwersIds() {
         Set<String> strValues =  editOwers.getValues();
-        List<Long> owersRemoteIds = new ArrayList<>();
+        List<Long> owersIds = new ArrayList<>();
         for (String strValue : strValues) {
-            owersRemoteIds.add(Long.valueOf(strValue));
+            owersIds.add(Long.valueOf(strValue));
         }
-        return owersRemoteIds;
+        return owersIds;
     }
 
     protected void showToast(CharSequence text, int duration) {

@@ -98,7 +98,7 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
     private List<Item> fillListTitle(@NonNull List<DBBill> billList) {
         List<Item> itemList = new ArrayList<>();
         for (DBBill bill : billList) {
-            if (category.memberName == null || category.memberRemoteId.equals(bill.getPayerId())) {
+            if (category.memberName == null || category.memberId.equals(bill.getPayerId())) {
                 itemList.add(colorTheBill(bill));
             }
         }

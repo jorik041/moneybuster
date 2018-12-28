@@ -423,7 +423,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
             for (DBMember m : dbMembers) {
                 // TODO if activated OR balance != 0
-                // TODO only use id instead of remoteId (member might not have one yet...)
                 if (m.isActivated()) {
                     items.add(new NavigationAdapter.NavigationItem(
                             String.valueOf(m.getId()),

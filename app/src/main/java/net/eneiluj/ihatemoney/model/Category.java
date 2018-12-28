@@ -9,10 +9,10 @@ public class Category implements Serializable {
     @Nullable
     public final String memberName;
     @Nullable
-    public final Long memberRemoteId;
+    public final Long memberId;
 
-    public Category(@Nullable String memberName, @Nullable Long memberRemoteId) {
+    public Category(@Nullable String memberName, @Nullable Long memberId) {
         this.memberName = memberName;
-        this.memberRemoteId = memberRemoteId;
+        this.memberId = memberId;
     }
 }

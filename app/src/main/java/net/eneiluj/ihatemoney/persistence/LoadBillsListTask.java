@@ -17,7 +17,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.eneiluj.ihatemoney.R;
-import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
 import net.eneiluj.ihatemoney.model.Category;
 import net.eneiluj.ihatemoney.model.DBBill;
 import net.eneiluj.ihatemoney.model.Item;
@@ -99,7 +98,7 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
     private List<Item> fillListTitle(@NonNull List<DBBill> billList) {
         List<Item> itemList = new ArrayList<>();
         for (DBBill bill : billList) {
-            if (category.memberName == null || category.memberRemoteId.equals(bill.getPayerRemoteId())) {
+            if (category.memberName == null || category.memberRemoteId.equals(bill.getPayerId())) {
                 itemList.add(colorTheBill(bill));
             }
         }

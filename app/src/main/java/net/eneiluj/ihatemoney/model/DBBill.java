@@ -13,7 +13,7 @@ public class DBBill implements Item, Serializable {
     private long id;
     private long remoteId;
     private long projectId;
-    private long payerRemoteId;
+    private long payerId;
     private double amount;
     private String date;
     private String what;
@@ -27,11 +27,11 @@ public class DBBill implements Item, Serializable {
     public static final int STATE_EDITED = 2;
     public static final int STATE_DELETED = 3;
 
-    public DBBill(long id, long remoteId, long projectId, long payerRemoteId, double amount, String date, String what, int state) {
+    public DBBill(long id, long remoteId, long projectId, long payerId, double amount, String date, String what, int state) {
         this.id = id;
         this.remoteId = remoteId;
         this.projectId = projectId;
-        this.payerRemoteId = payerRemoteId;
+        this.payerId = payerId;
         this.amount = amount;
         this.date = date;
         this.what = what;
@@ -41,7 +41,7 @@ public class DBBill implements Item, Serializable {
         this.state = state;
     }
 
-    public List<Long> getBillOwersRemoteIds() {
+    public List<Long> getBillOwersIds() {
         List<Long> result = new ArrayList<>();
         for (DBBillOwer bo : billOwers) {
             result.add(bo.getMemberId());
@@ -89,12 +89,12 @@ public class DBBill implements Item, Serializable {
         this.projectId = projectId;
     }
 
-    public long getPayerRemoteId() {
-        return payerRemoteId;
+    public long getPayerId() {
+        return payerId;
     }
 
-    public void setPayerRemoteId(long payerRemoteId) {
-        this.payerRemoteId = payerRemoteId;
+    public void setPayerId(long payerId) {
+        this.payerId = payerId;
     }
 
     public double getAmount() {
@@ -125,7 +125,7 @@ public class DBBill implements Item, Serializable {
     public String toString() {
         // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what
         return "#DBBill" + getId() + "/" + this.remoteId + "," + this.projectId
-                + ", " + this.payerRemoteId + ", " + this.amount + ", " + this.date + ", "
+                + ", " + this.payerId + ", " + this.amount + ", " + this.date + ", "
                 + this.what + ", " + this.state;
     }
 

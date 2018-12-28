@@ -280,6 +280,16 @@ public class IHateMoneyServerSyncHelper {
             Log.d(getClass().getSimpleName(), "PUSH LOCAL CHANGES");
 
             try {
+                // TODO push member changes BEFORE
+
+                // get members
+                List<DBMember> members = dbHelper.getMembersOfProject(project.getId());
+                // get member id map
+                Map<Long, Long> memberIdToRemoteId = new ArrayMap<>();
+                for (DBMember m : members) {
+                    memberIdToRemoteId.put(m.getId(), m.getRemoteId());
+                }
+
                 // delete what's been deleted
                 List<DBBill> toDelete = dbHelper.getBillsOfProjectWithState(project.getId(), DBBill.STATE_DELETED);
                 for (DBBill bToDel : toDelete) {
@@ -291,7 +301,7 @@ public class IHateMoneyServerSyncHelper {
                 // edit what's been edited
                 List<DBBill> toEdit = dbHelper.getBillsOfProjectWithState(project.getId(), DBBill.STATE_EDITED);
                 for (DBBill bToEdit : toEdit) {
-                    ServerResponse.EditRemoteBillResponse editRemoteBillResponse = client.editRemoteBill(customCertManager, project, bToEdit);
+                    ServerResponse.EditRemoteBillResponse editRemoteBillResponse = client.editRemoteBill(customCertManager, project, bToEdit, memberIdToRemoteId);
                     if (editRemoteBillResponse.getStringContent().equals(String.valueOf(bToEdit.getRemoteId()))) {
                         dbHelper.setBillState(bToEdit.getId(), DBBill.STATE_OK);
                     }
@@ -299,7 +309,7 @@ public class IHateMoneyServerSyncHelper {
                 // add what's been added
                 List<DBBill> toAdd = dbHelper.getBillsOfProjectWithState(project.getId(), DBBill.STATE_ADDED);
                 for (DBBill bToAdd : toAdd) {
-                    ServerResponse.CreateRemoteBillResponse createRemoteBillResponse = client.createRemoteBill(customCertManager, project, bToAdd);
+                    ServerResponse.CreateRemoteBillResponse createRemoteBillResponse = client.createRemoteBill(customCertManager, project, bToAdd, memberIdToRemoteId);
                     long newRemoteId = Long.valueOf(createRemoteBillResponse.getStringContent());
                     if (newRemoteId > 0) {
                         dbHelper.updateBill(
@@ -340,6 +350,12 @@ public class IHateMoneyServerSyncHelper {
 
                 // get members
                 List<DBMember> members = projResponse.getMembers(project.getId());
+                // get member id map
+                Map<Long, Long> memberRemoteIdToId = new ArrayMap<>();
+                for (DBMember m : members) {
+                    memberRemoteIdToId.put(m.getRemoteId(), m.getId());
+                }
+                // add/update members
                 for (DBMember m : members) {
                     DBMember localMember = dbHelper.getMember(m.getRemoteId(), project.getId());
                     // member does not exist locally, add it
@@ -365,7 +381,7 @@ public class IHateMoneyServerSyncHelper {
 
                 // get bills
                 ServerResponse.BillsResponse billsResponse = client.getBills(customCertManager, project);
-                List<DBBill> remoteBills = billsResponse.getBills(project.getId());
+                List<DBBill> remoteBills = billsResponse.getBills(project.getId(), memberRemoteIdToId);
                 Map<Long,DBBill> remoteBillsByRemoteId = new ArrayMap<>();
                 for (DBBill remoteBill : remoteBills) {
                     remoteBillsByRemoteId.put(remoteBill.getRemoteId(), remoteBill);
@@ -391,7 +407,7 @@ public class IHateMoneyServerSyncHelper {
                     // and billOwers if necessary
                     else {
                         DBBill localBill = localBillsByRemoteId.get(remoteBill.getRemoteId());
-                        if (localBill.getPayerRemoteId() == remoteBill.getPayerRemoteId() &&
+                        if (localBill.getPayerId() == remoteBill.getPayerId() &&
                                 localBill.getAmount() == remoteBill.getAmount() &&
                                 localBill.getDate().equals(remoteBill.getDate()) &&
                                 localBill.getWhat().equals(remoteBill.getWhat())
@@ -401,31 +417,31 @@ public class IHateMoneyServerSyncHelper {
                         }
                         else {
                             dbHelper.updateBill(
-                                    localBill.getId(), null, remoteBill.getPayerRemoteId(),
+                                    localBill.getId(), null, remoteBill.getPayerId(),
                                     remoteBill.getAmount(), remoteBill.getDate(),
                                     remoteBill.getWhat(), DBBill.STATE_OK
                             );
                             Log.d(getClass().getSimpleName(), "Update bill : "+remoteBill);
                         }
                         //////// billowers
-                        Map<Long, DBBillOwer> localBillOwersByRemoteIds = new ArrayMap<>();
+                        Map<Long, DBBillOwer> localBillOwersByIds = new ArrayMap<>();
                         for (DBBillOwer bo : localBill.getBillOwers()) {
-                            localBillOwersByRemoteIds.put(bo.getMemberId(), bo);
+                            localBillOwersByIds.put(bo.getMemberId(), bo);
                         }
-                        Map<Long, DBBillOwer> remoteBillOwersByRemoteIds = new ArrayMap<>();
+                        Map<Long, DBBillOwer> remoteBillOwersByIds = new ArrayMap<>();
                         for (DBBillOwer bo : remoteBill.getBillOwers()) {
-                            remoteBillOwersByRemoteIds.put(bo.getMemberId(), bo);
+                            remoteBillOwersByIds.put(bo.getMemberId(), bo);
                         }
                         // add remote which are not here
                         for (DBBillOwer rbo : remoteBill.getBillOwers()) {
-                            if (!localBillOwersByRemoteIds.containsKey(rbo.getMemberId())) {
-                                dbHelper.addBillower(localBill.getId(), rbo);
+                            if (!localBillOwersByIds.containsKey(rbo.getMemberId())) {
+                                dbHelper.addBillower(localBill.getId(), rbo.getMemberId());
                                 Log.d(getClass().getSimpleName(), "Add billOwer : " + rbo);
                             }
                         }
                         // delete local which are not there remotely
                         for (DBBillOwer lbo : localBill.getBillOwers()) {
-                            if (!remoteBillOwersByRemoteIds.containsKey(lbo.getMemberId())) {
+                            if (!remoteBillOwersByIds.containsKey(lbo.getMemberId())) {
                                 dbHelper.deleteBillOwer(lbo.getId());
                                 Log.d(getClass().getSimpleName(), "Delete billOwer : " + lbo);
                             }

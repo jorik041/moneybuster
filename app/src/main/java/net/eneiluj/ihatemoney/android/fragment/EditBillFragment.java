@@ -10,7 +10,6 @@ import android.os.Looper;
 
 //import android.preference.MultiSelectListPreference;
 import android.support.v14.preference.MultiSelectListPreference;
-import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.EditTextPreference;
 //import android.preference.ListPreference;
 //import android.preference.Preference;
@@ -37,17 +36,13 @@ import butterknife.ButterKnife;
 import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.model.DBBill;
 import net.eneiluj.ihatemoney.model.DBBillOwer;
-import net.eneiluj.ihatemoney.model.DBLogjob;
 import net.eneiluj.ihatemoney.model.DBMember;
-import net.eneiluj.ihatemoney.model.DBSession;
 import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
-import net.eneiluj.ihatemoney.util.DatePreference;
 import net.eneiluj.ihatemoney.util.ICallback;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
@@ -352,7 +347,7 @@ public class EditBillFragment extends PreferenceFragmentCompat {
 
         // check if owers have changed
         boolean owersChanged = false;
-        List<Long> billOwersRemoteIds = bill.getBillOwersRemoteIds();
+        List<Long> billOwersRemoteIds = bill.getBillOwersIds();
         if (newOwersRemoteIds.size() != billOwersRemoteIds.size()) {
             owersChanged = true;
         }
@@ -370,7 +365,7 @@ public class EditBillFragment extends PreferenceFragmentCompat {
             if (bill.getWhat().equals(newWhat) &&
                     bill.getDate().equals(newDate) &&
                     bill.getAmount() == newAmount &&
-                    bill.getPayerRemoteId() == newPayerRemoteId &&
+                    bill.getPayerId() == newPayerRemoteId &&
                     !owersChanged
                     ) {
                 Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed");
@@ -447,18 +442,18 @@ public class EditBillFragment extends PreferenceFragmentCompat {
             editOwers.setEntryValues(memberRemoteIdArray);
 
             // set selected value for payer
-            if (bill.getPayerRemoteId() != 0) {
-                String payerRemoteId = String.valueOf(bill.getPayerRemoteId());
+            if (bill.getPayerId() != 0) {
+                String payerRemoteId = String.valueOf(bill.getPayerId());
                 editPayer.setValue(payerRemoteId);
                 int payerIndex = memberRemoteIdList.indexOf(payerRemoteId);
                 editPayer.setSummary(memberNameList.get(payerIndex));
             }
 
             // set selected values for owers
-            if (bill.getBillOwersRemoteIds().size() > 0) {
+            if (bill.getBillOwersIds().size() > 0) {
                 Set<String> ridSet = new HashSet<String>();
                 List<String> selectedNames = new ArrayList<>();
-                for (long rid : bill.getBillOwersRemoteIds()) {
+                for (long rid : bill.getBillOwersIds()) {
                     ridSet.add(String.valueOf(rid));
                     int owerIndex = memberRemoteIdList.indexOf(String.valueOf(rid));
                     selectedNames.add(memberNameList.get(owerIndex));

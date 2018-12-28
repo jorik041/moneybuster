@@ -13,20 +13,14 @@ import android.util.ArrayMap;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
-import net.eneiluj.ihatemoney.model.CloudSession;
 import net.eneiluj.ihatemoney.model.DBBill;
 import net.eneiluj.ihatemoney.model.DBBillOwer;
 import net.eneiluj.ihatemoney.model.DBMember;
 import net.eneiluj.ihatemoney.model.DBProject;
-import net.eneiluj.ihatemoney.model.DBSession;
-import net.eneiluj.ihatemoney.model.DBLogjob;
-import net.eneiluj.ihatemoney.model.SyncError;
-import net.eneiluj.ihatemoney.util.ICallback;
 
 /**
  * Helps to add, get, update and delete log jobs, sessions, locations with the option to trigger a session Resync with the Server.
@@ -58,7 +52,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     //private static final String key_id = "ID";
     //private static final String key_remoteId = "REMOTEID";
     //private static final String key_projectId = "PROJECTID";
-    private static final String key_payer_remoteId = "PAYERID";
+    private static final String key_payer_id = "PAYERID";
     private static final String key_amount = "AMOUNT";
     private static final String key_date = "DATE";
     private static final String key_what = "WHAT";
@@ -79,7 +73,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     };
 
     private static final String[] columnsBills = {
-            key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount,
+            key_id, key_remoteId, key_projectid, key_payer_id, key_amount,
             key_date, key_what, key_state
     };
 
@@ -153,7 +147,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
                 key_id + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 key_remoteId + " INTEGER, " +
                 key_projectid + " INTEGER, " +
-                key_payer_remoteId + " INTEGER, " +
+                key_payer_id + " INTEGER, " +
                 key_amount + " FLOAT, " +
                 key_what + " TEXT, " +
                 key_state + " INTEGER, " +
@@ -164,8 +158,8 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     private void createTableBillowers(SQLiteDatabase db, String tableName) {
         db.execSQL("CREATE TABLE " + tableName + " ( " +
                 key_id + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                key_billId + " TEXT, " +
-                key_member_id + " TEXT)");
+                key_billId + " INTEGER, " +
+                key_member_id + " INTEGER)");
     }
 
     @Override
@@ -381,6 +375,15 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         return members.isEmpty() ? null : members.get(0);
     }
 
+    public DBMember getMember(long id) {
+        List<DBMember> members = getMembersCustom(
+                key_id + " = ?",
+                new String[]{String.valueOf(id)},
+                null
+        );
+        return members.isEmpty() ? null : members.get(0);
+    }
+
     /**
      *
      */
@@ -424,27 +427,27 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     public long addBill(DBBill b) {
-        // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what, key_state
+        // key_id, key_remoteId, key_projectid, key_payer_id, key_amount, key_date, key_what, key_state
         if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[add bill]"); }
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(key_remoteId, b.getRemoteId());
         values.put(key_projectid, b.getProjectId());
-        values.put(key_payer_remoteId, b.getPayerRemoteId());
+        values.put(key_payer_id, b.getPayerId());
         values.put(key_amount, b.getAmount());
         values.put(key_date, b.getDate());
         values.put(key_what, b.getWhat());
         values.put(key_state, b.getState());
 
-        long id = db.insert(table_bills, null, values);
+        long billId = db.insert(table_bills, null, values);
 
         for (DBBillOwer bo : b.getBillOwers()) {
-            addBillower(id, bo);
+            addBillower(billId, bo.getMemberId());
         }
-        return id;
+        return billId;
     }
 
-    public void updateBill(long remoteId, long projId, long newPayerRemoteId, double newAmount, @Nullable String newDate, @Nullable String newWhat, int newState) {
+    public void updateBill(long remoteId, long projId, long newPayerId, double newAmount, @Nullable String newDate, @Nullable String newWhat, int newState) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -454,7 +457,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         if (newWhat != null) {
             values.put(key_what, newWhat);
         }
-        values.put(key_payer_remoteId, newPayerRemoteId);
+        values.put(key_payer_id, newPayerId);
         values.put(key_amount, newAmount);
         values.put(key_state, newState);
         if (values.size() > 0) {
@@ -471,7 +474,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
                     new String[]{String.valueOf(billId)});
     }
 
-    public void updateBill(long billId, @Nullable Long newRemoteId, @Nullable Long newPayerRemoteId, @Nullable Double newAmount, @Nullable String newDate, @Nullable String newWhat, @Nullable Integer newState) {
+    public void updateBill(long billId, @Nullable Long newRemoteId, @Nullable Long newPayerId, @Nullable Double newAmount, @Nullable String newDate, @Nullable String newWhat, @Nullable Integer newState) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -484,8 +487,8 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         if (newRemoteId != null) {
             values.put(key_remoteId, newRemoteId);
         }
-        if (newPayerRemoteId != null) {
-            values.put(key_payer_remoteId, newPayerRemoteId);
+        if (newPayerId != null) {
+            values.put(key_payer_id, newPayerId);
         }
         if (newAmount != null) {
             values.put(key_amount, newAmount);
@@ -499,30 +502,30 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void updateBillAndSync(DBBill bill, long newPayerRemoteId, double newAmount, @Nullable String newDate, @Nullable String newWhat, @Nullable List<Long> newOwersRemoteIds) {
+    public void updateBillAndSync(DBBill bill, long newPayerId, double newAmount, @Nullable String newDate, @Nullable String newWhat, @Nullable List<Long> newOwersIds) {
         // bill values
         // state
         int newState = DBBill.STATE_EDITED;
         if (bill.getState() == DBBill.STATE_ADDED) {
             newState = DBBill.STATE_ADDED;
         }
-        updateBill(bill.getId(), null, newPayerRemoteId, newAmount, newDate, newWhat, newState);
+        updateBill(bill.getId(), null, newPayerId, newAmount, newDate, newWhat, newState);
 
         // bill owers
         List<DBBillOwer> dbBillOwers = getBillowersOfBill(bill.getId());
-        Map<Long, DBBillOwer> dbBillOwersByMemberRemoteId = new ArrayMap<>();
+        Map<Long, DBBillOwer> dbBillOwersByMemberId = new ArrayMap<>();
         for (DBBillOwer bo : dbBillOwers) {
-            dbBillOwersByMemberRemoteId.put(bo.getMemberId(), bo);
+            dbBillOwersByMemberId.put(bo.getMemberId(), bo);
         }
         // add the owers who are not in the DB
-        for (long newOwerRemoteId : newOwersRemoteIds) {
-            if (!dbBillOwersByMemberRemoteId.containsKey(newOwerRemoteId)) {
-                addBillower(bill.getId(), new DBBillOwer(0, 0, newOwerRemoteId));
+        for (long newOwerId : newOwersIds) {
+            if (!dbBillOwersByMemberId.containsKey(newOwerId)) {
+                addBillower(bill.getId(), newOwerId);
             }
         }
         // delete the db owers that are not in new owers
         for (DBBillOwer dbBo : dbBillOwers) {
-            if (!newOwersRemoteIds.contains(dbBo.getMemberId())) {
+            if (!newOwersIds.contains(dbBo.getMemberId())) {
                 deleteBillOwer(dbBo.getId());
             }
         }
@@ -608,7 +611,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
      */
     @NonNull
     private DBBill getBillFromCursor(@NonNull Cursor cursor) {
-        // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what, key_state
+        // key_id, key_remoteId, key_projectid, key_payer_id, key_amount, key_date, key_what, key_state
         return new DBBill(
                 cursor.getLong(0),
                 cursor.getLong(1),
@@ -631,13 +634,12 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(id)});
     }
 
-    public void addBillower(long billId, DBBillOwer bo) {
-        // key_id, key_billId, key_member_remoteId
+    public void addBillower(long billId, long memberId) {
         if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[add billower]"); }
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(key_billId, billId);
-        values.put(key_member_id, bo.getMemberId());
+        values.put(key_member_id, memberId);
 
         db.insert(table_billowers, null, values);
     }
@@ -675,7 +677,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
      */
     @NonNull
     private DBBillOwer getBillOwerFromCursor(@NonNull Cursor cursor) {
-        // key_id, key_billId, key_member_remoteId
+        // key_id, key_billId, key_member_id, key_member_remoteId
         return new DBBillOwer(
                 cursor.getLong(0),
                 cursor.getLong(1),

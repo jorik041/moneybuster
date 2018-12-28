@@ -16,7 +16,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 //import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -55,7 +54,6 @@ import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.fragment.NewProjectFragment;
 import net.eneiluj.ihatemoney.model.Category;
 import net.eneiluj.ihatemoney.model.DBBill;
-import net.eneiluj.ihatemoney.model.DBLogjob;
 import net.eneiluj.ihatemoney.model.DBMember;
 import net.eneiluj.ihatemoney.model.DBProject;
 import net.eneiluj.ihatemoney.model.Item;
@@ -217,7 +215,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     @Override
     protected void onResume() {
         // refresh and sync every time the activity gets visible
-        refreshLists();
+        if (projects.getCount() > 0) {
+            refreshLists();
+        }
         swipeRefreshLayout.setRefreshing(false);
         db.getIhateMoneyServerSyncHelper().addCallbackPull(syncCallBack);
         if (DEBUG) { Log.d(TAG, "[onResume]"); }
@@ -390,13 +390,19 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             itemUncategorized = null;
             MenuProject mproj = (MenuProject) projects.getSelectedItem();
 
+            ArrayList<NavigationAdapter.NavigationItem> items = new ArrayList<>();
+
+            if (mproj == null) {
+                return items;
+            }
+
             List<DBBill> dbBills = db.getBillsOfProject(mproj.getId());
             List<DBMember> dbMembers = db.getMembersOfProject(mproj.getId());
 
             Map<Long, Integer> membersNbBills = new ArrayMap<>();
             // init
             for (DBMember m : dbMembers) {
-                membersNbBills.put(m.getRemoteId(), 0);
+                membersNbBills.put(m.getId(), 0);
             }
 
             int nbBills = 0;
@@ -404,37 +410,30 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             for (DBBill b : dbBills) {
                 if (b.getState() != DBBill.STATE_DELETED) {
                     nbBills++;
+                    System.out.println("LALA "+b.getPayerId());
                     membersNbBills.put(
-                            b.getPayerRemoteId(),
-                            membersNbBills.get(b.getPayerRemoteId()) + 1
+                            b.getPayerId(),
+                            membersNbBills.get(b.getPayerId()) + 1
                     );
                 }
             }
 
-            ArrayList<NavigationAdapter.NavigationItem> items = new ArrayList<>();
-
             itemAll.count = nbBills;
             items.add(itemAll);
-
-            if (mproj == null) {
-                return items;
-            }
 
             for (DBMember m : dbMembers) {
                 // TODO if activated OR balance != 0
                 // TODO only use id instead of remoteId (member might not have one yet...)
                 if (m.isActivated()) {
                     items.add(new NavigationAdapter.NavigationItem(
-                            String.valueOf(m.getRemoteId()),
+                            String.valueOf(m.getId()),
                             m.getName(),
-                            membersNbBills.get(m.getRemoteId()),
+                            membersNbBills.get(m.getId()),
                             R.drawable.ic_account_circle_grey_24dp)
                     );
                 }
                 //System.out.println(m.getName()+" !!");
             }
-
-
 
             return items;
         }

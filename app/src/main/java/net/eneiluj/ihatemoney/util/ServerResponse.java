@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides entity classes for handling server responses with a single logjob ({@link ProjectResponse}) or a list of ihatemoney ({@link SessionsResponse}).
@@ -105,8 +106,8 @@ public class ServerResponse {
             super(response);
         }
 
-        public List<DBBill> getBills(long projId) throws JSONException {
-            return getBillsFromJSON(new JSONArray(getContent()), projId);
+        public List<DBBill> getBills(long projId, Map<Long, Long> memberRemoteIdToId) throws JSONException {
+            return getBillsFromJSON(new JSONArray(getContent()), projId, memberRemoteIdToId);
         }
     }
 
@@ -190,18 +191,19 @@ public class ServerResponse {
         return new DBMember(0, remoteId, projId, name, activated, weight);
     }
 
-    protected List<DBBill> getBillsFromJSON(JSONArray json, long projId) throws JSONException {
+    protected List<DBBill> getBillsFromJSON(JSONArray json, long projId, Map<Long, Long> memberRemoteIdToId) throws JSONException {
         List<DBBill> bills = new ArrayList<>();
         for (int i = 0; i < json.length(); i++) {
             JSONObject jsonB = json.getJSONObject(i);
-            bills.add(getBillFromJSON(jsonB, projId));
+            bills.add(getBillFromJSON(jsonB, projId, memberRemoteIdToId));
         }
         return bills;
     }
 
-    protected DBBill getBillFromJSON(JSONObject json, long projId) throws JSONException {
+    protected DBBill getBillFromJSON(JSONObject json, long projId, Map<Long, Long> memberRemoteIdToId) throws JSONException {
         long remoteId = 0;
         long payerRemoteId = 0;
+        long payerId = 0;
         double amount = 0;
         String date = "";
         String what = "";
@@ -210,6 +212,7 @@ public class ServerResponse {
         }
         if (!json.isNull("payer_id")) {
             payerRemoteId = json.getLong("payer_id");
+            payerId = memberRemoteIdToId.get(payerRemoteId);
         }
         if (!json.isNull("amount")) {
             amount = json.getDouble("amount");
@@ -220,19 +223,21 @@ public class ServerResponse {
         if (!json.isNull("what")) {
             what = json.getString("what");
         }
-        DBBill bill = new DBBill(0, remoteId, projId, payerRemoteId, amount, date, what, DBBill.STATE_OK);
-        bill.setBillOwers(getBillOwersFromJson(json));
+        DBBill bill = new DBBill(0, remoteId, projId, payerId, amount, date, what, DBBill.STATE_OK);
+        bill.setBillOwers(getBillOwersFromJson(json, memberRemoteIdToId));
         return bill;
     }
 
-    protected List<DBBillOwer> getBillOwersFromJson(JSONObject json) throws JSONException {
+    protected List<DBBillOwer> getBillOwersFromJson(JSONObject json, Map<Long, Long> memberRemoteIdToId) throws JSONException {
         List<DBBillOwer> billOwers = new ArrayList<>();
 
         if (json.has("owers")) {
             JSONArray jsonOs = json.getJSONArray("owers");
             for (int i = 0; i < jsonOs.length(); i++) {
                 JSONObject jsonO = jsonOs.getJSONObject(i);
-                billOwers.add(new DBBillOwer(0,0, jsonO.getLong("id")));
+                long memberRemoteId = jsonO.getLong("id");
+                long memberLocalId = memberRemoteIdToId.get(memberRemoteId);
+                billOwers.add(new DBBillOwer(0,0, memberLocalId));
             }
         }
         return billOwers;

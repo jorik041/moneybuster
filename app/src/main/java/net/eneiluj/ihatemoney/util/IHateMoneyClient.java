@@ -1,12 +1,10 @@
 package net.eneiluj.ihatemoney.util;
 
 import android.support.annotation.WorkerThread;
-import android.util.ArrayMap;
 import android.util.Base64;
 import android.util.Log;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,7 +20,6 @@ import java.util.Map;
 import at.bitfire.cert4android.CustomCertManager;
 import net.eneiluj.ihatemoney.BuildConfig;
 import net.eneiluj.ihatemoney.model.DBBill;
-import net.eneiluj.ihatemoney.model.DBBillOwer;
 import net.eneiluj.ihatemoney.model.DBProject;
 
 @WorkerThread
@@ -91,7 +88,7 @@ public class IHateMoneyClient {
         return new ServerResponse.EditRemoteProjectResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, project.getRemoteId(), project.getPassword()));
     }
 
-    public ServerResponse.EditRemoteBillResponse editRemoteBill(CustomCertManager ccm, DBProject project, DBBill bill) throws IOException {
+    public ServerResponse.EditRemoteBillResponse editRemoteBill(CustomCertManager ccm, DBProject project, DBBill bill, Map<Long, Long> memberIdToRemoteId) throws IOException {
         String target = project.getIhmUrl().replaceAll("/+$", "")
                 + "/api/projects/" + project.getRemoteId() + "/bills/" + bill.getRemoteId();
         //https://ihatemoney.org/api/projects/demo/bills/12
@@ -103,12 +100,20 @@ public class IHateMoneyClient {
         paramKeys.add("what");
         paramValues.add(bill.getWhat());
         paramKeys.add("payer");
-        paramValues.add(String.valueOf(bill.getPayerRemoteId()));
+        paramValues.add(
+                String.valueOf(
+                        memberIdToRemoteId.get(bill.getPayerId())
+                )
+        );
         paramKeys.add("amount");
         paramValues.add(String.valueOf(bill.getAmount()));
-        for (long boRemoteId : bill.getBillOwersRemoteIds()) {
+        for (long boId : bill.getBillOwersIds()) {
             paramKeys.add("payed_for");
-            paramValues.add(String.valueOf(boRemoteId));
+            paramValues.add(
+                    String.valueOf(
+                            memberIdToRemoteId.get(boId)
+                    )
+            );
         }
         return new ServerResponse.EditRemoteBillResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, project.getRemoteId(), project.getPassword()));
     }
@@ -141,7 +146,7 @@ public class IHateMoneyClient {
         return new ServerResponse.CreateRemoteProjectResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, null, null));
     }
 
-    public ServerResponse.CreateRemoteBillResponse createRemoteBill(CustomCertManager ccm, DBProject project, DBBill bill) throws IOException {
+    public ServerResponse.CreateRemoteBillResponse createRemoteBill(CustomCertManager ccm, DBProject project, DBBill bill, Map<Long, Long> memberIdToRemoteId) throws IOException {
         String target = project.getIhmUrl().replaceAll("/+$", "")
                 + "/api/projects/" + project.getRemoteId() + "/bills";
         //https://ihatemoney.org/api/projects/demo/bills/12
@@ -153,12 +158,20 @@ public class IHateMoneyClient {
         paramKeys.add("what");
         paramValues.add(bill.getWhat());
         paramKeys.add("payer");
-        paramValues.add(String.valueOf(bill.getPayerRemoteId()));
+        paramValues.add(
+                String.valueOf(
+                        memberIdToRemoteId.get(bill.getPayerId())
+                )
+        );
         paramKeys.add("amount");
         paramValues.add(String.valueOf(bill.getAmount()));
-        for (long boRemoteId : bill.getBillOwersRemoteIds()) {
+        for (long boId : bill.getBillOwersIds()) {
             paramKeys.add("payed_for");
-            paramValues.add(String.valueOf(boRemoteId));
+            paramValues.add(
+                    String.valueOf(
+                            memberIdToRemoteId.get(boId)
+                    )
+            );
         }
         return new ServerResponse.CreateRemoteBillResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, project.getRemoteId(), project.getPassword()));
     }

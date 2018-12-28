@@ -814,7 +814,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 DBProject proj = db.getProject(pid);
                 MenuProject mproj = new MenuProject(
                         proj.getId(),
-                        proj.getName(),
+                        proj.getRemoteId(),
                         proj.getRemoteId() + "@" + proj.getIhmUrl()
                                 .replace("https://", "")
                                 .replace("http://", "")

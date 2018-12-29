@@ -448,7 +448,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             NumberFormat formatter = new DecimalFormat("#0.00");
 
             for (DBMember m : dbMembers) {
-                double balance = membersBalance.get(m.getId());
+                double balance = Math.round( (membersBalance.get(m.getId())) * 100.0 ) / 100.0;
                 String balanceStr = formatter.format(balance).replace(",", ".");
                 // TODO if activated OR balance != 0
                 if (m.isActivated() || balance != 0.0) {

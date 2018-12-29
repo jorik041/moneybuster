@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -88,7 +92,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
         void assignItem(@NonNull NavigationItem item) {
             currentItem = item;
             boolean isSelected = item.id.equals(selectedItem);
-            name.setText(item.label);
+            //name.setText(item.label);
             count.setVisibility(item.count == null ? View.GONE : View.VISIBLE);
             count.setText(String.valueOf(item.count));
             if (item.icon > 0) {
@@ -104,6 +108,27 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
             view.setBackgroundColor(isSelected ? ContextCompat.getColor(view.getContext(), R.color.bg_highlighted) : Color.TRANSPARENT);
             //int textColor = view.getResources().getColor(isSelected ? R.color.primary_dark : R.color.fg_default);
             int textColor = ContextCompat.getColor(view.getContext(), isSelected ? R.color.primary : R.color.fg_default);
+
+            SpannableString spannableString = new SpannableString(item.label);
+            Matcher matcher = Pattern.compile("(\\+\\d*\\.?\\d*)", Pattern.CASE_INSENSITIVE).matcher(spannableString);
+            while (matcher.find()) {
+                spannableString.setSpan(
+                        new ForegroundColorSpan(
+                                //context.getResources().getColor(R.color.primary_dark)
+                                ContextCompat.getColor(view.getContext(), R.color.green)
+                        ),
+                        matcher.start(), matcher.end(), 0);
+            }
+            matcher = Pattern.compile("(-\\d*\\.?\\d*)", Pattern.CASE_INSENSITIVE).matcher(spannableString);
+            while (matcher.find()) {
+                spannableString.setSpan(
+                        new ForegroundColorSpan(
+                                //context.getResources().getColor(R.color.primary_dark)
+                                ContextCompat.getColor(view.getContext(), R.color.red)
+                        ),
+                        matcher.start(), matcher.end(), 0);
+            }
+            name.setText(spannableString, TextView.BufferType.SPANNABLE);
 
             name.setTextColor(textColor);
             count.setTextColor(textColor);

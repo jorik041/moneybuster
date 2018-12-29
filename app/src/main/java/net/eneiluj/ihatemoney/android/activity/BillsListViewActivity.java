@@ -44,6 +44,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +56,7 @@ import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.fragment.NewProjectFragment;
 import net.eneiluj.ihatemoney.model.Category;
 import net.eneiluj.ihatemoney.model.DBBill;
+import net.eneiluj.ihatemoney.model.DBBillOwer;
 import net.eneiluj.ihatemoney.model.DBMember;
 import net.eneiluj.ihatemoney.model.DBProject;
 import net.eneiluj.ihatemoney.model.Item;
@@ -400,9 +403,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             List<DBMember> dbMembers = db.getMembersOfProject(mproj.getId());
 
             Map<Long, Integer> membersNbBills = new ArrayMap<>();
+            Map<Long, Double> membersBalance = new ArrayMap<>();
+            Map<Long, Double> membersWeight = new ArrayMap<>();
             // init
             for (DBMember m : dbMembers) {
                 membersNbBills.put(m.getId(), 0);
+                membersBalance.put(m.getId(), 0.0);
+                membersWeight.put(m.getId(), m.getWeight());
             }
 
             int nbBills = 0;
@@ -415,25 +422,47 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             b.getPayerId(),
                             membersNbBills.get(b.getPayerId()) + 1
                     );
+                    double amount = b.getAmount();
+                    membersBalance.put(
+                            b.getPayerId(),
+                            membersBalance.get(b.getPayerId()) + amount
+                    );
+                    //int nbBillOwers = b.getBillOwers().size();
+                    double nbOwerShares = 0.0;
+                    for (DBBillOwer bo : b.getBillOwers()) {
+                        nbOwerShares += membersWeight.get(bo.getMemberId());
+                    }
+                    for (DBBillOwer bo : b.getBillOwers()) {
+                        double owerWeight = membersWeight.get(bo.getMemberId());
+                        membersBalance.put(
+                                bo.getMemberId(),
+                                membersBalance.get(bo.getMemberId()) - (amount/nbOwerShares*owerWeight)
+                        );
+                    }
                 }
             }
 
             itemAll.count = nbBills;
             items.add(itemAll);
 
-            for (DBMember m : dbMembers) {
-                // TODO if activated OR balance != 0
-                if (m.isActivated()) {
-                    items.add(new NavigationAdapter.NavigationItem(
-                            String.valueOf(m.getId()),
-                            m.getName(),
-                            membersNbBills.get(m.getId()),
-                            R.drawable.ic_account_circle_grey_24dp)
-                    );
-                }
-                //System.out.println(m.getName()+" !!");
-            }
+            NumberFormat formatter = new DecimalFormat("#0.00");
 
+            for (DBMember m : dbMembers) {
+                double balance = membersBalance.get(m.getId());
+                String balanceStr = formatter.format(balance).replace(",", ".");
+                // TODO if activated OR balance != 0
+                if (m.isActivated() || balance != 0.0) {
+                    String sign = balance > 0.0 ? "+" : "";
+                    NavigationAdapter.NavigationItem it = new NavigationAdapter.NavigationItem(
+                            String.valueOf(m.getId()),
+                            m.getName()+" ("+sign+balanceStr+")",
+                            membersNbBills.get(m.getId()),
+                            R.drawable.ic_account_circle_grey_24dp
+                    );
+
+                    items.add(it);
+                }
+            }
             return items;
         }
 

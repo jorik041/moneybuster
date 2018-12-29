@@ -450,13 +450,26 @@ public class EditBillFragment extends PreferenceFragmentCompat {
             }
 
             // set selected values for owers
-            if (bill.getBillOwersIds().size() > 0) {
+            if (bill.getId() != 0) {
+                if (bill.getBillOwersIds().size() > 0) {
+                    Set<String> owerIdSet = new HashSet<String>();
+                    List<String> selectedNames = new ArrayList<>();
+                    for (long owerId : bill.getBillOwersIds()) {
+                        owerIdSet.add(String.valueOf(owerId));
+                        int owerIndex = memberIdList.indexOf(String.valueOf(owerId));
+                        selectedNames.add(memberNameList.get(owerIndex));
+                    }
+                    editOwers.setValues(owerIdSet);
+                    editOwers.setSummary(TextUtils.join(", ", selectedNames));
+                }
+            }
+            // new bill
+            else {
                 Set<String> owerIdSet = new HashSet<String>();
                 List<String> selectedNames = new ArrayList<>();
-                for (long owerId : bill.getBillOwersIds()) {
-                    owerIdSet.add(String.valueOf(owerId));
-                    int owerIndex = memberIdList.indexOf(String.valueOf(owerId));
-                    selectedNames.add(memberNameList.get(owerIndex));
+                for (DBMember m : memberList) {
+                    owerIdSet.add(String.valueOf(m.getId()));
+                    selectedNames.add(m.getName());
                 }
                 editOwers.setValues(owerIdSet);
                 editOwers.setSummary(TextUtils.join(", ", selectedNames));

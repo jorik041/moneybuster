@@ -343,12 +343,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                             true, 1, DBBill.STATE_ADDED)
                             );
                         }
+                        fabMenuDrawer.close(false);
+                        //new LoadCategoryListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        refreshLists();
                     }
                 });
                 builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
+                        fabMenuDrawer.close(false);
                     }
                 });
 

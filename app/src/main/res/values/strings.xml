@@ -42,6 +42,7 @@
     <string name="setting_email">E-mail</string>
     <string name="action_search">Search</string>
     <string name="simple_cancel">Cancel</string>
+    <string name="simple_ok">Ok</string>
     <string name="simple_edit_bill">Edit bill</string>
     <string name="simple_new_bill">New bill</string>
     <string name="simple_add_project">Add project</string>
@@ -119,6 +120,7 @@
     <string name="error_share_dev_configured">Account settings must be configured</string>
     <string name="error_share_dev_network">Failed to share device\nNetwork unavailable</string>
     <string name="error_share_dev_helper">Error when sharing device : %s</string>
+    <string name="add_member_dialog_title">New member name</string>
 
     <!-- Web errors -->
     <string name="e_illegal_redirect" translatable="false">Illegal redirect: %d</string>

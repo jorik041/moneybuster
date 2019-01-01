@@ -39,6 +39,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String key_name = "NAME";
     private static final String key_activated = "ACTIVATED";
     private static final String key_weight = "WEIGHT";
+    private static final String key_state = "STATE";
 
     private static final String table_projects = "PROJECTS";
     //private static final String key_id = "ID";
@@ -56,7 +57,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String key_amount = "AMOUNT";
     private static final String key_date = "DATE";
     private static final String key_what = "WHAT";
-    private static final String key_state = "STATE";
+    //private static final String key_state = "STATE";
 
     private static final String table_billowers = "BILLOWERS";
     //private static final String key_id = "ID";
@@ -64,7 +65,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String key_member_id = "MEMBERID";
 
     private static final String[] columnsMembers = {
-            key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight
+            key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight, key_state
     };
 
     private static final String[] columnsProjects = {
@@ -128,7 +129,8 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
                 key_projectid + " INTEGER, " +
                 key_name + " TEXT, " +
                 key_activated + " INTEGER, " +
-                key_weight + " FLOAT)");
+                key_weight + " FLOAT, " +
+                key_state + " INTEGER)");
     }
 
     private void createTableProjects(SQLiteDatabase db, String tableName) {
@@ -339,22 +341,38 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_name, m.getName());
         values.put(key_activated, m.isActivated() ? "1" : "0");
         values.put(key_weight, m.getWeight());
+        values.put(key_state, m.getState());
 
         db.insert(table_members, null, values);
     }
 
-    public void updateMember(long remoteId, long projId, @Nullable String newName, double newWeight, boolean newActivated) {
+    public void addMemberAndSync(DBMember m) {
+        addMember(m);
+        serverSyncHelper.scheduleSync(true, m.getProjectId());
+    }
+
+    public void updateMember(long memberId, @Nullable String newName, @Nullable Double newWeight, @Nullable Boolean newActivated, @Nullable Integer newState, @Nullable Double newRemoteId) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         if (newName != null) {
             values.put(key_name, newName);
         }
-        values.put(key_weight, newWeight);
-        values.put(key_activated, newActivated ? 1 : 0);
+        if (newWeight != null) {
+            values.put(key_weight, newWeight);
+        }
+        if (newRemoteId != null) {
+            values.put(key_remoteId, newRemoteId);
+        }
+        if (newActivated != null) {
+            values.put(key_activated, newActivated ? 1 : 0);
+        }
+        if (newState != null) {
+            values.put(key_state, newState);
+        }
         if (values.size() > 0) {
-            int rows = db.update(table_members, values, key_remoteId + " = ? AND "+key_projectid+" = ?",
-                    new String[]{String.valueOf(remoteId), String.valueOf(projId)});
+            int rows = db.update(table_members, values, key_id + " = ?",
+                    new String[]{String.valueOf(memberId)});
         }
     }
 
@@ -363,6 +381,14 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
      */
     public List<DBMember> getMembersOfProject(long projId) {
         List<DBMember> members = getMembersCustom(key_projectid + " = ?", new String[]{String.valueOf(projId)}, key_name + " ASC");
+        return members;
+    }
+
+    public List<DBMember> getMembersOfProjectWithState(long projId, int state) {
+        List<DBMember> members = getMembersCustom(
+                key_projectid + " = ? AND " + key_state + " = ?",
+                new String[]{String.valueOf(projId), String.valueOf(state)},
+                key_name + " ASC");
         return members;
     }
 
@@ -408,14 +434,15 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
      */
     @NonNull
     private DBMember getMemberFromCursor(@NonNull Cursor cursor) {
-        // key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight
+        // key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight, key_state
         return new DBMember(
                 cursor.getLong(0),
                 cursor.getLong(1),
                 cursor.getLong(2),
                 cursor.getString(3),
                 cursor.getInt(4) == 1,
-                cursor.getDouble(5)
+                cursor.getDouble(5),
+                cursor.getInt(6)
         );
     }
 

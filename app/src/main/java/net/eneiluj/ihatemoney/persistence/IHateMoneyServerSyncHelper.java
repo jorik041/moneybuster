@@ -281,6 +281,17 @@ public class IHateMoneyServerSyncHelper {
 
             try {
                 // TODO push member changes BEFORE
+                List<DBMember> membersToAdd = dbHelper.getMembersOfProjectWithState(project.getId(), DBBill.STATE_ADDED);
+                for (DBMember mToAdd : membersToAdd) {
+                    ServerResponse.CreateRemoteMemberResponse createRemoteMemberResponse = client.createRemoteMember(customCertManager, project, mToAdd);
+                    long newRemoteId = Long.valueOf(createRemoteMemberResponse.getStringContent());
+                    if (newRemoteId > 0) {
+                        dbHelper.updateMember(
+                                mToAdd.getId(), null,
+                                null, null, DBBill.STATE_OK, newRemoteId
+                        );
+                    }
+                }
 
                 // get members
                 List<DBMember> members = dbHelper.getMembersOfProject(project.getId());

@@ -13,8 +13,9 @@ public class DBMember implements Serializable {
     private long projectId;
     private double weight;
     private boolean activated;
+    private int state;
 
-    public DBMember(long id, long remoteId, long projectId,  String name, boolean activated, double weight) {
+    public DBMember(long id, long remoteId, long projectId, String name, boolean activated, double weight, int state) {
         // key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight
         this.id = id;
         this.remoteId = remoteId;
@@ -22,6 +23,7 @@ public class DBMember implements Serializable {
         this.projectId = projectId;
         this.weight = weight;
         this.activated = activated;
+        this.state = state;
     }
 
     public long getId() {
@@ -70,6 +72,14 @@ public class DBMember implements Serializable {
 
     public void setActivated(boolean activated) {
         this.activated = activated;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     @Override

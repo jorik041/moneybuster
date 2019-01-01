@@ -188,7 +188,7 @@ public class ServerResponse {
         if (!json.isNull("name")) {
             name = json.getString("name");
         }
-        return new DBMember(0, remoteId, projId, name, activated, weight);
+        return new DBMember(0, remoteId, projId, name, activated, weight, DBBill.STATE_OK);
     }
 
     protected List<DBBill> getBillsFromJSON(JSONArray json, long projId, Map<Long, Long> memberRemoteIdToId) throws JSONException {

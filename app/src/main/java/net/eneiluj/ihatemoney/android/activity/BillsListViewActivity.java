@@ -334,8 +334,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String name = input.getText().toString();
-                        Log.v(TAG, "NAME "+name);
+                        String memberName = input.getText().toString();
+                        //Log.v(TAG, "NAME "+memberName);
+                        MenuProject mproj = (MenuProject) projects.getSelectedItem();
+                        if (mproj != null) {
+                            db.addMemberAndSync(
+                                    new DBMember(0, 0, mproj.getId(), memberName,
+                                            true, 1, DBBill.STATE_ADDED)
+                            );
+                        }
                     }
                 });
                 builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {

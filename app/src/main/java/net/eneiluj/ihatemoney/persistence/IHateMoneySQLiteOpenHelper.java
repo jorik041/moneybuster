@@ -351,7 +351,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         serverSyncHelper.scheduleSync(true, m.getProjectId());
     }
 
-    public void updateMember(long memberId, @Nullable String newName, @Nullable Double newWeight, @Nullable Boolean newActivated, @Nullable Integer newState, @Nullable Double newRemoteId) {
+    public void updateMember(long memberId, @Nullable String newName, @Nullable Double newWeight, @Nullable Boolean newActivated, @Nullable Integer newState, @Nullable Long newRemoteId) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();

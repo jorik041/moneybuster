@@ -41,6 +41,16 @@ public class ServerResponse {
         }
     }
 
+    public static class CreateRemoteMemberResponse extends ServerResponse {
+        public CreateRemoteMemberResponse(IHateMoneyClient.ResponseData response) {
+            super(response);
+        }
+
+        public String getStringContent() {
+            return getContent();
+        }
+    }
+
     public static class EditRemoteProjectResponse extends ServerResponse {
         public EditRemoteProjectResponse(IHateMoneyClient.ResponseData response) {
             super(response);

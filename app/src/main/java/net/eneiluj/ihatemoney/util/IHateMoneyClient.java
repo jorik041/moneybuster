@@ -20,6 +20,7 @@ import java.util.Map;
 import at.bitfire.cert4android.CustomCertManager;
 import net.eneiluj.ihatemoney.BuildConfig;
 import net.eneiluj.ihatemoney.model.DBBill;
+import net.eneiluj.ihatemoney.model.DBMember;
 import net.eneiluj.ihatemoney.model.DBProject;
 
 @WorkerThread
@@ -174,6 +175,16 @@ public class IHateMoneyClient {
             );
         }
         return new ServerResponse.CreateRemoteBillResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, project.getRemoteId(), project.getPassword()));
+    }
+
+    public ServerResponse.CreateRemoteMemberResponse createRemoteMember(CustomCertManager ccm, DBProject project, DBMember member) throws IOException {
+        String target = project.getIhmUrl().replaceAll("/+$", "")
+                + "/api/projects/" + project.getRemoteId() + "/members";
+        List<String> paramKeys = new ArrayList<>();
+        List<String> paramValues = new ArrayList<>();
+        paramKeys.add("name");
+        paramValues.add(member.getName());
+        return new ServerResponse.CreateRemoteMemberResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, project.getRemoteId(), project.getPassword()));
     }
 
     public ServerResponse.BillsResponse getBills(CustomCertManager ccm, DBProject project) throws JSONException, IOException {

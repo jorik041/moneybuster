@@ -516,7 +516,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     }
 
     private void setupMembersNavigationList(final String selectedItem) {
-        itemAll = new NavigationAdapter.NavigationItem(ADAPTER_KEY_ALL, getString(R.string.label_all_logjobs), null, R.drawable.ic_allgrey_24dp);
+        itemAll = new NavigationAdapter.NavigationItem(ADAPTER_KEY_ALL, getString(R.string.label_all_members), null, R.drawable.ic_allgrey_24dp);
 
         adapterMembers = new NavigationAdapter(new NavigationAdapter.ClickListener() {
             @Override

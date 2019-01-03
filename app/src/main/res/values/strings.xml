@@ -3,7 +3,7 @@
 
     <string name="app_name">IHateMoney</string>
     <string name="swipe_left">Toggle</string>
-    <string name="label_all_logjobs">All log jobs</string>
+    <string name="label_all_members">Bills of all members</string>
     <string name="label_enabled">Enabled</string>
     <string name="label_phonetrack_lj">PhoneTrack log jobs</string>
     <string name="label_custom_lj">Custom log jobs</string>

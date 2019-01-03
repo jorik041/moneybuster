@@ -16,6 +16,9 @@ import net.eneiluj.ihatemoney.android.fragment.EditBillFragment;
 import net.eneiluj.ihatemoney.model.DBBill;
 import net.eneiluj.ihatemoney.model.DBLogjob;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class EditBillActivity extends AppCompatActivity implements EditBillFragment.BillFragmentListener {
 
     public static final String PARAM_BILL_ID = "billId";
@@ -102,7 +105,9 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         Intent intent = getIntent();
 
         //DBLogjob newLogjob = new DBLogjob(0, "",  "https://yourserver.org/page.php?lat=%LAT", "", "", 60, 5, 50, false, false, 0);
-        DBBill newBill = new DBBill(0, 0, projectId, 0, 0, "", "", DBBill.STATE_ADDED);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String newDate = sdf.format(new Date());
+        DBBill newBill = new DBBill(0, 0, projectId, 0, 0, newDate, "", DBBill.STATE_ADDED);
 
         fragment = EditBillFragment.newInstanceWithNewBill(newBill);
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();

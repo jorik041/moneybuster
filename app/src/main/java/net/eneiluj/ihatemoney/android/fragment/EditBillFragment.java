@@ -110,6 +110,7 @@ public class EditBillFragment extends PreferenceFragmentCompat {
             long id = getArguments().getLong(PARAM_BILL_ID);
             if (id > 0) {
                 bill = db.getBill(id);
+                listener.onBillUpdated(bill);
             } else {
                 DBBill newBill = (DBBill) getArguments().getSerializable(PARAM_NEWBILL);
                 if (newBill == null) {
@@ -250,7 +251,7 @@ public class EditBillFragment extends PreferenceFragmentCompat {
     @Override
     public void onResume() {
         super.onResume();
-        listener.onBillUpdated(bill);
+        //listener.onBillUpdated(bill);
     }
 
     @Override
@@ -491,9 +492,9 @@ public class EditBillFragment extends PreferenceFragmentCompat {
             );
         }
         catch (ParseException e) {
-
+            Log.d(getClass().getSimpleName(), "bad date "+bill.getDate());
         }
-        editDate.setSummary(bill.getDate());
+        //editDate.setSummary(bill.getDate());
 
         editAmount = (EditTextPreference) this.findPreference("amount");
         editAmount.setText(String.valueOf(bill.getAmount()));

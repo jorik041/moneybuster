@@ -10,7 +10,7 @@
     <color name="bg_transparent">#aa000000</color>
     <color name="bg_highlighted">#f3f3f3</color>
     <color name="bg_normal">#ffffff</color>
-    <color name="bg_normal_transparent">#aaffffff</color>
+    <color name="bg_normal_transparent">#bbffffff</color>
     <color name="bg_attention">#d40000</color>
     <color name="bg_warning">#74991B</color>
     <color name="fg_default">#000000</color>

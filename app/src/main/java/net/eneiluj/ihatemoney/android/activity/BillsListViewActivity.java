@@ -412,16 +412,39 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabRemoveProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MenuProject proj = (MenuProject) projects.getSelectedItem();
-                if (proj != null) {
-                    db.deleteProject(proj.getId());
-                    projectsAdapter.remove(proj);
-                    projectsAdapter.notifyDataSetChanged();
+                AlertDialog.Builder builder = new AlertDialog.Builder(
+                        new ContextThemeWrapper(
+                                view.getContext(),
+                                R.style.Theme_AppCompat_DayNight_Dialog
+                        )
+                );
+                builder.setTitle(getString(R.string.confirm_remove_project_dialog_title));
+                builder.setMessage(getString(R.string.confirm_remove_project_dialog_message));
 
-                    fabMenuDrawerEdit.close(false);
-                    drawerLayout.closeDrawers();
-                    refreshLists();
-                }
+                // Set up the buttons
+                builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        MenuProject proj = (MenuProject) projects.getSelectedItem();
+                        if (proj != null) {
+                            db.deleteProject(proj.getId());
+                            projectsAdapter.remove(proj);
+                            projectsAdapter.notifyDataSetChanged();
+
+                            fabMenuDrawerEdit.close(false);
+                            drawerLayout.closeDrawers();
+                            refreshLists();
+                        }
+                    }
+                });
+                builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
             }
         });
     }

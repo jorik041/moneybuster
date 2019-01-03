@@ -8,7 +8,7 @@
 
     <color name="bg_highlighted">#111</color>
     <color name="bg_normal">#222222</color>
-    <color name="bg_normal_transparent">#aa222222</color>
+    <color name="bg_normal_transparent">#bb222222</color>
     <color name="bg_attention">#ff3333</color>
     <color name="fg_default">#eeeeee</color>
     <color name="fg_default_selection">#cccccc</color>

@@ -129,7 +129,17 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     @BindView(R.id.fabDrawer_add_member)
     com.github.clans.fab.FloatingActionButton fabAddMember;
     @BindView(R.id.floatingMenuDrawer)
-    com.github.clans.fab.FloatingActionMenu fabMenuDrawer;
+    com.github.clans.fab.FloatingActionMenu fabMenuDrawerAdd;
+    @BindView(R.id.floatingMenuDrawerEdit)
+    com.github.clans.fab.FloatingActionMenu fabMenuDrawerEdit;
+    @BindView(R.id.fabDrawer_edit_member)
+    com.github.clans.fab.FloatingActionButton fabEditMember;
+    @BindView(R.id.fabDrawer_edit_project)
+    com.github.clans.fab.FloatingActionButton fabEditProject;
+    @BindView(R.id.fabDrawer_delete_member)
+    com.github.clans.fab.FloatingActionButton fabDeleteMember;
+    @BindView(R.id.fabDrawer_remove_project)
+    com.github.clans.fab.FloatingActionButton fabRemoveProject;
     @BindView(R.id.fab_add_bill)
     android.support.design.widget.FloatingActionButton fabMenu;
     @BindView(R.id.navigationList)
@@ -309,8 +319,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     String url = db.getProject(pid).getIhmUrl();
                     newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, url);
                 }
+                else {
+                    newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "https://ihatemoney.org");
+                }
                 startActivityForResult(newProjectIntent, addproject);
-                fabMenuDrawer.close(false);
+                fabMenuDrawerAdd.close(false);
             }
         });
         fabAddMember.setOnClickListener(new View.OnClickListener() {
@@ -353,7 +366,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                 showToast(getString(R.string.member_already_exists));
                             }
                         }
-                        fabMenuDrawer.close(false);
+                        fabMenuDrawerAdd.close(false);
                         //new LoadCategoryListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         refreshLists();
                     }
@@ -362,7 +375,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
-                        fabMenuDrawer.close(false);
+                        fabMenuDrawerAdd.close(false);
                     }
                 });
 
@@ -378,6 +391,37 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, mproj.getId());
                 }
                 startActivityForResult(createIntent, create_bill_cmd);
+            }
+        });
+
+        fabEditProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MenuProject proj = (MenuProject) projects.getSelectedItem();
+                if (proj != null) {
+                    Intent editProjectIntent = new Intent(getApplicationContext(), EditProjectActivity.class);
+                    editProjectIntent.putExtra(PARAM_PROJECT_ID, proj.getId());
+                    startActivityForResult(editProjectIntent, editproject);
+
+                    fabMenuDrawerEdit.close(false);
+                    drawerLayout.closeDrawers();
+                }
+            }
+        });
+
+        fabRemoveProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MenuProject proj = (MenuProject) projects.getSelectedItem();
+                if (proj != null) {
+                    db.deleteProject(proj.getId());
+                    projectsAdapter.remove(proj);
+                    projectsAdapter.notifyDataSetChanged();
+
+                    fabMenuDrawerEdit.close(false);
+                    drawerLayout.closeDrawers();
+                    refreshLists();
+                }
             }
         });
     }
@@ -530,15 +574,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private void setupNavigationMenu() {
         //final NavigationAdapter.NavigationItem itemTrashbin = new NavigationAdapter.NavigationItem("trashbin", getString(R.string.action_trashbin), null, R.drawable.ic_delete_grey600_24dp);
         //final NavigationAdapter.NavigationItem itemAddProject = new NavigationAdapter.NavigationItem("addproject", getString(R.string.action_add_project), null, android.R.drawable.ic_menu_add);
-        final NavigationAdapter.NavigationItem itemEditProject = new NavigationAdapter.NavigationItem("editproject", getString(R.string.action_edit_project), null, android.R.drawable.ic_menu_edit);
-        final NavigationAdapter.NavigationItem itemRemoveProject = new NavigationAdapter.NavigationItem("removeproject", getString(R.string.action_remove_project), null, android.R.drawable.ic_menu_delete);
+        //final NavigationAdapter.NavigationItem itemEditProject = new NavigationAdapter.NavigationItem("editproject", getString(R.string.action_edit_project), null, android.R.drawable.ic_menu_edit);
+        //final NavigationAdapter.NavigationItem itemRemoveProject = new NavigationAdapter.NavigationItem("removeproject", getString(R.string.action_remove_project), null, android.R.drawable.ic_menu_delete);
         final NavigationAdapter.NavigationItem itemSettings = new NavigationAdapter.NavigationItem("settings", getString(R.string.action_settings), null, R.drawable.ic_settings_grey600_24dp);
         final NavigationAdapter.NavigationItem itemAbout = new NavigationAdapter.NavigationItem("about", getString(R.string.simple_about), null, R.drawable.ic_info_outline_grey600_24dp);
 
         ArrayList<NavigationAdapter.NavigationItem> itemsMenu = new ArrayList<>();
         //itemsMenu.add(itemAddProject);
-        itemsMenu.add(itemEditProject);
-        itemsMenu.add(itemRemoveProject);
+        //itemsMenu.add(itemEditProject);
+        //itemsMenu.add(itemRemoveProject);
         itemsMenu.add(itemSettings);
         itemsMenu.add(itemAbout);
 
@@ -559,7 +603,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, url);
                     }
                     startActivityForResult(newProjectIntent, addproject);
-                }*/ else if (item == itemEditProject) {
+                } else if (item == itemEditProject) {
                     MenuProject proj = (MenuProject) projects.getSelectedItem();
                     Intent editProjectIntent = new Intent(getApplicationContext(), EditProjectActivity.class);
                     editProjectIntent.putExtra(PARAM_PROJECT_ID, proj.getId());
@@ -569,7 +613,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     db.deleteProject(proj.getId());
                     projectsAdapter.remove(proj);
                     projectsAdapter.notifyDataSetChanged();
-                }
+                }*/
             }
 
             @Override
@@ -763,9 +807,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         refreshLists(false);
     }
     private void refreshLists(final boolean scrollToTop) {
+        long projId = 0;
+        String projName = "";
         MenuProject proj = (MenuProject) projects.getSelectedItem();
-        long projId = proj.getId();
-        String projName = proj.getName();
+        if (proj != null) {
+            projId = proj.getId();
+            projName = proj.getName();
+        }
 
         String subtitle;
         // TODO
@@ -1075,9 +1123,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         if (db.getIhateMoneyServerSyncHelper().isSyncPossible()) {
             swipeRefreshLayout.setRefreshing(true);
             MenuProject proj = (MenuProject) projects.getSelectedItem();
-            long projId = proj.getId();
-            db.getIhateMoneyServerSyncHelper().addCallbackPull(syncCallBack);
-            db.getIhateMoneyServerSyncHelper().scheduleSync(false, projId);
+            if (proj != null) {
+                long projId = proj.getId();
+                if (DEBUG) { Log.d(TAG, "SYNC ASKED : " + proj); }
+                db.getIhateMoneyServerSyncHelper().addCallbackPull(syncCallBack);
+                db.getIhateMoneyServerSyncHelper().scheduleSync(false, projId);
+            }
+            else {
+                swipeRefreshLayout.setRefreshing(false);
+            }
         }
     }
 

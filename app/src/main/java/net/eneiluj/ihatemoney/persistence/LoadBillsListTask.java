@@ -40,8 +40,13 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
     protected List<Item> doInBackground(Void... voids) {
         List<DBBill> billList;
         IHateMoneySQLiteOpenHelper db = IHateMoneySQLiteOpenHelper.getInstance(context);
-        // TODO
-        billList = db.searchBills(searchQuery, projectId);
+
+        if (projectId != 0) {
+            billList = db.searchBills(searchQuery, projectId);
+        }
+        else {
+            billList = new ArrayList<>();
+        }
 
         return fillListTitle(billList);
         /*if (category.category == null) {

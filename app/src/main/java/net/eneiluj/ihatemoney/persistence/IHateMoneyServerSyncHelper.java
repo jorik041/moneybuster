@@ -264,9 +264,9 @@ public class IHateMoneyServerSyncHelper {
             Log.i(getClass().getSimpleName(), "STARTING SYNCHRONIZATION");
             //dbHelper.debugPrintFullDB();
             LoginStatus status = LoginStatus.OK;
-            // TODO
+
             status = pushLocalChanges();
-            if (!onlyLocalChanges) {
+            if (!onlyLocalChanges && status == LoginStatus.OK) {
                 status = pullRemoteChanges();
             }
             //dbHelper.debugPrintFullDB();

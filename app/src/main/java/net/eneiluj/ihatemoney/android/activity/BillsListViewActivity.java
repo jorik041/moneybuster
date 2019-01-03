@@ -338,10 +338,20 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         //Log.v(TAG, "NAME "+memberName);
                         MenuProject mproj = (MenuProject) projects.getSelectedItem();
                         if (mproj != null) {
-                            db.addMemberAndSync(
-                                    new DBMember(0, 0, mproj.getId(), memberName,
-                                            true, 1, DBBill.STATE_ADDED)
-                            );
+                            List<DBMember> members = db.getMembersOfProject(mproj.getId());
+                            List<String> memberNames = new ArrayList<>();
+                            for (DBMember m : members) {
+                                memberNames.add(m.getName());
+                            }
+                            if (!memberNames.contains(memberName)) {
+                                db.addMemberAndSync(
+                                        new DBMember(0, 0, mproj.getId(), memberName,
+                                                true, 1, DBBill.STATE_ADDED)
+                                );
+                            }
+                            else {
+                                showToast(getString(R.string.member_already_exists));
+                            }
                         }
                         fabMenuDrawer.close(false);
                         //new LoadCategoryListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -1176,7 +1186,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     break;
                 case IHateMoneyServerSyncHelper.BROADCAST_SESSIONS_SYNCED:
                     // TODO
-                    setupMembersNavigationList(ADAPTER_KEY_ALL);
+                    //setupMembersNavigationList(ADAPTER_KEY_ALL);
+                    refreshLists();
                     showToast(getString(R.string.sessions_sync_success));
                     break;
             }

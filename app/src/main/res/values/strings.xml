@@ -78,6 +78,7 @@
     <string name="logjob_info_lastsync_error">Last synchronization error at %s\n\n%s</string>
     <string name="dialog_title_import_pt_url">Import PhoneTrack logging URL</string>
     <string name="dialog_msg_import_pt_url">Any compatible logging URL given in PhoneTrack web interface</string>
+    <string name="member_already_exists">This member already exists in this project</string>
 
     <string name="is_running">running (%s pending, %s sent)</string>
 

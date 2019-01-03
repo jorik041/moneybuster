@@ -407,7 +407,7 @@ public class IHateMoneyServerSyncHelper {
                             Log.d(getClass().getSimpleName(), "Update member : "+m);
                             // long memberId, @Nullable String newName, @Nullable Double newWeight,
                             // @Nullable Boolean newActivated, @Nullable Integer newState, @Nullable Long newRemoteId
-                            dbHelper.updateMember(m.getId(), m.getName(), m.getWeight(), m.isActivated(), null, null);
+                            dbHelper.updateMember(localMember.getId(), m.getName(), m.getWeight(), m.isActivated(), null, null);
                         }
                     }
                 }

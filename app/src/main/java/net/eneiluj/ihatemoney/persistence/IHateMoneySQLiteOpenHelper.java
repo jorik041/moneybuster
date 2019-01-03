@@ -359,6 +359,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
             values.put(key_name, newName);
         }
         if (newWeight != null) {
+            //Log.d(getClass().getSimpleName(), "MID : "+ memberId + " NEW WEIGHT "+newWeight);
             values.put(key_weight, newWeight);
         }
         if (newRemoteId != null) {
@@ -447,6 +448,7 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
     @NonNull
     private DBMember getMemberFromCursor(@NonNull Cursor cursor) {
         // key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight, key_state
+        //Log.v("Member","get dbmember "+ cursor.getString(3) + " : "+cursor.getDouble(5));
         return new DBMember(
                 cursor.getLong(0),
                 cursor.getLong(1),

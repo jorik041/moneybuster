@@ -598,6 +598,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 membersNbBills.put(m.getId(), 0);
                 membersBalance.put(m.getId(), 0.0);
                 membersWeight.put(m.getId(), m.getWeight());
+                if (DEBUG) { Log.d(TAG, "WEIGHT of "+m.getName()+" : "+m.getWeight()); }
             }
 
             int nbBills = 0;

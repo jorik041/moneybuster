@@ -376,6 +376,18 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void updateMemberAndSync(DBMember m, @Nullable String newName,  @Nullable Double newWeight, @Nullable Boolean newActivated) {
+        int newState = DBBill.STATE_EDITED;
+        if (m.getState() == DBBill.STATE_ADDED) {
+            newState = DBBill.STATE_ADDED;
+        }
+
+        updateMember(m.getId(), newName, newWeight, newActivated, newState, null);
+
+        Log.v(TAG, "UPDATE BILL AND SYNC");
+        serverSyncHelper.scheduleSync(true, m.getProjectId());
+    }
+
     /**
      *
      */

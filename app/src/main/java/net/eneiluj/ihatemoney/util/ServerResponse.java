@@ -61,6 +61,16 @@ public class ServerResponse {
         }
     }
 
+    public static class EditRemoteMemberResponse extends ServerResponse {
+        public EditRemoteMemberResponse(IHateMoneyClient.ResponseData response) {
+            super(response);
+        }
+
+        public long getRemoteId(long projectId) throws JSONException {
+            return getMemberFromJSON(new JSONObject(getContent()), projectId).getRemoteId();
+        }
+    }
+
     public static class EditRemoteBillResponse extends ServerResponse {
         public EditRemoteBillResponse(IHateMoneyClient.ResponseData response) {
             super(response);

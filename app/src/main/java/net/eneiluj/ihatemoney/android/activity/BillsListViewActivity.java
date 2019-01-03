@@ -447,6 +447,72 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 builder.show();
             }
         });
+
+        fabEditMember.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String selectedMemberIdStr = adapterMembers.getSelectedItem();
+
+                if (selectedMemberIdStr != null && !selectedMemberIdStr.equals("all")) {
+
+                    long selectedMemberId = Long.valueOf(selectedMemberIdStr);
+                    final DBMember memberToEdit = db.getMember(selectedMemberId);
+
+                    Log.v(TAG, "MEMBER ID " + selectedMemberId);
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(
+                            new ContextThemeWrapper(
+                                    view.getContext(),
+                                    R.style.Theme_AppCompat_DayNight_Dialog
+                            )
+                    );
+                    builder.setTitle(getString(R.string.edit_member_dialog_title));
+
+                    // Set up the input
+                    final EditText input = new EditText(getApplicationContext());
+                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    input.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                    input.setText(memberToEdit.getName());
+                    builder.setView(input);
+
+                    // Set up the buttons
+                    builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String newMemberName = input.getText().toString();
+
+                            MenuProject mproj = (MenuProject) projects.getSelectedItem();
+                            if (mproj != null) {
+                                if (!newMemberName.isEmpty() || newMemberName.equals("")) {
+                                    db.updateMemberAndSync(memberToEdit, newMemberName, null, null);
+                                } else {
+                                    showToast(getString(R.string.member_edit_empty_name));
+                                }
+                            }
+                            fabMenuDrawerEdit.close(false);
+                            //new LoadCategoryListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                            refreshLists();
+                        }
+                    });
+                    builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                            fabMenuDrawerEdit.close(false);
+                        }
+                    });
+
+                    builder.show();
+                }
+            }
+        });
+
+        fabDeleteMember.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     private void setupMembersNavigationList(final String selectedItem) {

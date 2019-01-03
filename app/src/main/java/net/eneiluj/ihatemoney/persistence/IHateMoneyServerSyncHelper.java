@@ -282,7 +282,8 @@ public class IHateMoneyServerSyncHelper {
             Log.d(getClass().getSimpleName(), "PUSH LOCAL CHANGES");
 
             try {
-                // TODO push member changes BEFORE
+                // push member changes BEFORE
+                // add members
                 List<DBMember> membersToAdd = dbHelper.getMembersOfProjectWithState(project.getId(), DBBill.STATE_ADDED);
                 for (DBMember mToAdd : membersToAdd) {
                     ServerResponse.CreateRemoteMemberResponse createRemoteMemberResponse = client.createRemoteMember(customCertManager, project, mToAdd);
@@ -291,6 +292,19 @@ public class IHateMoneyServerSyncHelper {
                         dbHelper.updateMember(
                                 mToAdd.getId(), null,
                                 null, null, DBBill.STATE_OK, newRemoteId
+                        );
+                    }
+                }
+
+                // edit members
+                List<DBMember> membersToEdit = dbHelper.getMembersOfProjectWithState(project.getId(), DBBill.STATE_EDITED);
+                for (DBMember mToEdit : membersToEdit) {
+                    ServerResponse.EditRemoteMemberResponse editRemoteMemberResponse = client.editRemoteMember(customCertManager, project, mToEdit);
+                    long remoteId = editRemoteMemberResponse.getRemoteId(project.getId());
+                    if (remoteId == mToEdit.getRemoteId()) {
+                        dbHelper.updateMember(
+                                mToEdit.getId(), null,
+                                null, null, DBBill.STATE_OK, null
                         );
                     }
                 }
@@ -343,6 +357,10 @@ public class IHateMoneyServerSyncHelper {
                 Log.e(getClass().getSimpleName(), "Exception", e);
                 exceptions.add(e);
                 status = LoginStatus.CONNECTION_FAILED;
+            }  catch (JSONException e) {
+                Log.e(getClass().getSimpleName(), "Exception", e);
+                exceptions.add(e);
+                status = LoginStatus.JSON_FAILED;
             }
             Log.d(getClass().getSimpleName(), "END PUSH LOCAL CHANGES");
             return status;

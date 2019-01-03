@@ -127,6 +127,8 @@
     <string name="error_share_dev_network">Failed to share device\nNetwork unavailable</string>
     <string name="error_share_dev_helper">Error when sharing device : %s</string>
     <string name="add_member_dialog_title">New member name</string>
+    <string name="edit_member_dialog_title">Edit member</string>
+    <string name="member_edit_empty_name">Member name can\'t be empty</string>
 
     <!-- Web errors -->
     <string name="e_illegal_redirect" translatable="false">Illegal redirect: %d</string>

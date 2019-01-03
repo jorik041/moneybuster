@@ -1033,7 +1033,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
 
             AlertDialog.Builder builder;
-            builder = new AlertDialog.Builder(view.getContext(), android.R.style.Theme_Material_Dialog_Alert);
+            //builder = new AlertDialog.Builder(view.getContext(), android.R.style.Theme_Material_Dialog_Alert);
+            builder = new AlertDialog.Builder(new ContextThemeWrapper(view.getContext(), R.style.Theme_AppCompat_DayNight_Dialog));
             builder.setTitle(view.getContext().getString(R.string.logjob_info_dialog_title, dbBill.getWhat()))
                     //.setMessage(infoText)
                     .setView(iView)

@@ -437,7 +437,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         });
         adapterMembers.setSelectedItem(selectedItem);
         listNavigationMembers.setAdapter(adapterMembers);
-        listNavigationMembers.setNestedScrollingEnabled(false);
+        //listNavigationMembers.setNestedScrollingEnabled(false);
     }
 
 
@@ -529,14 +529,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     private void setupNavigationMenu() {
         //final NavigationAdapter.NavigationItem itemTrashbin = new NavigationAdapter.NavigationItem("trashbin", getString(R.string.action_trashbin), null, R.drawable.ic_delete_grey600_24dp);
-        final NavigationAdapter.NavigationItem itemAddProject = new NavigationAdapter.NavigationItem("addproject", getString(R.string.action_add_project), null, android.R.drawable.ic_menu_add);
+        //final NavigationAdapter.NavigationItem itemAddProject = new NavigationAdapter.NavigationItem("addproject", getString(R.string.action_add_project), null, android.R.drawable.ic_menu_add);
         final NavigationAdapter.NavigationItem itemEditProject = new NavigationAdapter.NavigationItem("editproject", getString(R.string.action_edit_project), null, android.R.drawable.ic_menu_edit);
         final NavigationAdapter.NavigationItem itemRemoveProject = new NavigationAdapter.NavigationItem("removeproject", getString(R.string.action_remove_project), null, android.R.drawable.ic_menu_delete);
         final NavigationAdapter.NavigationItem itemSettings = new NavigationAdapter.NavigationItem("settings", getString(R.string.action_settings), null, R.drawable.ic_settings_grey600_24dp);
         final NavigationAdapter.NavigationItem itemAbout = new NavigationAdapter.NavigationItem("about", getString(R.string.simple_about), null, R.drawable.ic_info_outline_grey600_24dp);
 
         ArrayList<NavigationAdapter.NavigationItem> itemsMenu = new ArrayList<>();
-        itemsMenu.add(itemAddProject);
+        //itemsMenu.add(itemAddProject);
         itemsMenu.add(itemEditProject);
         itemsMenu.add(itemRemoveProject);
         itemsMenu.add(itemSettings);
@@ -551,7 +551,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 } else if (item == itemAbout) {
                     Intent aboutIntent = new Intent(getApplicationContext(), AboutActivity.class);
                     startActivityForResult(aboutIntent, about);
-                } else if (item == itemAddProject) {
+                }/* else if (item == itemAddProject) {
                     Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
                     if (projectsAdapter.getCount() > 0) {
                         long pid = projectsAdapter.getItem(0).getId();
@@ -559,7 +559,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, url);
                     }
                     startActivityForResult(newProjectIntent, addproject);
-                } else if (item == itemEditProject) {
+                }*/ else if (item == itemEditProject) {
                     MenuProject proj = (MenuProject) projects.getSelectedItem();
                     Intent editProjectIntent = new Intent(getApplicationContext(), EditProjectActivity.class);
                     editProjectIntent.putExtra(PARAM_PROJECT_ID, proj.getId());
@@ -591,7 +591,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         adapterMenu.setItems(itemsMenu);
         listNavigationMenu.setAdapter(adapterMenu);
-        listNavigationMenu.setNestedScrollingEnabled(false);
+        //listNavigationMenu.setNestedScrollingEnabled(false);
 
         // projects
 

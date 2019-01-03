@@ -451,7 +451,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabEditMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String selectedMemberIdStr = adapterMembers.getSelectedItem();
+                final String selectedMemberIdStr = adapterMembers.getSelectedItem();
 
                 if (selectedMemberIdStr != null && !selectedMemberIdStr.equals("all")) {
 
@@ -491,6 +491,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             }
                             fabMenuDrawerEdit.close(false);
                             //new LoadCategoryListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                            navigationSelection = new Category(newMemberName, memberToEdit.getId());
                             refreshLists();
                         }
                     });

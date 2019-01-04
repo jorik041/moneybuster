@@ -22,6 +22,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import butterknife.ButterKnife;
@@ -29,6 +33,8 @@ import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.model.DBProject;
 import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
 import net.eneiluj.ihatemoney.util.ICallback;
+
+import java.util.concurrent.TimeUnit;
 
 public class NewProjectFragment extends PreferenceFragmentCompat {
 
@@ -203,6 +209,31 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_new_project_fragment, menu);
+        //ImageView addButton = getActivity().findViewById(R.id.menu_create);
+        final ImageView addButton = (ImageView) menu.findItem(R.id.menu_create).getActionView();
+        addButton.setImageResource(android.R.drawable.ic_menu_add);
+        addButton.setPadding(20,0,20,0);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Animation animation1 =
+                        AnimationUtils.loadAnimation(
+                                getActivity().getApplicationContext(),
+                                R.anim.rotation
+                        );
+                addButton.startAnimation(animation1);
+
+
+                if (!newProjectCreate.isChecked()) {
+                    long pid = saveProject(null);
+                    listener.close(pid);
+                }
+                else {
+                    db.getIhateMoneyServerSyncHelper().createRemoteProject(getRemoteId(), getName(), getEmail(), getPassword(), getIhmUrl(), createRemoteCallBack);
+                }
+            }
+        });
+
     }
 
     @Override

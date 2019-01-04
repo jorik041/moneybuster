@@ -91,9 +91,12 @@ public class IHateMoneyServerSyncHelper {
             cert4androidReady = true;
             if (isSyncPossible()) {
                 String lastId = PreferenceManager.getDefaultSharedPreferences(dbHelper.getContext()).getString("last_selected_project", "");
-                DBProject proj = dbHelper.getProject(Long.valueOf(lastId));
-                if (!lastId.equals("") && proj != null) {
-                    scheduleSync(false, Long.valueOf(lastId));
+
+                if (!lastId.equals("")) {
+                    DBProject proj = dbHelper.getProject(Long.valueOf(lastId));
+                    if (proj != null) {
+                        scheduleSync(false, Long.valueOf(lastId));
+                    }
                 }
             }
         }

@@ -115,7 +115,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private final static int removeproject = 5;
     private final static int editproject = 6;
 
-    public HashMap<Long, Double> membersBalance;
+    private HashMap<Long, Double> membersBalance;
 
 
     @BindView(R.id.logjobsListActivityActionBar)
@@ -393,7 +393,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 if (mproj != null) {
                     createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, mproj.getId());
                 }
-                createIntent.putExtra(EditBillActivity.PARAM_MEMBERS_BALANCE, membersBalance);
+                //createIntent.putExtra(EditBillActivity.PARAM_MEMBERS_BALANCE, membersBalance);
                 startActivityForResult(createIntent, create_bill_cmd);
             }
         });
@@ -1147,7 +1147,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             Intent intent;
             intent = new Intent(getApplicationContext(), EditBillActivity.class);
             intent.putExtra(EditBillActivity.PARAM_BILL_ID, bill.getId());
-            intent.putExtra(EditBillActivity.PARAM_MEMBERS_BALANCE, membersBalance);
+            //intent.putExtra(EditBillActivity.PARAM_MEMBERS_BALANCE, membersBalance);
             startActivityForResult(intent, show_single_bill_cmd);
 
         }

@@ -24,7 +24,6 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
 
     public static final String PARAM_BILL_ID = "billId";
     public static final String PARAM_PROJECT_ID = "projectId";
-    public static final String PARAM_MEMBERS_BALANCE = "membersBalance";
 
     protected EditBillFragment fragment;
 
@@ -63,10 +62,6 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         return getIntent().getLongExtra(PARAM_PROJECT_ID, 0);
     }
 
-    protected HashMap<Long, Double> getMembersBalance() {
-        return (HashMap<Long, Double>)getIntent().getSerializableExtra(PARAM_MEMBERS_BALANCE);
-    }
-
     /**
      * Starts the logjob fragment for an existing logjob or a new logjob.
      * The actual behavior is triggered by the activity's intent.
@@ -92,7 +87,7 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         if (fragment != null) {
             savedState = getSupportFragmentManager().saveFragmentInstanceState(fragment);
         }
-        fragment = EditBillFragment.newInstance(billId, getMembersBalance());
+        fragment = EditBillFragment.newInstance(billId);
         if (savedState != null) {
             fragment.setInitialSavedState(savedState);
         }
@@ -115,7 +110,7 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         String newDate = sdf.format(new Date());
         DBBill newBill = new DBBill(0, 0, projectId, 0, 0, newDate, "", DBBill.STATE_ADDED);
 
-        fragment = EditBillFragment.newInstanceWithNewBill(newBill, getMembersBalance());
+        fragment = EditBillFragment.newInstanceWithNewBill(newBill);
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
 
         ActionBar actionBar = getSupportActionBar();

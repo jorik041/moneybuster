@@ -61,7 +61,6 @@ public class EditBillFragment extends PreferenceFragmentCompat {
 
     public static final String PARAM_BILL_ID = "billId";
     public static final String PARAM_NEWBILL = "newBill";
-    public static final String PARAM_MEMBERS_BALANCE = "membersBalance";
     private static final String SAVEDKEY_BILL = "bill";
     private static final String SAVEDKEY_ORIGINAL_BILL = "original_bill";
 
@@ -87,8 +86,6 @@ public class EditBillFragment extends PreferenceFragmentCompat {
 
     private SimpleDateFormat sdf;
 
-    private HashMap<Long, Double> membersBalance;
-
     @Override
     public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
         //setPreferencesFromResource(R.xml.settings, rootKey);
@@ -110,8 +107,6 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         super.onCreate(savedInstanceState);
 
         sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-        membersBalance = (HashMap<Long, Double>) getArguments().getSerializable(PARAM_MEMBERS_BALANCE);
 
         if (savedInstanceState == null) {
             long id = getArguments().getLong(PARAM_BILL_ID);
@@ -400,26 +395,20 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         }
     }
 
-    public static EditBillFragment newInstance(long billId, HashMap<Long, Double> membersBalance) {
+    public static EditBillFragment newInstance(long billId) {
         EditBillFragment f = new EditBillFragment();
         Bundle b = new Bundle();
         b.putLong(PARAM_BILL_ID, billId);
-        b.putSerializable(PARAM_MEMBERS_BALANCE, membersBalance);
         f.setArguments(b);
         return f;
     }
 
-    public static EditBillFragment newInstanceWithNewBill(DBBill newBill, HashMap<Long, Double> membersBalance) {
+    public static EditBillFragment newInstanceWithNewBill(DBBill newBill) {
         EditBillFragment f = new EditBillFragment();
         Bundle b = new Bundle();
         b.putSerializable(PARAM_NEWBILL, newBill);
-        b.putSerializable(PARAM_MEMBERS_BALANCE, membersBalance);
         f.setArguments(b);
         return f;
-    }
-
-    private double getBalanceOf(long memberId) {
-        return Math.round( (membersBalance.get(memberId)) * 100.0 ) / 100.0;
     }
 
     @Override
@@ -436,7 +425,7 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         memberNameList = new ArrayList<>();
         memberIdList = new ArrayList<>();
         for (DBMember member : memberList) {
-            if (member.isActivated() || getBalanceOf(member.getId()) != 0.0) {
+            if (member.isActivated()) {
                 memberNameList.add(member.getName());
                 memberIdList.add(String.valueOf(member.getId()));
             }
@@ -460,7 +449,7 @@ public class EditBillFragment extends PreferenceFragmentCompat {
             // set selected value for payer
             if (bill.getPayerId() != 0) {
                 String payerId = String.valueOf(bill.getPayerId());
-                // if the id is not found, it means the user is disabled and has balance to 0
+                // if the id is not found, it means the user is disabled
                 int payerIndex = memberIdList.indexOf(payerId);
                 if (payerIndex != -1) {
                     editPayer.setValue(payerId);
@@ -489,8 +478,7 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                 Set<String> owerIdSet = new HashSet<String>();
                 List<String> selectedNames = new ArrayList<>();
                 for (DBMember m : memberList) {
-                    if (m.isActivated() || getBalanceOf(m.getId()) != 0.0) {
-                        Log.v(getClass().getSimpleName(), "owow "+membersBalance.get(m.getId())+" "+m);
+                    if (m.isActivated()) {
                         owerIdSet.add(String.valueOf(m.getId()));
                         selectedNames.add(m.getName());
                     }

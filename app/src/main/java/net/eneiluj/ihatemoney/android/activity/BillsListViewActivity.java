@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -795,6 +796,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         projects.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int pos, long id) {
+                // ugly : set the color each time an item is selected
+                ((TextView)parent.getChildAt(0)).setTextColor(Color.WHITE);
                 MenuProject it = (MenuProject) parent.getItemAtPosition(pos);
                 Log.v(TAG, "PROJECT ITEM SELECTED "+pos+" "+id+" "+it.toString());
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

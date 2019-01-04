@@ -43,9 +43,11 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
@@ -454,7 +456,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         fabEditMember.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 final String selectedMemberIdStr = adapterMembers.getSelectedItem();
 
                 if (selectedMemberIdStr != null && !selectedMemberIdStr.equals("all")) {
@@ -472,23 +474,47 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     );
                     builder.setTitle(getString(R.string.edit_member_dialog_title));
 
-                    // Set up the input
-                    final EditText input = new EditText(getApplicationContext());
+                    // Set up the inputs
+                    final View iView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.items_editmember_dialog, null);
+                    EditText nv = iView.findViewById(R.id.editMemberName);
+                    nv.setText(memberToEdit.getName());
+                    nv.setInputType(InputType.TYPE_CLASS_TEXT);
+                    nv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                    EditText we = iView.findViewById(R.id.editMemberWeight);
+                    we.setText(String.valueOf(memberToEdit.getWeight()));
+                    we.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+
+                    TextView tv = iView.findViewById(R.id.editMemberNameLabel);
+                    tv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                    TextView wv = iView.findViewById(R.id.editMemberWeightLabel);
+                    wv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                    CheckBox ch = iView.findViewById(R.id.editMemberActivated);
+                    ch.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                    ch.setChecked(memberToEdit.isActivated());
+
+                    /*final EditText input = new EditText(getApplicationContext());
                     input.setInputType(InputType.TYPE_CLASS_TEXT);
                     input.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
-                    input.setText(memberToEdit.getName());
-                    builder.setView(input);
+                    input.setText(memberToEdit.getName());*/
+                    builder.setView(iView);
 
                     // Set up the buttons
                     builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            String newMemberName = input.getText().toString();
+                            EditText nvi = iView.findViewById(R.id.editMemberName);
+                            String newMemberName = nvi.getText().toString();
+
+                            EditText wvi = iView.findViewById(R.id.editMemberWeight);
+                            double newMemberWeight = Double.valueOf(wvi.getText().toString());
+
+                            CheckBox cvi = iView.findViewById(R.id.editMemberActivated);
+                            boolean newActivated = cvi.isChecked();
 
                             MenuProject mproj = (MenuProject) projects.getSelectedItem();
                             if (mproj != null) {
                                 if (!newMemberName.isEmpty() || newMemberName.equals("")) {
-                                    db.updateMemberAndSync(memberToEdit, newMemberName, null, null);
+                                    db.updateMemberAndSync(memberToEdit, newMemberName, newMemberWeight, newActivated);
                                 } else {
                                     showToast(getString(R.string.member_edit_empty_name));
                                 }

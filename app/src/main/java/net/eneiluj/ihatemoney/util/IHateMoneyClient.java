@@ -96,6 +96,10 @@ public class IHateMoneyClient {
         List<String> paramValues = new ArrayList<>();
         paramKeys.add("name");
         paramValues.add(member.getName());
+        paramKeys.add("weight");
+        paramValues.add(String.valueOf(member.getWeight()));
+        paramKeys.add("activated");
+        paramValues.add(member.isActivated() ? "true" : "false");
         return new ServerResponse.EditRemoteMemberResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, project.getRemoteId(), project.getPassword()));
     }
 

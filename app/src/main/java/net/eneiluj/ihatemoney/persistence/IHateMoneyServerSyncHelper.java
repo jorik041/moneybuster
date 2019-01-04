@@ -384,10 +384,14 @@ public class IHateMoneyServerSyncHelper {
                 dbHelper.updateProject(project.getId(), name, email, null);
 
                 // get members
-                List<DBMember> members = projResponse.getMembers(project.getId());
+                List<DBMember> remoteMembers = projResponse.getMembers(project.getId());
+                Map<Long, DBMember> remoteMembersByRemoteId = new ArrayMap<>();
+                for (DBMember remoteMember : remoteMembers) {
+                    remoteMembersByRemoteId.put(remoteMember.getRemoteId(), remoteMember);
+                }
 
-                // add/update members
-                for (DBMember m : members) {
+                // add/update/delete members
+                for (DBMember m : remoteMembers) {
                     DBMember localMember = dbHelper.getMember(m.getRemoteId(), project.getId());
                     // member does not exist locally, add it
                     if (localMember == null) {
@@ -411,6 +415,16 @@ public class IHateMoneyServerSyncHelper {
                         }
                     }
                 }
+                // delete local members
+                List<DBMember> localMembers = dbHelper.getMembersOfProject(project.getId());
+                for (DBMember localMember : localMembers) {
+                    // if local member does not exist remotely
+                    // let's trust the server, member should not be involved in anything anymore
+                    if (!remoteMembersByRemoteId.containsKey(localMember.getRemoteId())) {
+                        dbHelper.deleteMember(localMember.getId());
+                        Log.d(getClass().getSimpleName(), "Delete member : " + localMember);
+                    }
+                }
 
                 // get up-to-date DB members
                 List<DBMember> dbMembers = dbHelper.getMembersOfProject(project.getId());
@@ -423,12 +437,12 @@ public class IHateMoneyServerSyncHelper {
                 // get bills
                 ServerResponse.BillsResponse billsResponse = client.getBills(customCertManager, project);
                 List<DBBill> remoteBills = billsResponse.getBills(project.getId(), memberRemoteIdToId);
-                Map<Long,DBBill> remoteBillsByRemoteId = new ArrayMap<>();
+                Map<Long, DBBill> remoteBillsByRemoteId = new ArrayMap<>();
                 for (DBBill remoteBill : remoteBills) {
                     remoteBillsByRemoteId.put(remoteBill.getRemoteId(), remoteBill);
                 }
                 List<DBBill> localBills = dbHelper.getBillsOfProject(project.getId());
-                Map<Long,DBBill> localBillsByRemoteId = new ArrayMap<>();
+                Map<Long, DBBill> localBillsByRemoteId = new ArrayMap<>();
                 for (DBBill localBill : localBills) {
                     localBillsByRemoteId.put(localBill.getRemoteId(), localBill);
                 }

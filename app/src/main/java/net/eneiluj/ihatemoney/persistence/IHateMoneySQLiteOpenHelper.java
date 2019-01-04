@@ -21,6 +21,7 @@ import net.eneiluj.ihatemoney.model.DBBill;
 import net.eneiluj.ihatemoney.model.DBBillOwer;
 import net.eneiluj.ihatemoney.model.DBMember;
 import net.eneiluj.ihatemoney.model.DBProject;
+import net.eneiluj.ihatemoney.util.SupportUtil;
 
 /**
  * Helps to add, get, update and delete log jobs, sessions, locations with the option to trigger a session Resync with the Server.
@@ -617,9 +618,16 @@ public class IHateMoneySQLiteOpenHelper extends SQLiteOpenHelper {
         where.add("(" + key_projectid + " = " + projectId + ")");
         where.add("(" + key_state + " != " + DBBill.STATE_DELETED + ")");
         if (query != null) {
-            where.add("(" + key_what + " LIKE ? OR " + key_date + " LIKE ?)");
             args.add("%" + query + "%");
             args.add("%" + query + "%");
+            String whereStr = "(" + key_what + " LIKE ? OR " + key_date + " LIKE ?";
+            if (SupportUtil.isInteger(query.toString())) {
+                whereStr += " OR (" + key_amount + " < (? + 10) AND " + key_amount + " > (? - 10))";
+                args.add(query.toString());
+                args.add(query.toString());
+            }
+            whereStr += ")";
+            where.add(whereStr);
         }
 
         String order = key_date + " DESC";

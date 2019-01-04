@@ -51,6 +51,7 @@ import android.widget.Toast;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -113,6 +114,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private final static int addproject = 4;
     private final static int removeproject = 5;
     private final static int editproject = 6;
+
+    public HashMap<Long, Double> membersBalance;
 
 
     @BindView(R.id.logjobsListActivityActionBar)
@@ -390,6 +393,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 if (mproj != null) {
                     createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, mproj.getId());
                 }
+                createIntent.putExtra(EditBillActivity.PARAM_MEMBERS_BALANCE, membersBalance);
                 startActivityForResult(createIntent, create_bill_cmd);
             }
         });
@@ -591,14 +595,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             List<DBMember> dbMembers = db.getMembersOfProject(mproj.getId());
 
             Map<Long, Integer> membersNbBills = new ArrayMap<>();
-            Map<Long, Double> membersBalance = new ArrayMap<>();
+            membersBalance = new HashMap<>();
             Map<Long, Double> membersWeight = new ArrayMap<>();
             // init
             for (DBMember m : dbMembers) {
                 membersNbBills.put(m.getId(), 0);
                 membersBalance.put(m.getId(), 0.0);
                 membersWeight.put(m.getId(), m.getWeight());
-                if (DEBUG) { Log.d(TAG, "WEIGHT of "+m.getName()+" : "+m.getWeight()); }
+                //if (DEBUG) { Log.d(TAG, "WEIGHT of "+m.getName()+" : "+m.getWeight()); }
             }
 
             int nbBills = 0;
@@ -623,6 +627,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     }
                     for (DBBillOwer bo : b.getBillOwers()) {
                         double owerWeight = membersWeight.get(bo.getMemberId());
+                        //System.out.println("BABABABA "+bo.getMemberId());
                         membersBalance.put(
                                 bo.getMemberId(),
                                 membersBalance.get(bo.getMemberId()) - (amount/nbOwerShares*owerWeight)
@@ -1142,6 +1147,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             Intent intent;
             intent = new Intent(getApplicationContext(), EditBillActivity.class);
             intent.putExtra(EditBillActivity.PARAM_BILL_ID, bill.getId());
+            intent.putExtra(EditBillActivity.PARAM_MEMBERS_BALANCE, membersBalance);
             startActivityForResult(intent, show_single_bill_cmd);
 
         }

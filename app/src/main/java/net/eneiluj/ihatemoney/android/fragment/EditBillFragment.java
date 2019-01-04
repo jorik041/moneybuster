@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import net.eneiluj.ihatemoney.R;
+import net.eneiluj.ihatemoney.android.activity.BillsListViewActivity;
 import net.eneiluj.ihatemoney.model.DBBill;
 import net.eneiluj.ihatemoney.model.DBBillOwer;
 import net.eneiluj.ihatemoney.model.DBMember;
@@ -43,6 +44,7 @@ import net.eneiluj.ihatemoney.util.ICallback;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
@@ -59,6 +61,7 @@ public class EditBillFragment extends PreferenceFragmentCompat {
 
     public static final String PARAM_BILL_ID = "billId";
     public static final String PARAM_NEWBILL = "newBill";
+    public static final String PARAM_MEMBERS_BALANCE = "membersBalance";
     private static final String SAVEDKEY_BILL = "bill";
     private static final String SAVEDKEY_ORIGINAL_BILL = "original_bill";
 
@@ -82,7 +85,9 @@ public class EditBillFragment extends PreferenceFragmentCompat {
     private DialogInterface.OnClickListener deleteDialogClickListener;
     private AlertDialog.Builder confirmDeleteAlertBuilder;
 
-    SimpleDateFormat sdf;
+    private SimpleDateFormat sdf;
+
+    private HashMap<Long, Double> membersBalance;
 
     @Override
     public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
@@ -105,6 +110,8 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         super.onCreate(savedInstanceState);
 
         sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        membersBalance = (HashMap<Long, Double>) getArguments().getSerializable(PARAM_MEMBERS_BALANCE);
 
         if (savedInstanceState == null) {
             long id = getArguments().getLong(PARAM_BILL_ID);
@@ -393,20 +400,26 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         }
     }
 
-    public static EditBillFragment newInstance(long billId) {
+    public static EditBillFragment newInstance(long billId, HashMap<Long, Double> membersBalance) {
         EditBillFragment f = new EditBillFragment();
         Bundle b = new Bundle();
         b.putLong(PARAM_BILL_ID, billId);
+        b.putSerializable(PARAM_MEMBERS_BALANCE, membersBalance);
         f.setArguments(b);
         return f;
     }
 
-    public static EditBillFragment newInstanceWithNewBill(DBBill newBill) {
+    public static EditBillFragment newInstanceWithNewBill(DBBill newBill, HashMap<Long, Double> membersBalance) {
         EditBillFragment f = new EditBillFragment();
         Bundle b = new Bundle();
         b.putSerializable(PARAM_NEWBILL, newBill);
+        b.putSerializable(PARAM_MEMBERS_BALANCE, membersBalance);
         f.setArguments(b);
         return f;
+    }
+
+    private double getBalanceOf(long memberId) {
+        return Math.round( (membersBalance.get(memberId)) * 100.0 ) / 100.0;
     }
 
     @Override
@@ -423,8 +436,10 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         memberNameList = new ArrayList<>();
         memberIdList = new ArrayList<>();
         for (DBMember member : memberList) {
-            memberNameList.add(member.getName());
-            memberIdList.add(String.valueOf(member.getId()));
+            if (member.isActivated() || getBalanceOf(member.getId()) != 0.0) {
+                memberNameList.add(member.getName());
+                memberIdList.add(String.valueOf(member.getId()));
+            }
         }
 
         // manage payer and owers
@@ -445,9 +460,12 @@ public class EditBillFragment extends PreferenceFragmentCompat {
             // set selected value for payer
             if (bill.getPayerId() != 0) {
                 String payerId = String.valueOf(bill.getPayerId());
-                editPayer.setValue(payerId);
+                // if the id is not found, it means the user is disabled and has balance to 0
                 int payerIndex = memberIdList.indexOf(payerId);
-                editPayer.setSummary(memberNameList.get(payerIndex));
+                if (payerIndex != -1) {
+                    editPayer.setValue(payerId);
+                    editPayer.setSummary(memberNameList.get(payerIndex));
+                }
             }
 
             // set selected values for owers
@@ -456,9 +474,11 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                     Set<String> owerIdSet = new HashSet<String>();
                     List<String> selectedNames = new ArrayList<>();
                     for (long owerId : bill.getBillOwersIds()) {
-                        owerIdSet.add(String.valueOf(owerId));
                         int owerIndex = memberIdList.indexOf(String.valueOf(owerId));
-                        selectedNames.add(memberNameList.get(owerIndex));
+                        if (owerIndex != -1) {
+                            owerIdSet.add(String.valueOf(owerId));
+                            selectedNames.add(memberNameList.get(owerIndex));
+                        }
                     }
                     editOwers.setValues(owerIdSet);
                     editOwers.setSummary(TextUtils.join(", ", selectedNames));
@@ -469,8 +489,11 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                 Set<String> owerIdSet = new HashSet<String>();
                 List<String> selectedNames = new ArrayList<>();
                 for (DBMember m : memberList) {
-                    owerIdSet.add(String.valueOf(m.getId()));
-                    selectedNames.add(m.getName());
+                    if (m.isActivated() || getBalanceOf(m.getId()) != 0.0) {
+                        Log.v(getClass().getSimpleName(), "owow "+membersBalance.get(m.getId())+" "+m);
+                        owerIdSet.add(String.valueOf(m.getId()));
+                        selectedNames.add(m.getName());
+                    }
                 }
                 editOwers.setValues(owerIdSet);
                 editOwers.setSummary(TextUtils.join(", ", selectedNames));

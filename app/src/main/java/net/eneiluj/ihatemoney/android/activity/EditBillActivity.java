@@ -18,11 +18,13 @@ import net.eneiluj.ihatemoney.model.DBLogjob;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 public class EditBillActivity extends AppCompatActivity implements EditBillFragment.BillFragmentListener {
 
     public static final String PARAM_BILL_ID = "billId";
     public static final String PARAM_PROJECT_ID = "projectId";
+    public static final String PARAM_MEMBERS_BALANCE = "membersBalance";
 
     protected EditBillFragment fragment;
 
@@ -61,14 +63,18 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         return getIntent().getLongExtra(PARAM_PROJECT_ID, 0);
     }
 
+    protected HashMap<Long, Double> getMembersBalance() {
+        return (HashMap<Long, Double>)getIntent().getSerializableExtra(PARAM_MEMBERS_BALANCE);
+    }
+
     /**
      * Starts the logjob fragment for an existing logjob or a new logjob.
      * The actual behavior is triggered by the activity's intent.
      */
     private void launchLogjobFragment() {
-        long logjobId = getBillId();
-        if (logjobId > 0) {
-            launchExistingBill(logjobId);
+        long billId = getBillId();
+        if (billId > 0) {
+            launchExistingBill(billId);
         } else {
             launchNewBill(getProjectId());
         }
@@ -86,7 +92,7 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         if (fragment != null) {
             savedState = getSupportFragmentManager().saveFragmentInstanceState(fragment);
         }
-        fragment = EditBillFragment.newInstance(billId);
+        fragment = EditBillFragment.newInstance(billId, getMembersBalance());
         if (savedState != null) {
             fragment.setInitialSavedState(savedState);
         }
@@ -109,7 +115,7 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         String newDate = sdf.format(new Date());
         DBBill newBill = new DBBill(0, 0, projectId, 0, 0, newDate, "", DBBill.STATE_ADDED);
 
-        fragment = EditBillFragment.newInstanceWithNewBill(newBill);
+        fragment = EditBillFragment.newInstanceWithNewBill(newBill, getMembersBalance());
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
 
         ActionBar actionBar = getSupportActionBar();

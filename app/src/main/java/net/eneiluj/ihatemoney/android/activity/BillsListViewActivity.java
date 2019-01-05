@@ -75,7 +75,7 @@ import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
 import net.eneiluj.ihatemoney.persistence.IHateMoneyServerSyncHelper;
 import net.eneiluj.ihatemoney.persistence.LoadBillsListTask;
 import net.eneiluj.ihatemoney.util.ICallback;
-import net.eneiluj.ihatemoney.util.PhoneTrackClientUtil;
+import net.eneiluj.ihatemoney.util.SpendClientUtil;
 
 import static net.eneiluj.ihatemoney.android.activity.EditProjectActivity.PARAM_PROJECT_ID;
 
@@ -302,7 +302,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     synchronize();
                 } else {
                     swipeRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(PhoneTrackClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(SpendClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
                 }
                 // TODO synchronize
                 /*if (db.getLocationCount() > 0) {
@@ -1126,7 +1126,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 synchronize();
             } else {
                 if (IHateMoneyServerSyncHelper.isConfigured(getApplicationContext())) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(PhoneTrackClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(SpendClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
                 }
             }
         }*/

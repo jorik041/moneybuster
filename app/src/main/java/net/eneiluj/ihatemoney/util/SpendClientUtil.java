@@ -22,7 +22,7 @@ import net.eneiluj.ihatemoney.R;
  * Utils for Validation etc
  * Created by stefan on 25.09.15.
  */
-public class PhoneTrackClientUtil {
+public class SpendClientUtil {
 
     public enum LoginStatus {
         OK(0),
@@ -91,16 +91,16 @@ public class PhoneTrackClientUtil {
             con.setConnectTimeout(10 * 1000); // 10 seconds
             con.connect();
 
-            Log.v(PhoneTrackClientUtil.class.getSimpleName(), "Establishing connection to server");
+            Log.v(SpendClientUtil.class.getSimpleName(), "Establishing connection to server");
             if (con.getResponseCode() == 200) {
-                Log.v(PhoneTrackClientUtil.class.getSimpleName(), "" + con.getResponseMessage());
+                Log.v(SpendClientUtil.class.getSimpleName(), "" + con.getResponseMessage());
                 StringBuilder result = new StringBuilder();
                 BufferedReader rd = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 String line;
                 while ((line = rd.readLine()) != null) {
                     result.append(line);
                 }
-                Log.v(PhoneTrackClientUtil.class.getSimpleName(), result.toString());
+                Log.v(SpendClientUtil.class.getSimpleName(), result.toString());
                 new JSONArray(result.toString());
                 return LoginStatus.OK;
             } else if (con.getResponseCode() >= 401 && con.getResponseCode() <= 403) {
@@ -109,13 +109,13 @@ public class PhoneTrackClientUtil {
                 return LoginStatus.SERVER_FAILED;
             }
         } catch (MalformedURLException | SocketTimeoutException  e) {
-            Log.e(PhoneTrackClientUtil.class.getSimpleName(), "Exception", e);
+            Log.e(SpendClientUtil.class.getSimpleName(), "Exception", e);
             return LoginStatus.CONNECTION_FAILED;
         } catch (IOException e) {
-            Log.e(PhoneTrackClientUtil.class.getSimpleName(), "Exception", e);
+            Log.e(SpendClientUtil.class.getSimpleName(), "Exception", e);
             return LoginStatus.CONNECTION_FAILED;
         } catch (JSONException e) {
-            Log.e(PhoneTrackClientUtil.class.getSimpleName(), "Exception", e);
+            Log.e(SpendClientUtil.class.getSimpleName(), "Exception", e);
             return LoginStatus.JSON_FAILED;
         }
     }

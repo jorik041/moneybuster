@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import net.eneiluj.ihatemoney.android.fragment.EditProjectFragment;
-import net.eneiluj.ihatemoney.model.DBLogjob;
 import net.eneiluj.ihatemoney.model.DBProject;
 
 public class EditProjectActivity extends AppCompatActivity implements EditProjectFragment.EditProjectFragmentListener {

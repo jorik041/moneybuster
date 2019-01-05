@@ -34,7 +34,7 @@ import net.eneiluj.ihatemoney.model.DBMember;
 import net.eneiluj.ihatemoney.model.DBProject;
 import net.eneiluj.ihatemoney.util.ICallback;
 import net.eneiluj.ihatemoney.util.IHateMoneyClient;
-import net.eneiluj.ihatemoney.util.PhoneTrackClientUtil.LoginStatus;
+import net.eneiluj.ihatemoney.util.SpendClientUtil.LoginStatus;
 import net.eneiluj.ihatemoney.util.ServerResponse;
 import net.eneiluj.ihatemoney.util.SupportUtil;
 

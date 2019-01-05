@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import net.eneiluj.ihatemoney.R;
-import net.eneiluj.ihatemoney.model.DBLogjob;
 import net.eneiluj.ihatemoney.model.DBProject;
 import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
 import net.eneiluj.ihatemoney.util.ICallback;

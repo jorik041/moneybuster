@@ -22,7 +22,6 @@ xmlns:tools="http://schemas.android.com/tools"
         android:summary=""
         android:title="@string/setting_what" />
 
-    <!--net.eneiluj.ihatemoney.util.DatePreference -->
     <DatePickerPreference
         android:id="@+id/editDate"
         android:icon="@android:drawable/ic_menu_today"

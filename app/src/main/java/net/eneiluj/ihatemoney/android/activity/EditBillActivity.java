@@ -14,11 +14,9 @@ import android.widget.Toast;
 import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.android.fragment.EditBillFragment;
 import net.eneiluj.ihatemoney.model.DBBill;
-import net.eneiluj.ihatemoney.model.DBLogjob;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 
 public class EditBillActivity extends AppCompatActivity implements EditBillFragment.BillFragmentListener {
 

@@ -666,17 +666,22 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             itemAll.count = nbBills;
             items.add(itemAll);
 
-            NumberFormat formatter = new DecimalFormat("#0.00");
+            NumberFormat balanceFormatter = new DecimalFormat("#0.00");
+            NumberFormat weightFormatter = new DecimalFormat("#.##");
 
             for (DBMember m : dbMembers) {
                 double balance = Math.round( (membersBalance.get(m.getId())) * 100.0 ) / 100.0;
-                String balanceStr = formatter.format(balance).replace(",", ".");
+                String balanceStr = balanceFormatter.format(balance).replace(",", ".");
                 // TODO if activated OR balance != 0
                 if (m.isActivated() || balance != 0.0) {
+                    String weightStr = "";
+                    if (m.getWeight() != 1) {
+                        weightStr = " x" + weightFormatter.format(m.getWeight()).replace(",", ".");
+                    }
                     String sign = balance > 0.0 ? "+" : "";
                     NavigationAdapter.NavigationItem it = new NavigationAdapter.NavigationItem(
                             String.valueOf(m.getId()),
-                            m.getName()+" ("+sign+balanceStr+")",
+                            m.getName()+" ("+sign+balanceStr+")"+weightStr,
                             membersNbBills.get(m.getId()),
                             R.drawable.ic_account_circle_grey_24dp
                     );
@@ -1220,7 +1225,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
             NumberFormat formatter = new DecimalFormat("#0.00");
 
-            int nbShares = 0;
+            double nbShares = 0;
             for (DBBillOwer bo : bill.getBillOwers()) {
                 nbShares += db.getMember(bo.getMemberId()).getWeight();
             }

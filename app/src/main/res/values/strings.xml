@@ -87,6 +87,8 @@
     <string name="member_edit_toggle">Activated</string>
     <string name="member_edit_name">Name</string>
     <string name="member_edit_weight">Weight</string>
+    <string name="remote_project_operation_no_network">Remote project operations require network connectivity</string>
+
 
     <string name="is_running">running (%s pending, %s sent)</string>
 

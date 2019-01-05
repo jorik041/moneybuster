@@ -229,7 +229,10 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                     listener.close(pid);
                 }
                 else {
-                    db.getIhateMoneyServerSyncHelper().createRemoteProject(getRemoteId(), getName(), getEmail(), getPassword(), getIhmUrl(), createRemoteCallBack);
+                    if (!db.getIhateMoneyServerSyncHelper().createRemoteProject(getRemoteId(), getName(), getEmail(), getPassword(), getIhmUrl(), createRemoteCallBack)) {
+                        showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
+                        addButton.clearAnimation();
+                    }
                 }
             }
         });

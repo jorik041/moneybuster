@@ -60,13 +60,14 @@
 
     <EditTextPreference
         android:id="@+id/newProjectEmail"
-        android:icon="@android:drawable/ic_menu_myplaces"
+        android:icon="@android:drawable/sym_action_email"
         android:dialogMessage="@string/setting_email_long"
         android:dialogTitle="@string/setting_email"
         android:key="email"
         android:singleLine="true"
         android:selectAllOnFocus="true"
         android:persistent="false"
+        android:inputType="textEmailAddress"
         android:summary=""
         android:title="@string/setting_email" />
 

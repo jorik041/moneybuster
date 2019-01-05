@@ -137,7 +137,10 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                                 );
                         ImageView saveButton = (ImageView) myMenu.findItem(R.id.menu_save).getActionView();
                         saveButton.startAnimation(animation1);
-                        db.getIhateMoneyServerSyncHelper().deleteRemoteProject(project.getId(), deleteCallBack);
+                        if (!db.getIhateMoneyServerSyncHelper().deleteRemoteProject(project.getId(), deleteCallBack)) {
+                            showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
+                            saveButton.clearAnimation();
+                        }
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -226,7 +229,11 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                 }
                 else {
                     //saveProject(null);
-                    db.getIhateMoneyServerSyncHelper().editRemoteProject(project.getId(), getName(), getEmail(), getPassword(), editCallBack);
+                    if (!db.getIhateMoneyServerSyncHelper().editRemoteProject(project.getId(), getName(), getEmail(), getPassword(), editCallBack)) {
+                        showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
+                        saveButton.clearAnimation();
+                    }
+
                 }
 
             }

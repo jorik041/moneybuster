@@ -1205,6 +1205,37 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
             View iView = LayoutInflater.from(this).inflate(R.layout.items_infodialog, null);
 
+            TextView wv = iView.findViewById(R.id.infoWhatText);
+            wv.setText(bill.getWhat());
+
+            TextView dv = iView.findViewById(R.id.infoDateText);
+            dv.setText(bill.getDate());
+
+            DBMember payer = db.getMember(bill.getPayerId());
+            TextView pv = iView.findViewById(R.id.infoPayerText);
+            pv.setText(payer.getName());
+
+            TextView av = iView.findViewById(R.id.infoAmountText);
+            av.setText(String.valueOf(bill.getAmount()));
+
+            NumberFormat formatter = new DecimalFormat("#0.00");
+
+            int nbShares = 0;
+            for (DBBillOwer bo : bill.getBillOwers()) {
+                nbShares += db.getMember(bo.getMemberId()).getWeight();
+            }
+            double amountPerShare = bill.getAmount() / nbShares;
+            String owersStr = "";
+            for (DBBillOwer bo : bill.getBillOwers()) {
+                DBMember m = db.getMember(bo.getMemberId());
+                double owerAmount = m.getWeight() * amountPerShare;
+                owerAmount = Math.round( (owerAmount * 100.0 ) )/ 100.0;
+                String owerAmountStr = formatter.format(owerAmount).replace(",", ".");
+                owersStr += "- " + m.getName() + " ("+owerAmountStr+")\n";
+            }
+            owersStr = owersStr.trim();
+            TextView ov = iView.findViewById(R.id.infoOwersText);
+            ov.setText(owersStr);
 
             AlertDialog.Builder builder;
             //builder = new AlertDialog.Builder(view.getContext(), android.R.style.Theme_Material_Dialog_Alert);

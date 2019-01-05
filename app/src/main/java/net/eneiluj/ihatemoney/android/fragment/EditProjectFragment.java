@@ -21,6 +21,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import butterknife.ButterKnife;
@@ -199,6 +202,29 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_edit_project_fragment, menu);
+        final ImageView saveButton = (ImageView) menu.findItem(R.id.menu_save).getActionView();
+        saveButton.setImageResource(android.R.drawable.ic_menu_save);
+        saveButton.setPadding(20,0,20,0);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Animation animation1 =
+                        AnimationUtils.loadAnimation(
+                                getActivity().getApplicationContext(),
+                                R.anim.rotation
+                        );
+                saveButton.startAnimation(animation1);
+
+                if (!isValidEmail(getEmail())) {
+                    showToast(getString(R.string.error_invalid_email), Toast.LENGTH_LONG);
+                }
+                else {
+                    //saveProject(null);
+                    db.getIhateMoneyServerSyncHelper().editRemoteProject(project.getId(), getName(), getEmail(), getPassword(), editCallBack);
+                }
+
+            }
+        });
     }
 
     @Override
@@ -223,7 +249,6 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                 confirmDeleteAlertBuilder.show();
                 return true;
             case R.id.menu_save:
-                // TODO network and local save
                 if (!isValidEmail(getEmail())) {
                     showToast(getString(R.string.error_invalid_email), Toast.LENGTH_LONG);
                 }

@@ -61,6 +61,8 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     private DialogInterface.OnClickListener deleteDialogClickListener;
     private AlertDialog.Builder confirmDeleteAlertBuilder;
 
+    private Menu myMenu = null;
+
     public static EditProjectFragment newInstance(long projectId) {
         EditProjectFragment f = new EditProjectFragment();
         Bundle b = new Bundle();
@@ -128,11 +130,14 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
-                        //Yes button clicked
-                        // TODO
-                        //db.deleteProject(project.getId());
+                        Animation animation1 =
+                                AnimationUtils.loadAnimation(
+                                        getActivity().getApplicationContext(),
+                                        R.anim.rotation
+                                );
+                        ImageView saveButton = (ImageView) myMenu.findItem(R.id.menu_save).getActionView();
+                        saveButton.startAnimation(animation1);
                         db.getIhateMoneyServerSyncHelper().deleteRemoteProject(project.getId(), deleteCallBack);
-                        //listener.close();
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -202,6 +207,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_edit_project_fragment, menu);
+        myMenu = menu;
         final ImageView saveButton = (ImageView) menu.findItem(R.id.menu_save).getActionView();
         saveButton.setImageResource(android.R.drawable.ic_menu_save);
         saveButton.setPadding(20,0,20,0);

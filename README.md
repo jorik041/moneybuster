@@ -1,25 +1,20 @@
-# Nextcloud PhoneTrack for Android
-An android app to log locations to [PhoneTrack Nextcloud app](https://gitlab.com/eneiluj/phonetrack-oc) or any custom server.
-
-[![Crowdin](https://d322cqt584bo4o.cloudfront.net/phonetrack/localized.svg)](https://crowdin.com/project/phonetrack)
+# MoneyBuster for Android
+Shared budget manager able to sync with [IHateMoney](https://github.com/spiral-project/ihatemoney/)
 
 This is still a beta version.
 
-This app is originally a fork of [Nextcloud Notes for Android](https://github.com/stefan-niedermann/nextcloud-notes).
-It is also largely insired by [µLogger for Android](https://github.com/bfabiszewski/ulogger-android).
+This app is originally a fork of [PhoneTrack-Android](https://gitlab.com/eneiluj/phonetrack-android/) which is itself a fork of
+[Nextcloud Notes for Android](https://github.com/stefan-niedermann/nextcloud-notes).
 Many thanks to their developers :heart: !
 
-What's different from other logging apps ?
+What's different from other shared budget managers ?
 
-PhoneTrack Android app can manage multiple configurations (called log jobs)
-and log locations at different frequencies to different destinations at the same time.
-
-It can log to [PhoneTrack Nextcloud app](https://gitlab.com/eneiluj/phonetrack-oc) with a `PhoneTrack log job`
-or to any server which can receive HTTP GET or POST requests with a `custom log job`.
+You can keep your project local or make it synchronize with an IHateMoney instance.
+This means you can choose where your data is going and preserve your privacy.
 
 ## User documentation
 
-[Over there](https://gitlab.com/eneiluj/phonetrack-android/wikis/userdoc)
+[Over there](https://gitlab.com/eneiluj/moneybuster/wikis/userdoc)
 
 ## Install
 
@@ -48,22 +43,17 @@ Then open/import the project in Android studio and build it.
 
 
 ## Features
-* Create multiple log jobs to run in the background to log positions to different places
-* Send locations to PhoneTrack Nextcloud app
-* Send locations to custom server with GET or POST requests
-* Store positions when network is not available
-* Launch on system startup
 * Theming
 * Translated in many languages on [Crowdin](https://crowdin.com/project/phonetrack)
 
 
 ## :link: Requirements
-* [Nextcloud](https://nextcloud.com/) instance running
-* [Nextcloud PhoneTrack](https://gitlab.com/eneiluj/phonetrack-oc) app enabled
+* Android >= 7.0
+* Some friends
 
 ## :notebook: License
 This project is licensed under the [GNU GENERAL PUBLIC LICENSE](/LICENSE).
 
 ## :twisted_rightwards_arrows: Alternatives
 
-You can log to PhoneTrack with other Android apps (and one IOS one). Check out the [list of compatible loggers in PhoneTrack wiki](https://gitlab.com/eneiluj/phonetrack-oc/wikis/userdoc#logging-methods)
+There is no alternative to MoneyBuster, you should try it !

@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="9dp"
             android:paddingRight="5dp"
-            android:src="@android:drawable/ic_menu_crop" />
+            android:src="@drawable/ic_line_weight_grey_24dp" />
 
         <TextView
             android:id="@+id/editMemberWeightLabel"

@@ -290,6 +290,15 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     public void deleteProject(long id) {
         SQLiteDatabase db = this.getWritableDatabase();
+        // delete bills and billowers
+        for (DBBill b : getBillsOfProject(id)) {
+            deleteBill(b.getId());
+        }
+        // delete members
+        db.delete(table_members,
+                key_projectid + " = ?",
+                new String[]{String.valueOf(id)});
+        // delete project
         db.delete(table_projects,
                 key_id + " = ?",
                 new String[]{String.valueOf(id)});

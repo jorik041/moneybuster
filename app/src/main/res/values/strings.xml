@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <string name="app_name">IHateMoney</string>
+    <string name="app_name">MoneyBuster</string>
     <string name="swipe_left">Toggle</string>
     <string name="label_all_members">Bills of all members</string>
     <string name="label_enabled">Enabled</string>

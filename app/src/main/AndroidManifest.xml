@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.eneiluj.ihatemoney">
+    package="net.eneiluj.moneybuster">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -17,7 +17,7 @@
     <uses-feature android:name="android.hardware.location.network" />
 
     <application
-        android:name="net.eneiluj.ihatemoney.util.IHateMoney"
+        android:name="net.eneiluj.moneybuster.util.MoneyBuster"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
@@ -28,7 +28,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="net.eneiluj.ihatemoney.android.activity.SplashscreenActivity"
+            android:name="net.eneiluj.moneybuster.android.activity.SplashscreenActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,7 +40,7 @@
         </activity>
 
         <activity
-            android:name="net.eneiluj.ihatemoney.android.activity.BillsListViewActivity"
+            android:name="net.eneiluj.moneybuster.android.activity.BillsListViewActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
 
@@ -53,48 +53,48 @@
                 android:resource="@xml/searchable" />
             <meta-data
                 android:name="android.app.default_searchable"
-                android:value="net.eneiluj.ihatemoney.android.activity.BillsListViewActivity" />
+                android:value="net.eneiluj.moneybuster.android.activity.BillsListViewActivity" />
         </activity>
 
         <activity
-            android:name="net.eneiluj.ihatemoney.android.activity.PreferencesActivity"
+            android:name="net.eneiluj.moneybuster.android.activity.PreferencesActivity"
             android:label="@string/action_settings"
-            android:parentActivityName="net.eneiluj.ihatemoney.android.activity.BillsListViewActivity"
+            android:parentActivityName="net.eneiluj.moneybuster.android.activity.BillsListViewActivity"
             android:windowSoftInputMode="stateHidden"
             android:theme="@style/Preferences"
             />
 
         <activity
-            android:name="net.eneiluj.ihatemoney.android.activity.NewProjectActivity"
+            android:name="net.eneiluj.moneybuster.android.activity.NewProjectActivity"
             android:label="@string/simple_add_project"
-            android:parentActivityName="net.eneiluj.ihatemoney.android.activity.BillsListViewActivity"
+            android:parentActivityName="net.eneiluj.moneybuster.android.activity.BillsListViewActivity"
             android:windowSoftInputMode="stateHidden"
             android:launchMode="singleTask">
         </activity>
 
         <activity
-            android:name="net.eneiluj.ihatemoney.android.activity.EditProjectActivity"
+            android:name="net.eneiluj.moneybuster.android.activity.EditProjectActivity"
             android:label="@string/simple_edit_project"
-            android:parentActivityName="net.eneiluj.ihatemoney.android.activity.BillsListViewActivity"
+            android:parentActivityName="net.eneiluj.moneybuster.android.activity.BillsListViewActivity"
             android:windowSoftInputMode="stateHidden"
             android:launchMode="singleTask">
         </activity>
 
         <activity
-            android:name="net.eneiluj.ihatemoney.android.activity.EditBillActivity"
+            android:name="net.eneiluj.moneybuster.android.activity.EditBillActivity"
             android:label="@string/simple_edit_bill"
-            android:parentActivityName="net.eneiluj.ihatemoney.android.activity.BillsListViewActivity"
+            android:parentActivityName="net.eneiluj.moneybuster.android.activity.BillsListViewActivity"
             android:windowSoftInputMode="stateHidden"
             android:launchMode="singleTask">
         </activity>
 
         <activity
-            android:name="net.eneiluj.ihatemoney.android.activity.AboutActivity"
+            android:name="net.eneiluj.moneybuster.android.activity.AboutActivity"
             android:label="@string/simple_about"
-            android:parentActivityName="net.eneiluj.ihatemoney.android.activity.BillsListViewActivity" />
+            android:parentActivityName="net.eneiluj.moneybuster.android.activity.BillsListViewActivity" />
 
         <service
-            android:name="net.eneiluj.ihatemoney.android.quicksettings.NewProjectTileService"
+            android:name="net.eneiluj.moneybuster.android.quicksettings.NewProjectTileService"
             android:icon="@drawable/ic_quicksettings_new"
             android:label="@string/action_create"
             android:description="@string/action_create"
@@ -105,7 +105,7 @@
         </service>
 
         <receiver
-            android:name="net.eneiluj.ihatemoney.service.BootCompletedReceiver"
+            android:name="net.eneiluj.moneybuster.service.BootCompletedReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

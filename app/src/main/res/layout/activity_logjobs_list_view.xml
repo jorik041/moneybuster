@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/bg_normal"
-            tools:context="net.eneiluj.ihatemoney.android.activity.BillsListViewActivity"
+            tools:context="net.eneiluj.moneybuster.android.activity.BillsListViewActivity"
             tools:ignore="MergeRootFrame">
 
             <android.support.v7.widget.RecyclerView

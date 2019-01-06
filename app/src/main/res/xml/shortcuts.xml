@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
-        android:shortcutId="net.eneiluj.ihatemoney"
+        android:shortcutId="net.eneiluj.moneybuster"
         android:enabled="true"
         android:icon="@drawable/ic_add_green_24dp"
         android:shortcutShortLabel="@string/action_create"
         android:shortcutLongLabel="@string/shortcut_create_long">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="net.eneiluj.ihatemoney"
-            android:targetClass="net.eneiluj.ihatemoney.android.activity.NewProjectActivity" />
+            android:targetPackage="net.eneiluj.moneybuster"
+            android:targetClass="net.eneiluj.moneybuster.android.activity.NewProjectActivity" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
 </shortcuts>

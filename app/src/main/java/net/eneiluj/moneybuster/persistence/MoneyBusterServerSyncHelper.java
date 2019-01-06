@@ -120,7 +120,7 @@ public class MoneyBusterServerSyncHelper {
         }.start();
 
         // track network connectivity changes
-        ConnectionStateMonitor connectionMonitor = new ConnectionStateMonitor();
+        connectionMonitor = new ConnectionStateMonitor();
         connectionMonitor.enable(appContext);
         updateNetworkStatus();
         // bind to certificate service to block sync attempts if service is not ready

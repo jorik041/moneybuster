@@ -435,6 +435,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             db.deleteProject(proj.getId());
                             projectsAdapter.remove(proj);
                             projectsAdapter.notifyDataSetChanged();
+                            if (projects.getCount() > 0) {
+                                projects.setSelection(0);
+                                Log.v(TAG, "set selection 0");
+                            }
 
                             fabMenuDrawerEdit.close(false);
                             drawerLayout.closeDrawers();

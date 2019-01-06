@@ -8,7 +8,10 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.os.AsyncTask;
 import android.os.IBinder;
 //import android.preference.PreferenceManager;
@@ -43,6 +46,8 @@ import net.eneiluj.moneybuster.util.SupportUtil;
  */
 public class MoneyBusterServerSyncHelper {
 
+    private static final String TAG = MoneyBusterServerSyncHelper.class.getSimpleName();
+
     public static final String BROADCAST_SESSIONS_SYNC_FAILED = "net.eneiluj.ihatemoney.broadcast.sessions_sync_failed";
     public static final String BROADCAST_SESSIONS_SYNCED = "net.eneiluj.ihatemoney.broadcast.sessions_synced";
 
@@ -70,19 +75,6 @@ public class MoneyBusterServerSyncHelper {
 
     // Track network connection changes using a BroadcastReceiver
     private boolean networkConnected = false;
-    private final BroadcastReceiver networkReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            updateNetworkStatus();
-            if (isSyncPossible()) {
-                String lastId = PreferenceManager.getDefaultSharedPreferences(context).getString("last_selected_project", "");
-                DBProject proj = dbHelper.getProject(Long.valueOf(lastId));
-                if (!lastId.equals("") && proj != null) {
-                    scheduleSync(false, Long.valueOf(lastId));
-                }
-            }
-        }
-    };
 
     private boolean cert4androidReady = false;
     private final ServiceConnection certService = new ServiceConnection() {
@@ -115,6 +107,7 @@ public class MoneyBusterServerSyncHelper {
     private List<ICallback> callbacksPush = new ArrayList<>();
     private List<ICallback> callbacksPull = new ArrayList<>();
 
+    private ConnectionStateMonitor connectionMonitor;
 
     private MoneyBusterServerSyncHelper(MoneyBusterSQLiteOpenHelper db) {
         this.dbHelper = db;
@@ -126,21 +119,56 @@ public class MoneyBusterServerSyncHelper {
             }
         }.start();
 
-        // Registers BroadcastReceiver to track network connection changes.
-        appContext.registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        // track network connectivity changes
+        ConnectionStateMonitor connectionMonitor = new ConnectionStateMonitor();
+        connectionMonitor.enable(appContext);
         updateNetworkStatus();
-        // bind to certifciate service to block sync attempts if service is not ready
+        // bind to certificate service to block sync attempts if service is not ready
         appContext.bindService(new Intent(appContext, CustomCertService.class), certService, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void finalize() throws Throwable {
-        appContext.unregisterReceiver(networkReceiver);
+        connectionMonitor.disable(appContext);
         appContext.unbindService(certService);
         if (customCertManager != null) {
             customCertManager.close();
         }
         super.finalize();
+    }
+
+    private class ConnectionStateMonitor extends ConnectivityManager.NetworkCallback {
+
+        final NetworkRequest networkRequest;
+
+        public ConnectionStateMonitor() {
+            networkRequest = new NetworkRequest.Builder().addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR).addTransportType(NetworkCapabilities.TRANSPORT_WIFI).build();
+        }
+
+        public void enable(Context context) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            connectivityManager.registerNetworkCallback(networkRequest , this);
+        }
+
+        // Likewise, you can have a disable method that simply calls ConnectivityManager#unregisterCallback(networkRequest) too.
+
+        public void disable(Context context) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            connectivityManager.unregisterNetworkCallback(this);
+        }
+
+        @Override
+        public void onAvailable(Network network) {
+            if (BillsListViewActivity.DEBUG) { Log.d(TAG, "NETWORK AVAILABLE !!!!"); }
+            updateNetworkStatus();
+            if (isSyncPossible()) {
+                String lastId = PreferenceManager.getDefaultSharedPreferences(appContext).getString("last_selected_project", "");
+                DBProject proj = dbHelper.getProject(Long.valueOf(lastId));
+                if (!lastId.equals("") && proj != null) {
+                    scheduleSync(false, Long.valueOf(lastId));
+                }
+            }
+        }
     }
 
     /*public static boolean isConfigured(Context context) {
@@ -197,6 +225,7 @@ public class MoneyBusterServerSyncHelper {
     public void scheduleSync(boolean onlyLocalChanges, long projId) {
         Log.d(getClass().getSimpleName(), "Sync requested (" + (onlyLocalChanges ? "onlyLocalChanges" : "full") + "; " + (syncActive ? "sync active" : "sync NOT active") + ") ...");
         Log.d(getClass().getSimpleName(), "(network:" + networkConnected + "; cert4android:" + cert4androidReady + ")");
+        updateNetworkStatus();
         if (isSyncPossible() && (!syncActive || onlyLocalChanges)) {
             Log.d(getClass().getSimpleName(), "... starting now");
             SyncTask syncTask = new SyncTask(onlyLocalChanges, projId);
@@ -570,6 +599,7 @@ public class MoneyBusterServerSyncHelper {
     }
 
     public boolean editRemoteProject(long projId, String newName, String newEmail, String newPassword, ICallback callback) {
+        updateNetworkStatus();
         if (isSyncPossible()) {
             EditRemoteProjectTask editRemoteProjectTask = new EditRemoteProjectTask(projId, newName, newEmail, newPassword, callback);
             editRemoteProjectTask.execute();
@@ -649,6 +679,7 @@ public class MoneyBusterServerSyncHelper {
     }
 
     public boolean deleteRemoteProject(long projId, ICallback callback) {
+        updateNetworkStatus();
         if (isSyncPossible()) {
             DeleteRemoteProjectTask deleteRemoteProjectTask = new DeleteRemoteProjectTask(projId, callback);
             deleteRemoteProjectTask.execute();

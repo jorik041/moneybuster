@@ -62,11 +62,12 @@
     <string name="menu_delete_project_local">Remove local project</string>
     <string name="menu_save_project">Save project</string>
     <string name="menu_save_bill">Save bill</string>
-    <string name="fab_add_project">Add a Project</string>
+    <string name="fab_add_project">Add a project</string>
     <string name="fab_add_member">Add a member</string>
     <string name="fab_rm_project">Remove current Project</string>
-    <string name="fab_edit_member">Edit member</string>
+    <string name="fab_edit_member">Edit a member</string>
     <string name="fab_del_member">Delete member</string>
+    <string name="choose_member_to_edit">Choose a member to edit</string>
     <string name="setting_min_distance">Minimum distance</string>
     <string name="setting_min_distance_long">Minimum distance between two logged points (meters)</string>
     <string name="setting_min_time">Minimum time</string>

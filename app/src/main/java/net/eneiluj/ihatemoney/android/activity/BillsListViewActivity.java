@@ -142,8 +142,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     com.github.clans.fab.FloatingActionButton fabEditMember;
     @BindView(R.id.fabDrawer_edit_project)
     com.github.clans.fab.FloatingActionButton fabEditProject;
-    @BindView(R.id.fabDrawer_delete_member)
-    com.github.clans.fab.FloatingActionButton fabDeleteMember;
     @BindView(R.id.fabDrawer_remove_project)
     com.github.clans.fab.FloatingActionButton fabRemoveProject;
     @BindView(R.id.fab_add_bill)
@@ -458,93 +456,124 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabEditMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                final String selectedMemberIdStr = adapterMembers.getSelectedItem();
+                // it was like that before...
+                /*final String selectedMemberIdStr = adapterMembers.getSelectedItem();
 
                 if (selectedMemberIdStr != null && !selectedMemberIdStr.equals("all")) {
 
                     long selectedMemberId = Long.valueOf(selectedMemberIdStr);
-                    final DBMember memberToEdit = db.getMember(selectedMemberId);
+                    editMember(view, selectedMemberId);
+                }*/
 
-                    Log.v(TAG, "MEMBER ID " + selectedMemberId);
+                MenuProject proj = (MenuProject) projects.getSelectedItem();
+                if (proj != null) {
+                    final List<DBMember> members = db.getMembersOfProject(proj.getId());
+                    List<String> memberNames = new ArrayList<>();
+                    for (DBMember m : members) {
+                        memberNames.add(m.getName());
+                    }
+                    CharSequence[] namescs = memberNames.toArray(new CharSequence[memberNames.size()]);
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(
-                            new ContextThemeWrapper(
-                                    view.getContext(),
-                                    R.style.Theme_AppCompat_DayNight_Dialog
-                            )
-                    );
-                    builder.setTitle(getString(R.string.edit_member_dialog_title));
+                    AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(view.getContext(), R.style.Theme_AppCompat_DayNight_Dialog));
+                    selectBuilder.setTitle(getString(R.string.choose_member_to_edit));
+                    selectBuilder.setSingleChoiceItems(namescs, -1, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // user checked an item
+                            editMember(view, members.get(which).getId());
+                            dialog.dismiss();
+                        }
+                    });
 
-                    // Set up the inputs
-                    final View iView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.items_editmember_dialog, null);
-                    EditText nv = iView.findViewById(R.id.editMemberName);
-                    nv.setText(memberToEdit.getName());
-                    nv.setInputType(InputType.TYPE_CLASS_TEXT);
-                    nv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
-                    EditText we = iView.findViewById(R.id.editMemberWeight);
-                    we.setText(String.valueOf(memberToEdit.getWeight()));
-                    we.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                    // add OK and Cancel buttons
+                    selectBuilder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+                    selectBuilder.setNegativeButton(getString(R.string.simple_cancel), null);
 
-                    TextView tv = iView.findViewById(R.id.editMemberNameLabel);
-                    tv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
-                    TextView wv = iView.findViewById(R.id.editMemberWeightLabel);
-                    wv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
-                    CheckBox ch = iView.findViewById(R.id.editMemberActivated);
-                    ch.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
-                    ch.setChecked(memberToEdit.isActivated());
+                    AlertDialog selectDialog = selectBuilder.create();
+                    selectDialog.show();
+                }
+            }
+        });
+    }
+
+    private void editMember(View view, long memberId) {
+        final DBMember memberToEdit = db.getMember(memberId);
+
+        Log.v(TAG, "MEMBER ID " + memberId);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                new ContextThemeWrapper(
+                        view.getContext(),
+                        R.style.Theme_AppCompat_DayNight_Dialog
+                )
+        );
+        builder.setTitle(getString(R.string.edit_member_dialog_title));
+
+        // Set up the inputs
+        final View iView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.items_editmember_dialog, null);
+        EditText nv = iView.findViewById(R.id.editMemberName);
+        nv.setText(memberToEdit.getName());
+        nv.setInputType(InputType.TYPE_CLASS_TEXT);
+        nv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+        EditText we = iView.findViewById(R.id.editMemberWeight);
+        we.setText(String.valueOf(memberToEdit.getWeight()));
+        we.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+
+        TextView tv = iView.findViewById(R.id.editMemberNameLabel);
+        tv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+        TextView wv = iView.findViewById(R.id.editMemberWeightLabel);
+        wv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+        CheckBox ch = iView.findViewById(R.id.editMemberActivated);
+        ch.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+        ch.setChecked(memberToEdit.isActivated());
 
                     /*final EditText input = new EditText(getApplicationContext());
                     input.setInputType(InputType.TYPE_CLASS_TEXT);
                     input.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
                     input.setText(memberToEdit.getName());*/
-                    builder.setView(iView);
+        builder.setView(iView);
 
-                    // Set up the buttons
-                    builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            EditText nvi = iView.findViewById(R.id.editMemberName);
-                            String newMemberName = nvi.getText().toString();
-
-                            EditText wvi = iView.findViewById(R.id.editMemberWeight);
-                            double newMemberWeight = Double.valueOf(wvi.getText().toString());
-
-                            CheckBox cvi = iView.findViewById(R.id.editMemberActivated);
-                            boolean newActivated = cvi.isChecked();
-
-                            MenuProject mproj = (MenuProject) projects.getSelectedItem();
-                            if (mproj != null) {
-                                if (!newMemberName.isEmpty() || newMemberName.equals("")) {
-                                    db.updateMemberAndSync(memberToEdit, newMemberName, newMemberWeight, newActivated);
-                                } else {
-                                    showToast(getString(R.string.member_edit_empty_name));
-                                }
-                            }
-                            fabMenuDrawerEdit.close(false);
-                            //new LoadCategoryListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                            navigationSelection = new Category(newMemberName, memberToEdit.getId());
-                            refreshLists();
-                        }
-                    });
-                    builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                            fabMenuDrawerEdit.close(false);
-                        }
-                    });
-
-                    builder.show();
-                }
-            }
-        });
-
-        fabDeleteMember.setOnClickListener(new View.OnClickListener() {
+        // Set up the buttons
+        builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(DialogInterface dialog, int which) {
+                EditText nvi = iView.findViewById(R.id.editMemberName);
+                String newMemberName = nvi.getText().toString();
 
+                EditText wvi = iView.findViewById(R.id.editMemberWeight);
+                double newMemberWeight = Double.valueOf(wvi.getText().toString());
+
+                CheckBox cvi = iView.findViewById(R.id.editMemberActivated);
+                boolean newActivated = cvi.isChecked();
+
+                MenuProject mproj = (MenuProject) projects.getSelectedItem();
+                if (mproj != null) {
+                    if (!newMemberName.isEmpty() || newMemberName.equals("")) {
+                        db.updateMemberAndSync(memberToEdit, newMemberName, newMemberWeight, newActivated);
+                    } else {
+                        showToast(getString(R.string.member_edit_empty_name));
+                    }
+                }
+                fabMenuDrawerEdit.close(false);
+
+                // this was used to programmatically select member
+                //navigationSelection = new Category(newMemberName, memberToEdit.getId());
+                refreshLists();
             }
         });
+        builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                fabMenuDrawerEdit.close(false);
+            }
+        });
+
+        builder.show();
     }
 
     private void setupMembersNavigationList(final String selectedItem) {

@@ -118,7 +118,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private final static int removeproject = 5;
     private final static int editproject = 6;
 
-    private HashMap<Long, Double> membersBalance;
+    //private HashMap<Long, Double> membersBalance;
 
 
     @BindView(R.id.logjobsListActivityActionBar)
@@ -651,7 +651,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             List<DBMember> dbMembers = db.getMembersOfProject(mproj.getId());
 
             Map<Long, Integer> membersNbBills = new ArrayMap<>();
-            membersBalance = new HashMap<>();
+            HashMap<Long, Double> membersBalance = new HashMap<>();
             Map<Long, Double> membersWeight = new ArrayMap<>();
             // init
             for (DBMember m : dbMembers) {

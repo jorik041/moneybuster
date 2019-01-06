@@ -31,6 +31,7 @@ import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.model.DBProject;
 import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
 import net.eneiluj.ihatemoney.util.ICallback;
+import net.eneiluj.ihatemoney.util.SupportUtil;
 
 public class EditProjectFragment extends PreferenceFragmentCompat {
 
@@ -224,8 +225,9 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                         );
                 saveButton.startAnimation(animation1);
 
-                if (!isValidEmail(getEmail())) {
+                if (!SupportUtil.isValidEmail(getEmail())) {
                     showToast(getString(R.string.error_invalid_email), Toast.LENGTH_LONG);
+                    saveButton.clearAnimation();
                 }
                 else {
                     //saveProject(null);
@@ -245,13 +247,6 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
         super.onPrepareOptionsMenu(menu);
     }
 
-    public final static boolean isValidEmail(CharSequence target) {
-        if (target == null)
-            return false;
-
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
-    }
-
     /**
      * Main-Menu-Handler
      */
@@ -262,7 +257,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                 confirmDeleteAlertBuilder.show();
                 return true;
             case R.id.menu_save:
-                if (!isValidEmail(getEmail())) {
+                if (!SupportUtil.isValidEmail(getEmail())) {
                     showToast(getString(R.string.error_invalid_email), Toast.LENGTH_LONG);
                 }
                 else {

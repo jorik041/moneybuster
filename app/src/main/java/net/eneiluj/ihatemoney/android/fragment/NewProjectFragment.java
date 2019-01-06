@@ -33,6 +33,7 @@ import net.eneiluj.ihatemoney.R;
 import net.eneiluj.ihatemoney.model.DBProject;
 import net.eneiluj.ihatemoney.persistence.IHateMoneySQLiteOpenHelper;
 import net.eneiluj.ihatemoney.util.ICallback;
+import net.eneiluj.ihatemoney.util.SupportUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -229,9 +230,15 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                     listener.close(pid);
                 }
                 else {
-                    if (!db.getIhateMoneyServerSyncHelper().createRemoteProject(getRemoteId(), getName(), getEmail(), getPassword(), getIhmUrl(), createRemoteCallBack)) {
-                        showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
+                    if (!SupportUtil.isValidEmail(getEmail())) {
+                        showToast(getString(R.string.error_invalid_email), Toast.LENGTH_LONG);
                         addButton.clearAnimation();
+                    }
+                    else {
+                        if (!db.getIhateMoneyServerSyncHelper().createRemoteProject(getRemoteId(), getName(), getEmail(), getPassword(), getIhmUrl(), createRemoteCallBack)) {
+                            showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
+                            addButton.clearAnimation();
+                        }
                     }
                 }
             }

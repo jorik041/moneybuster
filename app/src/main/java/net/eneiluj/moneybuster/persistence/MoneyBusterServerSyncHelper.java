@@ -73,7 +73,6 @@ public class MoneyBusterServerSyncHelper {
 
     private CustomCertManager customCertManager;
 
-    // Track network connection changes using a BroadcastReceiver
     private boolean networkConnected = false;
 
     private boolean cert4androidReady = false;

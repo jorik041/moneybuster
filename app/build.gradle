@@ -8,8 +8,8 @@ android {
         applicationId "net.eneiluj.moneybuster"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 2
-        versionName "0.0.2"
+        versionCode 1
+        versionName "0.0.1"
     }
     buildTypes {
         release {
@@ -44,3 +44,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     androidTestImplementation 'junit:junit:4.12'
 }
+
+/*gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    }
+}*/

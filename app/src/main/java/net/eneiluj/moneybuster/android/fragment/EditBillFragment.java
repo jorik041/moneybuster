@@ -193,7 +193,8 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                                               Object newValue) {
                 MultiSelectListPreference pref = (MultiSelectListPreference) findPreference("owers");
                 //CharSequence[] selectedValuesArray = pref.getEntryValues();
-                List<String> selectedValuesList = new ArrayList<>((HashSet<String>) newValue);
+                @SuppressWarnings("unchecked")
+                List<String> selectedValuesList = new ArrayList<>((HashSet<String>)newValue);
                 CharSequence[] allEntriesArray = pref.getEntries();
                 String summary = "";
                 //for (int i=0; i < selectedValuesArray.length; i++) {

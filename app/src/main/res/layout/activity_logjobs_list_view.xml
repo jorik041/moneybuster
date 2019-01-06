@@ -42,7 +42,7 @@
         style="@style/fab"
         android:src="@android:drawable/ic_input_add"
         android:tint="#ffffff"
-        android:title="@string/action_create"
+        android:title="@string/action_create_bill"
         app:backgroundTint="@color/primary"
         app:rippleColor="@color/primary_dark" />
 

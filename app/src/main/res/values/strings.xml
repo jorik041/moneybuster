@@ -8,7 +8,7 @@
     <string name="label_phonetrack_lj">PhoneTrack log jobs</string>
     <string name="label_custom_lj">Custom log jobs</string>
     <string name="label_custom">Custom</string>
-    <string name="action_create">New log job</string>
+    <string name="action_create_bill">New bill</string>
     <string name="action_create_share">Import PhTrk logging URL</string>
     <string name="action_create_custom_share">Import custom logging URL</string>
     <string name="action_settings">Settings</string>

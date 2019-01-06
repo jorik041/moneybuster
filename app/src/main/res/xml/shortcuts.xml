@@ -4,7 +4,7 @@
         android:shortcutId="net.eneiluj.moneybuster"
         android:enabled="true"
         android:icon="@drawable/ic_add_green_24dp"
-        android:shortcutShortLabel="@string/action_create"
+        android:shortcutShortLabel="@string/action_add_project"
         android:shortcutLongLabel="@string/shortcut_create_long">
         <intent
             android:action="android.intent.action.VIEW"

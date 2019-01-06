@@ -1,6 +1,7 @@
 package net.eneiluj.moneybuster.android.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
@@ -1033,6 +1034,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         searchEditFrame.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             int oldVisibility = -1;
+            @SuppressLint("RestrictedApi")
             @Override
             public void onGlobalLayout() {
                 int currentVisibility = searchEditFrame.getVisibility();

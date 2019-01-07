@@ -1181,8 +1181,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             listView.scrollToPosition(0);
         } else if (requestCode == addproject) {
             long pid = data.getLongExtra(CREATED_PROJECT, 0);
-            //DBProject createdProject = db.getProject();
-            System.out.println("BILLS request code : addproject " + pid);
+            if (DEBUG) { Log.d(TAG, "BILLS request code : addproject " + pid); }
             if (pid != 0) {
                 DBProject proj = db.getProject(pid);
                 MenuProject mproj = new MenuProject(

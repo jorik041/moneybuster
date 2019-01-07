@@ -231,8 +231,9 @@ public class EditBillFragment extends PreferenceFragmentCompat {
             }
         };
         confirmDeleteAlertBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this.getActivity(), R.style.Theme_AppCompat_DayNight_Dialog));
-        confirmDeleteAlertBuilder.setMessage("Are you sure?").setPositiveButton("Yes", deleteDialogClickListener)
-                .setNegativeButton("No", deleteDialogClickListener);
+        confirmDeleteAlertBuilder.setMessage(getString(R.string.confirm_delete_bill_dialog_title))
+                .setPositiveButton(getString(R.string.simple_yes), deleteDialogClickListener)
+                .setNegativeButton(getString(R.string.simple_no), deleteDialogClickListener);
 
         handler = new Handler(Looper.getMainLooper());
 

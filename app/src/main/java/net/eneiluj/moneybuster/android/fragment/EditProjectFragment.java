@@ -158,15 +158,15 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
         //confirmDeleteAlertBuilder = new AlertDialog.Builder(getActivity());
         confirmDeleteAlertBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this.getActivity(), R.style.Theme_AppCompat_DayNight_Dialog));
 
-        confirmDeleteAlertBuilder.setMessage("Are you sure?").setPositiveButton("Yes", deleteDialogClickListener)
-                .setNegativeButton("No", deleteDialogClickListener);
+        confirmDeleteAlertBuilder.setMessage(getString(R.string.confirm_delete_project_dialog_title))
+                .setPositiveButton(getString(R.string.simple_yes), deleteDialogClickListener)
+                .setNegativeButton(getString(R.string.simple_no), deleteDialogClickListener);
 
         handler = new Handler(Looper.getMainLooper());
 
         if (savedInstanceState == null) {
             long id = getArguments().getLong(PARAM_PROJECT_ID);
             if (id > 0) {
-                // TODO
                 project = db.getProject(id);
             }
         } else {
@@ -174,7 +174,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
         }
         setHasOptionsMenu(true);
 
-        System.out.println("PROJECT on create : "+project);
+        Log.d(getClass().getSimpleName(), "PROJECT on create : "+project);
     }
 
     @Override
@@ -303,7 +303,6 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        System.out.println("ACT CREATEDDDDDDD");
         ButterKnife.bind(this, getView());
 
         // hide the keyboard when this window gets the focus

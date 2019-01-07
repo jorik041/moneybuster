@@ -127,7 +127,12 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
             public boolean onPreferenceChange(Preference preference,
                                               Object newValue) {
                 EditTextPreference pref = (EditTextPreference) findPreference("password");
-                //pref.setSummary((CharSequence) newValue);
+                int nbChars = ((CharSequence)newValue).length();
+                String sum = "";
+                for (int i=0; i < nbChars; i++) {
+                    sum += "*";
+                }
+                pref.setSummary(sum);
                 return true;
             }
 

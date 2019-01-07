@@ -1446,7 +1446,18 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     List<Integer> selection = adapter.getSelected();
                     for (Integer i : selection) {
                         DBBill bill = (DBBill) adapter.getItem(i);
-                        db.deleteBill(bill.getId());
+
+                        // get up to date bill
+                        final DBBill dbBill = db.getBill(bill.getId());
+                        // get real original state to potentially restore it
+                        final int originalState = dbBill.getState();
+
+                        if (originalState == DBBill.STATE_ADDED) {
+                            db.deleteBill(dbBill.getId());
+                        }
+                        else {
+                            db.setBillState(dbBill.getId(), DBBill.STATE_DELETED);
+                        }
                         // Not needed because of dbsync
                         //adapter.remove(logjob);
                         //notifyLoggerService(logjob.getId());

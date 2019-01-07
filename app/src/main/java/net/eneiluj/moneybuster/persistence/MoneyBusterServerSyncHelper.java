@@ -349,9 +349,20 @@ public class MoneyBusterServerSyncHelper {
                 // delete what's been deleted
                 List<DBBill> toDelete = dbHelper.getBillsOfProjectWithState(project.getId(), DBBill.STATE_DELETED);
                 for (DBBill bToDel : toDelete) {
-                    ServerResponse.DeleteRemoteBillResponse deleteRemoteBillResponse = client.deleteRemoteBill(customCertManager, project, bToDel.getRemoteId());
-                    if (deleteRemoteBillResponse.getStringContent().equals("OK")) {
-                        dbHelper.deleteBill(bToDel.getId());
+                    try {
+                        ServerResponse.DeleteRemoteBillResponse deleteRemoteBillResponse = client.deleteRemoteBill(customCertManager, project, bToDel.getRemoteId());
+                        if (deleteRemoteBillResponse.getStringContent().equals("OK")) {
+                            dbHelper.deleteBill(bToDel.getId());
+                        }
+                    }
+                    catch (IOException e) {
+                        // if it's not there on the server
+                        if (e.getMessage().equals("\"Not Found\"")) {
+                            dbHelper.deleteBill(bToDel.getId());
+                        }
+                        else {
+                            throw e;
+                        }
                     }
                 }
                 // edit what's been edited

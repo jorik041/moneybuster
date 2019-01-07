@@ -10,7 +10,7 @@
     <string name="action_edit_project">Edit remote project</string>
     <string name="mandatory">(mandatory)</string>
     <string name="setting_what">What ?</string>
-    <string name="setting_what_long">What way paid ?</string>
+    <string name="setting_what_long">Paid for what ?</string>
     <string name="setting_date">When was it ?</string>
     <string name="setting_date_long">The day it was paid</string>
     <string name="setting_payer">Who paid ?</string>
@@ -90,8 +90,8 @@
     <string name="statistic_dialog_title">Project\'s statistics</string>
 
     <!-- Certificates -->
-    <string name="certificate_notification_connection_security">PhoneTrack - Connection security</string>
-    <string name="trust_certificate_unknown_certificate_found">PhoneTrack has encountered an unknown certificate. Do you want to trust it?</string>
+    <string name="certificate_notification_connection_security">MoneyBuster - Connection security</string>
+    <string name="trust_certificate_unknown_certificate_found">MoneyBuster has encountered an unknown certificate. Do you want to trust it?</string>
 
     <!-- Network -->
 
@@ -144,7 +144,7 @@
 
 
     <!-- Shortcuts -->
-    <string name="shortcut_create_long">Create a new log job</string>
+    <string name="shortcut_create_project_long">Add a project</string>
 
     <!-- Key / Values for preferences -->
     <string name="pref_key_certs" translatable="false">certificates</string>

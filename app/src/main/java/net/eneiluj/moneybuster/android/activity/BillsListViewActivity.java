@@ -693,7 +693,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     }
 
     private void setupMembersNavigationList(final String selectedItem) {
-        itemAll = new NavigationAdapter.NavigationItem(ADAPTER_KEY_ALL, getString(R.string.label_all_bills), null, R.drawable.ic_allgrey_24dp);
+        itemAll = new NavigationAdapter.NavigationItem(ADAPTER_KEY_ALL, getString(R.string.label_all_bills), null, R.drawable.ic_allgrey_24dp, true);
 
         adapterMembers = new NavigationAdapter(new NavigationAdapter.ClickListener() {
             @Override
@@ -795,7 +795,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             String.valueOf(m.getId()),
                             m.getName()+" ("+sign+balanceStr+")"+weightStr,
                             membersNbBills.get(m.getId()),
-                            R.drawable.ic_account_circle_grey_24dp
+                            R.drawable.ic_account_circle_grey_24dp,
+                            m.isActivated()
                     );
 
                     items.add(it);
@@ -816,8 +817,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         //final NavigationAdapter.NavigationItem itemAddProject = new NavigationAdapter.NavigationItem("addproject", getString(R.string.action_add_project), null, android.R.drawable.ic_menu_add);
         //final NavigationAdapter.NavigationItem itemEditProject = new NavigationAdapter.NavigationItem("editproject", getString(R.string.action_edit_project), null, android.R.drawable.ic_menu_edit);
         //final NavigationAdapter.NavigationItem itemRemoveProject = new NavigationAdapter.NavigationItem("removeproject", getString(R.string.action_remove_project), null, android.R.drawable.ic_menu_delete);
-        final NavigationAdapter.NavigationItem itemSettings = new NavigationAdapter.NavigationItem("settings", getString(R.string.action_settings), null, R.drawable.ic_settings_grey600_24dp);
-        final NavigationAdapter.NavigationItem itemAbout = new NavigationAdapter.NavigationItem("about", getString(R.string.simple_about), null, R.drawable.ic_info_outline_grey600_24dp);
+        final NavigationAdapter.NavigationItem itemSettings = new NavigationAdapter.NavigationItem("settings", getString(R.string.action_settings), null, R.drawable.ic_settings_grey600_24dp, true);
+        final NavigationAdapter.NavigationItem itemAbout = new NavigationAdapter.NavigationItem("about", getString(R.string.simple_about), null, R.drawable.ic_info_outline_grey600_24dp, true);
 
         ArrayList<NavigationAdapter.NavigationItem> itemsMenu = new ArrayList<>();
         //itemsMenu.add(itemAddProject);

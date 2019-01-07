@@ -25,19 +25,6 @@ import net.eneiluj.moneybuster.R;
 
 public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.ViewHolder> {
 
-    @DrawableRes
-    public static final int ICON_FOLDER = R.drawable.ic_folder_grey600_24dp;
-    @DrawableRes
-    public static final int ICON_NOFOLDER = R.drawable.ic_folder_open_grey600_24dp;
-    @DrawableRes
-    public static final int ICON_SUB_FOLDER = R.drawable.ic_folder_grey600_18dp;
-    @DrawableRes
-    public static final int ICON_MULTIPLE = R.drawable.ic_create_new_folder_grey600_24dp;
-    @DrawableRes
-    public static final int ICON_MULTIPLE_OPEN = R.drawable.ic_folder_grey600_24dp;
-    @DrawableRes
-    public static final int ICON_SUB_MULTIPLE = R.drawable.ic_create_new_folder_grey600_18dp;
-
     public static class NavigationItem {
         @NonNull
         public String id;
@@ -47,12 +34,14 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
         public int icon;
         @Nullable
         public Integer count;
+        public boolean activated;
 
-        public NavigationItem(@NonNull String id, @NonNull String label, @Nullable Integer count, @DrawableRes int icon) {
+        public NavigationItem(@NonNull String id, @NonNull String label, @Nullable Integer count, @DrawableRes int icon, boolean activated) {
             this.id = id;
             this.label = label;
             this.count = count;
             this.icon = icon;
+            this.activated = activated;
         }
     }
 
@@ -93,14 +82,21 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
             currentItem = item;
             boolean isSelected = item.id.equals(selectedItem);
             //name.setText(item.label);
-            count.setVisibility(item.count == null ? View.GONE : View.VISIBLE);
+            count.setVisibility((item.count == null) ? View.GONE : View.VISIBLE);
             count.setText(String.valueOf(item.count));
             if (item.icon > 0) {
-                icon.setImageDrawable(
-                        //icon.getResources().getDrawable(item.icon)
-                        ContextCompat.getDrawable(icon.getContext(), item.icon)
-                );
+                if (item.activated) {
+                    icon.setImageDrawable(
+                            ContextCompat.getDrawable(icon.getContext(), item.icon)
+                    );
+                }
+                else {
+                    icon.setImageDrawable(
+                            ContextCompat.getDrawable(icon.getContext(), R.drawable.ic_lock_grey_24dp)
+                    );
+                }
                 icon.setVisibility(View.VISIBLE);
+
             } else {
                 icon.setVisibility(View.GONE);
             }

@@ -372,12 +372,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                 }
                             }
                             else {
-                                showToast(getString(R.string.member_name_empty_error));
+                                showToast(getString(R.string.member_edit_empty_name));
                             }
                         }
                         fabMenuDrawerAdd.close(false);
                         //new LoadCategoryListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
                     }
                 });
                 builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {
@@ -554,24 +553,30 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 String newMemberName = nvi.getText().toString();
 
                 EditText wvi = iView.findViewById(R.id.editMemberWeight);
-                double newMemberWeight = Double.valueOf(wvi.getText().toString());
+                double newMemberWeight = 1.0;
+                try {
+                    newMemberWeight = Double.valueOf(wvi.getText().toString());
+                }
+                catch (Exception e) {
+                    showToast(getString(R.string.member_edit_weight_error));
+                    return;
+                }
 
                 CheckBox cvi = iView.findViewById(R.id.editMemberActivated);
                 boolean newActivated = cvi.isChecked();
 
                 MenuProject mproj = (MenuProject) projects.getSelectedItem();
                 if (mproj != null) {
-                    if (!newMemberName.isEmpty() || newMemberName.equals("")) {
+                    if (!newMemberName.isEmpty() && !newMemberName.equals("")) {
                         db.updateMemberAndSync(memberToEdit, newMemberName, newMemberWeight, newActivated);
+                        refreshLists();
+                        // this was used to programmatically select member
+                        //navigationSelection = new Category(newMemberName, memberToEdit.getId());
                     } else {
                         showToast(getString(R.string.member_edit_empty_name));
                     }
                 }
                 fabMenuDrawerEdit.close(false);
-
-                // this was used to programmatically select member
-                //navigationSelection = new Category(newMemberName, memberToEdit.getId());
-                refreshLists();
             }
         });
         builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {

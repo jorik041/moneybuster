@@ -108,6 +108,11 @@
     <string name="error_invalid_project_remote_id">Invalid project ID</string>
     <string name="error_invalid_project_password">Invalid project password</string>
     <string name="error_invalid_project_name">Invalid project name</string>
+    <string name="error_invalid_bill_what">Invalid bill name</string>
+    <string name="error_invalid_bill_date">Invalid bill date</string>
+    <string name="error_invalid_bill_amount">Invalid bill amount</string>
+    <string name="error_invalid_bill_payerid">Bill should have a payer</string>
+    <string name="error_invalid_bill_owers">Bill should have at least one ower</string>
     <string name="error_create_remote_project_helper">Error at remote project creation : %s</string>
     <string name="error_edit_remote_project_helper">Error at remote project edition : %s</string>
 

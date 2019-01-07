@@ -302,17 +302,20 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                 listener.close();
                 return true;
             case R.id.menu_save:
-                if (getWhat().isEmpty()) {
-
+                if (getWhat() == null || getWhat().equals("")) {
+                    showToast(getString(R.string.error_invalid_bill_what), Toast.LENGTH_LONG);
                 }
-                else if (getDate().isEmpty()) {
-
+                else if (getDate() == null || getDate().equals("")) {
+                    showToast(getString(R.string.error_invalid_bill_date), Toast.LENGTH_LONG);
                 }
-                else if (getAmount() == 0) {
-
+                else if (getAmount() == 0.0) {
+                    showToast(getString(R.string.error_invalid_bill_amount), Toast.LENGTH_LONG);
+                }
+                else if (getPayerId() == 0) {
+                    showToast(getString(R.string.error_invalid_bill_payerid), Toast.LENGTH_LONG);
                 }
                 else if (getOwersIds().size() == 0) {
-
+                    showToast(getString(R.string.error_invalid_bill_owers), Toast.LENGTH_LONG);
                 }
                 else {
                     saveBill(null);
@@ -518,9 +521,15 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         return sdf.format(editDate.getDate());
     }
     protected double getAmount() {
+        if (editAmount.getText() == null || editAmount.getText().equals("")) {
+            return 0.0;
+        }
         return Double.valueOf(editAmount.getText());
     }
     protected long getPayerId() {
+        if (editPayer.getValue() == null) {
+            return 0;
+        }
         return Long.valueOf(editPayer.getValue());
     }
     protected List<Long> getOwersIds() {

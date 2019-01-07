@@ -34,6 +34,8 @@ import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.SupportUtil;
 
+import static android.webkit.URLUtil.isValidUrl;
+
 public class NewProjectFragment extends PreferenceFragmentCompat {
 
     private static final String SAVEDKEY_PROJECT = "project";
@@ -221,22 +223,48 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                         );
                 addButton.startAnimation(animation1);
 
+                // check values
+                String url = getIhmUrl();
+                if (url == null || url.equals("") || !isValidUrl(url)) {
+                    showToast(getString(R.string.error_invalid_url), Toast.LENGTH_LONG);
+                    addButton.clearAnimation();
+                    return;
+                }
+                String rid = getRemoteId();
+                if (rid == null || rid.equals("")) {
+                    showToast(getString(R.string.error_invalid_project_remote_id), Toast.LENGTH_LONG);
+                    addButton.clearAnimation();
+                    return;
+                }
+                String pwd = getPassword();
+                if (pwd == null || pwd.equals("")) {
+                    showToast(getString(R.string.error_invalid_project_password), Toast.LENGTH_LONG);
+                    addButton.clearAnimation();
+                    return;
+                }
+
 
                 if (!newProjectCreate.isChecked()) {
                     long pid = saveProject(null);
                     listener.close(pid);
                 }
                 else {
+                    String name = getName();
+                    if (name == null || name.equals("")) {
+                        showToast(getString(R.string.error_invalid_project_name), Toast.LENGTH_LONG);
+                        addButton.clearAnimation();
+                        return;
+                    }
                     if (!SupportUtil.isValidEmail(getEmail())) {
                         showToast(getString(R.string.error_invalid_email), Toast.LENGTH_LONG);
                         addButton.clearAnimation();
+                        return;
                     }
-                    else {
-                        if (!db.getMoneyBusterServerSyncHelper().createRemoteProject(getRemoteId(), getName(), getEmail(), getPassword(), getIhmUrl(), createRemoteCallBack)) {
-                            showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
-                            addButton.clearAnimation();
-                        }
+                    if (!db.getMoneyBusterServerSyncHelper().createRemoteProject(getRemoteId(), getName(), getEmail(), getPassword(), getIhmUrl(), createRemoteCallBack)) {
+                        showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
+                        addButton.clearAnimation();
                     }
+
                 }
             }
         });

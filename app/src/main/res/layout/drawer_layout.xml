@@ -193,6 +193,17 @@
                         fab:fab_label="@string/fab_del_member"
                         fab:fab_size="normal" /-->
 
+                    <com.github.clans.fab.FloatingActionButton
+                        android:id="@+id/fabDrawer_statistics"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_account_circle_white_24dp"
+                        app:fab_colorNormal="@color/primary"
+                        app:fab_colorPressed="@color/primary"
+                        app:fab_hideAnimation="@anim/fab_slide_out_to_right"
+                        app:fab_showAnimation="@anim/fab_slide_in_from_right"
+                        fab:fab_label="@string/fab_statistics"
+                        fab:fab_size="normal" />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/fabDrawer_edit_member"

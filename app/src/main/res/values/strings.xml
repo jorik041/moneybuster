@@ -135,6 +135,12 @@
     <string name="add_member_dialog_title">New member name</string>
     <string name="edit_member_dialog_title">Edit member</string>
     <string name="member_edit_empty_name">Member name can\'t be empty</string>
+    <string name="stats_who">Who</string>
+    <string name="stats_paid">Paid</string>
+    <string name="stats_spent">Spent</string>
+    <string name="stats_balance">Balance</string>
+    <string name="fab_statistics">Project\'s statistics</string>
+    <string name="statistic_dialog_title">Project\'s statistics</string>
 
     <!-- Web errors -->
     <string name="e_illegal_redirect" translatable="false">Illegal redirect: %d</string>

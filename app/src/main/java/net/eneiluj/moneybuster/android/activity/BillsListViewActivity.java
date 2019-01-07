@@ -49,6 +49,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -141,6 +142,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     com.github.clans.fab.FloatingActionMenu fabMenuDrawerEdit;
     @BindView(R.id.fabDrawer_edit_member)
     com.github.clans.fab.FloatingActionButton fabEditMember;
+    @BindView(R.id.fabDrawer_statistics)
+    com.github.clans.fab.FloatingActionButton fabStatistics;
     @BindView(R.id.fabDrawer_edit_project)
     com.github.clans.fab.FloatingActionButton fabEditProject;
     @BindView(R.id.fabDrawer_remove_project)
@@ -296,7 +299,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (DEBUG) { Log.d(TAG, "[onRefresh]"); }
+                if (DEBUG) {
+                    Log.d(TAG, "[onRefresh]");
+                }
                 if (db.getMoneyBusterServerSyncHelper().isSyncPossible()) {
                     synchronize();
                 } else {
@@ -323,8 +328,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     long pid = projectsAdapter.getItem(0).getId();
                     String url = db.getProject(pid).getIhmUrl();
                     newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, url);
-                }
-                else {
+                } else {
                     newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "https://ihatemoney.org");
                 }
                 startActivityForResult(newProjectIntent, addproject);
@@ -370,8 +374,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                 } else {
                                     showToast(getString(R.string.member_already_exists));
                                 }
-                            }
-                            else {
+                            } else {
                                 showToast(getString(R.string.member_edit_empty_name));
                             }
                         }
@@ -503,6 +506,52 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                     AlertDialog selectDialog = selectBuilder.create();
                     selectDialog.show();
+                }
+            }
+        });
+
+        fabStatistics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                MenuProject proj = (MenuProject) projects.getSelectedItem();
+                if (proj != null) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(
+                            new ContextThemeWrapper(
+                                    view.getContext(),
+                                    R.style.Theme_AppCompat_DayNight_Dialog
+                            )
+                    );
+                    builder.setTitle(getString(R.string.statistic_dialog_title));
+
+
+                    final View tView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.statistic_table, null);
+                    TextView hwho = tView.findViewById(R.id.header_who);
+                    hwho.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
+                    TextView hpaid = tView.findViewById(R.id.header_paid);
+                    hpaid.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
+                    TextView hspent = tView.findViewById(R.id.header_spent);
+                    hspent.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
+                    TextView hbalance = tView.findViewById(R.id.header_balance);
+                    hbalance.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
+                    final TableLayout tl = tView.findViewById(R.id.statTable);
+
+                    for (DBMember m : db.getMembersOfProject(proj.getId())) {
+                        View row = LayoutInflater.from(getApplicationContext()).inflate(R.layout.statistic_row, null);
+                        TextView tv = row.findViewById(R.id.stat_who);
+                        tv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                        tv.setText(m.getName());
+
+                        tl.addView(row);
+                    }
+
+                    builder.setView(tView).setIcon(android.R.drawable.ic_dialog_info);
+                    builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    builder.show();
                 }
             }
         });

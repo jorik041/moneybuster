@@ -107,7 +107,12 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
             public boolean onPreferenceChange(Preference preference,
                                               Object newValue) {
                 EditTextPreference pref = (EditTextPreference) findPreference("password");
-                //pref.setSummary((CharSequence) newValue);
+                int nbChars = ((CharSequence)newValue).length();
+                String sum = "";
+                for (int i=0; i < nbChars; i++) {
+                    sum += "*";
+                }
+                pref.setSummary(sum);
                 return true;
             }
 
@@ -225,18 +230,30 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                         );
                 saveButton.startAnimation(animation1);
 
+                String pwd = getPassword();
+                if (pwd == null || pwd.equals("")) {
+                    showToast(getString(R.string.error_invalid_project_password), Toast.LENGTH_LONG);
+                    saveButton.clearAnimation();
+                    return;
+                }
+                String name = getName();
+                if (name == null || name.equals("")) {
+                    showToast(getString(R.string.error_invalid_project_name), Toast.LENGTH_LONG);
+                    saveButton.clearAnimation();
+                    return;
+                }
                 if (!SupportUtil.isValidEmail(getEmail())) {
                     showToast(getString(R.string.error_invalid_email), Toast.LENGTH_LONG);
                     saveButton.clearAnimation();
+                    return;
                 }
-                else {
-                    //saveProject(null);
-                    if (!db.getMoneyBusterServerSyncHelper().editRemoteProject(project.getId(), getName(), getEmail(), getPassword(), editCallBack)) {
-                        showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
-                        saveButton.clearAnimation();
-                    }
 
+                if (!db.getMoneyBusterServerSyncHelper().editRemoteProject(project.getId(), getName(), getEmail(), getPassword(), editCallBack)) {
+                    showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
+                    saveButton.clearAnimation();
                 }
+
+
 
             }
         });
@@ -298,7 +315,12 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
 
         editProjectPassword = (EditTextPreference) this.findPreference("password");
         editProjectPassword.setText(project.getPassword());
-        //editProjectPassword.setSummary(logjob.getUrl());
+        int nbChars = project.getPassword().length();
+        String sum = "";
+        for (int i=0; i < nbChars; i++) {
+            sum += "*";
+        }
+        editProjectPassword.setSummary(sum);
 
         editProjectEmail = (EditTextPreference) this.findPreference("email");
         editProjectEmail.setText(String.valueOf(project.getEmail()));

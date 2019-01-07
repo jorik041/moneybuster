@@ -1358,7 +1358,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             AlertDialog.Builder builder;
             //builder = new AlertDialog.Builder(view.getContext(), android.R.style.Theme_Material_Dialog_Alert);
             builder = new AlertDialog.Builder(new ContextThemeWrapper(view.getContext(), R.style.Theme_AppCompat_DayNight_Dialog));
-            builder.setTitle(view.getContext().getString(R.string.logjob_info_dialog_title, dbBill.getWhat()))
+            builder.setTitle(view.getContext().getString(R.string.bill_info_dialog_title, dbBill.getWhat()))
                     //.setMessage(infoText)
                     .setView(iView)
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -1494,8 +1494,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
      */
     private void registerBroadcastReceiver() {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_SESSIONS_SYNC_FAILED);
-        filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_SESSIONS_SYNCED);
+        filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_PROJECT_SYNC_FAILED);
+        filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_PROJECT_SYNCED);
         registerReceiver(mBroadcastReceiver, filter);
     }
 
@@ -1510,15 +1510,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 return;
             }
             switch (intent.getAction()) {
-                case MoneyBusterServerSyncHelper.BROADCAST_SESSIONS_SYNC_FAILED:
+                case MoneyBusterServerSyncHelper.BROADCAST_PROJECT_SYNC_FAILED:
                     String errorMessage = intent.getStringExtra(BROADCAST_ERROR_MESSAGE);
                     showToast(errorMessage, Toast.LENGTH_LONG);
                     break;
-                case MoneyBusterServerSyncHelper.BROADCAST_SESSIONS_SYNCED:
-                    // TODO
-                    //setupMembersNavigationList(ADAPTER_KEY_ALL);
+                case MoneyBusterServerSyncHelper.BROADCAST_PROJECT_SYNCED:
+                    String projName = intent.getStringExtra(BROADCAST_EXTRA_PARAM);
                     refreshLists();
-                    showToast(getString(R.string.sessions_sync_success));
+                    showToast(getString(R.string.project_sync_success, projName));
                     break;
             }
         }

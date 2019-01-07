@@ -346,7 +346,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                 listener.close(pid);
             }
             else {
-                showToast(getString(R.string.error_share_dev_helper, message), Toast.LENGTH_LONG);
+                showToast(getString(R.string.error_create_remote_project_helper, message), Toast.LENGTH_LONG);
             }
         }
 

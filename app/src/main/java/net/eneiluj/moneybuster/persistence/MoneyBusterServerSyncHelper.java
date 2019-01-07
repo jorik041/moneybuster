@@ -1,10 +1,8 @@
 package net.eneiluj.moneybuster.persistence;
 
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -48,8 +46,8 @@ public class MoneyBusterServerSyncHelper {
 
     private static final String TAG = MoneyBusterServerSyncHelper.class.getSimpleName();
 
-    public static final String BROADCAST_SESSIONS_SYNC_FAILED = "net.eneiluj.ihatemoney.broadcast.sessions_sync_failed";
-    public static final String BROADCAST_SESSIONS_SYNCED = "net.eneiluj.ihatemoney.broadcast.sessions_synced";
+    public static final String BROADCAST_PROJECT_SYNC_FAILED = "net.eneiluj.moneybuster.broadcast.project_sync_failed";
+    public static final String BROADCAST_PROJECT_SYNCED = "net.eneiluj.moneybuster.broadcast.project_synced";
 
     private static MoneyBusterServerSyncHelper instance;
 
@@ -572,12 +570,13 @@ public class MoneyBusterServerSyncHelper {
                 }
                 // broadcast the error
                 // if the log job list is not visible, no toast
-                Intent intent = new Intent(BROADCAST_SESSIONS_SYNC_FAILED);
+                Intent intent = new Intent(BROADCAST_PROJECT_SYNC_FAILED);
                 intent.putExtra(BillsListViewActivity.BROADCAST_ERROR_MESSAGE, errorString);
                 appContext.sendBroadcast(intent);
             }
             else {
-                Intent intent = new Intent(BROADCAST_SESSIONS_SYNCED);
+                Intent intent = new Intent(BROADCAST_PROJECT_SYNCED);
+                intent.putExtra(BillsListViewActivity.BROADCAST_EXTRA_PARAM, project.getName());
                 appContext.sendBroadcast(intent);
             }
             syncActive = false;

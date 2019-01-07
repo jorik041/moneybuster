@@ -325,7 +325,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                 listener.closeOnEdit(project.getId());
             }
             else {
-                showToast(getString(R.string.error_share_dev_helper, message), Toast.LENGTH_LONG);
+                showToast(getString(R.string.error_edit_remote_project_helper, message), Toast.LENGTH_LONG);
             }
         }
 
@@ -344,7 +344,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                 listener.closeOnDelete(Long.valueOf(result));
             }
             else {
-                showToast(getString(R.string.error_share_dev_helper, message), Toast.LENGTH_LONG);
+                showToast(getString(R.string.error_edit_remote_project_helper, message), Toast.LENGTH_LONG);
             }
         }
 

@@ -353,27 +353,31 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String memberName = input.getText().toString();
-                        //Log.v(TAG, "NAME "+memberName);
                         MenuProject mproj = (MenuProject) projects.getSelectedItem();
                         if (mproj != null) {
-                            List<DBMember> members = db.getMembersOfProject(mproj.getId());
-                            List<String> memberNames = new ArrayList<>();
-                            for (DBMember m : members) {
-                                memberNames.add(m.getName());
-                            }
-                            if (!memberNames.contains(memberName)) {
-                                db.addMemberAndSync(
-                                        new DBMember(0, 0, mproj.getId(), memberName,
-                                                true, 1, DBBill.STATE_ADDED)
-                                );
+                            if (!memberName.equals("")) {
+                                List<DBMember> members = db.getMembersOfProject(mproj.getId());
+                                List<String> memberNames = new ArrayList<>();
+                                for (DBMember m : members) {
+                                    memberNames.add(m.getName());
+                                }
+                                if (!memberNames.contains(memberName)) {
+                                    db.addMemberAndSync(
+                                            new DBMember(0, 0, mproj.getId(), memberName,
+                                                    true, 1, DBBill.STATE_ADDED)
+                                    );
+                                    refreshLists();
+                                } else {
+                                    showToast(getString(R.string.member_already_exists));
+                                }
                             }
                             else {
-                                showToast(getString(R.string.member_already_exists));
+                                showToast(getString(R.string.member_name_empty_error));
                             }
                         }
                         fabMenuDrawerAdd.close(false);
                         //new LoadCategoryListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                        refreshLists();
+
                     }
                 });
                 builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {

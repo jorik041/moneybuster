@@ -2,6 +2,9 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:stretchColumns="*"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:paddingTop="10dp"
     android:id="@+id/statTable">
     <TableRow
         android:layout_width="match_parent"

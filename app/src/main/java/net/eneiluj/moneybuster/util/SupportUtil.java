@@ -9,6 +9,7 @@ import android.support.annotation.WorkerThread;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -18,6 +19,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -25,6 +29,10 @@ import javax.net.ssl.TrustManager;
 
 import at.bitfire.cert4android.CustomCertManager;
 import net.eneiluj.moneybuster.R;
+import net.eneiluj.moneybuster.model.DBBill;
+import net.eneiluj.moneybuster.model.DBBillOwer;
+import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 
 /**
  * Some helper functionality in alike the Android support library.
@@ -113,6 +121,63 @@ public class SupportUtil {
             return false;
 
         return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
+
+    public static int getStatsOfProject(long projId, MoneyBusterSQLiteOpenHelper db,
+                                  Map<Long, Integer> membersNbBills,
+                                  HashMap<Long, Double> membersBalance,
+                                  Map<Long, Double> membersPaid,
+                                  Map<Long, Double> membersSpent) {
+        int nbBills = 0;
+        Map<Long, Double> membersWeight = new ArrayMap<>();
+
+        List<DBBill> dbBills = db.getBillsOfProject(projId);
+        List<DBMember> dbMembers = db.getMembersOfProject(projId);
+
+        // init
+        for (DBMember m : dbMembers) {
+            membersNbBills.put(m.getId(), 0);
+            membersBalance.put(m.getId(), 0.0);
+            membersPaid.put(m.getId(), 0.0);
+            membersSpent.put(m.getId(), 0.0);
+            membersWeight.put(m.getId(), m.getWeight());
+        }
+
+        for (DBBill b : dbBills) {
+            if (b.getState() != DBBill.STATE_DELETED) {
+                nbBills++;
+                membersNbBills.put(
+                        b.getPayerId(),
+                        membersNbBills.get(b.getPayerId()) + 1
+                );
+                double amount = b.getAmount();
+                membersBalance.put(
+                        b.getPayerId(),
+                        membersBalance.get(b.getPayerId()) + amount
+                );
+                membersPaid.put(
+                        b.getPayerId(),
+                        membersPaid.get(b.getPayerId()) + amount
+                );
+                double nbOwerShares = 0.0;
+                for (DBBillOwer bo : b.getBillOwers()) {
+                    nbOwerShares += membersWeight.get(bo.getMemberId());
+                }
+                for (DBBillOwer bo : b.getBillOwers()) {
+                    double owerWeight = membersWeight.get(bo.getMemberId());
+                    double spent = amount/nbOwerShares*owerWeight;
+                    membersBalance.put(
+                            bo.getMemberId(),
+                            membersBalance.get(bo.getMemberId()) - spent
+                    );
+                    membersSpent.put(
+                            bo.getMemberId(),
+                            membersSpent.get(bo.getMemberId()) + spent
+                    );
+                }
+            }
+        }
+        return nbBills;
     }
 
 }

@@ -78,6 +78,7 @@ import net.eneiluj.moneybuster.persistence.MoneyBusterServerSyncHelper;
 import net.eneiluj.moneybuster.persistence.LoadBillsListTask;
 import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.SpendClientUtil;
+import net.eneiluj.moneybuster.util.SupportUtil;
 
 import static net.eneiluj.moneybuster.android.activity.EditProjectActivity.PARAM_PROJECT_ID;
 
@@ -515,6 +516,20 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             public void onClick(final View view) {
                 MenuProject proj = (MenuProject) projects.getSelectedItem();
                 if (proj != null) {
+                    // get stats
+                    Map<Long, Integer> membersNbBills = new ArrayMap<>();
+                    HashMap<Long, Double> membersBalance = new HashMap<>();
+                    HashMap<Long, Double> membersPaid = new HashMap<>();
+                    HashMap<Long, Double> membersSpent = new HashMap<>();
+
+                    NumberFormat numberFormatter = new DecimalFormat("#0.00");
+
+                    int nbBills = SupportUtil.getStatsOfProject(
+                            proj.getId(), db,
+                            membersNbBills, membersBalance, membersPaid, membersSpent
+                    );
+
+                    // generate the dialog
                     AlertDialog.Builder builder = new AlertDialog.Builder(
                             new ContextThemeWrapper(
                                     view.getContext(),
@@ -537,14 +552,51 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                     for (DBMember m : db.getMembersOfProject(proj.getId())) {
                         View row = LayoutInflater.from(getApplicationContext()).inflate(R.layout.statistic_row, null);
-                        TextView tv = row.findViewById(R.id.stat_who);
-                        tv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
-                        tv.setText(m.getName());
+                        TextView wv = row.findViewById(R.id.stat_who);
+                        wv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                        wv.setText(m.getName());
+
+                        TextView pv = row.findViewById(R.id.stat_paid);
+                        pv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                        double rpaid = Math.round( (membersPaid.get(m.getId())) * 100.0 ) / 100.0;
+                        if (rpaid == 0.0) {
+                            pv.setText("--");
+                        }
+                        else {
+                            pv.setText(numberFormatter.format(rpaid));
+                        }
+
+                        TextView sv = row.findViewById(R.id.stat_spent);
+                        sv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                        double rspent = Math.round( (membersSpent.get(m.getId())) * 100.0 ) / 100.0;
+                        if (rspent == 0.0) {
+                            sv.setText("--");
+                        }
+                        else {
+                            sv.setText(numberFormatter.format(rspent));
+                        }
+
+
+                        TextView bv = row.findViewById(R.id.stat_balance);
+                        double rbalance = Math.round( (membersBalance.get(m.getId())) * 100.0 ) / 100.0;
+                        String sign = "";
+                        if (rbalance > 0) {
+                            bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.green));
+                            sign = "+";
+                        }
+                        else if (rbalance < 0) {
+                            bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.red));
+                        }
+                        else {
+                            bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                        }
+                        bv.setText(sign + numberFormatter.format(rbalance));
+
 
                         tl.addView(row);
                     }
 
-                    builder.setView(tView).setIcon(android.R.drawable.ic_dialog_info);
+                    builder.setView(tView).setIcon(R.drawable.ic_chart_grey_24dp);
                     builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -552,6 +604,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         }
                     });
                     builder.show();
+                    fabMenuDrawerEdit.close(false);
                 }
             }
         });
@@ -710,50 +763,17 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 return items;
             }
 
-            List<DBBill> dbBills = db.getBillsOfProject(mproj.getId());
             List<DBMember> dbMembers = db.getMembersOfProject(mproj.getId());
 
             Map<Long, Integer> membersNbBills = new ArrayMap<>();
             HashMap<Long, Double> membersBalance = new HashMap<>();
-            Map<Long, Double> membersWeight = new ArrayMap<>();
-            // init
-            for (DBMember m : dbMembers) {
-                membersNbBills.put(m.getId(), 0);
-                membersBalance.put(m.getId(), 0.0);
-                membersWeight.put(m.getId(), m.getWeight());
-                //if (DEBUG) { Log.d(TAG, "WEIGHT of "+m.getName()+" : "+m.getWeight()); }
-            }
+            HashMap<Long, Double> membersPaid = new HashMap<>();
+            HashMap<Long, Double> membersSpent = new HashMap<>();
 
-            int nbBills = 0;
-
-            for (DBBill b : dbBills) {
-                if (b.getState() != DBBill.STATE_DELETED) {
-                    nbBills++;
-                    //System.out.println("LALA "+b.getPayerId());
-                    membersNbBills.put(
-                            b.getPayerId(),
-                            membersNbBills.get(b.getPayerId()) + 1
-                    );
-                    double amount = b.getAmount();
-                    membersBalance.put(
-                            b.getPayerId(),
-                            membersBalance.get(b.getPayerId()) + amount
-                    );
-                    //int nbBillOwers = b.getBillOwers().size();
-                    double nbOwerShares = 0.0;
-                    for (DBBillOwer bo : b.getBillOwers()) {
-                        nbOwerShares += membersWeight.get(bo.getMemberId());
-                    }
-                    for (DBBillOwer bo : b.getBillOwers()) {
-                        double owerWeight = membersWeight.get(bo.getMemberId());
-                        //System.out.println("BABABABA "+bo.getMemberId());
-                        membersBalance.put(
-                                bo.getMemberId(),
-                                membersBalance.get(bo.getMemberId()) - (amount/nbOwerShares*owerWeight)
-                        );
-                    }
-                }
-            }
+            int nbBills = SupportUtil.getStatsOfProject(
+                    mproj.getId(), db,
+                    membersNbBills, membersBalance, membersPaid, membersSpent
+            );
 
             itemAll.count = nbBills;
             items.add(itemAll);

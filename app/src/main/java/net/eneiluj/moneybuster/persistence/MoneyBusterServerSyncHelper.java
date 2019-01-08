@@ -347,6 +347,7 @@ public class MoneyBusterServerSyncHelper {
                 }
 
                 // edit members
+                // TODO what if member does not exist anymore : delete it locally (if no bill associated)
                 List<DBMember> membersToEdit = dbHelper.getMembersOfProjectWithState(project.getId(), DBBill.STATE_EDITED);
                 for (DBMember mToEdit : membersToEdit) {
                     ServerResponse.EditRemoteMemberResponse editRemoteMemberResponse = client.editRemoteMember(customCertManager, project, mToEdit);
@@ -387,12 +388,13 @@ public class MoneyBusterServerSyncHelper {
                     }
                 }
                 // edit what's been edited
+                // TODO delete local bill if it does not exist anymore on the server
                 List<DBBill> toEdit = dbHelper.getBillsOfProjectWithState(project.getId(), DBBill.STATE_EDITED);
                 for (DBBill bToEdit : toEdit) {
                     ServerResponse.EditRemoteBillResponse editRemoteBillResponse = client.editRemoteBill(customCertManager, project, bToEdit, memberIdToRemoteId);
                     if (editRemoteBillResponse.getStringContent().equals(String.valueOf(bToEdit.getRemoteId()))) {
                         dbHelper.setBillState(bToEdit.getId(), DBBill.STATE_OK);
-                        Log.d(getClass().getSimpleName(), "SUCESS to edit bill ("+editRemoteBillResponse.getStringContent()+")");
+                        Log.d(getClass().getSimpleName(), "SUCCESS to edit bill ("+editRemoteBillResponse.getStringContent()+")");
                     }
                     else {
                         Log.d(getClass().getSimpleName(), "FAILED to edit bill ("+editRemoteBillResponse.getStringContent()+")");

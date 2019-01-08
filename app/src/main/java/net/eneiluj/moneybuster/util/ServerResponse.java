@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Provides entity classes for handling server responses with a single logjob ({@link ProjectResponse}) or a list of ihatemoney ({@link SessionsResponse}).
+ * Provides entity classes for handling server responses with a single logjob ({@link ProjectResponse}) or a list of ihatemoney
  */
 public class ServerResponse {
 
@@ -131,6 +131,16 @@ public class ServerResponse {
         }
     }
 
+    public static class MembersResponse extends ServerResponse {
+        public MembersResponse(IHateMoneyClient.ResponseData response) {
+            super(response);
+        }
+
+        public List<DBMember> getMembers(long projId) throws JSONException {
+            return getMembersFromJSONArray(new JSONArray(getContent()), projId);
+        }
+    }
+
     private final IHateMoneyClient.ResponseData response;
 
     public ServerResponse(IHateMoneyClient.ResponseData response) {
@@ -176,6 +186,16 @@ public class ServerResponse {
             email = json.getString("contact_email");
         }
         return email;
+    }
+
+    protected List<DBMember> getMembersFromJSONArray(JSONArray jsonMs, long projId) throws JSONException {
+        List<DBMember> members = new ArrayList<>();
+        for (int i = 0; i < jsonMs.length(); i++) {
+            JSONObject jsonM = jsonMs.getJSONObject(i);
+            members.add(getMemberFromJSON(jsonM, projId));
+        }
+
+        return members;
     }
 
     protected List<DBMember> getMembersFromJSON(JSONObject json, long projId) throws JSONException {

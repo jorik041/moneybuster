@@ -312,11 +312,29 @@ public class MoneyBusterServerSyncHelper {
             Log.d(getClass().getSimpleName(), "PUSH LOCAL CHANGES");
 
             try {
-                // push member changes BEFORE
+                // get the remote member list to solve conflict when locally added an existing remote member
+                ServerResponse.MembersResponse membersResponse = client.getMembers(customCertManager, project);
+                List<DBMember> remoteMembers = membersResponse.getMembers(project.getId());
+                List<String> remoteMembersNames = new ArrayList<>();
+                for (DBMember m : remoteMembers) {
+                    remoteMembersNames.add(m.getName());
+                }
+                // push member changes
                 // add members
                 List<DBMember> membersToAdd = dbHelper.getMembersOfProjectWithState(project.getId(), DBBill.STATE_ADDED);
                 for (DBMember mToAdd : membersToAdd) {
-                    try {
+                    // it exists remotely
+                    int searchIndex = remoteMembersNames.indexOf(mToAdd.getName());
+                    if (searchIndex != -1) {
+                        DBMember remoteMember = remoteMembers.get(searchIndex);
+                        dbHelper.updateMember(
+                                mToAdd.getId(), null,
+                                remoteMember.getWeight(), remoteMember.isActivated(),
+                                DBBill.STATE_OK, remoteMember.getRemoteId()
+                        );
+                    }
+                    // it does not exist, create it remotely
+                    else {
                         ServerResponse.CreateRemoteMemberResponse createRemoteMemberResponse = client.createRemoteMember(customCertManager, project, mToAdd);
                         long newRemoteId = Long.valueOf(createRemoteMemberResponse.getStringContent());
                         if (newRemoteId > 0) {
@@ -324,30 +342,6 @@ public class MoneyBusterServerSyncHelper {
                                     mToAdd.getId(), null,
                                     null, null, DBBill.STATE_OK, newRemoteId
                             );
-                        }
-                    }
-                    catch (IOException e) {
-                        // if member is already there, choose an alternative name
-                        if (e.getMessage().equals("{\"name\": [\"This project already have this member\"]}")) {
-                            String alternativeName = mToAdd.getName()+"_"+(int)(Math.random() * 1000);
-                            DBMember alternativeMember = new DBMember(
-                                    mToAdd.getId(),0, project.getId(),
-                                    alternativeName,
-                                    mToAdd.isActivated(),
-                                    mToAdd.getWeight(),
-                                    mToAdd.getState()
-                            );
-                            ServerResponse.CreateRemoteMemberResponse createRemoteMemberResponse = client.createRemoteMember(customCertManager, project, alternativeMember);
-                            long newRemoteId = Long.valueOf(createRemoteMemberResponse.getStringContent());
-                            if (newRemoteId > 0) {
-                                dbHelper.updateMember(
-                                        mToAdd.getId(), alternativeName,
-                                        null, null, DBBill.STATE_OK, newRemoteId
-                                );
-                            }
-                        }
-                        else {
-                            throw e;
                         }
                     }
                 }

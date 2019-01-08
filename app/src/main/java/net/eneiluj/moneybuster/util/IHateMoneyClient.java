@@ -208,6 +208,12 @@ public class IHateMoneyClient {
         return new ServerResponse.BillsResponse(requestServer(ccm, target, METHOD_GET, null, null,null, project.getRemoteId(), project.getPassword()));
     }
 
+    public ServerResponse.MembersResponse getMembers(CustomCertManager ccm, DBProject project) throws JSONException, IOException {
+        String target = project.getIhmUrl().replaceAll("/+$", "")
+                + "/api/projects/" + project.getRemoteId() + "/members";
+        return new ServerResponse.MembersResponse(requestServer(ccm, target, METHOD_GET, null, null,null, project.getRemoteId(), project.getPassword()));
+    }
+
     /**
      * Request-Method for POST, PUT with or without JSON-Object-Parameter
      *

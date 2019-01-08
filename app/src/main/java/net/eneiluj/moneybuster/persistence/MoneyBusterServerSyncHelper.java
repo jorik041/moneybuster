@@ -181,6 +181,7 @@ public class MoneyBusterServerSyncHelper {
      * @return true if sync is possible, otherwise false.
      */
     public boolean isSyncPossible() {
+        updateNetworkStatus();
         return networkConnected && cert4androidReady;
     }
 
@@ -217,7 +218,7 @@ public class MoneyBusterServerSyncHelper {
      * Schedules a synchronization and start it directly, if the network is connected and no
      * synchronization is currently running.
      *
-     * @param onlyLocalChanges Whether to only push local changes to the server or to also load the whole list of sessions from the server.
+     * @param onlyLocalChanges Whether to only push local changes to the server or to also load the project info
      */
     public void scheduleSync(boolean onlyLocalChanges, long projId) {
         Log.d(getClass().getSimpleName(), "Sync requested (" + (onlyLocalChanges ? "onlyLocalChanges" : "full") + "; " + (syncActive ? "sync active" : "sync NOT active") + ") ...");

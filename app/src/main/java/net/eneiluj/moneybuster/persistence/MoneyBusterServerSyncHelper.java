@@ -316,13 +316,39 @@ public class MoneyBusterServerSyncHelper {
                 // add members
                 List<DBMember> membersToAdd = dbHelper.getMembersOfProjectWithState(project.getId(), DBBill.STATE_ADDED);
                 for (DBMember mToAdd : membersToAdd) {
-                    ServerResponse.CreateRemoteMemberResponse createRemoteMemberResponse = client.createRemoteMember(customCertManager, project, mToAdd);
-                    long newRemoteId = Long.valueOf(createRemoteMemberResponse.getStringContent());
-                    if (newRemoteId > 0) {
-                        dbHelper.updateMember(
-                                mToAdd.getId(), null,
-                                null, null, DBBill.STATE_OK, newRemoteId
-                        );
+                    try {
+                        ServerResponse.CreateRemoteMemberResponse createRemoteMemberResponse = client.createRemoteMember(customCertManager, project, mToAdd);
+                        long newRemoteId = Long.valueOf(createRemoteMemberResponse.getStringContent());
+                        if (newRemoteId > 0) {
+                            dbHelper.updateMember(
+                                    mToAdd.getId(), null,
+                                    null, null, DBBill.STATE_OK, newRemoteId
+                            );
+                        }
+                    }
+                    catch (IOException e) {
+                        // if member is already there, choose an alternative name
+                        if (e.getMessage().equals("{\"name\": [\"This project already have this member\"]}")) {
+                            String alternativeName = mToAdd.getName()+"_"+(int)(Math.random() * 1000);
+                            DBMember alternativeMember = new DBMember(
+                                    mToAdd.getId(),0, project.getId(),
+                                    alternativeName,
+                                    mToAdd.isActivated(),
+                                    mToAdd.getWeight(),
+                                    mToAdd.getState()
+                            );
+                            ServerResponse.CreateRemoteMemberResponse createRemoteMemberResponse = client.createRemoteMember(customCertManager, project, alternativeMember);
+                            long newRemoteId = Long.valueOf(createRemoteMemberResponse.getStringContent());
+                            if (newRemoteId > 0) {
+                                dbHelper.updateMember(
+                                        mToAdd.getId(), alternativeName,
+                                        null, null, DBBill.STATE_OK, newRemoteId
+                                );
+                            }
+                        }
+                        else {
+                            throw e;
+                        }
                     }
                 }
 
@@ -411,7 +437,6 @@ public class MoneyBusterServerSyncHelper {
          * Pull remote Changes: update or create each remote session and remove remotely deleted sessions.
          */
         private LoginStatus pullRemoteChanges() {
-            // TODO add/remove sessions
             Log.d(getClass().getSimpleName(), "pullRemoteChanges("+project+")");
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
             String lastETag = null;

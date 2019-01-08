@@ -323,7 +323,7 @@ public class MoneyBusterServerSyncHelper {
                 // add members
                 List<DBMember> membersToAdd = dbHelper.getMembersOfProjectWithState(project.getId(), DBBill.STATE_ADDED);
                 for (DBMember mToAdd : membersToAdd) {
-                    // it exists remotely
+                    // it exists remotely, just update it locally
                     int searchIndex = remoteMembersNames.indexOf(mToAdd.getName());
                     if (searchIndex != -1) {
                         DBMember remoteMember = remoteMembers.get(searchIndex);
@@ -348,6 +348,8 @@ public class MoneyBusterServerSyncHelper {
 
                 // edit members
                 // TODO what if member does not exist anymore : delete it locally (if no bill associated)
+                // but maybe there still are bills for this user, wait untill the end of pullremotechanges to check
+                // and delete useless members
                 List<DBMember> membersToEdit = dbHelper.getMembersOfProjectWithState(project.getId(), DBBill.STATE_EDITED);
                 for (DBMember mToEdit : membersToEdit) {
                     ServerResponse.EditRemoteMemberResponse editRemoteMemberResponse = client.editRemoteMember(customCertManager, project, mToEdit);
@@ -391,13 +393,23 @@ public class MoneyBusterServerSyncHelper {
                 // TODO delete local bill if it does not exist anymore on the server
                 List<DBBill> toEdit = dbHelper.getBillsOfProjectWithState(project.getId(), DBBill.STATE_EDITED);
                 for (DBBill bToEdit : toEdit) {
-                    ServerResponse.EditRemoteBillResponse editRemoteBillResponse = client.editRemoteBill(customCertManager, project, bToEdit, memberIdToRemoteId);
-                    if (editRemoteBillResponse.getStringContent().equals(String.valueOf(bToEdit.getRemoteId()))) {
-                        dbHelper.setBillState(bToEdit.getId(), DBBill.STATE_OK);
-                        Log.d(getClass().getSimpleName(), "SUCCESS to edit bill ("+editRemoteBillResponse.getStringContent()+")");
+                    try {
+                        ServerResponse.EditRemoteBillResponse editRemoteBillResponse = client.editRemoteBill(customCertManager, project, bToEdit, memberIdToRemoteId);
+                        if (editRemoteBillResponse.getStringContent().equals(String.valueOf(bToEdit.getRemoteId()))) {
+                            dbHelper.setBillState(bToEdit.getId(), DBBill.STATE_OK);
+                            Log.d(getClass().getSimpleName(), "SUCCESS to edit bill (" + editRemoteBillResponse.getStringContent() + ")");
+                        } else {
+                            Log.d(getClass().getSimpleName(), "FAILED to edit bill (" + editRemoteBillResponse.getStringContent() + ")");
+                        }
                     }
-                    else {
-                        Log.d(getClass().getSimpleName(), "FAILED to edit bill ("+editRemoteBillResponse.getStringContent()+")");
+                    catch (IOException e) {
+                        // if it's not there on the server
+                        if (e.getMessage().equals("{\"message\": \"Internal Server Error\"}")) {
+                            dbHelper.deleteBill(bToEdit.getId());
+                        }
+                        else {
+                            throw e;
+                        }
                     }
                 }
                 // add what's been added

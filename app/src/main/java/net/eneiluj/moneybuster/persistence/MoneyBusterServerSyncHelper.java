@@ -421,8 +421,17 @@ public class MoneyBusterServerSyncHelper {
                 ServerResponse.ProjectResponse projResponse = client.getProject(customCertManager, project, lastModified, lastETag);
                 String name = projResponse.getName();
                 String email = projResponse.getEmail();
-                Log.d(getClass().getSimpleName(), "EMAIL : "+email);
-                dbHelper.updateProject(project.getId(), name, email, null);
+                // update project if needed
+                if (project.getName() == null || project.getName().equals("")
+                        || !name.equals(project.getName())
+                        || project.getEmail() == null
+                        || project.getEmail().equals("")
+                        || !email.equals(project.getEmail())) {
+                    Log.d(getClass().getSimpleName(), "update project : "+project);
+                    // this is usefull to transmit correct info back to billlistactivity when project was just added
+                    project.setName(name);
+                    dbHelper.updateProject(project.getId(), name, email, null);
+                }
 
                 // get members
                 List<DBMember> remoteMembers = projResponse.getMembers(project.getId());

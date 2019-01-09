@@ -600,6 +600,11 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         return bills;
     }
 
+    public List<DBBill> getBillsOfMember(long memberId) {
+        List<DBBill> bills = getBillsCustom(key_payer_id + " = ?", new String[]{String.valueOf(memberId)}, key_date + " ASC");
+        return bills;
+    }
+
     public DBBill getBill(long remoteId, long projId) {
         List<DBBill> bills = getBillsCustom(
                 key_remoteId + " = ? AND " + key_projectid + " = ?",
@@ -707,6 +712,11 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
      */
     public List<DBBillOwer> getBillowersOfBill(long billId) {
         List<DBBillOwer> billOwers = getBillOwersCustom(key_billId + " = ?", new String[]{String.valueOf(billId)}, null);
+        return billOwers;
+    }
+
+    public List<DBBillOwer> getBillowersOfMember(long memberId) {
+        List<DBBillOwer> billOwers = getBillOwersCustom(key_member_id + " = ?", new String[]{String.valueOf(memberId)}, null);
         return billOwers;
     }
 

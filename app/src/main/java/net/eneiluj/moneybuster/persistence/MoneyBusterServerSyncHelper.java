@@ -323,7 +323,7 @@ public class MoneyBusterServerSyncHelper {
                 // add members
                 List<DBMember> membersToAdd = dbHelper.getMembersOfProjectWithState(project.getId(), DBBill.STATE_ADDED);
                 for (DBMember mToAdd : membersToAdd) {
-                    // it exists remotely, just update it locally
+                    // it exists remotely, just update it locally to solve conflict
                     int searchIndex = remoteMembersNames.indexOf(mToAdd.getName());
                     if (searchIndex != -1) {
                         DBMember remoteMember = remoteMembers.get(searchIndex);
@@ -347,18 +347,31 @@ public class MoneyBusterServerSyncHelper {
                 }
 
                 // edit members
-                // TODO what if member does not exist anymore : delete it locally (if no bill associated)
-                // but maybe there still are bills for this user, wait untill the end of pullremotechanges to check
-                // and delete useless members
                 List<DBMember> membersToEdit = dbHelper.getMembersOfProjectWithState(project.getId(), DBBill.STATE_EDITED);
                 for (DBMember mToEdit : membersToEdit) {
-                    ServerResponse.EditRemoteMemberResponse editRemoteMemberResponse = client.editRemoteMember(customCertManager, project, mToEdit);
-                    long remoteId = editRemoteMemberResponse.getRemoteId(project.getId());
-                    if (remoteId == mToEdit.getRemoteId()) {
-                        dbHelper.updateMember(
-                                mToEdit.getId(), null,
-                                null, null, DBBill.STATE_OK, null
-                        );
+                    try {
+                        ServerResponse.EditRemoteMemberResponse editRemoteMemberResponse = client.editRemoteMember(customCertManager, project, mToEdit);
+                        long remoteId = editRemoteMemberResponse.getRemoteId(project.getId());
+                        if (remoteId == mToEdit.getRemoteId()) {
+                            dbHelper.updateMember(
+                                    mToEdit.getId(), null,
+                                    null, null, DBBill.STATE_OK, null
+                            );
+                        }
+                    }
+                    catch (IOException e) {
+                        if (e.getMessage().equals("{\"message\": \"Internal Server Error\"}")) {
+                            Log.d(getClass().getSimpleName(), "EDIT MEMBER FAILED : it does not exist remotely");
+                            // what if member does not exist anymore :
+                            // pullremotechanges will delete it locally (if no bill associated)
+                            // but maybe there still are bills for this user,
+                            // wait untill the end of pullremotechanges to check
+                            // and delete useless members
+                            //dbHelper.deleteMember(mToEdit.getId());
+                        }
+                        else {
+                            throw e;
+                        }
                     }
                 }
 
@@ -376,12 +389,14 @@ public class MoneyBusterServerSyncHelper {
                     try {
                         ServerResponse.DeleteRemoteBillResponse deleteRemoteBillResponse = client.deleteRemoteBill(customCertManager, project, bToDel.getRemoteId());
                         if (deleteRemoteBillResponse.getStringContent().equals("OK")) {
+                            Log.d(getClass().getSimpleName(), "successfully deleted bill on remote project : delete it locally");
                             dbHelper.deleteBill(bToDel.getId());
                         }
                     }
                     catch (IOException e) {
                         // if it's not there on the server
                         if (e.getMessage().equals("\"Not Found\"")) {
+                            Log.d(getClass().getSimpleName(), "failed to delete bill on remote project : delete it locally anyway");
                             dbHelper.deleteBill(bToDel.getId());
                         }
                         else {
@@ -390,22 +405,23 @@ public class MoneyBusterServerSyncHelper {
                     }
                 }
                 // edit what's been edited
-                // TODO delete local bill if it does not exist anymore on the server
                 List<DBBill> toEdit = dbHelper.getBillsOfProjectWithState(project.getId(), DBBill.STATE_EDITED);
                 for (DBBill bToEdit : toEdit) {
                     try {
                         ServerResponse.EditRemoteBillResponse editRemoteBillResponse = client.editRemoteBill(customCertManager, project, bToEdit, memberIdToRemoteId);
                         if (editRemoteBillResponse.getStringContent().equals(String.valueOf(bToEdit.getRemoteId()))) {
                             dbHelper.setBillState(bToEdit.getId(), DBBill.STATE_OK);
-                            Log.d(getClass().getSimpleName(), "SUCCESS to edit bill (" + editRemoteBillResponse.getStringContent() + ")");
+                            Log.d(getClass().getSimpleName(), "SUCCESSFUL remote bill edition (" + editRemoteBillResponse.getStringContent() + ")");
                         } else {
-                            Log.d(getClass().getSimpleName(), "FAILED to edit bill (" + editRemoteBillResponse.getStringContent() + ")");
+                            Log.d(getClass().getSimpleName(), "FAILED to edit remote bill (" + editRemoteBillResponse.getStringContent() + ")");
                         }
                     }
                     catch (IOException e) {
                         // if it's not there on the server
                         if (e.getMessage().equals("{\"message\": \"Internal Server Error\"}")) {
-                            dbHelper.deleteBill(bToEdit.getId());
+                            Log.d(getClass().getSimpleName(), "FAILED to edit remote bill : it does not exist remotely");
+                            // pullremotechanges will take care of deletion
+                            //dbHelper.deleteBill(bToEdit.getId());
                         }
                         else {
                             throw e;
@@ -460,7 +476,7 @@ public class MoneyBusterServerSyncHelper {
                         || project.getEmail() == null
                         || project.getEmail().equals("")
                         || !email.equals(project.getEmail())) {
-                    Log.d(getClass().getSimpleName(), "update project : "+project);
+                    Log.d(getClass().getSimpleName(), "update local project : "+project);
                     // this is usefull to transmit correct info back to billlistactivity when project was just added
                     project.setName(name);
                     dbHelper.updateProject(project.getId(), name, email, null);
@@ -478,7 +494,7 @@ public class MoneyBusterServerSyncHelper {
                     DBMember localMember = dbHelper.getMember(m.getRemoteId(), project.getId());
                     // member does not exist locally, add it
                     if (localMember == null) {
-                        Log.d(getClass().getSimpleName(), "Add member : "+m);
+                        Log.d(getClass().getSimpleName(), "Add local member : "+m);
                         dbHelper.addMember(m);
                     }
                     // member exists, check if needs update
@@ -491,21 +507,11 @@ public class MoneyBusterServerSyncHelper {
                             Log.d(getClass().getSimpleName(), "Nothing to do for member : "+localMember);
                         }
                         else {
-                            Log.d(getClass().getSimpleName(), "Update member : "+m);
+                            Log.d(getClass().getSimpleName(), "Update local member : "+m);
                             // long memberId, @Nullable String newName, @Nullable Double newWeight,
                             // @Nullable Boolean newActivated, @Nullable Integer newState, @Nullable Long newRemoteId
                             dbHelper.updateMember(localMember.getId(), m.getName(), m.getWeight(), m.isActivated(), null, null);
                         }
-                    }
-                }
-                // delete local members
-                List<DBMember> localMembers = dbHelper.getMembersOfProject(project.getId());
-                for (DBMember localMember : localMembers) {
-                    // if local member does not exist remotely
-                    // let's trust the server, member should not be involved in anything anymore
-                    if (!remoteMembersByRemoteId.containsKey(localMember.getRemoteId())) {
-                        dbHelper.deleteMember(localMember.getId());
-                        Log.d(getClass().getSimpleName(), "Delete member : " + localMember);
                     }
                 }
 
@@ -535,7 +541,7 @@ public class MoneyBusterServerSyncHelper {
                     // add if local does not exist
                     if (!localBillsByRemoteId.containsKey(remoteBill.getRemoteId())) {
                         long billId = dbHelper.addBill(remoteBill);
-                        Log.d(getClass().getSimpleName(), "Add bill : " + remoteBill);
+                        Log.d(getClass().getSimpleName(), "Add local bill : " + remoteBill);
                         /*//////// billowers
                         for (DBBillOwer rbo : remoteBill.getBillOwers()) {
                             dbHelper.addBillower(billId, rbo);
@@ -559,7 +565,7 @@ public class MoneyBusterServerSyncHelper {
                                     remoteBill.getAmount(), remoteBill.getDate(),
                                     remoteBill.getWhat(), DBBill.STATE_OK
                             );
-                            Log.d(getClass().getSimpleName(), "Update bill : "+remoteBill);
+                            Log.d(getClass().getSimpleName(), "Update local bill : "+remoteBill);
                         }
                         //////// billowers
                         Map<Long, DBBillOwer> localBillOwersByIds = new ArrayMap<>();
@@ -574,14 +580,14 @@ public class MoneyBusterServerSyncHelper {
                         for (DBBillOwer rbo : remoteBill.getBillOwers()) {
                             if (!localBillOwersByIds.containsKey(rbo.getMemberId())) {
                                 dbHelper.addBillower(localBill.getId(), rbo.getMemberId());
-                                Log.d(getClass().getSimpleName(), "Add billOwer : " + rbo);
+                                Log.d(getClass().getSimpleName(), "Add local billOwer : " + rbo);
                             }
                         }
                         // delete local which are not there remotely
                         for (DBBillOwer lbo : localBill.getBillOwers()) {
                             if (!remoteBillOwersByIds.containsKey(lbo.getMemberId())) {
                                 dbHelper.deleteBillOwer(lbo.getId());
-                                Log.d(getClass().getSimpleName(), "Delete billOwer : " + lbo);
+                                Log.d(getClass().getSimpleName(), "Delete local billOwer : " + lbo);
                             }
                         }
                     }
@@ -591,7 +597,29 @@ public class MoneyBusterServerSyncHelper {
                     // if local bill does not exist remotely
                     if (!remoteBillsByRemoteId.containsKey(localBill.getRemoteId())) {
                         dbHelper.deleteBill(localBill.getId());
-                        Log.d(getClass().getSimpleName(), "Delete bill : " + localBill);
+                        Log.d(getClass().getSimpleName(), "Delete local bill : " + localBill);
+                    }
+                }
+
+                // delete local members
+                // do this at the end to check if member that are not there remotely
+                // don't have any bill anymore
+                List<DBMember> localMembers = dbHelper.getMembersOfProject(project.getId());
+                for (DBMember localMember : localMembers) {
+                    // if local member does not exist remotely
+                    // we could trust the server, member should not be involved in anything anymore
+                    if (!remoteMembersByRemoteId.containsKey(localMember.getRemoteId())) {
+                        // but we check if there is any bill/billower related to the member
+                        if (dbHelper.getBillsOfMember(localMember.getId()).size() == 0
+                                && dbHelper.getBillowersOfMember(localMember.getId()).size() == 0) {
+                            dbHelper.deleteMember(localMember.getId());
+                            Log.d(getClass().getSimpleName(), "Delete local member : " + localMember);
+                        }
+                        else {
+                            Log.d(getClass().getSimpleName(),
+                                    "WARNING local member : " + localMember.getName() + " does not exist remotely but is " +
+                                        "still involved in some bills");
+                        }
                     }
                 }
                 status = LoginStatus.OK;

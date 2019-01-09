@@ -396,10 +396,10 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                 newBill.getBillOwers().add(new DBBillOwer(0, 0, newOwerId));
             }
             long newBillId = db.addBill(newBill);
-            /*for (long newOwerId : newOwersIds) {
-                db.addBillower(newBillId, new DBBillOwer(0, newBillId, newOwerId));
-            }*/
-            db.getMoneyBusterServerSyncHelper().scheduleSync(true, bill.getProjectId());
+
+            // normally sync should be done when we get back to bill list
+            // so next line can be commented
+            // db.getMoneyBusterServerSyncHelper().scheduleSync(true, bill.getProjectId());
         }
     }
 

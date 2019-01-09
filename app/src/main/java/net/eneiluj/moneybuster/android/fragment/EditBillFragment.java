@@ -324,7 +324,12 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                 }
                 return true;
             case R.id.menu_delete:
-                confirmDeleteAlertBuilder.show();
+                if (bill.getId() != 0) {
+                    confirmDeleteAlertBuilder.show();
+                }
+                else {
+                    listener.close();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -9,10 +9,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
-import android.util.ArrayMap;
+//import android.util.ArrayMap;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -564,7 +565,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
         // bill owers
         List<DBBillOwer> dbBillOwers = getBillowersOfBill(bill.getId());
-        Map<Long, DBBillOwer> dbBillOwersByMemberId = new ArrayMap<>();
+        Map<Long, DBBillOwer> dbBillOwersByMemberId = new HashMap<>();
         for (DBBillOwer bo : dbBillOwers) {
             dbBillOwersByMemberId.put(bo.getMemberId(), bo);
         }

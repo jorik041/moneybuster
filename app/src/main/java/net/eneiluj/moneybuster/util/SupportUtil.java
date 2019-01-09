@@ -9,7 +9,7 @@ import android.support.annotation.WorkerThread;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.util.ArrayMap;
+//import android.util.ArrayMap;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -125,11 +125,11 @@ public class SupportUtil {
 
     public static int getStatsOfProject(long projId, MoneyBusterSQLiteOpenHelper db,
                                   Map<Long, Integer> membersNbBills,
-                                  HashMap<Long, Double> membersBalance,
+                                  Map<Long, Double> membersBalance,
                                   Map<Long, Double> membersPaid,
                                   Map<Long, Double> membersSpent) {
         int nbBills = 0;
-        Map<Long, Double> membersWeight = new ArrayMap<>();
+        Map<Long, Double> membersWeight = new HashMap<>();
 
         List<DBBill> dbBills = db.getBillsOfProject(projId);
         List<DBMember> dbMembers = db.getMembersOfProject(projId);

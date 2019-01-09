@@ -36,7 +36,8 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.support.v7.widget.helper.ItemTouchHelper.SimpleCallback;
 import android.text.InputType;
-import android.util.ArrayMap;
+//import android.util.ArrayMap;
+//import android.support.v4.util.ArrayMap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -230,14 +231,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         }*/
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // create project if there isn't any
-            if (db.getProjects().isEmpty()) {
-                Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
-                newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "https://ihatemoney.org");
-                startActivityForResult(newProjectIntent, addproject);
-            }
+
+        // create project if there isn't any
+        if (db.getProjects().isEmpty()) {
+            Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
+            newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "https://ihatemoney.org");
+            startActivityForResult(newProjectIntent, addproject);
         }
+
     }
 
     @Override
@@ -519,7 +520,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 MenuProject proj = (MenuProject) projects.getSelectedItem();
                 if (proj != null) {
                     // get stats
-                    Map<Long, Integer> membersNbBills = new ArrayMap<>();
+                    Map<Long, Integer> membersNbBills = new HashMap<>();
                     HashMap<Long, Double> membersBalance = new HashMap<>();
                     HashMap<Long, Double> membersPaid = new HashMap<>();
                     HashMap<Long, Double> membersSpent = new HashMap<>();
@@ -767,7 +768,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
             List<DBMember> dbMembers = db.getMembersOfProject(mproj.getId());
 
-            Map<Long, Integer> membersNbBills = new ArrayMap<>();
+            Map<Long, Integer> membersNbBills = new HashMap<>();
             HashMap<Long, Double> membersBalance = new HashMap<>();
             HashMap<Long, Double> membersPaid = new HashMap<>();
             HashMap<Long, Double> membersSpent = new HashMap<>();

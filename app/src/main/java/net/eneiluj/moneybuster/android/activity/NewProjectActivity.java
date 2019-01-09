@@ -20,6 +20,7 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+        Log.d(getClass().getSimpleName(), "onCreate: ");
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {

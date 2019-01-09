@@ -16,13 +16,14 @@ import android.os.Build;
 import android.os.IBinder;
 //import android.preference.PreferenceManager;
 import android.support.v7.preference.PreferenceManager;
-import android.util.ArrayMap;
+//import android.util.ArrayMap;
 import android.util.Log;
 
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -385,7 +386,7 @@ public class MoneyBusterServerSyncHelper {
                 // get members
                 List<DBMember> members = dbHelper.getMembersOfProject(project.getId());
                 // get member id map
-                Map<Long, Long> memberIdToRemoteId = new ArrayMap<>();
+                Map<Long, Long> memberIdToRemoteId = new HashMap<>();
                 for (DBMember m : members) {
                     memberIdToRemoteId.put(m.getId(), m.getRemoteId());
                 }
@@ -491,7 +492,7 @@ public class MoneyBusterServerSyncHelper {
 
                 // get members
                 List<DBMember> remoteMembers = projResponse.getMembers(project.getId());
-                Map<Long, DBMember> remoteMembersByRemoteId = new ArrayMap<>();
+                Map<Long, DBMember> remoteMembersByRemoteId = new HashMap<>();
                 for (DBMember remoteMember : remoteMembers) {
                     remoteMembersByRemoteId.put(remoteMember.getRemoteId(), remoteMember);
                 }
@@ -525,7 +526,7 @@ public class MoneyBusterServerSyncHelper {
                 // get up-to-date DB members
                 List<DBMember> dbMembers = dbHelper.getMembersOfProject(project.getId());
                 // get member id map
-                Map<Long, Long> memberRemoteIdToId = new ArrayMap<>();
+                Map<Long, Long> memberRemoteIdToId = new HashMap<>();
                 for (DBMember m : dbMembers) {
                     memberRemoteIdToId.put(m.getRemoteId(), m.getId());
                 }
@@ -533,12 +534,12 @@ public class MoneyBusterServerSyncHelper {
                 // get bills
                 ServerResponse.BillsResponse billsResponse = client.getBills(customCertManager, project);
                 List<DBBill> remoteBills = billsResponse.getBills(project.getId(), memberRemoteIdToId);
-                Map<Long, DBBill> remoteBillsByRemoteId = new ArrayMap<>();
+                Map<Long, DBBill> remoteBillsByRemoteId = new HashMap<>();
                 for (DBBill remoteBill : remoteBills) {
                     remoteBillsByRemoteId.put(remoteBill.getRemoteId(), remoteBill);
                 }
                 List<DBBill> localBills = dbHelper.getBillsOfProject(project.getId());
-                Map<Long, DBBill> localBillsByRemoteId = new ArrayMap<>();
+                Map<Long, DBBill> localBillsByRemoteId = new HashMap<>();
                 for (DBBill localBill : localBills) {
                     localBillsByRemoteId.put(localBill.getRemoteId(), localBill);
                 }
@@ -575,11 +576,11 @@ public class MoneyBusterServerSyncHelper {
                             Log.d(getClass().getSimpleName(), "Update local bill : "+remoteBill);
                         }
                         //////// billowers
-                        Map<Long, DBBillOwer> localBillOwersByIds = new ArrayMap<>();
+                        Map<Long, DBBillOwer> localBillOwersByIds = new HashMap<>();
                         for (DBBillOwer bo : localBill.getBillOwers()) {
                             localBillOwersByIds.put(bo.getMemberId(), bo);
                         }
-                        Map<Long, DBBillOwer> remoteBillOwersByIds = new ArrayMap<>();
+                        Map<Long, DBBillOwer> remoteBillOwersByIds = new HashMap<>();
                         for (DBBillOwer bo : remoteBill.getBillOwers()) {
                             remoteBillOwersByIds.put(bo.getMemberId(), bo);
                         }

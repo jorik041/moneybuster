@@ -74,6 +74,7 @@ import net.eneiluj.moneybuster.model.Item;
 import net.eneiluj.moneybuster.model.ItemAdapter;
 import net.eneiluj.moneybuster.model.MenuProject;
 import net.eneiluj.moneybuster.model.NavigationAdapter;
+import net.eneiluj.moneybuster.model.Transaction;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.persistence.MoneyBusterServerSyncHelper;
 import net.eneiluj.moneybuster.persistence.LoadBillsListTask;
@@ -82,6 +83,7 @@ import net.eneiluj.moneybuster.util.SpendClientUtil;
 import net.eneiluj.moneybuster.util.SupportUtil;
 
 import static net.eneiluj.moneybuster.android.activity.EditProjectActivity.PARAM_PROJECT_ID;
+import static net.eneiluj.moneybuster.util.SupportUtil.settleBills;
 
 public class BillsListViewActivity extends AppCompatActivity implements ItemAdapter.BillClickListener {
 
@@ -531,6 +533,21 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             proj.getId(), db,
                             membersNbBills, membersBalance, membersPaid, membersSpent
                     );
+
+                    List<Transaction> transactions = settleBills(membersBalance);
+                    // get members names per id
+                    Map<Long, String> memberIdToName = new HashMap<>();
+                    for (DBMember m : db.getMembersOfProject(proj.getId())) {
+                        memberIdToName.put(m.getId(), m.getName());
+                    }
+                    for (Transaction t : transactions) {
+                        double amount = Math.round(t.getAmount() * 100.0) / 100.0;
+                        Log.v(TAG, "TRANSAC " + memberIdToName.get(t.getOwerMemberId()) + " => "
+                                + memberIdToName.get(t.getReceiverMemberId()) + " ("
+                                + amount + ")"
+                        );
+                    }
+
 
                     // generate the dialog
                     AlertDialog.Builder builder = new AlertDialog.Builder(

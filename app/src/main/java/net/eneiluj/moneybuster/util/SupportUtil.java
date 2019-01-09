@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +30,11 @@ import javax.net.ssl.TrustManager;
 
 import at.bitfire.cert4android.CustomCertManager;
 import net.eneiluj.moneybuster.R;
+import net.eneiluj.moneybuster.model.CreditDebt;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.Transaction;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 
 /**
@@ -180,4 +183,80 @@ public class SupportUtil {
         return nbBills;
     }
 
+    public static List<Transaction> settleBills(Map<Long, Double> membersBalance) {
+        List<CreditDebt> credits = new ArrayList<>();
+        List<CreditDebt> debts = new ArrayList<>();
+        List<Transaction> transactions = new ArrayList<>();
+
+        // Create lists of credits and debts
+        for (long memberId : membersBalance.keySet()) {
+            double rBalance = Math.round( (membersBalance.get(memberId)) * 100.0 ) / 100.0;
+            if (rBalance > 0) {
+                credits.add(new CreditDebt(memberId, membersBalance.get(memberId)));
+            }
+            else if (rBalance < 0) {
+                debts.add(new CreditDebt(memberId, -membersBalance.get(memberId)));
+            }
+        }
+
+        // Try and find exact matches
+        for (CreditDebt credit : credits) {
+            List<CreditDebt> match = exactMatch(credit.getBalance(), debts, 0);
+            if (match != null && match.size() > 0) {
+                for (CreditDebt m : match) {
+                    transactions.add(new Transaction(m.getMemberId(), credit.getMemberId(), m.getBalance()));
+                    debts.remove(m);
+                }
+                credits.remove(credit);
+            }
+        }
+
+        // Split any remaining debts & credits
+        while (credits.size() > 0 && debts.size() > 0) {
+            if (credits.get(0).getBalance() > debts.get(0).getBalance()) {
+                transactions.add(new Transaction(
+                        debts.get(0).getMemberId(),
+                        credits.get(0).getMemberId(),
+                        debts.get(0).getBalance())
+                );
+                credits.get(0).setBalance(credits.get(0).getBalance() - debts.get(0).getBalance());
+                debts.remove(0);
+            }
+            else {
+                transactions.add(new Transaction(
+                        debts.get(0).getMemberId(),
+                        credits.get(0).getMemberId(),
+                        credits.get(0).getBalance())
+                );
+                debts.get(0).setBalance(debts.get(0).getBalance() - credits.get(0).getBalance());
+                credits.remove(0);
+            }
+        }
+
+        return transactions;
+    }
+
+    private static List<CreditDebt> exactMatch(double credit, List<CreditDebt> debts, int startIndex) {
+        if (startIndex >= debts.size()) {
+            return null;
+        }
+        if (debts.get(startIndex).getBalance() > credit) {
+            return exactMatch(credit, debts, startIndex+1);
+        }
+        else if (debts.get(startIndex).getBalance() == credit) {
+            List<CreditDebt> res = new ArrayList<>();
+            res.add(debts.get(startIndex));
+            return res;
+        }
+        else {
+            List<CreditDebt> match = exactMatch(credit - debts.get(startIndex).getBalance(), debts, startIndex+1);
+            if (match != null && match.size() > 0) {
+                match.add(debts.get(startIndex));
+            }
+            else {
+                match = exactMatch(credit, debts, startIndex+1);
+            }
+            return match;
+        }
+    }
 }

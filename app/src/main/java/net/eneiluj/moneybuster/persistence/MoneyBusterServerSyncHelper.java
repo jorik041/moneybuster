@@ -1,5 +1,6 @@
 package net.eneiluj.moneybuster.persistence;
 
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.IBinder;
 //import android.preference.PreferenceManager;
 import android.support.v7.preference.PreferenceManager;
@@ -116,9 +118,11 @@ public class MoneyBusterServerSyncHelper {
             }
         }.start();
 
-        // track network connectivity changes
-        connectionMonitor = new ConnectionStateMonitor();
-        connectionMonitor.enable(appContext);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // track network connectivity changes
+            connectionMonitor = new ConnectionStateMonitor();
+            connectionMonitor.enable(appContext);
+        }
         updateNetworkStatus();
         // bind to certificate service to block sync attempts if service is not ready
         appContext.bindService(new Intent(appContext, CustomCertService.class), certService, Context.BIND_AUTO_CREATE);
@@ -126,7 +130,9 @@ public class MoneyBusterServerSyncHelper {
 
     @Override
     protected void finalize() throws Throwable {
-        connectionMonitor.disable(appContext);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            connectionMonitor.disable(appContext);
+        }
         appContext.unbindService(certService);
         if (customCertManager != null) {
             customCertManager.close();
@@ -134,6 +140,7 @@ public class MoneyBusterServerSyncHelper {
         super.finalize();
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private class ConnectionStateMonitor extends ConnectivityManager.NetworkCallback {
 
         final NetworkRequest networkRequest;
@@ -156,7 +163,7 @@ public class MoneyBusterServerSyncHelper {
 
         @Override
         public void onAvailable(Network network) {
-            if (BillsListViewActivity.DEBUG) { Log.d(TAG, "NETWORK AVAILABLE !!!!"); }
+            if (BillsListViewActivity.DEBUG) { Log.d(TAG, "NETWORK AVAILABLE in synchelper !!!!"); }
             updateNetworkStatus();
             if (isSyncPossible()) {
                 String lastId = PreferenceManager.getDefaultSharedPreferences(appContext).getString("last_selected_project", "");

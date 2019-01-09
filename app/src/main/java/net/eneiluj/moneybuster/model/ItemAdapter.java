@@ -116,7 +116,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             String title = bill.getDate() + " -- ";
             title += bill.getAmount() + " -- ";
             title += bill.getWhat();
-            nvHolder.billTitle.setText(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
+            nvHolder.billTitle.setText(Html.fromHtml(title));
 
             Log.d(TAG, "[get member of project " + bill.getProjectId() + " with remoteid : "+bill.getPayerId()+"]");
             String subtitle = db.getMember(bill.getPayerId()).getName();
@@ -127,9 +127,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
             subtitle = subtitle.replaceAll(", $", "");
 
-            nvHolder.billSubtitle.setText(Html.fromHtml(
-                        subtitle, Html.FROM_HTML_MODE_COMPACT)
-            );
+            nvHolder.billSubtitle.setText(Html.fromHtml(subtitle));
 
             /*nvHolder.logjobEnabled.setChecked(bill.isEnabled());
             nvHolder.logjobEnabled.setOnClickListener(new View.OnClickListener() {

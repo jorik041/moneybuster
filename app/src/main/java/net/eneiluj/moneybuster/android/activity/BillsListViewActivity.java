@@ -230,11 +230,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         }*/
 
-        // create project if there isn't any
-        if (db.getProjects().isEmpty()) {
-            Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
-            newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "https://ihatemoney.org");
-            startActivityForResult(newProjectIntent, addproject);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // create project if there isn't any
+            if (db.getProjects().isEmpty()) {
+                Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
+                newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "https://ihatemoney.org");
+                startActivityForResult(newProjectIntent, addproject);
+            }
         }
     }
 

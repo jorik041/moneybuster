@@ -69,7 +69,7 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
                         matcher.start(), matcher.end(), 0);
             }
 
-            dbBill.setWhat(Html.toHtml(spannableString, Html.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE));
+            dbBill.setWhat(Html.toHtml(spannableString));
             // TODO search by sub title
             /*spannableString = new SpannableString(dbLogjob.getCategory());
             matcher = Pattern.compile("(" + searchQuery + ")", Pattern.CASE_INSENSITIVE).matcher(spannableString);
@@ -91,7 +91,7 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
                         matcher.start(), matcher.end(), 0);
             }
 
-            dbBill.setDate(Html.toHtml(spannableString, Html.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE));
+            dbBill.setDate(Html.toHtml(spannableString));
 
         }
 

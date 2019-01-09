@@ -81,7 +81,7 @@ public class MoneyBusterServerSyncHelper {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             cert4androidReady = true;
-            if (isSyncPossible()) {
+            /*if (isSyncPossible()) {
                 String lastId = PreferenceManager.getDefaultSharedPreferences(dbHelper.getContext()).getString("last_selected_project", "");
 
                 if (!lastId.equals("")) {
@@ -90,7 +90,7 @@ public class MoneyBusterServerSyncHelper {
                         scheduleSync(false, Long.valueOf(lastId));
                     }
                 }
-            }
+            }*/
         }
 
         @Override

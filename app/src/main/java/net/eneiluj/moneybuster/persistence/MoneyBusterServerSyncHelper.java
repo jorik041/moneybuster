@@ -384,7 +384,7 @@ public class MoneyBusterServerSyncHelper {
                 }
 
                 // get members
-                List<DBMember> members = dbHelper.getMembersOfProject(project.getId());
+                List<DBMember> members = dbHelper.getMembersOfProject(project.getId(), null);
                 // get member id map
                 Map<Long, Long> memberIdToRemoteId = new HashMap<>();
                 for (DBMember m : members) {
@@ -524,7 +524,7 @@ public class MoneyBusterServerSyncHelper {
                 }
 
                 // get up-to-date DB members
-                List<DBMember> dbMembers = dbHelper.getMembersOfProject(project.getId());
+                List<DBMember> dbMembers = dbHelper.getMembersOfProject(project.getId(), null);
                 // get member id map
                 Map<Long, Long> memberRemoteIdToId = new HashMap<>();
                 for (DBMember m : dbMembers) {
@@ -612,7 +612,7 @@ public class MoneyBusterServerSyncHelper {
                 // delete local members
                 // do this at the end to check if member that are not there remotely
                 // don't have any bill anymore
-                List<DBMember> localMembers = dbHelper.getMembersOfProject(project.getId());
+                List<DBMember> localMembers = dbHelper.getMembersOfProject(project.getId(), null);
                 for (DBMember localMember : localMembers) {
                     // if local member does not exist remotely
                     // we could trust the server, member should not be involved in anything anymore

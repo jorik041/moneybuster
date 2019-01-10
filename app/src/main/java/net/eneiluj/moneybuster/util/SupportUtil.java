@@ -135,7 +135,7 @@ public class SupportUtil {
         Map<Long, Double> membersWeight = new HashMap<>();
 
         List<DBBill> dbBills = db.getBillsOfProject(projId);
-        List<DBMember> dbMembers = db.getMembersOfProject(projId);
+        List<DBMember> dbMembers = db.getMembersOfProject(projId, null);
 
         // init
         for (DBMember m : dbMembers) {
@@ -183,13 +183,14 @@ public class SupportUtil {
         return nbBills;
     }
 
-    public static List<Transaction> settleBills(Map<Long, Double> membersBalance) {
+    public static List<Transaction> settleBills(List<DBMember> members, Map<Long, Double> membersBalance) {
         List<CreditDebt> credits = new ArrayList<>();
         List<CreditDebt> debts = new ArrayList<>();
         List<Transaction> transactions = new ArrayList<>();
 
         // Create lists of credits and debts
-        for (long memberId : membersBalance.keySet()) {
+        for (DBMember m : members) {
+            long memberId = m.getId();
             double rBalance = Math.round( (membersBalance.get(memberId)) * 100.0 ) / 100.0;
             if (rBalance > 0) {
                 credits.add(new CreditDebt(memberId, membersBalance.get(memberId)));

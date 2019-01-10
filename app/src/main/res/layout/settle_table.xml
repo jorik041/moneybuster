@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:stretchColumns="*"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:paddingTop="10dp"
+    android:id="@+id/settleTable">
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/header_who"
+            android:text="@string/settle_who" />
+
+        <TextView
+            android:id="@+id/header_towhom"
+            android:text="@string/settle_to_whom" />
+
+        <TextView
+            android:id="@+id/header_howmuch"
+            android:text="@string/settle_how_much" />
+    </TableRow>
+</TableLayout>

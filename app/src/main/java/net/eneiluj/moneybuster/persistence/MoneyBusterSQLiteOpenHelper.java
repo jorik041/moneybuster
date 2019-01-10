@@ -35,7 +35,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String database_name = "IHATEMONEY";
 
     private static final String table_members = "MEMBERS";
-    private static final String key_id = "ID";
+    public static final String key_id = "ID";
     private static final String key_remoteId = "REMOTEID";
     private static final String key_projectid = "PROJECTID";
     private static final String key_name = "NAME";
@@ -403,9 +403,11 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     /**
      *
      */
-    public List<DBMember> getMembersOfProject(long projId) {
-        List<DBMember> members = getMembersCustom(key_projectid + " = ?", new String[]{String.valueOf(projId)}, key_name + " ASC");
-        return members;
+    public List<DBMember> getMembersOfProject(long projId, String orderBy) {
+        if (orderBy == null) {
+            orderBy = key_name;
+        }
+        return getMembersCustom(key_projectid + " = ?", new String[]{String.valueOf(projId)}, orderBy + " ASC");
     }
 
     public List<DBMember> getMembersOfProjectWithState(long projId, int state) {

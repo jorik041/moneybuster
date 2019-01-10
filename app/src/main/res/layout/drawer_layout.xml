@@ -153,6 +153,18 @@
                         fab:fab_size="normal" /-->
 
                     <com.github.clans.fab.FloatingActionButton
+                        android:id="@+id/fabDrawer_settle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_money_off_white_24dp"
+                        app:fab_colorNormal="@color/primary"
+                        app:fab_colorPressed="@color/primary"
+                        app:fab_hideAnimation="@anim/fab_slide_out_to_left"
+                        app:fab_showAnimation="@anim/fab_slide_in_from_left"
+                        fab:fab_label="@string/fab_settle"
+                        fab:fab_size="normal" />
+
+                    <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/fabDrawer_statistics"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -171,8 +183,8 @@
                         android:src="@drawable/ic_account_circle_white_24dp"
                         app:fab_colorNormal="@color/primary"
                         app:fab_colorPressed="@color/primary"
-                        app:fab_hideAnimation="@anim/fab_slide_out_to_right"
-                        app:fab_showAnimation="@anim/fab_slide_in_from_right"
+                        app:fab_hideAnimation="@anim/fab_slide_out_to_left"
+                        app:fab_showAnimation="@anim/fab_slide_in_from_left"
                         fab:fab_label="@string/fab_edit_member"
                         fab:fab_size="normal" />
 
@@ -195,8 +207,8 @@
                         android:src="@android:drawable/ic_menu_edit"
                         app:fab_colorNormal="@color/primary"
                         app:fab_colorPressed="@color/primary"
-                        app:fab_hideAnimation="@anim/fab_slide_out_to_right"
-                        app:fab_showAnimation="@anim/fab_slide_in_from_right"
+                        app:fab_hideAnimation="@anim/fab_slide_out_to_left"
+                        app:fab_showAnimation="@anim/fab_slide_in_from_left"
                         fab:fab_label="@string/action_edit_project"
                         fab:fab_size="normal" />
 
@@ -237,8 +249,8 @@
                         android:src="@android:drawable/ic_menu_add"
                         app:fab_colorNormal="@color/primary"
                         app:fab_colorPressed="@color/primary"
-                        app:fab_hideAnimation="@anim/fab_slide_out_to_right"
-                        app:fab_showAnimation="@anim/fab_slide_in_from_right"
+                        app:fab_hideAnimation="@anim/fab_slide_out_to_left"
+                        app:fab_showAnimation="@anim/fab_slide_in_from_left"
                         fab:fab_label="@string/fab_add_project"
                         fab:fab_size="normal" />
 

@@ -148,6 +148,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     com.github.clans.fab.FloatingActionButton fabEditMember;
     @BindView(R.id.fabDrawer_statistics)
     com.github.clans.fab.FloatingActionButton fabStatistics;
+    @BindView(R.id.fabDrawer_settle)
+    com.github.clans.fab.FloatingActionButton fabSettle;
     @BindView(R.id.fabDrawer_edit_project)
     com.github.clans.fab.FloatingActionButton fabEditProject;
     @BindView(R.id.fabDrawer_remove_project)
@@ -366,7 +368,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         MenuProject mproj = (MenuProject) projects.getSelectedItem();
                         if (mproj != null) {
                             if (!memberName.equals("")) {
-                                List<DBMember> members = db.getMembersOfProject(mproj.getId());
+                                List<DBMember> members = db.getMembersOfProject(mproj.getId(), null);
                                 List<String> memberNames = new ArrayList<>();
                                 for (DBMember m : members) {
                                     memberNames.add(m.getName());
@@ -484,7 +486,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                 MenuProject proj = (MenuProject) projects.getSelectedItem();
                 if (proj != null) {
-                    final List<DBMember> members = db.getMembersOfProject(proj.getId());
+                    final List<DBMember> members = db.getMembersOfProject(proj.getId(), null);
                     List<String> memberNames = new ArrayList<>();
                     for (DBMember m : members) {
                         memberNames.add(m.getName());
@@ -534,20 +536,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             membersNbBills, membersBalance, membersPaid, membersSpent
                     );
 
-                    List<Transaction> transactions = settleBills(membersBalance);
-                    // get members names per id
-                    Map<Long, String> memberIdToName = new HashMap<>();
-                    for (DBMember m : db.getMembersOfProject(proj.getId())) {
-                        memberIdToName.put(m.getId(), m.getName());
-                    }
-                    for (Transaction t : transactions) {
-                        double amount = Math.round(t.getAmount() * 100.0) / 100.0;
-                        Log.v(TAG, "TRANSAC " + memberIdToName.get(t.getOwerMemberId()) + " => "
-                                + memberIdToName.get(t.getReceiverMemberId()) + " ("
-                                + amount + ")"
-                        );
-                    }
-
+                    List<DBMember> membersSortedByName = db.getMembersOfProject(proj.getId(), null);
 
                     // generate the dialog
                     AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -570,7 +559,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     hbalance.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
                     final TableLayout tl = tView.findViewById(R.id.statTable);
 
-                    for (DBMember m : db.getMembersOfProject(proj.getId())) {
+                    for (DBMember m : membersSortedByName) {
                         View row = LayoutInflater.from(getApplicationContext()).inflate(R.layout.statistic_row, null);
                         TextView wv = row.findViewById(R.id.stat_who);
                         wv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
@@ -617,6 +606,92 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     }
 
                     builder.setView(tView).setIcon(R.drawable.ic_chart_grey_24dp);
+                    builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    builder.show();
+                    fabMenuDrawerEdit.close(false);
+                }
+            }
+        });
+
+        fabSettle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                MenuProject proj = (MenuProject) projects.getSelectedItem();
+                if (proj != null) {
+                    // get stats
+                    Map<Long, Integer> membersNbBills = new HashMap<>();
+                    HashMap<Long, Double> membersBalance = new HashMap<>();
+                    HashMap<Long, Double> membersPaid = new HashMap<>();
+                    HashMap<Long, Double> membersSpent = new HashMap<>();
+
+                    NumberFormat numberFormatter = new DecimalFormat("#0.00");
+
+                    int nbBills = SupportUtil.getStatsOfProject(
+                            proj.getId(), db,
+                            membersNbBills, membersBalance, membersPaid, membersSpent
+                    );
+
+                    List<DBMember> membersSortedByName = db.getMembersOfProject(proj.getId(), null);
+
+                    List<DBMember> membersSortedById = db.getMembersOfProject(proj.getId(), MoneyBusterSQLiteOpenHelper.key_id);
+                    List<Transaction> transactions = settleBills(membersSortedById, membersBalance);
+                    // get members names per id
+                    Map<Long, String> memberIdToName = new HashMap<>();
+                    for (DBMember m : membersSortedByName) {
+                        memberIdToName.put(m.getId(), m.getName());
+                    }
+                    /*for (Transaction t : transactions) {
+                        double amount = Math.round(t.getAmount() * 100.0) / 100.0;
+                        Log.v(TAG, "TRANSAC " + memberIdToName.get(t.getOwerMemberId()) + " => "
+                                + memberIdToName.get(t.getReceiverMemberId()) + " ("
+                                + amount + ")"
+                        );
+                    }*/
+
+                    // generate the dialog
+                    AlertDialog.Builder builder = new AlertDialog.Builder(
+                            new ContextThemeWrapper(
+                                    view.getContext(),
+                                    R.style.Theme_AppCompat_DayNight_Dialog
+                            )
+                    );
+                    builder.setTitle(getString(R.string.settle_dialog_title));
+
+
+                    final View tView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.settle_table, null);
+                    TextView hwho = tView.findViewById(R.id.header_who);
+                    hwho.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
+                    TextView htowhom = tView.findViewById(R.id.header_towhom);
+                    htowhom.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
+                    TextView hhowmuch = tView.findViewById(R.id.header_howmuch);
+                    hhowmuch.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
+
+                    final TableLayout tl = tView.findViewById(R.id.settleTable);
+
+                    for (Transaction t : transactions) {
+                        View row = LayoutInflater.from(getApplicationContext()).inflate(R.layout.settle_row, null);
+                        TextView wv = row.findViewById(R.id.settle_who);
+                        wv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                        wv.setText(memberIdToName.get(t.getOwerMemberId()));
+
+                        TextView pv = row.findViewById(R.id.settle_towhom);
+                        pv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                        pv.setText(memberIdToName.get(t.getReceiverMemberId()));
+
+                        TextView sv = row.findViewById(R.id.settle_howmuch);
+                        sv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                        double amount = Math.round(t.getAmount() * 100.0) / 100.0;
+                        sv.setText(numberFormatter.format(amount));
+
+                        tl.addView(row);
+                    }
+
+                    builder.setView(tView).setIcon(R.drawable.ic_money_off_grey_24dp);
                     builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -783,7 +858,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 return items;
             }
 
-            List<DBMember> dbMembers = db.getMembersOfProject(mproj.getId());
+            List<DBMember> dbMembers = db.getMembersOfProject(mproj.getId(), null);
 
             Map<Long, Integer> membersNbBills = new HashMap<>();
             HashMap<Long, Double> membersBalance = new HashMap<>();

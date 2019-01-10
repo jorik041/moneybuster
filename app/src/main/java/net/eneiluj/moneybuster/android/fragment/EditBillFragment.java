@@ -429,7 +429,7 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         // manage member list
-        memberList = db.getMembersOfProject(bill.getProjectId());
+        memberList = db.getMembersOfProject(bill.getProjectId(), null);
         memberNameList = new ArrayList<>();
         memberIdList = new ArrayList<>();
         for (DBMember member : memberList) {

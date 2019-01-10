@@ -85,12 +85,17 @@
     <string name="add_member_dialog_title">New member name</string>
     <string name="edit_member_dialog_title">Edit member</string>
     <string name="member_edit_empty_name">Member name can\'t be empty</string>
+    <string name="settle_who">Who pays?</string>
+    <string name="settle_to_whom">To whom?</string>
+    <string name="settle_how_much">How much?</string>
     <string name="stats_who">Who</string>
     <string name="stats_paid">Paid</string>
     <string name="stats_spent">Spent</string>
     <string name="stats_balance">Balance</string>
     <string name="fab_statistics">Project\'s statistics</string>
+    <string name="fab_settle">Settle</string>
     <string name="statistic_dialog_title">Project\'s statistics</string>
+    <string name="settle_dialog_title">Settle the project</string>
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Connection security</string>
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster has encountered an unknown certificate. Do you want to trust it?</string>

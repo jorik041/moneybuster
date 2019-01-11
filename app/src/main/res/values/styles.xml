@@ -40,10 +40,6 @@
         <item name="android:elevation">@dimen/button_elevation</item>
     </style>
 
-    <style name="SplashTheme" parent="AppTheme">
-        <item name="android:windowBackground">@drawable/splashscreen</item>
-    </style>
-
     <style name="NavigationItem">
         <item name="android:textSize">@dimen/secondary_font_size</item>
         <item name="android:fontFamily">sans-serif-medium</item>

@@ -18,37 +18,38 @@ This means you can choose where your data is going and preserve your privacy.
 
 ## Install
 
-* APK Direct download : [releases in project wiki](https://gitlab.com/eneiluj/phonetrack-android/wikis/home#releases)
-* Coming soon : [![PhoneTrack App on fdroid.org](https://gitlab.com/eneiluj/phonetrack-android/wikis/uploads/57bb389a0c40f5cb81dc1ae21a314adb/fd.png)](https://f-droid.org/)
+* APK Direct download : [releases in project wiki](https://gitlab.com/eneiluj/moneybuster/wikis/home#releases)
+* Coming soon : [![MoneyBuster App on fdroid.org](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/12078870063ba70ddae219b6187bfcb7/fd.png)](https://f-droid.org/packages/net.eneiluj.moneybuster/)
 
 ## Build
 
 If you want to build this app yourself, clone this repository :
 
 ``` bash
-git clone --recurse-submodules https://gitlab.com/eneiluj/phonetrack-android
+git clone --recurse-submodules https://gitlab.com/eneiluj/moneybuster
 ```
 
-or download [master branch latest archive](https://gitlab.com/eneiluj/phonetrack-android/-/archive/master/phonetrack-android-master.zip).
+or download [master branch latest archive](https://gitlab.com/eneiluj/moneybuster/-/archive/master/moneybuster-master.zip).
 
 Then open/import the project in Android studio and build it.
 
 ## Donate
 
 * [Donate with Liberapay : ![Donate with Liberapay](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/eneiluj/donate)
-* [Donate with Paypal : <img src="https://gitlab.com/eneiluj/phonetrack-android/wikis/uploads/3ef4665a2c25662265681d6304f71b43/paypal-donate-button.png" width="80"/>](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=66PALMY8SF5JE)
+* [Donate with Paypal : <img src="https://gitlab.com/eneiluj/moneybuster/wikis/uploads/2344c25f3f8bbb30b1527c5ad16872f3/paypal-donate-button.png" width="80"/>](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=66PALMY8SF5JE)
 
 
 ## :eyes: Screenshots
 
+In the [project wiki](https://gitlab.com/eneiluj/moneybuster/wikis).
 
 ## Features
 * Theming
-* Translated in many languages on [Crowdin](https://crowdin.com/project/phonetrack)
+* Translated in many languages on [Crowdin](https://crowdin.com/project/moneybuster)
 
 
 ## :link: Requirements
-* Android >= 7.0
+* Android >= 4.1
 * Some friends
 
 ## :notebook: License

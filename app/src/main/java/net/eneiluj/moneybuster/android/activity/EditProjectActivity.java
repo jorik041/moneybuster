@@ -98,6 +98,7 @@ public class EditProjectActivity extends AppCompatActivity implements EditProjec
         final Intent data = new Intent();
         data.putExtra(BillsListViewActivity.DELETED_PROJECT, pid);
         setResult(RESULT_OK, data);
+        Log.d(getClass().getSimpleName(), "setresult pid : "+pid);
         finish();
     }
 

@@ -233,15 +233,21 @@ public class MoneyBusterServerSyncHelper {
         Log.d(getClass().getSimpleName(), "(network:" + networkConnected + "; cert4android:" + cert4androidReady + ")");
         updateNetworkStatus();
         if (isSyncPossible() && (!syncActive || onlyLocalChanges)) {
-            Log.d(getClass().getSimpleName(), "... starting now");
-            SyncTask syncTask = new SyncTask(onlyLocalChanges, projId);
-            syncTask.addCallbacks(callbacksPush);
-            callbacksPush = new ArrayList<>();
-            if (!onlyLocalChanges) {
-                syncTask.addCallbacks(callbacksPull);
-                callbacksPull = new ArrayList<>();
+            DBProject project = dbHelper.getProject(projId);
+            if (project != null) {
+                Log.d(getClass().getSimpleName(), "... starting now");
+                SyncTask syncTask = new SyncTask(onlyLocalChanges, project);
+                syncTask.addCallbacks(callbacksPush);
+                callbacksPush = new ArrayList<>();
+                if (!onlyLocalChanges) {
+                    syncTask.addCallbacks(callbacksPull);
+                    callbacksPull = new ArrayList<>();
+                }
+                syncTask.execute();
             }
-            syncTask.execute();
+            else {
+                Log.d(getClass().getSimpleName(), "sync asked for project "+projId+" which does not exist : DOING NOTHING");
+            }
         } else if (!onlyLocalChanges) {
             Log.d(getClass().getSimpleName(), "... scheduled");
             syncScheduled = true;
@@ -279,10 +285,10 @@ public class MoneyBusterServerSyncHelper {
         private IHateMoneyClient client;
         private List<Throwable> exceptions = new ArrayList<>();
 
-        public SyncTask(boolean onlyLocalChanges, long projId) {
+        public SyncTask(boolean onlyLocalChanges, DBProject project) {
             this.onlyLocalChanges = onlyLocalChanges;
-            Log.i(getClass().getSimpleName(), "SYNC TASK pid : "+projId);
-            this.project = dbHelper.getProject(projId);
+            Log.i(getClass().getSimpleName(), "SYNC TASK project : "+project.getRemoteId());
+            this.project = project;
         }
 
         public void addCallbacks(List<ICallback> callbacks) {

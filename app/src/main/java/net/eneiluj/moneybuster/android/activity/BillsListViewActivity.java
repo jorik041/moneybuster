@@ -1289,13 +1289,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 projectsAdapter.add(mproj);
                 projects.setSelection(projectsAdapter.getPosition(mproj));
                 projectsAdapter.notifyDataSetChanged();
-                // TODO : get project info just after created so that name is not null
-                // TODO : update view when project removed, refresh the shit
             }
         } else if (requestCode == editproject) {
             if (data != null) {
+                // TODO check if we pass here and something is returned here on android 4.1
                 // adapt after project has been deleted
                 long pid = data.getLongExtra(DELETED_PROJECT, 0);
+                Log.d(TAG, "onActivityResult editproject PID : "+pid);
                 if (pid != 0) {
                     MenuProject mp;
                     for (int i = 0; i < projectsAdapter.getCount(); i++) {

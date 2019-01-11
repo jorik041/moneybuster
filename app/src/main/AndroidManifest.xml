@@ -77,7 +77,7 @@
             android:label="@string/simple_edit_project"
             android:parentActivityName="net.eneiluj.moneybuster.android.activity.BillsListViewActivity"
             android:windowSoftInputMode="stateHidden"
-            android:launchMode="singleTask">
+            android:launchMode="standard">
         </activity>
 
         <activity
@@ -85,7 +85,7 @@
             android:label="@string/simple_edit_bill"
             android:parentActivityName="net.eneiluj.moneybuster.android.activity.BillsListViewActivity"
             android:windowSoftInputMode="stateHidden"
-            android:launchMode="singleTask">
+            android:launchMode="standard">
         </activity>
 
         <activity

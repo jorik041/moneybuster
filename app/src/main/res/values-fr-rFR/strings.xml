@@ -40,6 +40,7 @@
     <string name="simple_edit_project">Éditer le projet distant</string>
     <string name="simple_about">À propos</string>
     <string name="simple_settle_share">Partager les remboursements</string>
+    <string name="simple_stats_share">Partager les statistiques</string>
     <string name="action_bill_deleted">Facture supprimée</string>
     <string name="action_bill_restored">Facture restaurée</string>
     <string name="action_undo">Annuler</string>
@@ -100,6 +101,9 @@
     <string name="share_settle_intro">Voila comment régler les remboursement du projet %1$s :</string>
     <string name="share_settle_sentence">%1$s doit %3$.2f à %2$s</string>
     <string name="share_settle_title">Régler les remboursements du projet %1$s</string>
+    <string name="share_stats_intro">Statistiques du projet %1$s :</string>
+    <string name="share_stats_title">Partager les statistiques du projet %1$s</string>
+    <string name="share_stats_header">NOM_DU_MEMBRE (A_PAYÉ | A_DÉPENSÉ | SOLDE)</string>
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Sécurité de la connexion</string>
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster a rencontré un certificat inconnu. Voulez-vous lui faire confiance ?</string>

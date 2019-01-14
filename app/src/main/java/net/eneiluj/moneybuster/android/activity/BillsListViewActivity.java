@@ -521,7 +521,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabStatistics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                MenuProject proj = (MenuProject) projects.getSelectedItem();
+                final MenuProject proj = (MenuProject) projects.getSelectedItem();
                 if (proj != null) {
                     // get stats
                     Map<Long, Integer> membersNbBills = new HashMap<>();
@@ -537,6 +537,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     );
 
                     List<DBMember> membersSortedByName = db.getMembersOfProject(proj.getId(), null);
+                    String statsText = getString(R.string.share_stats_intro, proj.getName()) + "\n\n";
+                    statsText += getString(R.string.share_stats_header) + "\n";
 
                     // generate the dialog
                     AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -560,6 +562,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     final TableLayout tl = tView.findViewById(R.id.statTable);
 
                     for (DBMember m : membersSortedByName) {
+                        statsText += "\n" + m.getName() + " (";
+
                         View row = LayoutInflater.from(getApplicationContext()).inflate(R.layout.statistic_row, null);
                         TextView wv = row.findViewById(R.id.stat_who);
                         wv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
@@ -570,9 +574,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         double rpaid = Math.round( (membersPaid.get(m.getId())) * 100.0 ) / 100.0;
                         if (rpaid == 0.0) {
                             pv.setText("--");
+                            statsText += "-- | ";
                         }
                         else {
                             pv.setText(numberFormatter.format(rpaid));
+                            statsText += numberFormatter.format(rpaid) + " | ";
                         }
 
                         TextView sv = row.findViewById(R.id.stat_spent);
@@ -580,9 +586,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         double rspent = Math.round( (membersSpent.get(m.getId())) * 100.0 ) / 100.0;
                         if (rspent == 0.0) {
                             sv.setText("--");
+                            statsText += "-- | ";
                         }
                         else {
                             sv.setText(numberFormatter.format(rspent));
+                            statsText += numberFormatter.format(rspent) + " | ";
                         }
 
 
@@ -600,16 +608,29 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
                         }
                         bv.setText(sign + numberFormatter.format(rbalance));
-
+                        statsText += sign  + numberFormatter.format(rbalance) + ")";
 
                         tl.addView(row);
                     }
+                    final String statsTextToShare = statsText;
 
                     builder.setView(tView).setIcon(R.drawable.ic_chart_grey_24dp);
                     builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
+                        }
+                    });
+                    builder.setNeutralButton(getString(R.string.simple_stats_share), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // share it
+                            Intent shareIntent = new Intent();
+                            shareIntent.setAction(Intent.ACTION_SEND);
+                            shareIntent.setType("text/plain");
+                            shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_stats_title, proj.getName()));
+                            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, statsTextToShare);
+                            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_stats_title, proj.getName())));
                         }
                     });
                     builder.show();

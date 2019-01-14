@@ -621,7 +621,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabSettle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                MenuProject proj = (MenuProject) projects.getSelectedItem();
+                final MenuProject proj = (MenuProject) projects.getSelectedItem();
                 if (proj != null) {
                     // get stats
                     Map<Long, Integer> membersNbBills = new HashMap<>();
@@ -639,19 +639,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     List<DBMember> membersSortedByName = db.getMembersOfProject(proj.getId(), null);
 
                     List<DBMember> membersSortedById = db.getMembersOfProject(proj.getId(), MoneyBusterSQLiteOpenHelper.key_id);
-                    List<Transaction> transactions = settleBills(membersSortedById, membersBalance);
+                    final List<Transaction> transactions = settleBills(membersSortedById, membersBalance);
                     // get members names per id
-                    Map<Long, String> memberIdToName = new HashMap<>();
+                    final Map<Long, String> memberIdToName = new HashMap<>();
                     for (DBMember m : membersSortedByName) {
                         memberIdToName.put(m.getId(), m.getName());
                     }
-                    /*for (Transaction t : transactions) {
-                        double amount = Math.round(t.getAmount() * 100.0) / 100.0;
-                        Log.v(TAG, "TRANSAC " + memberIdToName.get(t.getOwerMemberId()) + " => "
-                                + memberIdToName.get(t.getReceiverMemberId()) + " ("
-                                + amount + ")"
-                        );
-                    }*/
 
                     // generate the dialog
                     AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -696,6 +689,33 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
+                        }
+                    });
+                    builder.setNeutralButton(getString(R.string.simple_settle_share), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String text = getString(R.string.share_settle_intro, proj.getName()) + "\n";
+                            // generate text to share
+                            for (Transaction t : transactions) {
+                                double amount = Math.round(t.getAmount() * 100.0) / 100.0;
+                                Log.v(TAG, "TRANSAC " + memberIdToName.get(t.getOwerMemberId()) + " => "
+                                        + memberIdToName.get(t.getReceiverMemberId()) + " ("
+                                        + amount + ")"
+                                );
+                                text += "\n" + getString(
+                                        R.string.share_settle_sentence,
+                                        memberIdToName.get(t.getOwerMemberId()),
+                                        memberIdToName.get(t.getReceiverMemberId()),
+                                        amount
+                                );
+                            }
+                            // share it
+                            Intent shareIntent = new Intent();
+                            shareIntent.setAction(Intent.ACTION_SEND);
+                            shareIntent.setType("text/plain");
+                            shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_settle_title, proj.getName()));
+                            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
+                            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_settle_title, proj.getName())));
                         }
                     });
                     builder.show();

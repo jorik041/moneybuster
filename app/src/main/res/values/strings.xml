@@ -39,6 +39,7 @@
     <string name="simple_add_project">Add project</string>
     <string name="simple_edit_project">Edit remote project</string>
     <string name="simple_about">About</string>
+    <string name="simple_settle_share">Share settlement</string>
     <string name="action_bill_deleted">Bill deleted</string>
     <string name="action_bill_restored">Bill restored</string>
     <string name="action_undo">Undo</string>
@@ -97,6 +98,9 @@
     <string name="fab_settle">Settle</string>
     <string name="statistic_dialog_title">Project\'s statistics</string>
     <string name="settle_dialog_title">Settle the project</string>
+    <string name="share_settle_intro">Here is how to settle project %1$s :</string>
+    <string name="share_settle_sentence">%1$s owes %3$.2f to %2$s</string>
+    <string name="share_settle_title">Settle the project %1$s</string>
 
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Connection security</string>

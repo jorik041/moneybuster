@@ -131,9 +131,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     Toolbar toolbar;
     @BindView(R.id.drawerLayout)
     DrawerLayout drawerLayout;
-    @BindView(R.id.projects)
-    Spinner projects;
-    ArrayAdapter<MenuProject> projectsAdapter;
+    @BindView(R.id.selectedProject)
+    TextView selectedProjectLabel;
     @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.fabDrawer_add_project)
@@ -156,6 +155,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     com.github.clans.fab.FloatingActionButton fabRemoveProject;
     @BindView(R.id.fab_add_bill)
     android.support.design.widget.FloatingActionButton fabMenu;
+    @BindView(R.id.fab_select_project)
+    android.support.design.widget.FloatingActionButton fabSelectProject;
     @BindView(R.id.navigationList)
     RecyclerView listNavigationMembers;
     @BindView(R.id.navigationMenu)
@@ -248,7 +249,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     @Override
     protected void onResume() {
         // refresh and sync every time the activity gets visible
-        if (projects.getCount() > 0) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        long selectedProjectId = preferences.getLong("selected_project", 0);
+        if (selectedProjectId != 0) {
             refreshLists();
         }
         swipeRefreshLayout.setRefreshing(false);
@@ -259,8 +262,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         super.onResume();
 
         registerBroadcastReceiver();
-        // TODO update number of late positions
-        //updateStatuses();
     }
 
     /**
@@ -316,15 +317,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     swipeRefreshLayout.setRefreshing(false);
                     Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(SpendClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
                 }
-                // TODO synchronize
-                /*if (db.getLocationCount() > 0) {
-                    Intent syncIntent = new Intent(BillsListViewActivity.this, WebTrackService.class);
-                    startService(syncIntent);
-                    showToast(getString(R.string.uploading_started));
-                }
-                else {
-                    swipeRefreshLayout.setRefreshing(false);
-                }*/
             }
         });
 
@@ -332,9 +324,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             @Override
             public void onClick(View view) {
                 Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
-                if (projectsAdapter.getCount() > 0) {
-                    long pid = projectsAdapter.getItem(0).getId();
-                    String url = db.getProject(pid).getIhmUrl();
+                List<DBProject> projects = db.getProjects();
+                if (projects.size() > 0) {
+                    String url = projects.get(0).getIhmUrl();
                     newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, url);
                 } else {
                     newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "https://ihatemoney.org");
@@ -365,17 +357,19 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String memberName = input.getText().toString();
-                        MenuProject mproj = (MenuProject) projects.getSelectedItem();
-                        if (mproj != null) {
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        long selectedProjectId = preferences.getLong("selected_project", 0);
+
+                        if (selectedProjectId != 0) {
                             if (!memberName.equals("")) {
-                                List<DBMember> members = db.getMembersOfProject(mproj.getId(), null);
+                                List<DBMember> members = db.getMembersOfProject(selectedProjectId, null);
                                 List<String> memberNames = new ArrayList<>();
                                 for (DBMember m : members) {
                                     memberNames.add(m.getName());
                                 }
                                 if (!memberNames.contains(memberName)) {
                                     db.addMemberAndSync(
-                                            new DBMember(0, 0, mproj.getId(), memberName,
+                                            new DBMember(0, 0, selectedProjectId, memberName,
                                                     true, 1, DBBill.STATE_ADDED)
                                     );
                                     refreshLists();
@@ -405,9 +399,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             @Override
             public void onClick(View view) {
                 Intent createIntent = new Intent(getApplicationContext(), EditBillActivity.class);
-                MenuProject mproj = (MenuProject) projects.getSelectedItem();
-                if (mproj != null) {
-                    createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, mproj.getId());
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                long selectedProjectId = preferences.getLong("selected_project", 0);
+                if (selectedProjectId != 0) {
+                    createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, selectedProjectId);
                 }
                 //createIntent.putExtra(EditBillActivity.PARAM_MEMBERS_BALANCE, membersBalance);
                 startActivityForResult(createIntent, create_bill_cmd);
@@ -417,10 +412,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabEditProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MenuProject proj = (MenuProject) projects.getSelectedItem();
-                if (proj != null) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                long selectedProjectId = preferences.getLong("selected_project", 0);
+
+                if (selectedProjectId != 0) {
                     Intent editProjectIntent = new Intent(getApplicationContext(), EditProjectActivity.class);
-                    editProjectIntent.putExtra(PARAM_PROJECT_ID, proj.getId());
+                    editProjectIntent.putExtra(PARAM_PROJECT_ID, selectedProjectId);
                     startActivityForResult(editProjectIntent, editproject);
 
                     fabMenuDrawerEdit.close(false);
@@ -445,18 +442,22 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        MenuProject proj = (MenuProject) projects.getSelectedItem();
-                        if (proj != null) {
-                            db.deleteProject(proj.getId());
-                            projectsAdapter.remove(proj);
-                            projectsAdapter.notifyDataSetChanged();
-                            if (projects.getCount() > 0) {
-                                projects.setSelection(0);
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        long selectedProjectId = preferences.getLong("selected_project", 0);
+
+                        if (selectedProjectId != 0) {
+                            db.deleteProject(selectedProjectId);
+                            List<DBProject> dbProjects = db.getProjects();
+                            if (dbProjects.size() > 0) {
+                                setSelectedProject(dbProjects.get(0).getId());
                                 Log.v(TAG, "set selection 0");
+                            }
+                            else {
+                                setSelectedProject(0);
                             }
 
                             fabMenuDrawerEdit.close(false);
-                            drawerLayout.closeDrawers();
+                            //drawerLayout.closeDrawers();
                             refreshLists();
                         }
                     }
@@ -483,10 +484,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     long selectedMemberId = Long.valueOf(selectedMemberIdStr);
                     editMember(view, selectedMemberId);
                 }*/
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                long selectedProjectId = preferences.getLong("selected_project", 0);
 
-                MenuProject proj = (MenuProject) projects.getSelectedItem();
-                if (proj != null) {
-                    final List<DBMember> members = db.getMembersOfProject(proj.getId(), null);
+                if (selectedProjectId != 0) {
+                    final List<DBMember> members = db.getMembersOfProject(selectedProjectId, null);
                     List<String> memberNames = new ArrayList<>();
                     for (DBMember m : members) {
                         memberNames.add(m.getName());
@@ -521,8 +523,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabStatistics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                final MenuProject proj = (MenuProject) projects.getSelectedItem();
-                if (proj != null) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                long selectedProjectId = preferences.getLong("selected_project", 0);
+
+                if (selectedProjectId != 0) {
                     // get stats
                     Map<Long, Integer> membersNbBills = new HashMap<>();
                     HashMap<Long, Double> membersBalance = new HashMap<>();
@@ -532,11 +536,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     NumberFormat numberFormatter = new DecimalFormat("#0.00");
 
                     int nbBills = SupportUtil.getStatsOfProject(
-                            proj.getId(), db,
+                            selectedProjectId, db,
                             membersNbBills, membersBalance, membersPaid, membersSpent
                     );
 
-                    List<DBMember> membersSortedByName = db.getMembersOfProject(proj.getId(), null);
+                    final DBProject proj = db.getProject(selectedProjectId);
+                    List<DBMember> membersSortedByName = db.getMembersOfProject(selectedProjectId, null);
                     String statsText = getString(R.string.share_stats_intro, proj.getName()) + "\n\n";
                     statsText += getString(R.string.share_stats_header) + "\n";
 
@@ -642,8 +647,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabSettle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                final MenuProject proj = (MenuProject) projects.getSelectedItem();
-                if (proj != null) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                long selectedProjectId = preferences.getLong("selected_project", 0);
+
+                if (selectedProjectId != 0) {
+                    final DBProject proj = db.getProject(selectedProjectId);
                     // get stats
                     Map<Long, Integer> membersNbBills = new HashMap<>();
                     HashMap<Long, Double> membersBalance = new HashMap<>();
@@ -744,6 +752,81 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 }
             }
         });
+
+        fabSelectProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                final long selectedProjectId = preferences.getLong("selected_project", 0);
+
+
+                final List<DBProject> dbProjects = db.getProjects();
+                List<String> projectNames = new ArrayList<>();
+                List<Long> projectIds = new ArrayList<>();
+                for (DBProject p : dbProjects) {
+                    projectNames.add(p.getName());
+                    projectIds.add(p.getId());
+                }
+
+                int checkedItem = -1;
+                if (selectedProjectId != 0) {
+                    checkedItem = projectIds.indexOf(selectedProjectId);
+                }
+                CharSequence[] namescs = projectNames.toArray(new CharSequence[projectNames.size()]);
+
+                AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(view.getContext(), R.style.Theme_AppCompat_DayNight_Dialog));
+                selectBuilder.setTitle(getString(R.string.choose_project_to_select));
+                selectBuilder.setSingleChoiceItems(namescs, checkedItem, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // user checked an item
+                        setSelectedProject(dbProjects.get(which).getId());
+                        //preferences.edit().putLong("selected_project", dbProjects.get(which).getId()).apply();
+
+                        drawerLayout.closeDrawers();
+                        refreshLists();
+                        synchronize();
+                        dialog.dismiss();
+                    }
+                });
+
+                // add OK and Cancel buttons
+                selectBuilder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                selectBuilder.setNegativeButton(getString(R.string.simple_cancel), null);
+
+                AlertDialog selectDialog = selectBuilder.create();
+                selectDialog.show();
+            }
+        });
+    }
+
+    private void setSelectedProject(long projectId) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        preferences.edit().putLong("selected_project", projectId).apply();
+        if (projectId != 0) {
+            DBProject proj = db.getProject(projectId);
+            if (proj == null) {
+                List<DBProject> dbProjects = db.getProjects();
+                if (dbProjects.size() > 0) {
+                    proj = dbProjects.get(0);
+                    preferences.edit().putLong("selected_project", proj.getId()).apply();
+                    selectedProjectLabel.setText(proj.getName() + " " + proj.getIhmUrl());
+                }
+                else {
+                    selectedProjectLabel.setText(getString(R.string.drawer_no_project));
+                }
+            }
+            else {
+                selectedProjectLabel.setText(proj.getName() + " " + proj.getIhmUrl());
+            }
+        }
+        else {
+            selectedProjectLabel.setText(getString(R.string.drawer_no_project));
+        }
     }
 
     private void editMember(View view, long memberId) {
@@ -803,8 +886,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 CheckBox cvi = iView.findViewById(R.id.editMemberActivated);
                 boolean newActivated = cvi.isChecked();
 
-                MenuProject mproj = (MenuProject) projects.getSelectedItem();
-                if (mproj != null) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                long selectedProjectId = preferences.getLong("selected_project", 0);
+
+                if (selectedProjectId != 0) {
                     if (!newMemberName.isEmpty() && !newMemberName.equals("")) {
                         db.updateMemberAndSync(memberToEdit, newMemberName, newMemberWeight, newActivated);
                         refreshLists();
@@ -891,15 +976,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         @Override
         protected List<NavigationAdapter.NavigationItem> doInBackground(Void... voids) {
             itemUncategorized = null;
-            MenuProject mproj = (MenuProject) projects.getSelectedItem();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            long selectedProjectId = preferences.getLong("selected_project", 0);
 
             ArrayList<NavigationAdapter.NavigationItem> items = new ArrayList<>();
 
-            if (mproj == null) {
+            if (selectedProjectId == 0) {
                 return items;
             }
 
-            List<DBMember> dbMembers = db.getMembersOfProject(mproj.getId(), null);
+            List<DBMember> dbMembers = db.getMembersOfProject(selectedProjectId, null);
 
             Map<Long, Integer> membersNbBills = new HashMap<>();
             HashMap<Long, Double> membersBalance = new HashMap<>();
@@ -907,7 +993,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             HashMap<Long, Double> membersSpent = new HashMap<>();
 
             int nbBills = SupportUtil.getStatsOfProject(
-                    mproj.getId(), db,
+                    selectedProjectId, db,
                     membersNbBills, membersBalance, membersPaid, membersSpent
             );
 
@@ -972,25 +1058,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 } else if (item == itemAbout) {
                     Intent aboutIntent = new Intent(getApplicationContext(), AboutActivity.class);
                     startActivityForResult(aboutIntent, about);
-                }/* else if (item == itemAddProject) {
-                    Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
-                    if (projectsAdapter.getCount() > 0) {
-                        long pid = projectsAdapter.getItem(0).getId();
-                        String url = db.getProject(pid).getIhmUrl();
-                        newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, url);
-                    }
-                    startActivityForResult(newProjectIntent, addproject);
-                } else if (item == itemEditProject) {
-                    MenuProject proj = (MenuProject) projects.getSelectedItem();
-                    Intent editProjectIntent = new Intent(getApplicationContext(), EditProjectActivity.class);
-                    editProjectIntent.putExtra(PARAM_PROJECT_ID, proj.getId());
-                    startActivityForResult(editProjectIntent, editproject);
-                } else if (item == itemRemoveProject) {
-                    MenuProject proj = (MenuProject) projects.getSelectedItem();
-                    db.deleteProject(proj.getId());
-                    projectsAdapter.remove(proj);
-                    projectsAdapter.notifyDataSetChanged();
-                }*/
+                }
             }
 
             @Override
@@ -1018,56 +1086,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         // restore last selected project
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String lastId = preferences.getString("last_selected_project", "");
+        long selectedProjectId = preferences.getLong("selected_project", 0);
 
-        //projectsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, android.R.id.text1);
-        projectsAdapter = new ArrayAdapter<>(this, R.layout.item_projects_spinner);
-        projectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        projects.setAdapter(projectsAdapter);
-        List<DBProject> projs = db.getProjects();
-        MenuProject restoredProject = null;
-        MenuProject tmpProject;
-        for (DBProject proj : projs) {
-            tmpProject = new MenuProject(
-                    proj.getId(),
-                    proj.getName(),
-                    proj.getRemoteId()+"@"+proj.getIhmUrl()
-                            .replace("https://", "")
-                            .replace("http://", "")
-            );
-            projectsAdapter.add(tmpProject);
-            if (String.valueOf(proj.getId()).equals(lastId)) {
-                restoredProject = tmpProject;
-            }
-        }
-        projectsAdapter.notifyDataSetChanged();
+        Log.v(TAG, "RESTORE PROJECT SELECTION " + selectedProjectId);
+        setSelectedProject(selectedProjectId);
 
-        if (restoredProject != null) {
-            Log.v(TAG, "RESTORE PROJECT SELECTION " + lastId + " : " + projectsAdapter.getPosition(restoredProject));
-            projects.setSelection(projectsAdapter.getPosition(restoredProject));
-        }
-
-        projects.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int pos, long id) {
-                // ugly : set the color each time an item is selected
-                ((TextView)parent.getChildAt(0)).setTextColor(Color.WHITE);
-                MenuProject it = (MenuProject) parent.getItemAtPosition(pos);
-                Log.v(TAG, "PROJECT ITEM SELECTED "+pos+" "+id+" "+it.toString());
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                preferences.edit().putString("last_selected_project", String.valueOf(it.getId())).apply();
-                // get project info from server
-                drawerLayout.closeDrawers();
-                refreshLists();
-                synchronize();
-            }
-
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Another interface callback
-                Log.v(TAG, "NOOOOOOO ITEM SELECTED ");
-            }
-
-        });
         //this.updateUsernameInDrawer();
     }
 
@@ -1188,10 +1211,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private void refreshLists(final boolean scrollToTop) {
         long projId = 0;
         String projName = "";
-        MenuProject proj = (MenuProject) projects.getSelectedItem();
-        if (proj != null) {
-            projId = proj.getId();
-            projName = proj.getName();
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        long selectedProjectId = preferences.getLong("selected_project", 0);
+
+        if (selectedProjectId != 0) {
+            DBProject proj = db.getProject(selectedProjectId);
+            if (proj != null) {
+                projId = proj.getId();
+                projName = proj.getName();
+            }
         }
 
         String subtitle;
@@ -1201,6 +1230,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         else {
             subtitle = projName + " - " + getString(R.string.label_all_bills);
         }
+        // to display correct name on project selector when project was just added
+        setSelectedProject(selectedProjectId);
 
         setTitle(subtitle);
         CharSequence query = null;
@@ -1319,17 +1350,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             long pid = data.getLongExtra(CREATED_PROJECT, 0);
             if (DEBUG) { Log.d(TAG, "BILLS request code : addproject " + pid); }
             if (pid != 0) {
-                DBProject proj = db.getProject(pid);
-                MenuProject mproj = new MenuProject(
-                        proj.getId(),
-                        proj.getRemoteId(),
-                        proj.getRemoteId() + "@" + proj.getIhmUrl()
-                                .replace("https://", "")
-                                .replace("http://", "")
-                );
-                projectsAdapter.add(mproj);
-                projects.setSelection(projectsAdapter.getPosition(mproj));
-                projectsAdapter.notifyDataSetChanged();
+                setSelectedProject(pid);
             }
         } else if (requestCode == editproject) {
             if (data != null) {
@@ -1338,32 +1359,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 long pid = data.getLongExtra(DELETED_PROJECT, 0);
                 Log.d(TAG, "onActivityResult editproject PID : "+pid);
                 if (pid != 0) {
-                    MenuProject mp;
-                    for (int i = 0; i < projectsAdapter.getCount(); i++) {
-                        mp = projectsAdapter.getItem(i);
-                        if (mp.getId() == pid) {
-                            if (DEBUG) {
-                                Log.d(TAG, "[SPINNER deleted project " + mp + "]");
-                            }
-                            projectsAdapter.remove(mp);
-                            break;
-                        }
-                    }
-                    projects.setSelection(0);
-                    projectsAdapter.notifyDataSetChanged();
+                    setSelectedProject(0);
                 }
                 // adapt after project has been edited
                 pid = data.getLongExtra(EDITED_PROJECT, 0);
                 if (pid != 0) {
-                    DBProject proj = db.getProject(pid);
-                    MenuProject mp;
-                    for (int i = 0; i < projectsAdapter.getCount(); i++) {
-                        mp = projectsAdapter.getItem(i);
-                        if (mp.getId() == pid) {
-                            mp.setName(proj.getName());
-                            projectsAdapter.notifyDataSetChanged();
-                        }
-                    }
+                    setSelectedProject(pid);
                 }
             }
         } else if (requestCode == show_single_bill_cmd) {
@@ -1532,12 +1533,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         if (DEBUG) { Log.d(TAG, "CALLER : " + stackTraceElements[3].getMethodName()); }
         if (db.getMoneyBusterServerSyncHelper().isSyncPossible()) {
             swipeRefreshLayout.setRefreshing(true);
-            MenuProject proj = (MenuProject) projects.getSelectedItem();
-            if (proj != null) {
-                long projId = proj.getId();
-                if (DEBUG) { Log.d(TAG, "SYNC ASKED : " + proj); }
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            long selectedProjectId = preferences.getLong("selected_project", 0);
+
+            if (selectedProjectId != 0) {
+
+                if (DEBUG) { Log.d(TAG, "SYNC ASKED : " + selectedProjectId); }
                 db.getMoneyBusterServerSyncHelper().addCallbackPull(syncCallBack);
-                db.getMoneyBusterServerSyncHelper().scheduleSync(false, projId);
+                db.getMoneyBusterServerSyncHelper().scheduleSync(false, selectedProjectId);
             }
             else {
                 swipeRefreshLayout.setRefreshing(false);

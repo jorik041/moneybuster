@@ -167,10 +167,10 @@ public class MoneyBusterServerSyncHelper {
             if (BillsListViewActivity.DEBUG) { Log.d(TAG, "NETWORK AVAILABLE in synchelper !!!!"); }
             updateNetworkStatus();
             if (isSyncPossible()) {
-                String lastId = PreferenceManager.getDefaultSharedPreferences(appContext).getString("last_selected_project", "");
-                DBProject proj = dbHelper.getProject(Long.valueOf(lastId));
-                if (!lastId.equals("") && proj != null) {
-                    scheduleSync(false, Long.valueOf(lastId));
+                long lastId = PreferenceManager.getDefaultSharedPreferences(appContext).getLong("selected_project", 0);
+                DBProject proj = dbHelper.getProject(lastId);
+                if (lastId != 0 && proj != null) {
+                    scheduleSync(false, lastId);
                 }
             }
         }

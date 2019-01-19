@@ -54,4 +54,10 @@
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_alignParentRight">true</item>
     </style>
+
+    <style name="fabDrawer">
+        <item name="android:layout_margin">0dp</item>
+        <item name="android:layout_gravity">end|right</item>
+
+    </style>
 </resources>

@@ -1,29 +1,32 @@
-PhoneTrack is an application for continuous logging of location coordinates.
-Application works in background. Points are saved at chosen frequency and
-uploaded to a server in real time. This logger works with
-[https://gitlab.com/eneiluj/phonetrack-oc PhoneTrack Nextcloud app] or any
-custom server (GET or POST HTTP requests).
+Moneybuster is a shared budget manager which can work offline or synchronize with any IHateMoney instance.
+
+What's different from other shared budget managers ?
+
+You can keep your project local or make it synchronize with an IHateMoney instance.
+This means you can choose where your data is going and preserve your privacy.
 
 Features
 
-    Log to multiple destinations with multiple settings (frequency, min distance, min accuracy)
-    Log to PhoneTrack Nextcloud app (PhoneTrack log job)
-    Log to any server which can receive HTTP GET or POST requests (custom log job)
-    Start on system boot
-    Store positions when network is not available
-    Dark theme
-    Multi-Lingual User-Interface (translated on [https://crowdin.com/project/phonetrack Crowdin])
+* manage projects (add/remove/create remote/delete remote/edit remote)
+* manage members (add/remove/edit)
+* manage bills (add/remove/edit)
+* search bills (by payer, name, amount, date)
+* project statistics
+* project settle plan
+* share statistics and settle plan
+* dark theme
+* multi-lingual user-interface (translated on [https://crowdin.com/project/moneybuster Crowdin])
 
 Requirements
 
-If you want to log to Nextcloud PhoneTrack app :
+If you want to host a project in IHateMoney :
 
-    Nextcloud instance running
-    Nextcloud PhoneTrack app enabled
+    IHateMoney instance running
 
-Otherwise, no requirements !
+If you want to be able to create projects from MoneyBuster : enable public project creation on your IHateMoney instance.
+
+The app runs on Android>=4.1
 
 Alternatives
 
-If you don't this app and you are looking for alternatives: Have a look at the logging methods/apps
-in PhoneTrack wiki : https://gitlab.com/eneiluj/phonetrack-oc/wikis/userdoc#logging-methods .
+Tricount, Cospender, Splitwise etc... which are probably selling your private data.

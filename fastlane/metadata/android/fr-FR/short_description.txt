@@ -1,1 +1,1 @@
-Logger des positions vers l'appli PhoneTrack sur Nextcloud ou vers n'importe quel serveur
+Gestionnaire de dépenses partagées capable de se synchroniser avec IHateMoney

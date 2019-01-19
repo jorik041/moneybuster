@@ -1,29 +1,33 @@
-PhoneTrack est une application pour logger en continu des coordonnées géographique.
-L'application fonctionne en arrière-plan. Les points sont sauvés à une fréquence
-choisie et envoyés à un serveur en temps réel. Ce logger fonctionne avec
-[https://gitlab.com/eneiluj/phonetrack-oc l'appli Nextcloud PhoneTrack] ou n'importe
-quel serveur personnalisé (requêtes HTTP GET ou POST).
+MoneyBuster est un gestionnaire de dépenses partagées qui peut fonctionner
+hors ligne ou se synchroniser avec une instance IHateMoney.
+
+En quoi est-il différent des autres gestionnaires de dépenses partagées ?
+
+Vous pouvez garder votre projet local ou le synchroniser avec une instance IHateMoney.
+Cela veut dire que vous pouvez choisir où vont vos données et préserver votre vie privée.
 
 Fonctionnalités
 
-    Loguer vers plusieurs destinations avec plusieurs configurations (fréquence, distance min, précision min)
-    Loguer vers l'appli PhoneTrack Nextcloud (log job PhoneTrack)
-    Loguer vers n'importe quel serveur capable de recevoir des requêtes HTTP GET ou POST (log job personnalisé)
-    Démarrer au lancement du système
-    Stocker les positions quand le réseau est inaccesible
-    Thème sombre
-    Interface utilisateur multilingue (traduit sur [https://crowdin.com/project/phonetrack Crowdin])
+* gérer les projets (ajouter/enlever/créer distant/supprimer distant/éditer distant)
+* gérer les membres (ajouter/enlever/éditer)
+* gérer les factures (ajouter/enlever/éditer)
+* chercher des factures (par payeur, nom, montant, date)
+* statistiques de projet
+* plan de remboursement de projet
+* partager les statistiques et plan de remboursement
+* thème sombre
+* interface utilisateur multi-langues (traduit sur [https://crowdin.com/project/moneybuster Crowdin])
 
-Prérequis
+Dépendances
 
-Si vous voulez loguer vers l'appli Nextcloud PhoneTrack :
+Si vous voulez héberger un projet sur IHateMoney :
 
-    Instance Nextcloud en marche
-    Appli Nextcloud PhoneTrack activée
+    Une instance IHateMoney en fonctionnement
 
-Sinon, pas de prérequis !
+Si vous voulez pouvoir créer des projets depuis MoneyBuster : activez la création publique de projet sur votre instance IHateMoney
+
+L'appli tourne sur Android>=4.1
 
 Alternatives
 
-Si vous n'aimez pas cette appli et que vous cherchez des alternatives : Faites un tour du côté des méthodes/applis
-de logging dans le wiki de PhoneTrack : https://gitlab.com/eneiluj/phonetrack-oc/wikis/userdoc#logging-methods .
+Tricount, Cospender, Splitwise etc... qui vendent probablement vos données privées.

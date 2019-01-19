@@ -58,3 +58,7 @@ This project is licensed under the [GNU GENERAL PUBLIC LICENSE](/LICENSE).
 ## :twisted_rightwards_arrows: Alternatives
 
 There is no alternative to MoneyBuster, you should try it !
+
+Tricount, Cospender, Splitwise etc... are doing the same job but they don't let you choose where to store your personal data.
+
+If you care about your privacy, using FOSS is not enough, services accessed by some software might use your personal data.

@@ -1546,10 +1546,17 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             long selectedProjectId = preferences.getLong("selected_project", 0);
 
             if (selectedProjectId != 0) {
-
-                if (DEBUG) { Log.d(TAG, "SYNC ASKED : " + selectedProjectId); }
-                db.getMoneyBusterServerSyncHelper().addCallbackPull(syncCallBack);
-                db.getMoneyBusterServerSyncHelper().scheduleSync(false, selectedProjectId);
+                DBProject proj = db.getProject(selectedProjectId);
+                if (proj.getIhmUrl() != null && !proj.getIhmUrl().equals("")) {
+                    if (DEBUG) {
+                        Log.d(TAG, "SYNC ASKED : " + selectedProjectId);
+                    }
+                    db.getMoneyBusterServerSyncHelper().addCallbackPull(syncCallBack);
+                    db.getMoneyBusterServerSyncHelper().scheduleSync(false, selectedProjectId);
+                }
+                else {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
             }
             else {
                 swipeRefreshLayout.setRefreshing(false);

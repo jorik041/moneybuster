@@ -812,20 +812,23 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 return;
             }
         }
-        // TODO show/hide fab buttons if project is local
         // TODO do not attempt to sync if project is local
         // TODO do not check password valid in newproj when url is empty
 
         // we always set selected project text
         String selText;
+        // local project
         if (proj.getIhmUrl() == null || proj.getIhmUrl().equals("")) {
             selText = proj.getRemoteId() + "@local";
+            fabMenuDrawerEdit.findViewById(R.id.fabDrawer_edit_project).setVisibility(View.GONE);
         }
+        // remote project
         else {
             selText = (proj.getName() == null) ? "???" : proj.getName();
             selText += "\n";
             selText += proj.getRemoteId() + "@";
             selText += proj.getIhmUrl().replace("https://", "").replace("http://", "");
+            fabMenuDrawerEdit.findViewById(R.id.fabDrawer_edit_project).setVisibility(View.INVISIBLE);
         }
         selectedProjectLabel.setText(selText);
     }

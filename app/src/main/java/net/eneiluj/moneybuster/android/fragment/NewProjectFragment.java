@@ -231,7 +231,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
 
                 // check values
                 String url = getIhmUrl();
-                if (url == null || url.equals("") || !isValidUrl(url)) {
+                if (url != null && !url.equals("") && !isValidUrl(url)) {
                     showToast(getString(R.string.error_invalid_url), Toast.LENGTH_LONG);
                     addButton.clearAnimation();
                     return;
@@ -322,7 +322,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
 
         DBProject newProject = new DBProject(0, remoteId, password, name, ihmUrl, email);
         long pid = db.addProject(newProject);
-        System.out.println("PROJECT local id : "+pid);
+        System.out.println("PROJECT local id : "+pid+" : "+newProject);
         return pid;
     }
 

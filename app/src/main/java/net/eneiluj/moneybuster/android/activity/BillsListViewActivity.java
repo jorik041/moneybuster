@@ -752,12 +752,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 final long selectedProjectId = preferences.getLong("selected_project", 0);
 
-
                 final List<DBProject> dbProjects = db.getProjects();
                 List<String> projectNames = new ArrayList<>();
                 List<Long> projectIds = new ArrayList<>();
                 for (DBProject p : dbProjects) {
-                    projectNames.add(p.getName());
+                    projectNames.add(p.getName() == null ? p.getRemoteId() : p.getName());
                     projectIds.add(p.getId());
                 }
 
@@ -813,12 +812,21 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 return;
             }
         }
+        // TODO show/hide fab buttons if project is local
+        // TODO do not attempt to sync if project is local
+        // TODO do not check password valid in newproj when url is empty
 
         // we always set selected project text
-        String selText = (proj.getName() == null) ? "???" : proj.getName();
-        selText += "\n";
-        selText += proj.getRemoteId() + "@";
-        selText += proj.getIhmUrl().replace("https://", "").replace("http://", "");
+        String selText;
+        if (proj.getIhmUrl() == null || proj.getIhmUrl().equals("")) {
+            selText = proj.getRemoteId() + "@local";
+        }
+        else {
+            selText = (proj.getName() == null) ? "???" : proj.getName();
+            selText += "\n";
+            selText += proj.getRemoteId() + "@";
+            selText += proj.getIhmUrl().replace("https://", "").replace("http://", "");
+        }
         selectedProjectLabel.setText(selText);
     }
 
@@ -1212,7 +1220,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             DBProject proj = db.getProject(selectedProjectId);
             if (proj != null) {
                 projId = proj.getId();
-                projName = (proj.getName() == null) ? "???" : proj.getName();
+                if (proj.getIhmUrl() == null || proj.getIhmUrl().equals("")) {
+                    projName = proj.getRemoteId();
+                }
+                else {
+                    projName = (proj.getName() == null) ? "???" : proj.getName();
+                }
             }
         }
 

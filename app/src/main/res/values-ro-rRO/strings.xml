@@ -46,6 +46,7 @@
     <string name="action_undo">Undo</string>
     <string name="action_drawer_open">open side menu</string>
     <string name="action_drawer_close">close side menu</string>
+    <string name="action_select_project">select current project</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_delete_project_remote">Delete project on server</string>
     <string name="menu_save_project">Save project</string>
@@ -104,6 +105,8 @@
     <string name="share_stats_intro">Statistics of project %1$s :</string>
     <string name="share_stats_title">Share statistics of project %1$s</string>
     <string name="share_stats_header">MEMBER_NAME (PAID | SPENT | BALANCE)</string>
+    <string name="drawer_no_project">There is no project.\nCreate/add one</string>
+    <string name="choose_project_to_select">Select a project</string>
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Connection security</string>
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster has encountered an unknown certificate. Do you want to trust it?</string>

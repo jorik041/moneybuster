@@ -109,6 +109,7 @@
     <string name="drawer_no_project">There is no project.\nCreate/add one</string>
     <string name="choose_project_to_select">Select a project</string>
     <string name="edit_bill_impossible_no_member">At least two activated members are required to add a bill</string>
+    <string name="edit_project_local_impossible">Impossible for local projects</string>
 
 
     <!-- Certificates -->

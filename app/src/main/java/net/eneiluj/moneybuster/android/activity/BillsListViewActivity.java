@@ -48,6 +48,8 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -413,12 +415,18 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 long selectedProjectId = preferences.getLong("selected_project", 0);
 
                 if (selectedProjectId != 0) {
-                    Intent editProjectIntent = new Intent(getApplicationContext(), EditProjectActivity.class);
-                    editProjectIntent.putExtra(PARAM_PROJECT_ID, selectedProjectId);
-                    startActivityForResult(editProjectIntent, editproject);
+                    DBProject proj = db.getProject(selectedProjectId);
+                    if (proj.getIhmUrl() != null && !proj.getIhmUrl().equals("")) {
+                        Intent editProjectIntent = new Intent(getApplicationContext(), EditProjectActivity.class);
+                        editProjectIntent.putExtra(PARAM_PROJECT_ID, selectedProjectId);
+                        startActivityForResult(editProjectIntent, editproject);
 
-                    fabMenuDrawerEdit.close(false);
-                    drawerLayout.closeDrawers();
+                        fabMenuDrawerEdit.close(false);
+                        drawerLayout.closeDrawers();
+                    }
+                    else {
+                        showToast(getString(R.string.edit_project_local_impossible));
+                    }
                 }
             }
         });
@@ -823,7 +831,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         // local project
         if (proj.getIhmUrl() == null || proj.getIhmUrl().equals("")) {
             selText = proj.getRemoteId() + "@local";
-            fabMenuDrawerEdit.findViewById(R.id.fabDrawer_edit_project).setVisibility(View.GONE);
         }
         // remote project
         else {
@@ -831,7 +838,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             selText += "\n";
             selText += proj.getRemoteId() + "@";
             selText += proj.getIhmUrl().replace("https://", "").replace("http://", "");
-            fabMenuDrawerEdit.findViewById(R.id.fabDrawer_edit_project).setVisibility(View.INVISIBLE);
         }
         selectedProjectLabel.setText(selText);
     }

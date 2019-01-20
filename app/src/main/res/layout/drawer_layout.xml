@@ -17,29 +17,29 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="false">
 
 
-        <LinearLayout
+        <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
+            <android.support.v7.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/colorPrimary"
-                android:gravity="bottom"
                 android:orientation="horizontal"
-                android:padding="10dp"
+
                 android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
                     android:layout_gravity="center_vertical"
                     android:contentDescription="@string/app_name"
-                    android:paddingTop="24dp"
                     android:src="@mipmap/ic_launcher" />
 
 
@@ -47,10 +47,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:layout_margin="12dp"
                     android:orientation="vertical"
-                    android:paddingStart="12dp"
-                    android:paddingLeft="12dp"
-                    android:paddingTop="24dp">
+                    >
 
                     <TextView
                         android:layout_width="match_parent"
@@ -60,38 +59,40 @@
 
                     <android.support.v7.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
+                        android:layout_height="wrap_content"
+
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/selectedProject"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="@string/drawer_no_project"
-                            android:textSize="14sp"
                             android:layout_weight=".70"
-
-                            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                            android:text="@string/drawer_no_project"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                            android:layout_gravity="center_vertical"
+                            android:textSize="14sp" />
 
                         <android.support.design.widget.FloatingActionButton
                             android:id="@+id/fab_select_project"
-                            app:fabCustomSize="40dp"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_marginBottom="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="2dp"
+                            android:layout_marginEnd="2dp"
+                            android:padding="0dp"
+                            android:layout_gravity="center_vertical"
                             android:src="@drawable/ic_arrow_down_grey_24dp"
                             android:tint="#ffffff"
                             android:title="@string/action_select_project"
                             app:backgroundTint="@color/primary_dark"
+                            app:fabCustomSize="40dp"
                             app:rippleColor="@color/bg_highlighted" />
 
                     </android.support.v7.widget.LinearLayoutCompat>
 
 
                 </android.support.v7.widget.LinearLayoutCompat>
-            </LinearLayout>
+            </android.support.v7.widget.LinearLayoutCompat>
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -286,7 +287,7 @@
 
             </FrameLayout>
 
-        </LinearLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
 
 
 

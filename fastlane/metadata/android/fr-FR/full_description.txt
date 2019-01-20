@@ -6,9 +6,9 @@ En quoi est-il différent des autres gestionnaires de dépenses partagées ?
 Vous pouvez garder votre projet local ou le synchroniser avec une instance IHateMoney.
 Cela veut dire que vous pouvez choisir où vont vos données et préserver votre vie privée.
 
-Fonctionnalités
+# Fonctionnalités
 
-* gérer les projets (ajouter/enlever/créer distant/supprimer distant/éditer distant)
+* gérer les projets (ajouter/enlever/créer/supprimer/éditer)
 * gérer les membres (ajouter/enlever/éditer)
 * gérer les factures (ajouter/enlever/éditer)
 * chercher des factures (par payeur, nom, montant, date)
@@ -18,16 +18,16 @@ Fonctionnalités
 * thème sombre
 * interface utilisateur multi-langues (traduit sur [https://crowdin.com/project/moneybuster Crowdin])
 
-Dépendances
+# Dépendances
 
 Si vous voulez héberger un projet sur IHateMoney :
 
-    Une instance IHateMoney en fonctionnement
+* Une instance IHateMoney en fonctionnement
 
-Si vous voulez pouvoir créer des projets depuis MoneyBuster : activez la création publique de projet sur votre instance IHateMoney
+Si vous voulez pouvoir créer des projets IHateMoney depuis MoneyBuster : activez la création publique de projet sur votre instance IHateMoney
 
 L'appli tourne sur Android>=4.1
 
-Alternatives
+# Alternatives
 
 Tricount, Cospender, Splitwise etc... qui vendent probablement vos données privées.

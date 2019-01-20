@@ -807,26 +807,26 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private void setSelectedProject(long projectId) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         preferences.edit().putLong("selected_project", projectId).apply();
-        if (projectId != 0) {
-            DBProject proj = db.getProject(projectId);
-            if (proj == null) {
-                List<DBProject> dbProjects = db.getProjects();
-                if (dbProjects.size() > 0) {
-                    proj = dbProjects.get(0);
-                    preferences.edit().putLong("selected_project", proj.getId()).apply();
-                    selectedProjectLabel.setText(proj.getName() + " " + proj.getIhmUrl());
-                }
-                else {
-                    selectedProjectLabel.setText(getString(R.string.drawer_no_project));
-                }
+
+        DBProject proj = db.getProject(projectId);
+        if (proj == null) {
+            List<DBProject> dbProjects = db.getProjects();
+            if (dbProjects.size() > 0) {
+                proj = dbProjects.get(0);
+                preferences.edit().putLong("selected_project", proj.getId()).apply();
             }
             else {
-                selectedProjectLabel.setText(proj.getName() + " " + proj.getIhmUrl());
+                selectedProjectLabel.setText(getString(R.string.drawer_no_project));
+                return;
             }
         }
-        else {
-            selectedProjectLabel.setText(getString(R.string.drawer_no_project));
-        }
+
+        // we always set selected project text
+        String selText = (proj.getName() == null) ? "???" : proj.getName();
+        selText += "\n";
+        selText += proj.getRemoteId() + "@";
+        selText += proj.getIhmUrl().replace("https://", "").replace("http://", "");
+        selectedProjectLabel.setText(selText);
     }
 
     private void editMember(View view, long memberId) {

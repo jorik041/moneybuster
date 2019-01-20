@@ -1212,7 +1212,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             DBProject proj = db.getProject(selectedProjectId);
             if (proj != null) {
                 projId = proj.getId();
-                projName = proj.getName();
+                projName = (proj.getName() == null) ? "???" : proj.getName();
             }
         }
 

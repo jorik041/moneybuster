@@ -395,10 +395,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 long selectedProjectId = preferences.getLong("selected_project", 0);
                 if (selectedProjectId != 0) {
-                    createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, selectedProjectId);
+                    if (db.getActivatedMembersOfProject(selectedProjectId).size() < 2) {
+                        showToast(getString(R.string.edit_bill_impossible_no_member));
+                    }
+                    else {
+                        createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, selectedProjectId);
+                        startActivityForResult(createIntent, create_bill_cmd);
+                    }
                 }
-                //createIntent.putExtra(EditBillActivity.PARAM_MEMBERS_BALANCE, membersBalance);
-                startActivityForResult(createIntent, create_bill_cmd);
             }
         });
 
@@ -812,7 +816,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 return;
             }
         }
-        // TODO do not attempt to sync if project is local
         // TODO do not check password valid in newproj when url is empty
 
         // we always set selected project text

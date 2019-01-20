@@ -418,6 +418,14 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         return members;
     }
 
+    public List<DBMember> getActivatedMembersOfProject(long projId) {
+        List<DBMember> members = getMembersCustom(
+                key_projectid + " = ? AND " + key_activated + " = 1",
+                new String[]{String.valueOf(projId)},
+                key_name + " ASC");
+        return members;
+    }
+
     public DBMember getMember(long remoteId, long projId) {
         List<DBMember> members = getMembersCustom(
                 key_remoteId + " = ? AND " + key_projectid + " = ?",

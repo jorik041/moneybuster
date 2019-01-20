@@ -359,7 +359,10 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     public void addMemberAndSync(DBMember m) {
         addMember(m);
-        serverSyncHelper.scheduleSync(true, m.getProjectId());
+        DBProject proj = getProject(m.getProjectId());
+        if (proj.getIhmUrl() != null && !proj.getIhmUrl().equals("")) {
+            serverSyncHelper.scheduleSync(true, m.getProjectId());
+        }
     }
 
     public void updateMember(long memberId, @Nullable String newName, @Nullable Double newWeight, @Nullable Boolean newActivated, @Nullable Integer newState, @Nullable Long newRemoteId) {
@@ -397,7 +400,10 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         updateMember(m.getId(), newName, newWeight, newActivated, newState, null);
 
         Log.v(TAG, "UPDATE BILL AND SYNC");
-        serverSyncHelper.scheduleSync(true, m.getProjectId());
+        DBProject proj = getProject(m.getProjectId());
+        if (proj.getIhmUrl() != null && !proj.getIhmUrl().equals("")) {
+            serverSyncHelper.scheduleSync(true, m.getProjectId());
+        }
     }
 
     /**
@@ -592,7 +598,10 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
             }
         }
         Log.v(TAG, "UPDATE BILL AND SYNC");
-        serverSyncHelper.scheduleSync(true, bill.getProjectId());
+        DBProject proj = getProject(bill.getProjectId());
+        if (proj.getIhmUrl() != null && !proj.getIhmUrl().equals("")) {
+            serverSyncHelper.scheduleSync(true, bill.getProjectId());
+        }
     }
 
     /**

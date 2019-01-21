@@ -10,6 +10,7 @@ import android.support.v7.preference.CheckBoxPreference;
 import com.takisoft.fix.support.v7.preference.EditTextPreference;
 //import android.preference.ListPreference;
 //import android.preference.Preference;
+import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 //import android.preference.PreferenceFragment;
 //import android.support.v7.preference.PreferenceFragmentCompat;
@@ -35,12 +36,17 @@ import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.SupportUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static android.webkit.URLUtil.isValidUrl;
 
 public class NewProjectFragment extends PreferenceFragmentCompat {
 
     private static final String SAVEDKEY_PROJECT = "project";
     public static final String PARAM_DEFAULT_URL = "defaultUrl";
+    private static final String TYPE_LOCAL = "local";
+    private static final String TYPE_IHATEMONEY = "ihatemoney";
 
     public interface NewProjectFragmentListener {
         void close(long pid);
@@ -52,6 +58,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
 
     private Handler handler;
 
+    protected ListPreference newProjectType;
     protected EditTextPreference newProjectId;
     protected EditTextPreference newProjectIHMUrl;
     protected EditTextPreference newProjectPassword;
@@ -84,6 +91,36 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Preference typePref = findPreference("type");
+        typePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+
+            @Override
+            public boolean onPreferenceChange(Preference preference,
+                                              Object newValue) {
+                ListPreference pref = (ListPreference) findPreference("type");
+                int index = pref.findIndexOfValue((String)newValue);
+                System.out.println(index+" ----> "+newValue);
+                preference.setSummary(pref.getEntries()[index]);
+
+                EditTextPreference urlPref = (EditTextPreference) findPreference("url");
+                EditTextPreference passwordPref = (EditTextPreference) findPreference("password");
+                CheckBoxPreference createPref = (CheckBoxPreference) findPreference("createonserver");
+                EditTextPreference emailPref = (EditTextPreference) findPreference("email");
+                EditTextPreference namePref = (EditTextPreference) findPreference("name");
+
+                urlPref.setVisible(!newValue.equals(TYPE_LOCAL));
+                passwordPref.setVisible(!newValue.equals(TYPE_LOCAL));
+                createPref.setVisible(!newValue.equals(TYPE_LOCAL));
+                if (newValue.equals(TYPE_LOCAL)) {
+                    createPref.setChecked(false);
+                    emailPref.setVisible(false);
+                    namePref.setVisible(false);
+                }
+                return true;
+            }
+
+        });
 
         Preference idPref = findPreference("id");
         idPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -162,7 +199,6 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                 emailPref.setVisible((Boolean) newValue);
                 EditTextPreference namePref = (EditTextPreference) findPreference("name");
                 namePref.setVisible((Boolean) newValue);
-                //pref.setChecked((Boolean) newValue);
                 return true;
             }
 
@@ -229,31 +265,38 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                         );
                 addButton.startAnimation(animation1);
 
-                // check values
-                String url = getIhmUrl();
-                if (url != null && !url.equals("") && !isValidUrl(url)) {
-                    showToast(getString(R.string.error_invalid_url), Toast.LENGTH_LONG);
-                    addButton.clearAnimation();
-                    return;
-                }
                 String rid = getRemoteId();
                 if (rid == null || rid.equals("")) {
                     showToast(getString(R.string.error_invalid_project_remote_id), Toast.LENGTH_LONG);
                     addButton.clearAnimation();
                     return;
                 }
-                String pwd = getPassword();
-                if (pwd == null || pwd.equals("")) {
-                    showToast(getString(R.string.error_invalid_project_password), Toast.LENGTH_LONG);
-                    addButton.clearAnimation();
-                    return;
+
+                String type = getProjectType();
+
+                if (!type.equals(TYPE_LOCAL)) {
+                    // check values
+                    String url = getIhmUrl();
+                    if (!isValidUrl(url)) {
+                        showToast(getString(R.string.error_invalid_url), Toast.LENGTH_LONG);
+                        addButton.clearAnimation();
+                        return;
+                    }
+                    String pwd = getPassword();
+                    if (url != null && !url.equals("") && (pwd == null || pwd.equals(""))) {
+                        showToast(getString(R.string.error_invalid_project_password), Toast.LENGTH_LONG);
+                        addButton.clearAnimation();
+                        return;
+                    }
                 }
 
-
+                // do not create remote : quit immediately
                 if (!newProjectCreate.isChecked()) {
                     long pid = saveProject(null);
                     listener.close(pid);
                 }
+                // create remote project (we know the type is not local)
+                // the callback will quit this activity
                 else {
                     String name = getName();
                     if (name == null || name.equals("")) {
@@ -270,8 +313,8 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                         showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
                         addButton.clearAnimation();
                     }
-
                 }
+
             }
         });
 
@@ -291,13 +334,13 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         switch (item.getItemId()) {
             case R.id.menu_create:
                 // remote project should already exists, just add it locally
-                if (!newProjectCreate.isChecked()) {
+                /*if (!newProjectCreate.isChecked()) {
                     long pid = saveProject(null);
                     listener.close(pid);
                 }
                 else {
                     db.getMoneyBusterServerSyncHelper().createRemoteProject(getRemoteId(), getName(), getEmail(), getPassword(), getIhmUrl(), createRemoteCallBack);
-                }
+                }*/
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -314,11 +357,18 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
      * @param callback Observer which is called after save/synchronization
      */
     protected long saveProject(@Nullable ICallback callback) {
+        String type = getProjectType();
         String remoteId = getRemoteId();
-        String ihmUrl = getIhmUrl();
-        String password = getPassword();
-        String email = getEmail();
-        String name = getName();
+        String ihmUrl = null;
+        String password = null;
+        String email = null;
+        String name = null;
+        if (!type.equals(TYPE_LOCAL)) {
+            ihmUrl = getIhmUrl();
+            password = getPassword();
+            email = getEmail();
+            name = getName();
+        }
 
         DBProject newProject = new DBProject(0, remoteId, password, name, ihmUrl, email);
         long pid = db.addProject(newProject);
@@ -335,11 +385,26 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         // hide the keyboard when this window gets the focus
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        newProjectEmail = (EditTextPreference) this.findPreference("email");
-        newProjectEmail.setVisible(false);
-        newProjectName = (EditTextPreference) this.findPreference("name");
-        newProjectName.setVisible(false);
+        newProjectType = (ListPreference) this.findPreference("type");
+        List<String> types = new ArrayList<>();
+        types.add(getString(R.string.project_type_local));
+        types.add(getString(R.string.project_type_ihatemoney));
+        //types.add(getString(R.string.project_type_spend));
+        CharSequence[] typesArray = types.toArray(new CharSequence[types.size()]);
+        newProjectType.setEntries(typesArray);
 
+        List<String> typeValues = new ArrayList<>();
+        typeValues.add(TYPE_LOCAL);
+        typeValues.add(TYPE_IHATEMONEY);
+        //types.add(TYPE_SPEND);
+        CharSequence[] typeValuesArray = typeValues.toArray(new CharSequence[typeValues.size()]);
+        newProjectType.setEntryValues(typeValuesArray);
+
+        newProjectType.setValue(TYPE_LOCAL);
+        newProjectType.setSummary(getString(R.string.project_type_local));
+
+        newProjectEmail = (EditTextPreference) this.findPreference("email");
+        newProjectName = (EditTextPreference) this.findPreference("name");
         newProjectId = (EditTextPreference) this.findPreference("id");
         newProjectPassword = (EditTextPreference) this.findPreference("password");
         newProjectIHMUrl = (EditTextPreference) this.findPreference("url");
@@ -348,8 +413,17 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         newProjectIHMUrl.setSummary(defaultUrl);
         newProjectCreate = (CheckBoxPreference) this.findPreference("createonserver");
         newProjectCreate.setChecked(false);
+
+        newProjectIHMUrl.setVisible(false);
+        newProjectPassword.setVisible(false);
+        newProjectCreate.setVisible(false);
+        newProjectEmail.setVisible(false);
+        newProjectName.setVisible(false);
     }
 
+    protected String getProjectType() {
+        return newProjectType.getValue();
+    }
     protected String getRemoteId() {
         return newProjectId.getText();
     }

@@ -19,7 +19,10 @@
     <string name="setting_owers">For whom?</string>
     <string name="setting_project_id_long">Project identifier</string>
     <string name="setting_project_id">Project ID</string>
-    <string name="setting_project_url_long">URL of IHateMoney instance hosting the project</string>
+    <string name="setting_project_type">Project type</string>
+    <string name="project_type_local">Local project</string>
+    <string name="project_type_ihatemoney">IHateMoney project</string>
+    <string name="setting_project_url_long">URL of IHateMoney instance hosting the project. (Leave it empty to make the project local)</string>
     <string name="setting_project_url">IHateMoney URL</string>
     <string name="setting_project_name">Project name</string>
     <string name="setting_project_name_long">Name displayed in user interface</string>

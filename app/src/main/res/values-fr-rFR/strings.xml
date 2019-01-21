@@ -19,6 +19,9 @@
     <string name="setting_owers">Pour qui ?</string>
     <string name="setting_project_id_long">Identifiant du projet</string>
     <string name="setting_project_id">ID du projet</string>
+    <string name="setting_project_type">Type de projet</string>
+    <string name="project_type_local">Projet local</string>
+    <string name="project_type_ihatemoney">Projet IHateMoney</string>
     <string name="setting_project_url_long">URL de l\'instance IHateMoney hébergeant le projet</string>
     <string name="setting_project_url">URL d\'IHateMoney</string>
     <string name="setting_project_name">Nom du projet</string>
@@ -107,6 +110,8 @@
     <string name="share_stats_header">NOM_DU_MEMBRE (A_PAYÉ | A_DÉPENSÉ | SOLDE)</string>
     <string name="drawer_no_project">Aucun projet.\nCréez/ajoutez-en un</string>
     <string name="choose_project_to_select">Sélectionnez un projet</string>
+    <string name="edit_bill_impossible_no_member">Au moins deux membres actifs sont nécessaires pour ajouter une facture</string>
+    <string name="edit_project_local_impossible">Impossible pour les projets locaux</string>
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Sécurité de la connexion</string>
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster a rencontré un certificat inconnu. Voulez-vous lui faire confiance ?</string>

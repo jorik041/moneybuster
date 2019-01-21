@@ -19,6 +19,9 @@
     <string name="setting_owers">For whom?</string>
     <string name="setting_project_id_long">Project identifier</string>
     <string name="setting_project_id">Project ID</string>
+    <string name="setting_project_type">Project type</string>
+    <string name="project_type_local">Local project</string>
+    <string name="project_type_ihatemoney">IHateMoney project</string>
     <string name="setting_project_url_long">URL of IHateMoney instance hosting the project</string>
     <string name="setting_project_url">IHateMoney URL</string>
     <string name="setting_project_name">Project name</string>
@@ -107,6 +110,8 @@
     <string name="share_stats_header">MEMBER_NAME (PAID | SPENT | BALANCE)</string>
     <string name="drawer_no_project">There is no project.\nCreate/add one</string>
     <string name="choose_project_to_select">Select a project</string>
+    <string name="edit_bill_impossible_no_member">At least two activated members are required to add a bill</string>
+    <string name="edit_project_local_impossible">Impossible for local projects</string>
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Connection security</string>
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster has encountered an unknown certificate. Do you want to trust it?</string>

@@ -321,8 +321,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
                 List<DBProject> projects = db.getProjects();
                 if (projects.size() > 0) {
+                    // look for a default url in existing projects
                     String url = projects.get(0).getIhmUrl();
-                    newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, url);
+                    int i = 1;
+                    while (i < projects.size() && (url == null || url.equals(""))) {
+                        url = projects.get(i).getIhmUrl();
+                    }
+                    if (url == null || url.equals("")) {
+                        newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, url);
+                    }
                 } else {
                     newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "https://ihatemoney.org");
                 }
@@ -416,7 +423,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                 if (selectedProjectId != 0) {
                     DBProject proj = db.getProject(selectedProjectId);
-                    if (proj.getIhmUrl() != null && !proj.getIhmUrl().equals("")) {
+                    if (!proj.isLocal()) {
                         Intent editProjectIntent = new Intent(getApplicationContext(), EditProjectActivity.class);
                         editProjectIntent.putExtra(PARAM_PROJECT_ID, selectedProjectId);
                         startActivityForResult(editProjectIntent, editproject);
@@ -824,12 +831,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 return;
             }
         }
-        // TODO do not check password valid in newproj when url is empty
+
+        // TODO add isLocal to project
 
         // we always set selected project text
         String selText;
         // local project
-        if (proj.getIhmUrl() == null || proj.getIhmUrl().equals("")) {
+        if (proj.isLocal()) {
             selText = proj.getRemoteId() + "@local";
         }
         // remote project
@@ -1019,7 +1027,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             for (DBMember m : dbMembers) {
                 double balance = Math.round( (membersBalance.get(m.getId())) * 100.0 ) / 100.0;
                 String balanceStr = balanceFormatter.format(balance).replace(",", ".");
-                // TODO if activated OR balance != 0
+
                 if (m.isActivated() || balance != 0.0) {
                     String weightStr = "";
                     if (m.getWeight() != 1) {
@@ -1232,7 +1240,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             DBProject proj = db.getProject(selectedProjectId);
             if (proj != null) {
                 projId = proj.getId();
-                if (proj.getIhmUrl() == null || proj.getIhmUrl().equals("")) {
+                if (proj.isLocal()) {
                     projName = proj.getRemoteId();
                 }
                 else {
@@ -1372,7 +1380,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         } else if (requestCode == editproject) {
             if (data != null) {
-                // TODO check if we pass here and something is returned here on android 4.1
                 // adapt after project has been deleted
                 long pid = data.getLongExtra(DELETED_PROJECT, 0);
                 Log.d(TAG, "onActivityResult editproject PID : "+pid);
@@ -1386,8 +1393,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 }
             }
         } else if (requestCode == show_single_bill_cmd) {
-            // TODO check if bill was added, edited or deleted
-            // => apply changes
+
         }
         /*else if (requestCode == server_settings) {
             // Create new Instance with new URL and credentials
@@ -1556,7 +1562,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
             if (selectedProjectId != 0) {
                 DBProject proj = db.getProject(selectedProjectId);
-                if (proj.getIhmUrl() != null && !proj.getIhmUrl().equals("")) {
+                if (!proj.isLocal()) {
                     if (DEBUG) {
                         Log.d(TAG, "SYNC ASKED : " + selectedProjectId);
                     }

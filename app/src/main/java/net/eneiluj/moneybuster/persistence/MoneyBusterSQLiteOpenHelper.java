@@ -360,7 +360,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     public void addMemberAndSync(DBMember m) {
         addMember(m);
         DBProject proj = getProject(m.getProjectId());
-        if (proj.getIhmUrl() != null && !proj.getIhmUrl().equals("")) {
+        if (!proj.isLocal()) {
             serverSyncHelper.scheduleSync(true, m.getProjectId());
         }
     }
@@ -401,7 +401,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
         Log.v(TAG, "UPDATE BILL AND SYNC");
         DBProject proj = getProject(m.getProjectId());
-        if (proj.getIhmUrl() != null && !proj.getIhmUrl().equals("")) {
+        if (!proj.isLocal()) {
             serverSyncHelper.scheduleSync(true, m.getProjectId());
         }
     }
@@ -599,7 +599,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         }
         Log.v(TAG, "UPDATE BILL AND SYNC");
         DBProject proj = getProject(bill.getProjectId());
-        if (proj.getIhmUrl() != null && !proj.getIhmUrl().equals("")) {
+        if (!proj.isLocal()) {
             serverSyncHelper.scheduleSync(true, bill.getProjectId());
         }
     }

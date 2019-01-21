@@ -70,16 +70,7 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
             }
 
             dbBill.setWhat(Html.toHtml(spannableString));
-            // TODO search by sub title
-            /*spannableString = new SpannableString(dbLogjob.getCategory());
-            matcher = Pattern.compile("(" + searchQuery + ")", Pattern.CASE_INSENSITIVE).matcher(spannableString);
-            while (matcher.find()) {
-                spannableString.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.primary_dark)),
-                        matcher.start(), matcher.end(), 0);
-            }
 
-            dbLogjob.setCategory(Html.toHtml(spannableString));
-            */
             spannableString = new SpannableString(dbBill.getDate());
             matcher = Pattern.compile("(" + searchQuery + ")", Pattern.CASE_INSENSITIVE).matcher(spannableString);
             while (matcher.find()) {

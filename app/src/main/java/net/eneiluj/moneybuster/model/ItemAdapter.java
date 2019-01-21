@@ -145,27 +145,6 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
 
             nvHolder.syncIcon.setVisibility(bill.getState() == DBBill.STATE_OK ? View.INVISIBLE : View.VISIBLE);
-
-            //int nb = db.getLogjobLocationCount(bill.getId());
-            // TODO show "needsync" if needed
-
-            /*if (prefs.getBoolean(db.getContext().getString(R.string.pref_key_shownbsynced), false)) {
-                int nbSent = db.getNbSync(bill.getId());
-                nbTxt = (nbSent == 0) ? "" : String.valueOf(nbSent);
-                if (BillsListViewActivity.DEBUG) {
-                    Log.d(TAG, "[onBind : " + nbSent + " nbSync]");
-                }
-                nvHolder.nbSync.setText(nbTxt);
-                visible = (nbSent == 0) ? View.INVISIBLE : View.VISIBLE;
-                nvHolder.syncIcon.setVisibility(visible);
-                nvHolder.nbSync.setVisibility(visible);
-                //nvHolder.syncSpacer.setVisibility(View.VISIBLE);
-            }
-            else {
-                nvHolder.syncIcon.setVisibility(View.GONE);
-                nvHolder.nbSync.setVisibility(View.GONE);
-                //nvHolder.syncSpacer.setVisibility(View.GONE);
-            }*/
         }
     }
 

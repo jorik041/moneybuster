@@ -23,6 +23,10 @@ public class DBProject implements Serializable {
         this.password = password;
     }
 
+    public boolean isLocal() {
+        return (ihmUrl == null || ihmUrl.equals(""));
+    }
+
     public String getPassword() {
         return password;
     }

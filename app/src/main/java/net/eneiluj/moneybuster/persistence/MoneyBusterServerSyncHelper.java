@@ -169,7 +169,7 @@ public class MoneyBusterServerSyncHelper {
             if (isSyncPossible()) {
                 long lastId = PreferenceManager.getDefaultSharedPreferences(appContext).getLong("selected_project", 0);
                 DBProject proj = dbHelper.getProject(lastId);
-                if (lastId != 0 && proj != null && proj.getIhmUrl() != null && !proj.getIhmUrl().equals("")) {
+                if (lastId != 0 && proj != null && !proj.isLocal()) {
                     scheduleSync(false, lastId);
                 }
             }

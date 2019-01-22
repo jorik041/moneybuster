@@ -34,7 +34,7 @@ xmlns:tools="http://schemas.android.com/tools"
 
     <android.support.v7.preference.ListPreference
         android:id="@+id/editPayer"
-        android:icon="@drawable/ic_account_circle_grey_24dp"
+        android:icon="@drawable/ic_person_grey_24dp"
         android:dialogTitle="@string/setting_payer"
         android:key="payer"
         android:singleLine="true"

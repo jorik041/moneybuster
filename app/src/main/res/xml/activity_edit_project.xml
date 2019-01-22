@@ -16,7 +16,7 @@
 
     <EditTextPreference
         android:id="@+id/editProjectPassword"
-        android:icon="@android:drawable/ic_lock_lock"
+        android:icon="@drawable/ic_lock_grey_24dp"
         android:dialogMessage="@string/setting_password_long"
         android:dialogTitle="@string/setting_password"
         android:key="password"

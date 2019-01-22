@@ -22,8 +22,8 @@
     <string name="setting_project_type">Type de projet</string>
     <string name="project_type_local">Projet local</string>
     <string name="project_type_ihatemoney">Projet IHateMoney</string>
-    <string name="setting_project_url_long">URL de l\'instance IHateMoney hébergeant le projet</string>
-    <string name="setting_project_url">URL d\'IHateMoney</string>
+    <string name="setting_project_url_long">Adresse de l\'instance IHateMoney hébergeant le projet</string>
+    <string name="setting_project_url">Adresse IHateMoney</string>
     <string name="setting_project_name">Nom du projet</string>
     <string name="setting_project_name_long">Nom affiché dans l\'interface utilisateur</string>
     <string name="setting_password_long">Aussi appelé \"code d\'accès\"</string>

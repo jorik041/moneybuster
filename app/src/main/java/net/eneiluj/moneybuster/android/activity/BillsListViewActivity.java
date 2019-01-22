@@ -243,6 +243,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     @Override
     protected void onResume() {
+        super.onResume();
         // refresh and sync every time the activity gets visible
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         long selectedProjectId = preferences.getLong("selected_project", 0);
@@ -254,8 +255,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         if (DEBUG) { Log.d(TAG, "[onResume]"); }
         synchronize();
 
-        super.onResume();
-
         registerBroadcastReceiver();
     }
 
@@ -265,8 +264,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     @Override
     protected void onPause() {
         if (DEBUG) { Log.d(TAG, "[onPause]"); }
-        unregisterReceiver(mBroadcastReceiver);
         super.onPause();
+        try {
+            unregisterReceiver(mBroadcastReceiver);
+        }
+        catch (RuntimeException e) {
+            if (DEBUG) { Log.d(TAG, "RECEIVER PROBLEM, let's ignore it..."); }
+        }
     }
 
 

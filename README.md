@@ -3,6 +3,8 @@ Shared budget manager able to sync with [IHateMoney](https://github.com/spiral-p
 
 [![Crowdin](https://d322cqt584bo4o.cloudfront.net/moneybuster/localized.svg)](https://crowdin.com/project/moneybuster)
 
+[[_TOC_]]
+
 This is still a beta version.
 
 This app is originally a fork of [PhoneTrack-Android](https://gitlab.com/eneiluj/phonetrack-android/) which is itself a fork of
@@ -20,7 +22,7 @@ This means you can choose where your data is going and preserve your privacy.
 
 ## Install
 
-* APK Direct download : [releases in project wiki](https://gitlab.com/eneiluj/moneybuster/wikis/home#releases)
+* APK Direct download : [builds in Gitlab CI jobs artifacts](https://gitlab.com/eneiluj/moneybuster/pipelines)
 * Coming soon : [![MoneyBuster App on fdroid.org](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/12078870063ba70ddae219b6187bfcb7/fd.png)](https://f-droid.org/packages/net.eneiluj.moneybuster/)
 
 ## Build
@@ -43,11 +45,24 @@ Then open/import the project in Android studio and build it.
 
 ## :eyes: Screenshots
 
-In the [project wiki](https://gitlab.com/eneiluj/moneybuster/wikis).
+![1](uploads/4cc6bd1f49d77a84b1881b97c04847ac/1.png) ![2](uploads/501a1204a978be980e261e8ddfb7d906/2.png)
+
+![3](uploads/3a541720d5ea2ffdd0d4c15db8db726c/3.png) ![4](uploads/48a1ff39bdfe174d01d3d05a791a167a/4.png)
+
+![5](uploads/11652084266faad1bb76ea2fc7656d58/5.png) ![6](uploads/0e3f2051691217447f412b9f507412e6/6.png)
+
+![7](uploads/e837e86534aaad08e1f277798bbe8df3/7.png)
 
 ## Features
-* Theming
-* Translated in many languages on [Crowdin](https://crowdin.com/project/moneybuster)
+* manage projects (add/remove/create/delete/edit)
+* manage members (add/remove/edit)
+* manage bills (add/remove/edit)
+* search bills (by payer, name, amount, date)
+* project statistics
+* project settle plan
+* share statistics and settle plan
+* dark theme
+* translated in many languages on [Crowdin](https://crowdin.com/project/moneybuster)
 
 
 ## :link: Requirements

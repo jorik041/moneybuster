@@ -1,6 +1,8 @@
 # MoneyBuster for Android
 Shared budget manager able to sync with [IHateMoney](https://github.com/spiral-project/ihatemoney/)
 
+[![Crowdin](https://d322cqt584bo4o.cloudfront.net/moneybuster/localized.svg)](https://crowdin.com/project/moneybuster)
+
 This is still a beta version.
 
 This app is originally a fork of [PhoneTrack-Android](https://gitlab.com/eneiluj/phonetrack-android/) which is itself a fork of

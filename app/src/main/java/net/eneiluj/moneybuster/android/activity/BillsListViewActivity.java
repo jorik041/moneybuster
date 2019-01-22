@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -82,7 +83,7 @@ import static net.eneiluj.moneybuster.util.SupportUtil.settleBills;
 
 public class BillsListViewActivity extends AppCompatActivity implements ItemAdapter.BillClickListener {
 
-    private final static int PERMISSION_LOCATION = 1;
+    private final static int PERMISSION_FOREGROUND = 1;
     public static boolean DEBUG = true;
     public static final String BROADCAST_EXTRA_PARAM = "net.eneiluj.moneybuster.broadcast_extra_param";
     public static final String BROADCAST_ERROR_MESSAGE = "net.eneiluj.moneybuster.broadcast_error_message";
@@ -215,8 +216,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         setupMembersNavigationList(categoryAdapterSelectedItem);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            if (DEBUG) { Log.d(TAG, "[request 1 permission]"); }
-            ActivityCompat.requestPermissions(BillsListViewActivity.this, new String[]{Manifest.permission.FOREGROUND_SERVICE}, PERMISSION_FOREGROUND_SERVICE);
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                if (DEBUG) { Log.d(TAG, "[request foreground permission]"); }
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{Manifest.permission.FOREGROUND_SERVICE},
+                        PERMISSION_FOREGROUND
+                );
+            }
         }
 
         /*Map<String, Integer> enabled = db.getEnabledCount();

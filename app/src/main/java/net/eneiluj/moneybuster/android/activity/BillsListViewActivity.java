@@ -313,8 +313,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     while (i < projects.size() && (url == null || url.equals(""))) {
                         url = projects.get(i).getIhmUrl();
                     }
-                    if (url == null || url.equals("")) {
+                    if (url != null && !url.equals("")) {
                         newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, url);
+                    }
+                    else {
+                        newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "https://ihatemoney.org");
                     }
                 } else {
                     newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "https://ihatemoney.org");

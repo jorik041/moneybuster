@@ -254,7 +254,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         //ImageView addButton = getActivity().findViewById(R.id.menu_create);
         final ImageView addButton = (ImageView) menu.findItem(R.id.menu_create).getActionView();
         addButton.setImageResource(R.drawable.ic_add_circle_white_24dp);
-        addButton.setPadding(20,0,20,0);
+        addButton.setPadding(40,0,40,0);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -253,7 +253,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         inflater.inflate(R.menu.menu_new_project_fragment, menu);
         //ImageView addButton = getActivity().findViewById(R.id.menu_create);
         final ImageView addButton = (ImageView) menu.findItem(R.id.menu_create).getActionView();
-        addButton.setImageResource(android.R.drawable.ic_menu_add);
+        addButton.setImageResource(R.drawable.ic_add_circle_white_24dp);
         addButton.setPadding(20,0,20,0);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override

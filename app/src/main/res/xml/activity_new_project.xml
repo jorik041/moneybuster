@@ -4,7 +4,7 @@
 
     <android.support.v7.preference.ListPreference
         android:id="@+id/newProjectType"
-        android:icon="@drawable/ic_account_circle_grey_24dp"
+        android:icon="@drawable/ic_class_white_24dp"
         android:dialogTitle="@string/setting_project_type"
         android:key="type"
         android:persistent="false"
@@ -25,7 +25,7 @@
 
     <EditTextPreference
         android:id="@+id/newProjectId"
-        android:icon="@drawable/ic_title_grey_24dp"
+        android:icon="@drawable/ic_library_books_white_24dp"
         android:dialogMessage="@string/setting_project_id_long"
         android:dialogTitle="@string/setting_project_id"
         android:key="id"
@@ -37,7 +37,7 @@
 
     <EditTextPreference
         android:id="@+id/newProjectPassword"
-        android:icon="@android:drawable/ic_lock_lock"
+        android:icon="@drawable/ic_lock_grey_24dp"
         android:dialogMessage="@string/setting_password_long"
         android:dialogTitle="@string/setting_password"
         android:key="password"
@@ -50,7 +50,7 @@
 
     <CheckBoxPreference
         android:id="@+id/newProjectCreateRemote"
-        android:icon="@android:drawable/ic_input_add"
+        android:icon="@drawable/ic_cloud_grey_24dp"
         android:key="createonserver"
         android:title="@string/setting_create_project_title"
         android:summary="@string/setting_create_project_summary" />

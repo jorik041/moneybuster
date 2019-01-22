@@ -5,7 +5,7 @@
 
     <item
         android:id="@+id/menu_create"
-        android:icon="@android:drawable/ic_menu_add"
+        android:icon="@drawable/ic_add_circle_white_24dp"
         android:orderInCategory="110"
         android:title="@string/menu_save_project"
         compat:actionViewClass="android.widget.ImageView"

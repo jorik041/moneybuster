@@ -1027,7 +1027,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             String.valueOf(m.getId()),
                             m.getName()+" ("+sign+balanceStr+")"+weightStr,
                             membersNbBills.get(m.getId()),
-                            R.drawable.ic_account_circle_grey_24dp,
+                            R.drawable.ic_person_grey_24dp,
                             m.isActivated()
                     );
 

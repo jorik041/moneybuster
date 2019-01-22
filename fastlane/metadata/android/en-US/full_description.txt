@@ -29,4 +29,4 @@ The app runs on Android>=4.1
 
 # Alternatives
 
-Tricount, Cospender, Splitwise etc... which are probably selling your private data.
+Tricount, Cospender, Splitwise etc... which are not FOSS and force you to give them your data.

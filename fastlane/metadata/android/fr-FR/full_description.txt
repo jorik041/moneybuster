@@ -30,4 +30,5 @@ L'appli tourne sur Android>=4.1
 
 # Alternatives
 
-Tricount, Cospender, Splitwise etc... qui vendent probablement vos données privées.
+Tricount, Cospender, Splitwise etc... qui ne sont pas des FOSS
+(Free or Open Source Software) et vous obligent à leur donner vos données privées.

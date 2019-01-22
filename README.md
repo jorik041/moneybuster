@@ -3,8 +3,6 @@ Shared budget manager able to sync with [IHateMoney](https://github.com/spiral-p
 
 [![Crowdin](https://d322cqt584bo4o.cloudfront.net/moneybuster/localized.svg)](https://crowdin.com/project/moneybuster)
 
-[[_TOC_]]
-
 This is still a beta version.
 
 This app is originally a fork of [PhoneTrack-Android](https://gitlab.com/eneiluj/phonetrack-android/) which is itself a fork of
@@ -15,6 +13,21 @@ What's different from other shared budget managers ?
 
 You can keep your project local or make it synchronize with an IHateMoney instance.
 This means you can choose where your data is going and preserve your privacy.
+
+## Features
+* manage projects (add/remove/create/delete/edit)
+* manage members (add/remove/edit)
+* manage bills (add/remove/edit)
+* search bills (by payer, name, amount, date)
+* project statistics
+* project settle plan
+* share statistics and settle plan
+* dark theme
+* translated in many languages on [Crowdin](https://crowdin.com/project/moneybuster)
+
+## :link: Requirements
+* Android >= 4.1
+* Some friends
 
 ## User documentation
 
@@ -44,30 +57,13 @@ Then open/import the project in Android studio and build it.
 
 
 ## :eyes: Screenshots
+![1](https://gitlab.com/eneiluj/moneybuster/master/uploads/4cc6bd1f49d77a84b1881b97c04847ac/1.png) ![2](https://gitlab.com/eneiluj/moneybuster/master/uploads/501a1204a978be980e261e8ddfb7d906/2.png)
 
-![1](uploads/4cc6bd1f49d77a84b1881b97c04847ac/1.png) ![2](uploads/501a1204a978be980e261e8ddfb7d906/2.png)
+![3](https://gitlab.com/eneiluj/moneybuster/master/uploads/3a541720d5ea2ffdd0d4c15db8db726c/3.png) ![4](https://gitlab.com/eneiluj/moneybuster/master/uploads/48a1ff39bdfe174d01d3d05a791a167a/4.png)
 
-![3](uploads/3a541720d5ea2ffdd0d4c15db8db726c/3.png) ![4](uploads/48a1ff39bdfe174d01d3d05a791a167a/4.png)
+![5](https://gitlab.com/eneiluj/moneybuster/master/uploads/11652084266faad1bb76ea2fc7656d58/5.png) ![6](https://gitlab.com/eneiluj/moneybuster/master/uploads/0e3f2051691217447f412b9f507412e6/6.png)
 
-![5](uploads/11652084266faad1bb76ea2fc7656d58/5.png) ![6](uploads/0e3f2051691217447f412b9f507412e6/6.png)
-
-![7](uploads/e837e86534aaad08e1f277798bbe8df3/7.png)
-
-## Features
-* manage projects (add/remove/create/delete/edit)
-* manage members (add/remove/edit)
-* manage bills (add/remove/edit)
-* search bills (by payer, name, amount, date)
-* project statistics
-* project settle plan
-* share statistics and settle plan
-* dark theme
-* translated in many languages on [Crowdin](https://crowdin.com/project/moneybuster)
-
-
-## :link: Requirements
-* Android >= 4.1
-* Some friends
+![7](https://gitlab.com/eneiluj/moneybuster/master/uploads/e837e86534aaad08e1f277798bbe8df3/7.png)
 
 ## :notebook: License
 This project is licensed under the [GNU GENERAL PUBLIC LICENSE](/LICENSE).

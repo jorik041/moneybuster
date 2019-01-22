@@ -329,29 +329,30 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabAddMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(
-                        new ContextThemeWrapper(
-                                view.getContext(),
-                                R.style.Theme_AppCompat_DayNight_Dialog
-                        )
-                );
-                builder.setTitle(getString(R.string.add_member_dialog_title));
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                final long selectedProjectId = preferences.getLong("selected_project", 0);
 
-                // Set up the input
-                final EditText input = new EditText(getApplicationContext());
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                input.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
-                builder.setView(input);
+                if (selectedProjectId != 0) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(
+                            new ContextThemeWrapper(
+                                    view.getContext(),
+                                    R.style.Theme_AppCompat_DayNight_Dialog
+                            )
+                    );
+                    builder.setTitle(getString(R.string.add_member_dialog_title));
 
-                // Set up the buttons
-                builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String memberName = input.getText().toString();
-                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                        long selectedProjectId = preferences.getLong("selected_project", 0);
+                    // Set up the input
+                    final EditText input = new EditText(getApplicationContext());
+                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    input.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                    builder.setView(input);
 
-                        if (selectedProjectId != 0) {
+                    // Set up the buttons
+                    builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String memberName = input.getText().toString();
+
                             if (!memberName.equals("")) {
                                 List<DBMember> members = db.getMembersOfProject(selectedProjectId, null);
                                 List<String> memberNames = new ArrayList<>();
@@ -370,20 +371,21 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             } else {
                                 showToast(getString(R.string.member_edit_empty_name));
                             }
-                        }
-                        fabMenuDrawerAdd.close(false);
-                        //new LoadCategoryListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                    }
-                });
-                builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                        fabMenuDrawerAdd.close(false);
-                    }
-                });
 
-                builder.show();
+                            fabMenuDrawerAdd.close(false);
+                            //new LoadCategoryListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        }
+                    });
+                    builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                            fabMenuDrawerAdd.close(false);
+                        }
+                    });
+
+                    builder.show();
+                }
             }
         });
         fabMenu.setOnClickListener(new View.OnClickListener() {
@@ -430,30 +432,32 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabRemoveProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(
-                        new ContextThemeWrapper(
-                                view.getContext(),
-                                R.style.Theme_AppCompat_DayNight_Dialog
-                        )
-                );
-                builder.setTitle(getString(R.string.confirm_remove_project_dialog_title));
-                builder.setMessage(getString(R.string.confirm_remove_project_dialog_message));
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                final long selectedProjectId = preferences.getLong("selected_project", 0);
+                DBProject proj = db.getProject(selectedProjectId);
 
-                // Set up the buttons
-                builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                        long selectedProjectId = preferences.getLong("selected_project", 0);
+                if (selectedProjectId != 0) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(
+                            new ContextThemeWrapper(
+                                    view.getContext(),
+                                    R.style.Theme_AppCompat_DayNight_Dialog
+                            )
+                    );
+                    builder.setTitle(getString(R.string.confirm_remove_project_dialog_title));
+                    if (!proj.isLocal()) {
+                        builder.setMessage(getString(R.string.confirm_remove_project_dialog_message));
+                    }
 
-                        if (selectedProjectId != 0) {
+                    // Set up the buttons
+                    builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
                             db.deleteProject(selectedProjectId);
                             List<DBProject> dbProjects = db.getProjects();
                             if (dbProjects.size() > 0) {
                                 setSelectedProject(dbProjects.get(0).getId());
                                 Log.v(TAG, "set selection 0");
-                            }
-                            else {
+                            } else {
                                 setSelectedProject(0);
                             }
 
@@ -461,16 +465,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             //drawerLayout.closeDrawers();
                             refreshLists();
                         }
-                    }
-                });
-                builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                    });
+                    builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
 
-                builder.show();
+                    builder.show();
+                }
             }
         });
 

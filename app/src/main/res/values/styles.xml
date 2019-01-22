@@ -60,4 +60,9 @@
         <item name="android:layout_gravity">end|right</item>
 
     </style>
+
+    <style name="checkboxTheme" parent="Theme.AppCompat">
+        <item name="colorAccent">@color/green</item>
+        <item name="android:textColorSecondary">@color/red</item>
+    </style>
 </resources>

@@ -215,39 +215,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         setupNavigationMenu();
         setupMembersNavigationList(categoryAdapterSelectedItem);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                if (DEBUG) { Log.d(TAG, "[request foreground permission]"); }
-                ActivityCompat.requestPermissions(
-                        this,
-                        new String[]{Manifest.permission.FOREGROUND_SERVICE},
-                        PERMISSION_FOREGROUND
-                );
-            }
-        }
-
-        /*Map<String, Integer> enabled = db.getEnabledCount();
-        int nbEnabledLogjobs = enabled.containsKey("1") ? enabled.get("1") : 0;
-        if (nbEnabledLogjobs > 0) {
-            // start loggerservice !
-            Intent intent = new Intent(BillsListViewActivity.this, LoggerService.class);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                startService(intent);
-            } else {
-                startForegroundService(intent);
-            }
-        }*/
-
-
         // create project if there isn't any
         if (db.getProjects().isEmpty()) {
             Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
             newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "https://ihatemoney.org");
             startActivityForResult(newProjectIntent, addproject);
         }
-
     }
 
     @Override

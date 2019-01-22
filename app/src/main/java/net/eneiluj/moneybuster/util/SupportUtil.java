@@ -119,6 +119,17 @@ public class SupportUtil {
         return true;
     }
 
+    public static boolean isDouble(String s) {
+        try {
+            Double.parseDouble(s);
+        } catch(NumberFormatException e) {
+            return false;
+        } catch(NullPointerException e) {
+            return false;
+        }
+        return true;
+    }
+
     public final static boolean isValidEmail(CharSequence target) {
         if (target == null)
             return false;

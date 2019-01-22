@@ -655,8 +655,8 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
             args.add("%" + query + "%");
             args.add("%" + query + "%");
             String whereStr = "(" + key_what + " LIKE ? OR " + key_date + " LIKE ?";
-            if (SupportUtil.isInteger(query.toString())) {
-                whereStr += " OR (" + key_amount + " < (? + 10) AND " + key_amount + " > (? - 10))";
+            if (SupportUtil.isDouble(query.toString())) {
+                whereStr += " OR (" + key_amount + " <= (? + 10) AND " + key_amount + " >= (? - 10))";
                 args.add(query.toString());
                 args.add(query.toString());
             }

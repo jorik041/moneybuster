@@ -31,7 +31,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String TAG = MoneyBusterSQLiteOpenHelper.class.getSimpleName();
 
-    private static final int database_version = 8;
+    private static final int database_version = 1;
     private static final String database_name = "IHATEMONEY";
 
     private static final String table_members = "MEMBERS";
@@ -227,10 +227,10 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Get a single logjob by ID
+     * Get a project by ID
      *
-     * @param id int - ID of the requested log job
-     * @return requested log job
+     * @param id int - ID of the requested project
+     * @return requested project
      */
     public DBProject getProject(long id) {
         List<DBProject> projects = getProjectsCustom(key_id + " = ?", new String[]{String.valueOf(id)}, null);
@@ -261,7 +261,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     private List<DBProject> getProjectsCustom(@NonNull String selection, @NonNull String[] selectionArgs, @Nullable String orderBy) {
         SQLiteDatabase db = getReadableDatabase();
         if (selectionArgs.length > 2) {
-            Log.v("Logjob", selection + "   ----   " + selectionArgs[0] + " " + selectionArgs[1] + " " + selectionArgs[2]);
+            Log.v("Project", selection + "   ----   " + selectionArgs[0] + " " + selectionArgs[1] + " " + selectionArgs[2]);
         }
         Cursor cursor = db.query(table_projects, columnsProjects, selection, selectionArgs, null, null, orderBy);
         List<DBProject> projects = new ArrayList<>();
@@ -273,10 +273,10 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Creates a DBLogjob object from the current row of a Cursor.
+     * Creates a DBProject object from the current row of a Cursor.
      *
      * @param cursor database cursor
-     * @return DBLogjob
+     * @return DBProject
      */
     @NonNull
     private DBProject getProjectFromCursor(@NonNull Cursor cursor) {
@@ -778,12 +778,5 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         db.delete(table_billowers,
                 key_id + " = ?",
                 new String[]{String.valueOf(id)});
-    }
-
-    /**
-     * Notify about changed logjob.
-     */
-    void notifySessionsChanged() {
-        // update the widgets
     }
 }

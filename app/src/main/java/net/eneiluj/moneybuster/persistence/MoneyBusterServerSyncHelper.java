@@ -680,7 +680,6 @@ public class MoneyBusterServerSyncHelper {
             for (ICallback callback : callbacks) {
                 callback.onFinish();
             }
-            dbHelper.notifySessionsChanged();
             // start next sync if scheduled meanwhile
             if (syncScheduled) {
                 scheduleSync(false, project.getId());

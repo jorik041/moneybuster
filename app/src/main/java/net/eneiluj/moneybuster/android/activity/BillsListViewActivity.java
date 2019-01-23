@@ -97,16 +97,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     public final static String EDITED_PROJECT = "net.eneiluj.moneybuster.edited_project";
     public final static String DELETED_PROJECT = "net.eneiluj.moneybuster.deleted_project";
     public final static String DELETED_BILL = "net.eneiluj.moneybuster.deleted_bill";
-    public final static String CREDENTIALS_CHANGED = "net.eneiluj.moneybuster.CREDENTIALS_CHANGED";
     public static final String ADAPTER_KEY_ALL = "all";
-    public static final String ADAPTER_KEY_ENABLED = "enabled";
-    public static final String ADAPTER_KEY_PHONETRACK = "pt";
-    public static final String ADAPTER_KEY_CUSTOM = "custom";
-    public static final String CATEGORY_PHONETRACK = "pt";
-    public static final String CATEGORY_CUSTOM = "cu";
 
-    public final static String UPDATED_LOGJOBS = "net.eneiluj.moneybuster.UPDATED_LOGJOBS";
-    public final static String UPDATED_LOGJOB_ID = "net.eneiluj.moneybuster.UPDATED_LOGJOB_ID";
 
     private static final String SAVED_STATE_NAVIGATION_SELECTION = "navigationSelection";
     private static final String SAVED_STATE_NAVIGATION_ADAPTER_SLECTION = "navigationAdapterSelection";
@@ -123,7 +115,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     //private HashMap<Long, Double> membersBalance;
 
 
-    @BindView(R.id.logjobsListActivityActionBar)
+    @BindView(R.id.billsListActivityActionBar)
     Toolbar toolbar;
     @BindView(R.id.drawerLayout)
     DrawerLayout drawerLayout;
@@ -1132,7 +1124,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
 
             /**
-             * Delete logjob if logjob is swiped to left or right
+             * Delete bill if it is swiped to left or right
              *
              * @param viewHolder RecyclerView.ViewHoler
              * @param direction  int
@@ -1193,10 +1185,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         break;
                     }
                     case ItemTouchHelper.RIGHT: {
-                        final DBBill dbBill = (DBBill) adapter.getItem(viewHolder.getAdapterPosition());
-                        //db.toggleEnabled(dbBill, syncCallBack);
+                        //final DBBill dbBill = (DBBill) adapter.getItem(viewHolder.getAdapterPosition());
+
                         refreshLists();
-                        //notifyLoggerService(dbBill.getId());
+
                         break;
                     }
                 }
@@ -1453,19 +1445,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         }
     }
 
-    /*@Override
-    public void onLogjobEnabledClick(int position, View view) {
-        DBLogjob logjob = (DBLogjob) adapter.getItem(position);
-        if (logjob != null) {
-            MoneyBusterSQLiteOpenHelper db = MoneyBusterSQLiteOpenHelper.getInstance(view.getContext());
-            db.toggleEnabled(logjob, syncCallBack);
-            adapter.notifyItemChanged(position);
-            refreshLists();
-
-            notifyLoggerService(logjob.getId());
-        }
-    }*/
-
     @Override
     public void onBillInfoButtonClick(int position, View view) {
         DBBill bill = (DBBill) adapter.getItem(position);
@@ -1572,13 +1551,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         }
     }
 
-    private void notifyLoggerService(long jobId) {
-        /*Intent intent = new Intent(BillsListViewActivity.this, LoggerService.class);
-        intent.putExtra(UPDATED_LOGJOBS, true);
-        intent.putExtra(UPDATED_LOGJOB_ID, jobId);
-        startService(intent);*/
-    }
-
     /**
      * Handler for the MultiSelect Actions
      */
@@ -1620,12 +1592,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         else {
                             db.setBillState(dbBill.getId(), DBBill.STATE_DELETED);
                         }
-                        // Not needed because of dbsync
-                        //adapter.remove(logjob);
-                        //notifyLoggerService(logjob.getId());
                     }
-                    mode.finish(); // Action picked, so close the CAB
-                    //after delete selection has to be cleared
+                    mode.finish();
+                    // delete selection has to be cleared
                     searchView.setIconified(true);
                     refreshLists();
                     return true;

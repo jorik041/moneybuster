@@ -51,13 +51,8 @@ public class EditProjectActivity extends AppCompatActivity implements EditProjec
         return getIntent().getLongExtra(PARAM_PROJECT_ID, 0);
     }
 
-    /**
-     * Starts the logjob fragment for an existing logjob or a new logjob.
-     * The actual behavior is triggered by the activity's intent.
-     */
     private void launchEditProjectFragment() {
         long projectId = getProjectId();
-        // save state of the fragment in order to resume with the same logjob and originalLogjob
         Fragment.SavedState savedState = null;
         if (fragment != null) {
             savedState = getSupportFragmentManager().saveFragmentInstanceState(fragment);

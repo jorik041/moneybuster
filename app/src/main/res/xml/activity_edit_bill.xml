@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="bill_preferences">
-<!--
-xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:key="logjob_preferences"
-    android:summary="Logjob settings"
-    android:title="Logjob settings"
--->
+
 
     <EditTextPreference
         android:id="@+id/editWhat"

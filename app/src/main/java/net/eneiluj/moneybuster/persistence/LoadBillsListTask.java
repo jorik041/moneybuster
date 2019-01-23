@@ -49,11 +49,6 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
         }
 
         return fillListTitle(billList);
-        /*if (category.category == null) {
-            return fillListByTime(logjobList);
-        } else {
-            return fillListByCategory(logjobList);
-        }*/
     }
 
     private DBBill colorTheBill(DBBill dbBill) {

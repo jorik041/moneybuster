@@ -259,15 +259,6 @@ public class EditBillFragment extends PreferenceFragmentCompat {
     @Override
     public void onPause() {
         super.onPause();
-        //saveBill(null);
-        //notifyLoggerService(logjob.getId());
-    }
-
-    private void notifyLoggerService(long jobId) {
-        /*Intent intent = new Intent(getActivity(), LoggerService.class);
-        intent.putExtra(BillsListViewActivity.UPDATED_LOGJOBS, true);
-        intent.putExtra(BillsListViewActivity.UPDATED_LOGJOB_ID, jobId);
-        getActivity().startService(intent);*/
     }
 
     @Override
@@ -383,7 +374,6 @@ public class EditBillFragment extends PreferenceFragmentCompat {
             } else {
                 System.out.println("====== update bill");
                 db.updateBillAndSync(bill, newPayerId, newAmount, newDate, newWhat, newOwersIds);
-                //System.out.println("AFFFFFFTTTTTTEEERRRRR : "+logjob);
                 //listener.onBillUpdated(bill);
                 //listener.close();
             }

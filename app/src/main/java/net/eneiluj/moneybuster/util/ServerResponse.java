@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Provides entity classes for handling server responses with a single logjob ({@link ProjectResponse}) or a list of ihatemoney
+ * Provides entity classes for handling server responses
  */
 public class ServerResponse {
 

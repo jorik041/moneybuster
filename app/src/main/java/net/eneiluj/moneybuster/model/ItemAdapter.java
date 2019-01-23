@@ -129,14 +129,6 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             nvHolder.billSubtitle.setText(Html.fromHtml(subtitle));
 
-            /*nvHolder.logjobEnabled.setChecked(bill.isEnabled());
-            nvHolder.logjobEnabled.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    billClickListener.onLogjobEnabledClick(holder.getAdapterPosition(), view);
-                }
-            });*/
-
             nvHolder.infoButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -204,8 +196,6 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public interface BillClickListener {
         void onBillClick(int position, View v);
-
-        //void onLogjobEnabledClick(int position, View v);
 
         void onBillInfoButtonClick(int position, View v);
 

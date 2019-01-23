@@ -155,7 +155,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private ActionBarDrawerToggle drawerToggle;
     private ItemAdapter adapter = null;
     private NavigationAdapter adapterMembers;
-    private NavigationAdapter.NavigationItem itemAll, itemEnabled, itemPhonetrack, itemCustom, itemUncategorized;
+    private NavigationAdapter.NavigationItem itemAll;
     private Category navigationSelection = new Category(null, null);
     private String navigationOpen = "";
     private ActionMode mActionMode;
@@ -981,7 +981,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private class LoadCategoryListTask extends AsyncTask<Void, Void, List<NavigationAdapter.NavigationItem>> {
         @Override
         protected List<NavigationAdapter.NavigationItem> doInBackground(Void... voids) {
-            itemUncategorized = null;
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             long selectedProjectId = preferences.getLong("selected_project", 0);
 

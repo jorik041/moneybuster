@@ -306,7 +306,7 @@ public class MoneyBusterServerSyncHelper {
 
         @Override
         protected LoginStatus doInBackground(Void... voids) {
-            client = createIHateMoneyClient(); // recreate PhoneTrackClients on every sync in case the connection settings was changed
+            client = createIHateMoneyClient();
             Log.i(getClass().getSimpleName(), "STARTING SYNCHRONIZATION");
             //dbHelper.debugPrintFullDB();
             LoginStatus status = LoginStatus.OK;

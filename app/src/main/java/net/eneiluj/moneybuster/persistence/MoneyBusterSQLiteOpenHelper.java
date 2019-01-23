@@ -243,7 +243,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
      * @return List&lt;DBProject&gt;
      */
     @NonNull
-    @WorkerThread
+    //@WorkerThread
     public List<DBProject> getProjects() {
         return getProjectsCustom("", new String[]{}, default_order);
     }

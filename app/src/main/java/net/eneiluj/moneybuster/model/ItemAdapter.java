@@ -59,7 +59,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     /**
      * Adds the given bill to the top of the list.
      *
-     * @param bill log job that should be added.
+     * @param bill that should be added.
      */
     public void add(@NonNull DBBill bill) {
         itemList.add(0, bill);
@@ -70,7 +70,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     /**
      * Replaces a bill with an updated version
      *
-     * @param bill     log job with the changes.
+     * @param bill with the changes.
      * @param position position in the list of the node
      */
     public void replace(@NonNull DBBill bill, int position) {

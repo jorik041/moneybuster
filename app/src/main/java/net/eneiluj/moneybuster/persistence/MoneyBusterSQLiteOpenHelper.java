@@ -25,7 +25,7 @@ import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.util.SupportUtil;
 
 /**
- * Helps to add, get, update and delete log jobs, sessions, locations with the option to trigger a session Resync with the Server.
+ * Helps to add, get, update and delete bills, members, projects with the option to trigger a sync with the server.
  */
 public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
@@ -238,9 +238,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Returns a list of all sessions in the Database
+     * Returns a list of all projects in the Database
      *
-     * @return List&lt;DBSession&gt;
+     * @return List&lt;DBProject&gt;
      */
     @NonNull
     @WorkerThread
@@ -254,7 +254,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
      * @param selection     A filter declaring which rows to return, formatted as an SQL WHERE clause (excluding the WHERE itself).
      * @param selectionArgs You may include ?s in selection, which will be replaced by the values from selectionArgs, in order that they appear in the selection. The values will be bound as Strings.
      * @param orderBy       How to order the rows, formatted as an SQL ORDER BY clause (excluding the ORDER BY itself). Passing null will use the default sort order, which may be unordered.
-     * @return List of log jobs
+     * @return list of projects
      */
     @NonNull
     @WorkerThread

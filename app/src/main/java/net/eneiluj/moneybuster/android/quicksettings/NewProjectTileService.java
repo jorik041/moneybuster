@@ -9,7 +9,7 @@ import android.service.quicksettings.TileService;
 import net.eneiluj.moneybuster.android.activity.NewProjectActivity;
 
 /**
- * This {@link TileService} adds a quick settings tile that leads to the new logjob view.
+ * This {@link TileService} adds a quick settings tile that leads to the new project view.
  */
 @TargetApi(Build.VERSION_CODES.N)
 public class NewProjectTileService extends TileService {
@@ -24,12 +24,12 @@ public class NewProjectTileService extends TileService {
 
     @Override
     public void onClick() {
-        // create new logjob intent
+        // create new project intent
         final Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
         // ensure it won't open twice if already running
         newProjectIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        // ask to unlock the screen if locked, then start new logjob intent
+        // ask to unlock the screen if locked, then start new project intent
         unlockAndRun(new Runnable() {
             @Override
             public void run() {

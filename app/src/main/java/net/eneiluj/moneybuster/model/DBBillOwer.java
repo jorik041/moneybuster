@@ -2,9 +2,6 @@ package net.eneiluj.moneybuster.model;
 
 import java.io.Serializable;
 
-/**
- * DBLogjob represents a single logjob from the local SQLite database with all attributes.
- */
 public class DBBillOwer implements Serializable {
 
     // key_id, key_billId, key_member_remoteId

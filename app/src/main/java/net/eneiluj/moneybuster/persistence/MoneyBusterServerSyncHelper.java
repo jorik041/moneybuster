@@ -472,7 +472,7 @@ public class MoneyBusterServerSyncHelper {
         }
 
         /**
-         * Pull remote Changes: update or create each remote session and remove remotely deleted sessions.
+         * Pull remote Changes: update or create each remote members/bills and remove remotely deleted ones
          */
         private LoginStatus pullRemoteChanges() {
             Log.d(getClass().getSimpleName(), "pullRemoteChanges("+project+")");
@@ -665,7 +665,7 @@ public class MoneyBusterServerSyncHelper {
                     errorString += e.getClass().getName() + ": " + e.getMessage();
                 }
                 // broadcast the error
-                // if the log job list is not visible, no toast
+                // if the bills list is not visible, no toast
                 Intent intent = new Intent(BROADCAST_PROJECT_SYNC_FAILED);
                 intent.putExtra(BillsListViewActivity.BROADCAST_ERROR_MESSAGE, errorString);
                 appContext.sendBroadcast(intent);

@@ -1337,7 +1337,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     }
 
     /**
-     * Handles the Results of started Sub Activities (Created Logjob, Edited Logjob)
+     * Handles the Results of started Sub Activities
      *
      * @param requestCode int to distinguish between the different Sub Activities
      * @param resultCode  int Return Code

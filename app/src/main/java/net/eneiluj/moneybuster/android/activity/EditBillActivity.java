@@ -30,7 +30,7 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
-            launchLogjobFragment();
+            launchBillFragment();
         } else {
             fragment = (EditBillFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
         }
@@ -49,7 +49,7 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
             getSupportFragmentManager().beginTransaction().detach(fragment).commit();
             fragment = null;
         }
-        launchLogjobFragment();
+        launchBillFragment();
     }
 
     protected long getBillId() {
@@ -61,10 +61,9 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
     }
 
     /**
-     * Starts the logjob fragment for an existing logjob or a new logjob.
-     * The actual behavior is triggered by the activity's intent.
+     * Starts the EditBillFragment for an existing bill or a new bill
      */
-    private void launchLogjobFragment() {
+    private void launchBillFragment() {
         long billId = getBillId();
         if (billId > 0) {
             launchExistingBill(billId);
@@ -74,13 +73,12 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
     }
 
     /**
-     * Starts a {@link EditBillFragment} for an existing logjob.
+     * Starts a {@link EditBillFragment} for an existing bill.
      *
-     * @param billId ID of the existing logjob.
+     * @param billId ID of the existing bill.
      */
 
     protected void launchExistingBill(long billId) {
-        // save state of the fragment in order to resume with the same logjob and originalLogjob
         Fragment.SavedState savedState = null;
         if (fragment != null) {
             savedState = getSupportFragmentManager().saveFragmentInstanceState(fragment);
@@ -96,14 +94,13 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
     }
 
     /**
-     * Starts the {@link EditBillFragment} with a new logjob.
+     * Starts the {@link EditBillFragment} with a new bill.
      *
      */
 
     protected void launchNewBill(long projectId) {
         Intent intent = getIntent();
 
-        //DBLogjob newLogjob = new DBLogjob(0, "",  "https://yourserver.org/page.php?lat=%LAT", "", "", 60, 5, 50, false, false, 0);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String newDate = sdf.format(new Date());
         DBBill newBill = new DBBill(0, 0, projectId, 0, 0, newDate, "", DBBill.STATE_ADDED);
@@ -119,12 +116,6 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
     public void onBackPressed() {
         close();
     }
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //getMenuInflater().inflate(R.menu.menu_logjob_activity, menu);
-        //return super.onCreateOptionsMenu(menu);
-    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DBLogjob represents a single logjob from the local SQLite database with all attributes.
- */
 public class DBBill implements Item, Serializable {
 
     // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what

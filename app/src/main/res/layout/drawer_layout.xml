@@ -156,7 +156,7 @@
                     android:id="@+id/floatingMenuDrawerEdit"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    fab:menu_icon="@drawable/ic_build_white_24dp"
+                    fab:menu_icon="@drawable/ic_more_vert_white_24dp"
                     android:layout_gravity="top|right"
                     android:layout_marginRight="0dp"
                     android:paddingRight="0dp"

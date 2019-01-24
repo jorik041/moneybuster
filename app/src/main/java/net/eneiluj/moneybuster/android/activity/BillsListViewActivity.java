@@ -1533,7 +1533,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
             if (selectedProjectId != 0) {
                 DBProject proj = db.getProject(selectedProjectId);
-                if (!proj.isLocal()) {
+                if (proj != null && !proj.isLocal()) {
                     if (DEBUG) {
                         Log.d(TAG, "SYNC ASKED : " + selectedProjectId);
                     }

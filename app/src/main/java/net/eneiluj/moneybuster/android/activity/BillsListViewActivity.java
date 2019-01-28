@@ -337,7 +337,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     builder.setTitle(getString(R.string.add_member_dialog_title));
 
                     // Set up the input
-                    final EditText input = new EditText(getApplicationContext());
+                    final EditText input = new EditText(new ContextThemeWrapper(
+                            view.getContext(),
+                            R.style.AppThemeDialog
+                    ));
                     input.setInputType(InputType.TYPE_CLASS_TEXT);
                     input.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
                     builder.setView(input);

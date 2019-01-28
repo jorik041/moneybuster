@@ -471,6 +471,9 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
             }
             else {
                 showToast(getString(R.string.error_create_remote_project_helper, message), Toast.LENGTH_LONG);
+                // stop animation
+                ImageView addButton = getActivity().findViewById(R.id.menu_create);
+                addButton.clearAnimation();
             }
         }
 

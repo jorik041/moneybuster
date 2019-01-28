@@ -17,7 +17,7 @@
 
     <DatePickerPreference
         android:id="@+id/editDate"
-        android:icon="@android:drawable/ic_menu_today"
+        android:icon="@drawable/ic_today_grey_24dp"
         android:dialogMessage="@string/setting_date_long"
         android:dialogTitle="@string/setting_date"
         android:key="date"

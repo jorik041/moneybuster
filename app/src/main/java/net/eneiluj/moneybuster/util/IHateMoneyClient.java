@@ -68,16 +68,38 @@ public class IHateMoneyClient {
     }
 
     public ServerResponse.ProjectResponse getProject(CustomCertManager ccm, DBProject project, long lastModified, String lastETag) throws JSONException, IOException {
-        String target = project.getIhmUrl().replaceAll("/+$", "")
-                + "/api/projects/" + project.getRemoteId();
-        //https://ihatemoney.org/api/projects/demo
-        return new ServerResponse.ProjectResponse(requestServer(ccm, target, METHOD_GET, null, null, lastETag, project.getRemoteId(), project.getPassword()));
+        String target;
+        String username = null;
+        String password = null;
+        if (project.getIhmUrl().contains("index.php/apps/spend")) {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId() + "/" + project.getPassword();
+        }
+        else {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId();
+            username = project.getRemoteId();
+            password = project.getPassword();
+        }
+
+        return new ServerResponse.ProjectResponse(requestServer(ccm, target, METHOD_GET, null, null, lastETag, username, password));
     }
 
     public ServerResponse.EditRemoteProjectResponse editRemoteProject(CustomCertManager ccm, DBProject project, String newName, String newEmail, String newPassword) throws IOException {
-        String target = project.getIhmUrl().replaceAll("/+$", "")
-                + "/api/projects/" + project.getRemoteId();
-        //https://ihatemoney.org/api/projects/demo
+        String target;
+        String username = null;
+        String password = null;
+        if (project.getIhmUrl().contains("index.php/apps/spend")) {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId() + "/" + project.getPassword();
+        }
+        else {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId();
+            //https://ihatemoney.org/api/projects/demo
+            username = project.getRemoteId();
+            password = project.getPassword();
+        }
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
         paramKeys.add("name");
@@ -86,12 +108,24 @@ public class IHateMoneyClient {
         paramValues.add(newEmail == null ? "" : newEmail);
         paramKeys.add("password");
         paramValues.add(newPassword == null ? "" : newPassword);
-        return new ServerResponse.EditRemoteProjectResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, project.getRemoteId(), project.getPassword()));
+        return new ServerResponse.EditRemoteProjectResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, username, password));
     }
 
     public ServerResponse.EditRemoteMemberResponse editRemoteMember(CustomCertManager ccm, DBProject project, DBMember member) throws IOException {
-        String target = project.getIhmUrl().replaceAll("/+$", "")
-                + "/api/projects/" + project.getRemoteId() + "/members/" + member.getRemoteId();
+        String target;
+        String username = null;
+        String password = null;
+        if (project.getIhmUrl().contains("index.php/apps/spend")) {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId() + "/"
+                    + project.getPassword() + "/members/" + member.getRemoteId();
+        }
+        else {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId() + "/members/" + member.getRemoteId();
+            username = project.getRemoteId();
+            password = project.getPassword();
+        }
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
         paramKeys.add("name");
@@ -100,14 +134,10 @@ public class IHateMoneyClient {
         paramValues.add(String.valueOf(member.getWeight()));
         paramKeys.add("activated");
         paramValues.add(member.isActivated() ? "true" : "false");
-        return new ServerResponse.EditRemoteMemberResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, project.getRemoteId(), project.getPassword()));
+        return new ServerResponse.EditRemoteMemberResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, username, password));
     }
 
     public ServerResponse.EditRemoteBillResponse editRemoteBill(CustomCertManager ccm, DBProject project, DBBill bill, Map<Long, Long> memberIdToRemoteId) throws IOException {
-        String target = project.getIhmUrl().replaceAll("/+$", "")
-                + "/api/projects/" + project.getRemoteId() + "/bills/" + bill.getRemoteId();
-        //https://ihatemoney.org/api/projects/demo/bills/12
-        // "date=2011-09-10&what=raclette&payer=31&payed_for=31&amount=250"
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
         paramKeys.add("date");
@@ -122,27 +152,74 @@ public class IHateMoneyClient {
         );
         paramKeys.add("amount");
         paramValues.add(String.valueOf(bill.getAmount()));
-        for (long boId : bill.getBillOwersIds()) {
+
+        String target;
+        String username = null;
+        String password = null;
+        if (project.getIhmUrl().contains("index.php/apps/spend")) {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId() + "/"
+                    + project.getPassword() + "/bills/" + bill.getRemoteId();
+
             paramKeys.add("payed_for");
-            paramValues.add(
-                    String.valueOf(
-                            memberIdToRemoteId.get(boId)
-                    )
-            );
+            String payedFor = "";
+            for (long boId : bill.getBillOwersIds()) {
+                payedFor += String.valueOf(memberIdToRemoteId.get(boId)) + ",";
+            }
+            payedFor = payedFor.replaceAll(",$", "");
+            paramValues.add(payedFor);
         }
-        return new ServerResponse.EditRemoteBillResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, project.getRemoteId(), project.getPassword()));
+        else {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId() + "/bills/" + bill.getRemoteId();
+            username = project.getRemoteId();
+            password = project.getPassword();
+
+            for (long boId : bill.getBillOwersIds()) {
+                paramKeys.add("payed_for");
+                paramValues.add(
+                        String.valueOf(
+                                memberIdToRemoteId.get(boId)
+                        )
+                );
+            }
+        }
+        return new ServerResponse.EditRemoteBillResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, username, password));
     }
 
     public ServerResponse.DeleteRemoteProjectResponse deleteRemoteProject(CustomCertManager ccm, DBProject project) throws IOException {
-        String target = project.getIhmUrl().replaceAll("/+$", "")
-                + "/api/projects/" + project.getRemoteId();
-        return new ServerResponse.DeleteRemoteProjectResponse(requestServer(ccm, target, METHOD_DELETE, null,null, null, project.getRemoteId(), project.getPassword()));
+        String target;
+        String username = null;
+        String password = null;
+        if (project.getIhmUrl().contains("index.php/apps/spend")) {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId() + "/" + project.getPassword();
+        }
+        else {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId();
+            username = project.getRemoteId();
+            password = project.getPassword();
+        }
+        return new ServerResponse.DeleteRemoteProjectResponse(requestServer(ccm, target, METHOD_DELETE, null,null, null, username, password));
     }
 
     public ServerResponse.DeleteRemoteBillResponse deleteRemoteBill(CustomCertManager ccm, DBProject project, long billRemoteId) throws IOException {
-        String target = project.getIhmUrl().replaceAll("/+$", "")
-                + "/api/projects/" + project.getRemoteId() + "/bills/" + billRemoteId;
-        return new ServerResponse.DeleteRemoteBillResponse(requestServer(ccm, target, METHOD_DELETE, null,null, null, project.getRemoteId(), project.getPassword()));
+        String target;
+        String username = null;
+        String password = null;
+        if (project.getIhmUrl().contains("index.php/apps/spend")) {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId() + "/"
+                    + project.getPassword() + "/bills/" + billRemoteId;
+        }
+        else {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId() + "/bills/" + billRemoteId;
+            username = project.getRemoteId();
+            password = project.getPassword();
+        }
+        return new ServerResponse.DeleteRemoteBillResponse(requestServer(ccm, target, METHOD_DELETE, null,null, null, username, password));
     }
 
     public ServerResponse.CreateRemoteProjectResponse createRemoteProject(CustomCertManager ccm, DBProject project) throws IOException {
@@ -162,10 +239,6 @@ public class IHateMoneyClient {
     }
 
     public ServerResponse.CreateRemoteBillResponse createRemoteBill(CustomCertManager ccm, DBProject project, DBBill bill, Map<Long, Long> memberIdToRemoteId) throws IOException {
-        String target = project.getIhmUrl().replaceAll("/+$", "")
-                + "/api/projects/" + project.getRemoteId() + "/bills";
-        //https://ihatemoney.org/api/projects/demo/bills/12
-        // "date=2011-09-10&what=raclette&payer=31&payed_for=31&amount=250"
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
         paramKeys.add("date");
@@ -180,38 +253,98 @@ public class IHateMoneyClient {
         );
         paramKeys.add("amount");
         paramValues.add(String.valueOf(bill.getAmount()));
-        for (long boId : bill.getBillOwersIds()) {
+
+        String target;
+        String username = null;
+        String password = null;
+        if (project.getIhmUrl().contains("index.php/apps/spend")) {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId() + "/"
+                    + project.getPassword() + "/bills";
+
             paramKeys.add("payed_for");
-            paramValues.add(
-                    String.valueOf(
-                            memberIdToRemoteId.get(boId)
-                    )
-            );
+            String payedFor = "";
+            for (long boId : bill.getBillOwersIds()) {
+                payedFor += String.valueOf(memberIdToRemoteId.get(boId)) + ",";
+            }
+            payedFor = payedFor.replaceAll(",$", "");
+            paramValues.add(payedFor);
         }
-        return new ServerResponse.CreateRemoteBillResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, project.getRemoteId(), project.getPassword()));
+        else {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId() + "/bills";
+            username = project.getRemoteId();
+            password = project.getPassword();
+
+            for (long boId : bill.getBillOwersIds()) {
+                paramKeys.add("payed_for");
+                paramValues.add(
+                        String.valueOf(
+                                memberIdToRemoteId.get(boId)
+                        )
+                );
+            }
+        }
+
+        return new ServerResponse.CreateRemoteBillResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, username, password));
     }
 
     public ServerResponse.CreateRemoteMemberResponse createRemoteMember(CustomCertManager ccm, DBProject project, DBMember member) throws IOException {
-        String target = project.getIhmUrl().replaceAll("/+$", "")
-                + "/api/projects/" + project.getRemoteId() + "/members";
+        String target;
+        String username = null;
+        String password = null;
+        if (project.getIhmUrl().contains("index.php/apps/spend")) {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId() + "/"
+                    + project.getPassword() + "/members";
+        }
+        else {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId() + "/members";
+            username = project.getRemoteId();
+            password = project.getPassword();
+        }
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
         paramKeys.add("name");
         paramValues.add(member.getName());
-        return new ServerResponse.CreateRemoteMemberResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, project.getRemoteId(), project.getPassword()));
+        return new ServerResponse.CreateRemoteMemberResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, username, password));
     }
 
     public ServerResponse.BillsResponse getBills(CustomCertManager ccm, DBProject project) throws JSONException, IOException {
-        String target = project.getIhmUrl().replaceAll("/+$", "")
-                + "/api/projects/" + project.getRemoteId() + "/bills";
-        //https://ihatemoney.org/api/projects/demo/bills
-        return new ServerResponse.BillsResponse(requestServer(ccm, target, METHOD_GET, null, null,null, project.getRemoteId(), project.getPassword()));
+        String target;
+        String username = null;
+        String password = null;
+        if (project.getIhmUrl().contains("index.php/apps/spend")) {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId() + "/"
+                    + project.getPassword() + "/bills";
+        }
+        else {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId() + "/bills";
+            username = project.getRemoteId();
+            password = project.getPassword();
+        }
+        return new ServerResponse.BillsResponse(requestServer(ccm, target, METHOD_GET, null, null,null, username, password));
     }
 
     public ServerResponse.MembersResponse getMembers(CustomCertManager ccm, DBProject project) throws JSONException, IOException {
-        String target = project.getIhmUrl().replaceAll("/+$", "")
-                + "/api/projects/" + project.getRemoteId() + "/members";
-        return new ServerResponse.MembersResponse(requestServer(ccm, target, METHOD_GET, null, null,null, project.getRemoteId(), project.getPassword()));
+        String target;
+        String username = null;
+        String password = null;
+        if (project.getIhmUrl().contains("index.php/apps/spend")) {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId() + "/"
+                    + project.getPassword() + "/members";
+        }
+        else {
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api/projects/" + project.getRemoteId() + "/members";
+            username = project.getRemoteId();
+            password = project.getPassword();
+        }
+        return new ServerResponse.MembersResponse(requestServer(ccm, target, METHOD_GET, null, null,null, username, password));
     }
 
     /**

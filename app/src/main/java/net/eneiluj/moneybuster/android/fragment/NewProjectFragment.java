@@ -47,6 +47,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     public static final String PARAM_DEFAULT_URL = "defaultUrl";
     private static final String TYPE_LOCAL = "local";
     private static final String TYPE_IHATEMONEY = "ihatemoney";
+    private static final String TYPE_NEXTCLOUD_SPEND = "nextcloudSpend";
 
     public interface NewProjectFragmentListener {
         void close(long pid);
@@ -389,14 +390,14 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         List<String> types = new ArrayList<>();
         types.add(getString(R.string.project_type_local));
         types.add(getString(R.string.project_type_ihatemoney));
-        //types.add(getString(R.string.project_type_spend));
+        types.add(getString(R.string.project_type_nextcloud_spend));
         CharSequence[] typesArray = types.toArray(new CharSequence[types.size()]);
         newProjectType.setEntries(typesArray);
 
         List<String> typeValues = new ArrayList<>();
         typeValues.add(TYPE_LOCAL);
         typeValues.add(TYPE_IHATEMONEY);
-        //types.add(TYPE_SPEND);
+        typeValues.add(TYPE_NEXTCLOUD_SPEND);
         CharSequence[] typeValuesArray = typeValues.toArray(new CharSequence[typeValues.size()]);
         newProjectType.setEntryValues(typeValuesArray);
 
@@ -428,7 +429,12 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         return newProjectId.getText();
     }
     protected String getIhmUrl() {
-        return newProjectIHMUrl.getText();
+        String url = newProjectIHMUrl.getText();
+        String type = getProjectType();
+        if (type.equals(TYPE_NEXTCLOUD_SPEND)) {
+            url = url.replaceAll("/+$", "") + "/index.php/apps/spend";
+        }
+        return url;
     }
     protected String getPassword() {
         return newProjectPassword.getText();

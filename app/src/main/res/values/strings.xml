@@ -22,6 +22,7 @@
     <string name="setting_project_type">Project type</string>
     <string name="project_type_local">Local project</string>
     <string name="project_type_ihatemoney">IHateMoney project</string>
+    <string name="project_type_nextcloud_spend">Nextcloud Spend project</string>
     <string name="setting_project_url_long">Address of IHateMoney instance hosting the project</string>
     <string name="setting_project_url">IHateMoney address</string>
     <string name="setting_project_name">Project name</string>

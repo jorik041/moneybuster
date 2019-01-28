@@ -156,7 +156,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
             }
         };
         //confirmDeleteAlertBuilder = new AlertDialog.Builder(getActivity());
-        confirmDeleteAlertBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this.getActivity(), R.style.Theme_AppCompat_DayNight_Dialog));
+        confirmDeleteAlertBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this.getActivity(), R.style.AppThemeDialog));
 
         confirmDeleteAlertBuilder.setMessage(getString(R.string.confirm_delete_project_dialog_title))
                 .setPositiveButton(getString(R.string.simple_yes), deleteDialogClickListener)

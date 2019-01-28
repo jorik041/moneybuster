@@ -331,7 +331,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     AlertDialog.Builder builder = new AlertDialog.Builder(
                             new ContextThemeWrapper(
                                     view.getContext(),
-                                    R.style.Theme_AppCompat_DayNight_Dialog
+                                    R.style.AppThemeDialog
                             )
                     );
                     builder.setTitle(getString(R.string.add_member_dialog_title));
@@ -435,7 +435,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     AlertDialog.Builder builder = new AlertDialog.Builder(
                             new ContextThemeWrapper(
                                     view.getContext(),
-                                    R.style.Theme_AppCompat_DayNight_Dialog
+                                    R.style.AppThemeDialog
                             )
                     );
                     builder.setTitle(getString(R.string.confirm_remove_project_dialog_title));
@@ -495,7 +495,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     }
                     CharSequence[] namescs = memberNames.toArray(new CharSequence[memberNames.size()]);
 
-                    AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(view.getContext(), R.style.Theme_AppCompat_DayNight_Dialog));
+                    AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(view.getContext(), R.style.AppThemeDialog));
                     selectBuilder.setTitle(getString(R.string.choose_member_to_edit));
                     selectBuilder.setSingleChoiceItems(namescs, -1, new DialogInterface.OnClickListener() {
                         @Override
@@ -549,7 +549,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     AlertDialog.Builder builder = new AlertDialog.Builder(
                             new ContextThemeWrapper(
                                     view.getContext(),
-                                    R.style.Theme_AppCompat_DayNight_Dialog
+                                    R.style.AppThemeDialog
                             )
                     );
                     builder.setTitle(getString(R.string.statistic_dialog_title));
@@ -679,7 +679,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     AlertDialog.Builder builder = new AlertDialog.Builder(
                             new ContextThemeWrapper(
                                     view.getContext(),
-                                    R.style.Theme_AppCompat_DayNight_Dialog
+                                    R.style.AppThemeDialog
                             )
                     );
                     builder.setTitle(getString(R.string.settle_dialog_title));
@@ -786,7 +786,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 }
                 CharSequence[] namescs = projectNames.toArray(new CharSequence[projectNames.size()]);
 
-                AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(view.getContext(), R.style.Theme_AppCompat_DayNight_Dialog));
+                AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(view.getContext(), R.style.AppThemeDialog));
                 selectBuilder.setTitle(getString(R.string.choose_project_to_select));
                 selectBuilder.setSingleChoiceItems(namescs, checkedItem, new DialogInterface.OnClickListener() {
                     @Override
@@ -862,7 +862,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         AlertDialog.Builder builder = new AlertDialog.Builder(
                 new ContextThemeWrapper(
                         view.getContext(),
-                        R.style.Theme_AppCompat_DayNight_Dialog
+                        R.style.AppThemeDialog
                 )
         );
         builder.setTitle(getString(R.string.edit_member_dialog_title));
@@ -1507,7 +1507,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
             AlertDialog.Builder builder;
             //builder = new AlertDialog.Builder(view.getContext(), android.R.style.Theme_Material_Dialog_Alert);
-            builder = new AlertDialog.Builder(new ContextThemeWrapper(view.getContext(), R.style.Theme_AppCompat_DayNight_Dialog));
+            builder = new AlertDialog.Builder(new ContextThemeWrapper(view.getContext(), R.style.AppThemeDialog));
             builder.setTitle(view.getContext().getString(R.string.bill_info_dialog_title, dbBill.getWhat()))
                     //.setMessage(infoText)
                     .setView(iView)

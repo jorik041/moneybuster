@@ -10,8 +10,14 @@
         <!-- Snackbar Action Link -->
         <item name="colorAccent">@color/primary</item>
         <item name="windowActionModeOverlay">true</item>
-        <item name="android:buttonStyle">@style/cloudbutton</item>
         <item name="android:windowBackground">@color/bg_normal</item>
+    </style>
+
+    <style name="AppThemeDialog" parent="@style/Theme.AppCompat.DayNight.Dialog">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/primary</item>
+        <!--item name="android:textColorHighlight">@color/primary_dark</item-->
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
@@ -22,22 +28,6 @@
     <style name="Preferences" parent="AppTheme">
         <item name="android:textColor">@color/fg_default</item>
         <item name="android:textColorSecondary">@color/fg_default_low</item>
-    </style>
-
-    <!--
-        cert4android is using these styles and we want the same button style in the trust activity
-    -->
-    <style name="Widget.AppCompat.Button.Borderless" parent="cloudbutton">
-        <item name="android:layout_margin">2dp</item>
-    </style>
-
-    <style name="Widget.AppCompat.Button.Borderless.Colored" parent="Widget.AppCompat.Button.Borderless"></style>
-
-    <style name="cloudbutton" parent="android:style/Widget.Button">
-        <item name="android:background">@color/primary</item>
-        <item name="android:textColor">@drawable/button_selector</item>
-        <item name="android:padding">@dimen/button_padding</item>
-        <item name="android:elevation">@dimen/button_elevation</item>
     </style>
 
     <style name="NavigationItem">

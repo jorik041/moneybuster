@@ -118,6 +118,16 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                     emailPref.setVisible(false);
                     namePref.setVisible(false);
                 }
+                else if (newValue.equals(TYPE_IHATEMONEY)) {
+                    urlPref.setTitle(getString(R.string.setting_ihm_project_url));
+                    urlPref.setDialogTitle(getString(R.string.setting_ihm_project_url));
+                    urlPref.setDialogMessage(getString(R.string.setting_ihm_project_url_long));
+                }
+                else if (newValue.equals(TYPE_NEXTCLOUD_SPEND)) {
+                    urlPref.setTitle(getString(R.string.setting_spend_project_url));
+                    urlPref.setDialogTitle(getString(R.string.setting_spend_project_url));
+                    urlPref.setDialogMessage(getString(R.string.setting_spend_project_url_long));
+                }
                 return true;
             }
 

@@ -23,8 +23,10 @@
     <string name="project_type_local">Local project</string>
     <string name="project_type_ihatemoney">IHateMoney project</string>
     <string name="project_type_nextcloud_spend">Nextcloud Spend project</string>
-    <string name="setting_project_url_long">Address of IHateMoney instance hosting the project</string>
-    <string name="setting_project_url">IHateMoney address</string>
+    <string name="setting_ihm_project_url_long">Address of IHateMoney instance hosting the project</string>
+    <string name="setting_ihm_project_url">IHateMoney address</string>
+    <string name="setting_spend_project_url_long">Address of Nextcloud instance hosting the Spend project</string>
+    <string name="setting_spend_project_url">Nextcloud Spend address</string>
     <string name="setting_project_name">Project name</string>
     <string name="setting_project_name_long">Name displayed in user interface</string>
     <string name="setting_password_long">Also named "access code"</string>

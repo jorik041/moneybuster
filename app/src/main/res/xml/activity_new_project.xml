@@ -14,14 +14,14 @@
     <EditTextPreference
         android:id="@+id/newProjectIHMUrl"
         android:icon="@drawable/ic_link_grey_24dp"
-        android:dialogMessage="@string/setting_project_url_long"
-        android:dialogTitle="@string/setting_project_url"
+        android:dialogMessage="@string/setting_ihm_project_url_long"
+        android:dialogTitle="@string/setting_ihm_project_url"
         android:key="url"
         android:singleLine="true"
         android:selectAllOnFocus="true"
         android:persistent="false"
         android:summary=""
-        android:title="@string/setting_project_url" />
+        android:title="@string/setting_ihm_project_url" />
 
     <EditTextPreference
         android:id="@+id/newProjectId"

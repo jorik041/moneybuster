@@ -306,7 +306,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         url = projects.get(i).getIhmUrl();
                     }
                     if (url != null && !url.equals("")) {
-                        newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, url);
+                        newProjectIntent.putExtra(
+                                NewProjectFragment.PARAM_DEFAULT_URL,
+                                url.replace("/index.php/apps/spend", "")
+                        );
                     }
                     else {
                         newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "https://ihatemoney.org");
@@ -760,7 +763,20 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 List<String> projectNames = new ArrayList<>();
                 List<Long> projectIds = new ArrayList<>();
                 for (DBProject p : dbProjects) {
-                    projectNames.add(p.getName() == null ? p.getRemoteId() : p.getName());
+                    if (p.getName() == null) {
+                        projectNames.add(p.getRemoteId());
+                    }
+                    else {
+                        projectNames.add(
+                                p.getName()
+                                + "\n(" + p.getRemoteId() + "@"
+                                + p.getIhmUrl()
+                                        .replace("https://", "")
+                                        .replace("http://", "")
+                                        .replace("/index.php/apps/spend", "")
+                                + ")"
+                        );
+                    }
                     projectIds.add(p.getId());
                 }
 
@@ -830,7 +846,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             selText = (proj.getName() == null) ? "???" : proj.getName();
             selText += "\n";
             selText += proj.getRemoteId() + "@";
-            selText += proj.getIhmUrl().replace("https://", "").replace("http://", "");
+            selText += proj.getIhmUrl()
+                    .replace("https://", "")
+                    .replace("http://", "")
+                    .replace("/index.php/apps/spend", "");
         }
         selectedProjectLabel.setText(selText);
     }

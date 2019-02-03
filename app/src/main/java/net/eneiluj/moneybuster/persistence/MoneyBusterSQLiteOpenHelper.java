@@ -411,7 +411,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
      */
     public List<DBMember> getMembersOfProject(long projId, String orderBy) {
         if (orderBy == null) {
-            orderBy = key_name;
+            orderBy = "LOWER("+key_name+")";
         }
         return getMembersCustom(key_projectid + " = ?", new String[]{String.valueOf(projId)}, orderBy + " ASC");
     }

@@ -1,8 +1,8 @@
-Moneybuster is a shared budget manager which can work offline or synchronize with any IHateMoney instance.
+Moneybuster is a shared budget manager able to synchronize with IHateMoney and Nextcloud Payback.
 
 What's different from other shared budget managers ?
 
-You can keep your project local or make it synchronize with an IHateMoney instance.
+You can keep your project local or make it synchronize with IHateMoney and Nextcloud Payback projects.
 This means you can choose where your data is going and preserve your privacy.
 
 # Features
@@ -23,10 +23,14 @@ If you want to host a project in IHateMoney :
 
 * IHateMoney instance running
 
-If you want to be able to create projects from MoneyBuster : enable public project creation on your IHateMoney instance.
+If you want to host a project in Nextcloud Payback :
+
+* Nextcloud instance running with Payback app installed
+
+If you want to be able to create remote projects from MoneyBuster : enable public project creation on your IHateMoney or Nextcloud Payback instance.
 
 The app runs on Android>=4.1
 
 # Alternatives
 
-Tricount, Cospender, Splitwise etc... which are not FOSS and force you to give them your data.
+Tricount, Cospender, Splitwise etc... which are not FOSS and force you to give away your private data.

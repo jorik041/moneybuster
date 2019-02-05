@@ -1,9 +1,9 @@
 MoneyBuster est un gestionnaire de dépenses partagées qui peut fonctionner
-hors ligne ou se synchroniser avec une instance IHateMoney.
+hors ligne ou se synchroniser avec IHateMoney et Nextcloud Payback.
 
 En quoi est-il différent des autres gestionnaires de dépenses partagées ?
 
-Vous pouvez garder votre projet local ou le synchroniser avec une instance IHateMoney.
+Vous pouvez garder votre projet local ou le synchroniser avec IHateMoney et Nextcloud Payback.
 Cela veut dire que vous pouvez choisir où vont vos données et préserver votre vie privée.
 
 # Fonctionnalités
@@ -24,9 +24,13 @@ Si vous voulez héberger un projet sur IHateMoney :
 
 * Une instance IHateMoney en fonctionnement
 
-Si vous voulez pouvoir créer des projets IHateMoney depuis MoneyBuster : activez la création publique de projet sur votre instance IHateMoney
+Si vous voulez héberger un projet sur Nextcloud Payback :
 
-L'appli tourne sur Android>=4.1
+* Une instance Nextcloud en fonctionnement avec l'appli Payback installée
+
+Si vous voulez pouvoir créer des projets distants depuis MoneyBuster : activez la création publique de projet sur votre instance IHateMoney ou Nextcloud Payback.
+
+L'appli fonctionne sur Android>=4.1
 
 # Alternatives
 

@@ -1,6 +1,5 @@
 package net.eneiluj.moneybuster.android.activity;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -10,19 +9,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -49,8 +44,6 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.clans.fab.FloatingActionButton;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -75,7 +68,7 @@ import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.persistence.MoneyBusterServerSyncHelper;
 import net.eneiluj.moneybuster.persistence.LoadBillsListTask;
 import net.eneiluj.moneybuster.util.ICallback;
-import net.eneiluj.moneybuster.util.SpendClientUtil;
+import net.eneiluj.moneybuster.util.PaybackClientUtil;
 import net.eneiluj.moneybuster.util.SupportUtil;
 
 import static net.eneiluj.moneybuster.android.activity.EditProjectActivity.PARAM_PROJECT_ID;
@@ -288,7 +281,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     synchronize();
                 } else {
                     swipeRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(SpendClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(PaybackClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -308,7 +301,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     if (url != null && !url.equals("")) {
                         newProjectIntent.putExtra(
                                 NewProjectFragment.PARAM_DEFAULT_URL,
-                                url.replace("/index.php/apps/spend", "")
+                                url.replace("/index.php/apps/payback", "")
                         );
                     }
                     else {
@@ -775,7 +768,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                 + p.getIhmUrl()
                                         .replace("https://", "")
                                         .replace("http://", "")
-                                        .replace("/index.php/apps/spend", "")
+                                        .replace("/index.php/apps/payback", "")
                                 + ")"
                         );
                     }
@@ -851,7 +844,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             selText += proj.getIhmUrl()
                     .replace("https://", "")
                     .replace("http://", "")
-                    .replace("/index.php/apps/spend", "");
+                    .replace("/index.php/apps/payback", "");
         }
         selectedProjectLabel.setText(selText);
     }
@@ -1409,7 +1402,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 synchronize();
             } else {
                 if (MoneyBusterServerSyncHelper.isConfigured(getApplicationContext())) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(SpendClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(PaybackClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
                 }
             }
         }*/

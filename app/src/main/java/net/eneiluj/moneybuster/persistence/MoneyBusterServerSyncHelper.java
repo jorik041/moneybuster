@@ -38,7 +38,7 @@ import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.IHateMoneyClient;
-import net.eneiluj.moneybuster.util.SpendClientUtil.LoginStatus;
+import net.eneiluj.moneybuster.util.PaybackClientUtil.LoginStatus;
 import net.eneiluj.moneybuster.util.ServerResponse;
 import net.eneiluj.moneybuster.util.SupportUtil;
 

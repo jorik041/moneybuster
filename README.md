@@ -1,5 +1,5 @@
 # MoneyBuster for Android
-Shared budget manager able to sync with [IHateMoney](https://github.com/spiral-project/ihatemoney/)
+Shared budget manager able to sync with [IHateMoney](https://github.com/spiral-project/ihatemoney/) and [Nextcloud Payback](https://gitlab.com/eneiluj/payback-nc).
 
 [![Crowdin](https://d322cqt584bo4o.cloudfront.net/moneybuster/localized.svg)](https://crowdin.com/project/moneybuster)
 
@@ -11,7 +11,7 @@ Many thanks to their developers :heart: !
 
 What's different from other shared budget managers ?
 
-You can keep your project local or make it synchronize with an IHateMoney instance.
+You can keep your project local or make it synchronize with an IHateMoney or Nextcloud Payback instance.
 This means you can choose where your data is going and preserve your privacy.
 
 ## Features
@@ -76,4 +76,4 @@ Tricount, Cospender, Splitwise etc... are doing the same job but they are not
 Free or Open Source and they don't let you choose where to store your personal data.
 
 If you care about your privacy, using FOSS is not enough,
-services accessed by some software might use your personal data.
+services accessed by some software might use or sell your personal data.

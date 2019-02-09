@@ -48,12 +48,17 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
     }
 
     protected String getDefaultIhmUrl() {
-        return getIntent().getStringExtra(NewProjectFragment.PARAM_DEFAULT_URL);
+        return getIntent().getStringExtra(NewProjectFragment.PARAM_DEFAULT_IHM_URL);
+    }
+
+    protected String getDefaultNcUrl() {
+        return getIntent().getStringExtra(NewProjectFragment.PARAM_DEFAULT_NC_URL);
     }
 
     private void launchNewProjectFragment() {
         String defaultIhmUrl = getDefaultIhmUrl();
-        fragment = NewProjectFragment.newInstance(defaultIhmUrl);
+        String defaultNcUrl = getDefaultNcUrl();
+        fragment = NewProjectFragment.newInstance(defaultIhmUrl, defaultNcUrl);
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
     }
 

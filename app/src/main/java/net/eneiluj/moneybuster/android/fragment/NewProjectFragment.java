@@ -44,7 +44,8 @@ import static android.webkit.URLUtil.isValidUrl;
 public class NewProjectFragment extends PreferenceFragmentCompat {
 
     private static final String SAVEDKEY_PROJECT = "project";
-    public static final String PARAM_DEFAULT_URL = "defaultUrl";
+    public static final String PARAM_DEFAULT_IHM_URL = "defaultIhmUrl";
+    public static final String PARAM_DEFAULT_NC_URL = "defaultNcUrl";
     private static final String TYPE_LOCAL = "local";
     private static final String TYPE_IHATEMONEY = "ihatemoney";
     private static final String TYPE_NEXTCLOUD_PAYBACK = "nextcloudPayback";
@@ -67,10 +68,14 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     protected EditTextPreference newProjectEmail;
     protected EditTextPreference newProjectName;
 
-    public static NewProjectFragment newInstance(String defaultIhmUrl) {
+    protected String defaultIhmUrl;
+    protected String defaultNcUrl;
+
+    public static NewProjectFragment newInstance(String defaultIhmUrl, String defaultNCUrl) {
         NewProjectFragment f = new NewProjectFragment();
         Bundle b = new Bundle();
-        b.putString(PARAM_DEFAULT_URL, defaultIhmUrl);
+        b.putString(PARAM_DEFAULT_IHM_URL, defaultIhmUrl);
+        b.putString(PARAM_DEFAULT_NC_URL, defaultNCUrl);
         f.setArguments(b);
         return f;
     }
@@ -122,11 +127,17 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                     urlPref.setTitle(getString(R.string.setting_ihm_project_url));
                     urlPref.setDialogTitle(getString(R.string.setting_ihm_project_url));
                     urlPref.setDialogMessage(getString(R.string.setting_ihm_project_url_long));
+
+                    newProjectIHMUrl.setText(defaultIhmUrl);
+                    newProjectIHMUrl.setSummary(defaultIhmUrl);
                 }
                 else if (newValue.equals(TYPE_NEXTCLOUD_PAYBACK)) {
                     urlPref.setTitle(getString(R.string.setting_payback_project_url));
                     urlPref.setDialogTitle(getString(R.string.setting_payback_project_url));
                     urlPref.setDialogMessage(getString(R.string.setting_payback_project_url_long));
+
+                    newProjectIHMUrl.setText(defaultNcUrl);
+                    newProjectIHMUrl.setSummary(defaultNcUrl);
                 }
                 return true;
             }
@@ -419,9 +430,10 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         newProjectId = (EditTextPreference) this.findPreference("id");
         newProjectPassword = (EditTextPreference) this.findPreference("password");
         newProjectIHMUrl = (EditTextPreference) this.findPreference("url");
-        String defaultUrl = getArguments().getString(PARAM_DEFAULT_URL);
-        newProjectIHMUrl.setText(defaultUrl);
-        newProjectIHMUrl.setSummary(defaultUrl);
+
+        defaultIhmUrl = getArguments().getString(PARAM_DEFAULT_IHM_URL);
+        defaultNcUrl = getArguments().getString(PARAM_DEFAULT_NC_URL);
+
         newProjectCreate = (CheckBoxPreference) this.findPreference("createonserver");
         newProjectCreate.setChecked(false);
 

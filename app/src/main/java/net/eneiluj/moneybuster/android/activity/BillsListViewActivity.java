@@ -203,7 +203,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         // create project if there isn't any
         if (db.getProjects().isEmpty()) {
             Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
-            newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "https://ihatemoney.org");
+            newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_IHM_URL, "https://ihatemoney.org");
+            newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_NC_URL, "https://mynextcloud.org");
             startActivityForResult(newProjectIntent, addproject);
         }
     }
@@ -289,28 +290,35 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabAddProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String defaultNcUrl = "https://mynextcloud.org";
+                String defaultIhmUrl = "https://ihatemoney.org";
                 Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
                 List<DBProject> projects = db.getProjects();
-                if (projects.size() > 0) {
-                    // look for a default url in existing projects
-                    String url = projects.get(0).getIhmUrl();
-                    int i = 1;
-                    while (i < projects.size() && (url == null || url.equals(""))) {
-                        url = projects.get(i).getIhmUrl();
-                        i++;
-                    }
+
+                String url;
+                // look for a default NC url in existing projects
+                for (DBProject project : projects) {
+                    url = project.getIhmUrl();
                     if (url != null && !url.equals("")) {
-                        newProjectIntent.putExtra(
-                                NewProjectFragment.PARAM_DEFAULT_URL,
-                                url.replace("/index.php/apps/payback", "")
-                        );
+                        if (url.contains("/index.php/apps/payback")) {
+                            defaultNcUrl = url.replace("/index.php/apps/payback", "");
+                            break;
+                        }
                     }
-                    else {
-                        newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "https://ihatemoney.org");
-                    }
-                } else {
-                    newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_URL, "https://ihatemoney.org");
                 }
+                // look for a default IHM url in existing projects
+                for (DBProject project : projects) {
+                    url = project.getIhmUrl();
+                    if (url != null && !url.equals("")) {
+                        if (!url.contains("/index.php/apps/payback")) {
+                            defaultIhmUrl = url;
+                            break;
+                        }
+                    }
+                }
+
+                newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_NC_URL, defaultNcUrl);
+                newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_IHM_URL, defaultIhmUrl);
                 startActivityForResult(newProjectIntent, addproject);
                 fabMenuDrawerAdd.close(false);
             }

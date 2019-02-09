@@ -297,6 +297,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     int i = 1;
                     while (i < projects.size() && (url == null || url.equals(""))) {
                         url = projects.get(i).getIhmUrl();
+                        i++;
                     }
                     if (url != null && !url.equals("")) {
                         newProjectIntent.putExtra(

@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.0.3 – 2019-02-15
+### Added
+
+### Changed
+- moved floating buttons
+- better default project URL, type-specific
+- payback -> cospend
+
+### Fixed
+- use compat alert dialog
+- huge bug when searching default URL for new project
+
 ## 0.0.2 – 2019-02-08
 ### Added
 - able to sync with Nextcloud Payback

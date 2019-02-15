@@ -48,7 +48,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     public static final String PARAM_DEFAULT_NC_URL = "defaultNcUrl";
     private static final String TYPE_LOCAL = "local";
     private static final String TYPE_IHATEMONEY = "ihatemoney";
-    private static final String TYPE_NEXTCLOUD_PAYBACK = "nextcloudPayback";
+    private static final String TYPE_NEXTCLOUD_COSPEND = "nextcloudCospend";
 
     public interface NewProjectFragmentListener {
         void close(long pid);
@@ -131,10 +131,10 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                     newProjectIHMUrl.setText(defaultIhmUrl);
                     newProjectIHMUrl.setSummary(defaultIhmUrl);
                 }
-                else if (newValue.equals(TYPE_NEXTCLOUD_PAYBACK)) {
-                    urlPref.setTitle(getString(R.string.setting_payback_project_url));
-                    urlPref.setDialogTitle(getString(R.string.setting_payback_project_url));
-                    urlPref.setDialogMessage(getString(R.string.setting_payback_project_url_long));
+                else if (newValue.equals(TYPE_NEXTCLOUD_COSPEND)) {
+                    urlPref.setTitle(getString(R.string.setting_cospend_project_url));
+                    urlPref.setDialogTitle(getString(R.string.setting_cospend_project_url));
+                    urlPref.setDialogMessage(getString(R.string.setting_cospend_project_url_long));
 
                     newProjectIHMUrl.setText(defaultNcUrl);
                     newProjectIHMUrl.setSummary(defaultNcUrl);
@@ -411,14 +411,14 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         List<String> types = new ArrayList<>();
         types.add(getString(R.string.project_type_local));
         types.add(getString(R.string.project_type_ihatemoney));
-        types.add(getString(R.string.project_type_nextcloud_payback));
+        types.add(getString(R.string.project_type_nextcloud_cospend));
         CharSequence[] typesArray = types.toArray(new CharSequence[types.size()]);
         newProjectType.setEntries(typesArray);
 
         List<String> typeValues = new ArrayList<>();
         typeValues.add(TYPE_LOCAL);
         typeValues.add(TYPE_IHATEMONEY);
-        typeValues.add(TYPE_NEXTCLOUD_PAYBACK);
+        typeValues.add(TYPE_NEXTCLOUD_COSPEND);
         CharSequence[] typeValuesArray = typeValues.toArray(new CharSequence[typeValues.size()]);
         newProjectType.setEntryValues(typeValuesArray);
 
@@ -453,8 +453,8 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     protected String getIhmUrl() {
         String url = newProjectIHMUrl.getText();
         String type = getProjectType();
-        if (type.equals(TYPE_NEXTCLOUD_PAYBACK)) {
-            url = url.replaceAll("/+$", "") + "/index.php/apps/payback";
+        if (type.equals(TYPE_NEXTCLOUD_COSPEND)) {
+            url = url.replaceAll("/+$", "") + "/index.php/apps/cospend";
         }
         return url;
     }

@@ -71,7 +71,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/payback")) {
+        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/" + project.getPassword();
         }
@@ -89,7 +89,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/payback")) {
+        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/" + project.getPassword();
         }
@@ -115,7 +115,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/payback")) {
+        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/"
                     + project.getPassword() + "/members/" + member.getRemoteId();
@@ -156,7 +156,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/payback")) {
+        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/"
                     + project.getPassword() + "/bills/" + bill.getRemoteId();
@@ -191,7 +191,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/payback")) {
+        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/" + project.getPassword();
         }
@@ -208,7 +208,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/payback")) {
+        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/"
                     + project.getPassword() + "/bills/" + billRemoteId;
@@ -257,7 +257,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/payback")) {
+        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/"
                     + project.getPassword() + "/bills";
@@ -293,7 +293,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/payback")) {
+        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/"
                     + project.getPassword() + "/members";
@@ -315,7 +315,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/payback")) {
+        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/"
                     + project.getPassword() + "/bills";
@@ -333,7 +333,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/payback")) {
+        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/"
                     + project.getPassword() + "/members";

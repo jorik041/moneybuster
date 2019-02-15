@@ -1,5 +1,5 @@
 # MoneyBuster for Android
-Shared budget manager able to sync with [IHateMoney](https://github.com/spiral-project/ihatemoney/) and [Nextcloud Payback](https://gitlab.com/eneiluj/payback-nc).
+Shared budget manager able to sync with [IHateMoney](https://github.com/spiral-project/ihatemoney/) and [Nextcloud Cospend](https://gitlab.com/eneiluj/cospend-nc).
 
 [![Crowdin](https://d322cqt584bo4o.cloudfront.net/moneybuster/localized.svg)](https://crowdin.com/project/moneybuster)
 
@@ -11,7 +11,7 @@ Many thanks to their developers :heart: !
 
 What's different from other shared budget managers ?
 
-You can keep your project local or make it synchronize with an IHateMoney or Nextcloud Payback instance.
+You can keep your project local or make it synchronize with an IHateMoney or Nextcloud Cospend instance.
 This means you can choose where your data is going and preserve your privacy.
 
 ## Features

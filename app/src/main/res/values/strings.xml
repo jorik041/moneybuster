@@ -22,11 +22,11 @@
     <string name="setting_project_type">Project type</string>
     <string name="project_type_local">Local project</string>
     <string name="project_type_ihatemoney">IHateMoney project</string>
-    <string name="project_type_nextcloud_payback">Nextcloud Payback project</string>
+    <string name="project_type_nextcloud_cospend">Nextcloud Cospend project</string>
     <string name="setting_ihm_project_url_long">Address of IHateMoney instance hosting the project</string>
     <string name="setting_ihm_project_url">IHateMoney address</string>
-    <string name="setting_payback_project_url_long">Address of Nextcloud instance hosting the Payback project</string>
-    <string name="setting_payback_project_url">Nextcloud Payback address</string>
+    <string name="setting_cospend_project_url_long">Address of Nextcloud instance hosting the Cospend project</string>
+    <string name="setting_cospend_project_url">Nextcloud Cospend address</string>
     <string name="setting_project_name">Project name</string>
     <string name="setting_project_name_long">Name displayed in user interface</string>
     <string name="setting_password_long">Also named "access code"</string>
@@ -127,7 +127,7 @@
     <!-- Error -->
     <string name="error_sync">Project sync failed: %1$s</string>
     <string name="error_invalid_login">Invalid login: %1$s</string>
-    <string name="error_json">is the Payback app activated on the server?</string>
+    <string name="error_json">is the Cospend app activated on the server?</string>
     <string name="error_io">server connection is broken</string>
     <string name="error_no_network">no network connection</string>
     <string name="error_server">server error</string>

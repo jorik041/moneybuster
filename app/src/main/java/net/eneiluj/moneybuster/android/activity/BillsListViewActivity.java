@@ -68,7 +68,7 @@ import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.persistence.MoneyBusterServerSyncHelper;
 import net.eneiluj.moneybuster.persistence.LoadBillsListTask;
 import net.eneiluj.moneybuster.util.ICallback;
-import net.eneiluj.moneybuster.util.PaybackClientUtil;
+import net.eneiluj.moneybuster.util.CospendClientUtil;
 import net.eneiluj.moneybuster.util.SupportUtil;
 
 import static net.eneiluj.moneybuster.android.activity.EditProjectActivity.PARAM_PROJECT_ID;
@@ -282,7 +282,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     synchronize();
                 } else {
                     swipeRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(PaybackClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(CospendClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -300,8 +300,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 for (DBProject project : projects) {
                     url = project.getIhmUrl();
                     if (url != null && !url.equals("")) {
-                        if (url.contains("/index.php/apps/payback")) {
-                            defaultNcUrl = url.replace("/index.php/apps/payback", "");
+                        if (url.contains("/index.php/apps/cospend")) {
+                            defaultNcUrl = url.replace("/index.php/apps/cospend", "");
                             break;
                         }
                     }
@@ -310,7 +310,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 for (DBProject project : projects) {
                     url = project.getIhmUrl();
                     if (url != null && !url.equals("")) {
-                        if (!url.contains("/index.php/apps/payback")) {
+                        if (!url.contains("/index.php/apps/cospend")) {
                             defaultIhmUrl = url;
                             break;
                         }
@@ -777,7 +777,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                 + p.getIhmUrl()
                                         .replace("https://", "")
                                         .replace("http://", "")
-                                        .replace("/index.php/apps/payback", "")
+                                        .replace("/index.php/apps/cospend", "")
                                 + ")"
                         );
                     }
@@ -853,7 +853,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             selText += proj.getIhmUrl()
                     .replace("https://", "")
                     .replace("http://", "")
-                    .replace("/index.php/apps/payback", "");
+                    .replace("/index.php/apps/cospend", "");
         }
         selectedProjectLabel.setText(selText);
     }
@@ -1411,7 +1411,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 synchronize();
             } else {
                 if (MoneyBusterServerSyncHelper.isConfigured(getApplicationContext())) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(PaybackClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(CospendClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
                 }
             }
         }*/

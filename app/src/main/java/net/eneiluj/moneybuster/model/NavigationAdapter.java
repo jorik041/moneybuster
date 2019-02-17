@@ -1,11 +1,11 @@
 package net.eneiluj.moneybuster.model;
 
 import android.graphics.Color;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import net.eneiluj.moneybuster.R;
 
 public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.ViewHolder> {
@@ -49,13 +47,8 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
         @NonNull
         private final View view;
 
-        @BindView(R.id.navigationItemLabel)
         TextView name;
-
-        @BindView(R.id.navigationItemCount)
         TextView count;
-
-        @BindView(R.id.navigationItemIcon)
         ImageView icon;
 
         private NavigationItem currentItem;
@@ -63,7 +56,10 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
         ViewHolder(@NonNull View itemView, @NonNull final ClickListener clickListener) {
             super(itemView);
             view = itemView;
-            ButterKnife.bind(this, view);
+            name = view.findViewById(R.id.navigationItemLabel);
+            count = view.findViewById(R.id.navigationItemCount);
+            icon = view.findViewById(R.id.navigationItemIcon);
+            //ButterKnife.bind(this, view);
             icon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

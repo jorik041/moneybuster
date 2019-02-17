@@ -2,9 +2,9 @@ package net.eneiluj.moneybuster.model;
 
 import android.content.SharedPreferences;
 //import android.preference.PreferenceManager;
-import android.support.v7.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.preference.PreferenceManager;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,13 +17,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.activity.BillsListViewActivity;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 
-import static android.support.v7.widget.RecyclerView.NO_POSITION;
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -203,15 +201,12 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public class BillViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener {
-        @BindView(R.id.billSwipeable)
         public View billSwipeable;
         View billSwipeFrame;
         TextView billTextToggleLeft;
         ImageView billDeleteRight;
         TextView billTitle;
-        @BindView(R.id.billExcerpt)
         TextView billSubtitle;
-        @BindView(R.id.infoButton)
         ImageButton infoButton;
         ImageView syncIcon;
 
@@ -250,12 +245,12 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public static class SectionViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.sectionTitle)
         TextView sectionTitle;
 
         private SectionViewHolder(View view) {
             super(view);
-            ButterKnife.bind(this, view);
+            sectionTitle = view.findViewById(R.id.sectionTitle);
+            //ButterKnife.bind(this, view);
         }
     }
 }

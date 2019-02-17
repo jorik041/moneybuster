@@ -1,7 +1,7 @@
 package net.eneiluj.moneybuster.android.fragment;
 
 //import android.app.AlertDialog;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -10,20 +10,20 @@ import android.os.Looper;
 //import android.preference.EditTextPreference;
 
 //import android.preference.MultiSelectListPreference;
-import android.support.v14.preference.MultiSelectListPreference;
-import android.support.v7.preference.EditTextPreference;
+import androidx.preference.MultiSelectListPreference;
+import androidx.preference.EditTextPreference;
 //import android.preference.ListPreference;
 //import android.preference.Preference;
-import android.support.v7.preference.ListPreference;
-import android.support.v7.preference.Preference;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
 //import android.preference.PreferenceFragment;
 //import android.support.v7.preference.PreferenceFragmentCompat;
 import com.takisoft.fix.support.v7.preference.DatePickerPreference;
 import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
-import android.support.annotation.Nullable;
-import android.support.v7.view.ContextThemeWrapper;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -33,7 +33,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import butterknife.ButterKnife;
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
@@ -414,7 +413,7 @@ public class EditBillFragment extends PreferenceFragmentCompat {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         System.out.println("ACT EDIT BILL CREATEDDDDDDD");
-        ButterKnife.bind(this, getView());
+        //ButterKnife.bind(this, getView());
 
         // hide the keyboard when this window gets the focus
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);

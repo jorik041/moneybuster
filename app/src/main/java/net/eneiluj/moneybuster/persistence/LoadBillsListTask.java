@@ -2,10 +2,10 @@ package net.eneiluj.moneybuster.persistence;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.WorkerThread;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
+import androidx.core.content.ContextCompat;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;

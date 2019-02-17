@@ -1,21 +1,21 @@
 package net.eneiluj.moneybuster.android.fragment;
 
 //import android.app.AlertDialog;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.preference.EditTextPreference;
-import android.support.v7.preference.Preference;
+import androidx.preference.EditTextPreference;
+import androidx.preference.Preference;
 //import android.support.v7.preference.PreferenceFragmentCompat;
 import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
-import android.support.annotation.Nullable;
-import android.support.v7.view.ContextThemeWrapper;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,7 +27,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import butterknife.ButterKnife;
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
@@ -304,7 +303,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ButterKnife.bind(this, getView());
+        //ButterKnife.bind(this, getView());
 
         // hide the keyboard when this window gets the focus
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);

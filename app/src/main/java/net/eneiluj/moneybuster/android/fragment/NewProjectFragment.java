@@ -5,19 +5,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 //import android.preference.EditTextPreference;
-import android.support.v7.preference.CheckBoxPreference;
+import androidx.preference.CheckBoxPreference;
 //import android.support.v7.preference.EditTextPreference;
 import com.takisoft.fix.support.v7.preference.EditTextPreference;
 //import android.preference.ListPreference;
 //import android.preference.Preference;
-import android.support.v7.preference.ListPreference;
-import android.support.v7.preference.Preference;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
 //import android.preference.PreferenceFragment;
 //import android.support.v7.preference.PreferenceFragmentCompat;
 import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,7 +29,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import butterknife.ButterKnife;
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
@@ -402,7 +401,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         System.out.println("ACT CREATEDDDDDDD");
-        ButterKnife.bind(this, getView());
+        //ButterKnife.bind(this, getView());
 
         // hide the keyboard when this window gets the focus
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);

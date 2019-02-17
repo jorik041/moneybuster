@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="project_preferences">
 
-    <android.support.v7.preference.ListPreference
+    <androidx.preference.ListPreference
         android:id="@+id/newProjectType"
         android:icon="@drawable/ic_class_white_24dp"
         android:dialogTitle="@string/setting_project_type"

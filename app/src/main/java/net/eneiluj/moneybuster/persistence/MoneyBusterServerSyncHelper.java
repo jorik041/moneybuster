@@ -15,7 +15,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
 //import android.preference.PreferenceManager;
-import android.support.v7.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 //import android.util.ArrayMap;
 import android.util.Log;
 

@@ -1,6 +1,6 @@
 package net.eneiluj.moneybuster.util;
 
-import android.support.annotation.WorkerThread;
+import androidx.annotation.WorkerThread;
 import android.util.Base64;
 import android.util.Log;
 

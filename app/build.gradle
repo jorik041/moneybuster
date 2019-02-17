@@ -27,20 +27,17 @@ dependencies {
     implementation project(':cert4android')
     implementation 'com.github.clans:fab:1.6.4'
 
-    implementation 'com.jakewharton:butterknife:8.8.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-
-    def supportLibVersion = '28.0.0'
+    def supportLibVersion = '1.0.0-beta01'
 
     //implementation "com.android.support:preference-v7:${supportLibVersion}"
     implementation "com.takisoft.fix:preference-v7:28.0.0.0"
     implementation 'com.takisoft.fix:preference-v7-extras:28.0.0.0'
 
-    implementation "com.android.support:appcompat-v7:${supportLibVersion}"
-    implementation "com.android.support:design:${supportLibVersion}"
-    implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
+    implementation "androidx.appcompat:appcompat:${supportLibVersion}"
+    implementation "com.google.android.material:material:${supportLibVersion}"
+    implementation "androidx.recyclerview:recyclerview:${supportLibVersion}"
     // needed for cert4android (conflict resolution)
-    implementation "com.android.support:cardview-v7:${supportLibVersion}"
+    implementation "androidx.cardview:cardview:${supportLibVersion}"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     androidTestImplementation 'junit:junit:4.12'
 }

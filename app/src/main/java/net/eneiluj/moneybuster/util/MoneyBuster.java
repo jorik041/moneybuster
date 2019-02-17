@@ -4,8 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 //import android.preference.PreferenceManager;
-import android.support.v7.preference.PreferenceManager;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
+import androidx.appcompat.app.AppCompatDelegate;
 
 public class MoneyBuster extends Application {
     private static final String DARK_THEME = "darkTheme";

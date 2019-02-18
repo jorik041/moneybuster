@@ -9,9 +9,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -41,8 +44,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -72,6 +77,7 @@ import net.eneiluj.moneybuster.persistence.LoadBillsListTask;
 import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.CospendClientUtil;
 import net.eneiluj.moneybuster.util.SupportUtil;
+import net.eneiluj.moneybuster.util.ThemeUtils;
 
 import static net.eneiluj.moneybuster.android.activity.EditProjectActivity.PARAM_PROJECT_ID;
 import static net.eneiluj.moneybuster.util.SupportUtil.settleBills;
@@ -270,6 +276,19 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.action_drawer_open, R.string.action_drawer_close);
         drawerToggle.setDrawerIndicatorEnabled(true);
         drawerLayout.addDrawerListener(drawerToggle);
+        drawerLayout.findViewById(R.id.drawer_top_layout).setBackgroundColor(ThemeUtils.primaryColor(this));
+        ImageView logoView = drawerLayout.findViewById(R.id.drawer_logo);
+        logoView.setColorFilter(ThemeUtils.primaryColor(this), PorterDuff.Mode.OVERLAY);
+
+        toolbar.setBackgroundColor(ThemeUtils.primaryColor(this));
+
+        Window window = getWindow();
+        if (window != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                int color = ThemeUtils.primaryDarkColor(this);
+                window.setStatusBarColor(color);
+            }
+        }
     }
 
     private void setupBillsList() {
@@ -821,6 +840,32 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 selectDialog.show();
             }
         });
+
+        // color
+        fabMenu.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
+        fabMenu.setRippleColor(ThemeUtils.primaryDarkColor(this));
+        fabSelectProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryDarkColor(this)));
+        fabSelectProject.setRippleColor(ThemeUtils.primaryColor(this));
+
+        fabMenuDrawerAdd.setMenuButtonColorNormal(ThemeUtils.primaryColor(this));
+        fabMenuDrawerAdd.setMenuButtonColorPressed(ThemeUtils.primaryColor(this));
+        fabMenuDrawerEdit.setMenuButtonColorNormal(ThemeUtils.primaryColor(this));
+        fabMenuDrawerEdit.setMenuButtonColorPressed(ThemeUtils.primaryColor(this));
+
+        fabAddProject.setColorNormal(ThemeUtils.primaryColor(this));
+        fabAddProject.setColorPressed(ThemeUtils.primaryColor(this));
+        fabAddMember.setColorNormal(ThemeUtils.primaryColor(this));
+        fabAddMember.setColorPressed(ThemeUtils.primaryColor(this));
+        fabEditMember.setColorNormal(ThemeUtils.primaryColor(this));
+        fabEditMember.setColorPressed(ThemeUtils.primaryColor(this));
+        fabEditProject.setColorNormal(ThemeUtils.primaryColor(this));
+        fabEditProject.setColorPressed(ThemeUtils.primaryColor(this));
+        fabSettle.setColorNormal(ThemeUtils.primaryColor(this));
+        fabSettle.setColorPressed(ThemeUtils.primaryColor(this));
+        fabStatistics.setColorNormal(ThemeUtils.primaryColor(this));
+        fabStatistics.setColorPressed(ThemeUtils.primaryColor(this));
+        fabRemoveProject.setColorNormal(ThemeUtils.primaryColor(this));
+        fabRemoveProject.setColorPressed(ThemeUtils.primaryColor(this));
     }
 
     private void setSelectedProject(long projectId) {

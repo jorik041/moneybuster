@@ -20,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.eneiluj.moneybuster.R;
+import net.eneiluj.moneybuster.util.ThemeUtils;
 
 public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.ViewHolder> {
 
@@ -99,7 +100,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
             //view.setBackgroundColor(isSelected ? view.getResources().getColor(R.color.bg_highlighted) : Color.TRANSPARENT);
             view.setBackgroundColor(isSelected ? ContextCompat.getColor(view.getContext(), R.color.bg_highlighted) : Color.TRANSPARENT);
             //int textColor = view.getResources().getColor(isSelected ? R.color.primary_dark : R.color.fg_default);
-            int textColor = ContextCompat.getColor(view.getContext(), isSelected ? R.color.primary : R.color.fg_default);
+            //int textColor = ContextCompat.getColor(view.getContext(), isSelected ? R.color.primary : R.color.fg_default);
 
             SpannableString spannableString = new SpannableString(item.label);
             Matcher matcher = Pattern.compile("(\\+\\d*\\.?\\d*)", Pattern.CASE_INSENSITIVE).matcher(spannableString);
@@ -121,6 +122,14 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
                         matcher.start(), matcher.end(), 0);
             }
             name.setText(spannableString, TextView.BufferType.SPANNABLE);
+
+            int textColor;
+            if (isSelected) {
+                textColor = ThemeUtils.primaryColor(view.getContext());
+            }
+            else{
+                textColor = ContextCompat.getColor(view.getContext(), R.color.fg_default);
+            }
 
             name.setTextColor(textColor);
             count.setTextColor(textColor);

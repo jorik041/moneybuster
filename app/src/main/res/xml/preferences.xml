@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <SwitchPreferenceCompat
         android:defaultValue="@string/pref_value_theme_light"
@@ -8,6 +9,15 @@
         android:key="@string/pref_key_theme"
         android:summary="%s"
         android:title="@string/settings_theme_title" />
+
+    <com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat
+        android:defaultValue="@color/primary"
+        android:icon="@drawable/ic_palette_grey_24dp"
+        android:key="@string/pref_key_color"
+        android:summary="@string/settings_color_summary"
+        android:title="@string/settings_color_title"
+        app:colorShape="circle"
+        app:showDialog="false" />
 
     <PreferenceScreen
         android:key="@string/pref_key_certs"

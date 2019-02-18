@@ -1,8 +1,13 @@
 package net.eneiluj.moneybuster.android.activity;
 
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.Window;
+
 import com.google.android.material.tabs.TabLayout;
 //import android.support.v4.app.Fragment;
+import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 //import android.support.v4.app.FragmentManager;
 import androidx.fragment.app.FragmentManager;
@@ -16,6 +21,7 @@ import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.fragment.about.AboutFragmentContributingTab;
 import net.eneiluj.moneybuster.android.fragment.about.AboutFragmentCreditsTab;
 import net.eneiluj.moneybuster.android.fragment.about.AboutFragmentLicenseTab;
+import net.eneiluj.moneybuster.util.ThemeUtils;
 
 public class AboutActivity extends AppCompatActivity {
 
@@ -32,6 +38,25 @@ public class AboutActivity extends AppCompatActivity {
 
         mViewPager.setAdapter(new TabsPagerAdapter(getSupportFragmentManager()));
         mTabLayout.setupWithViewPager(mViewPager);
+
+        setupActionBar();
+    }
+
+    private void setupActionBar() {
+        ActionBar actionBar = getDelegate().getSupportActionBar();
+
+        if (actionBar != null) {
+            int color = ThemeUtils.primaryColor(this);
+            actionBar.setBackgroundDrawable(new ColorDrawable(color));
+        }
+
+        Window window = getWindow();
+        if (window != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                int colorDark = ThemeUtils.primaryDarkColor(this);
+                window.setStatusBarColor(colorDark);
+            }
+        }
     }
 
     private class TabsPagerAdapter extends FragmentPagerAdapter {

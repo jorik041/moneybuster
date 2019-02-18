@@ -1,8 +1,11 @@
 package net.eneiluj.moneybuster.android.fragment;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 //import android.support.v4.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -12,8 +15,14 @@ import androidx.preference.SwitchPreferenceCompat;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
+
+import com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat;
+import com.larswerkman.lobsterpicker.LobsterPicker;
+import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider;
 
 import at.bitfire.cert4android.CustomCertManager;
 import net.eneiluj.moneybuster.R;
@@ -80,6 +89,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
             }
         });
 
+        findPreference(getString(R.string.pref_key_color)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                showColorDialog(preference);
+                return true;
+            }
+        });
     }
 
     private void setThemePreferenceSummary(SwitchPreferenceCompat themePref, Boolean darkTheme) {
@@ -88,6 +104,33 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
         } else {
             themePref.setSummary(getString(R.string.pref_value_theme_light));
         }
+    }
+
+    private void showColorDialog(final Preference preference) {
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View colorView = inflater.inflate(R.layout.dialog_color, null);
+
+        int color = PreferenceManager.getDefaultSharedPreferences(getActivity())
+                .getInt(getString(R.string.pref_key_color), Color.BLUE);
+        final LobsterPicker lobsterPicker = colorView.findViewById(R.id.lobsterPicker);
+        LobsterShadeSlider shadeSlider = colorView.findViewById(R.id.shadeSlider);
+
+        lobsterPicker.addDecorator(shadeSlider);
+        lobsterPicker.setColorHistoryEnabled(true);
+        lobsterPicker.setHistory(color);
+        lobsterPicker.setColor(color);
+
+        new AlertDialog.Builder(getActivity())
+                .setView(colorView)
+                .setTitle(getString(R.string.settings_colorpicker_title))
+                .setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ((ColorPreferenceCompat) preference).setValue(lobsterPicker.getColor());
+                    }
+                })
+                .setNegativeButton(getString(R.string.simple_cancel), null)
+                .show();
     }
 
 }

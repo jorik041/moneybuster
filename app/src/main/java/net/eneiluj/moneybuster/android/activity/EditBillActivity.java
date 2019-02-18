@@ -2,6 +2,8 @@ package net.eneiluj.moneybuster.android.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 //import android.support.v4.app.Fragment;
 import androidx.fragment.app.Fragment;
@@ -10,11 +12,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
+import android.view.Window;
 import android.widget.Toast;
 
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.fragment.EditBillFragment;
 import net.eneiluj.moneybuster.model.DBBill;
+import net.eneiluj.moneybuster.util.ThemeUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,6 +42,16 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            int color = ThemeUtils.primaryColor(this);
+            actionBar.setBackgroundDrawable(new ColorDrawable(color));
+        }
+
+        Window window = getWindow();
+        if (window != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                int colorDark = ThemeUtils.primaryDarkColor(this);
+                window.setStatusBarColor(colorDark);
+            }
         }
     }
 

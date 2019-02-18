@@ -83,6 +83,9 @@
     <string name="settings_submit">Verbinden</string>
     <string name="settings_submitting">Verbinde &#8230;</string>
     <string name="settings_theme_title">Oberfläche</string>
+    <string name="settings_color_title">App main color</string>
+    <string name="settings_color_summary">Color for action bars, map buttons etc...</string>
+    <string name="settings_colorpicker_title">Choose color</string>
     <string name="settings_cert_category">Zertifikate verwalten</string>
     <string name="settings_cert_trust_system">Systemzertifikaten vertrauen</string>
     <string name="settings_cert_trust_system_on">System- und benutzerdefinierten CAs wird vertraut (empfohlen)</string>

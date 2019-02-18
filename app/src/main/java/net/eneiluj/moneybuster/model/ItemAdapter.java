@@ -118,7 +118,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             Log.d(TAG, "[get member of project " + bill.getProjectId() + " with remoteid : "+bill.getPayerId()+"]");
             String subtitle = db.getMember(bill.getPayerId()).getName();
-            subtitle += " --> ";
+            subtitle += " → ";
             for (long boRId : bill.getBillOwersIds()) {
                 String name = db.getMember(boRId).getName();
                 subtitle += name + ", ";

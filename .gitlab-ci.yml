@@ -20,7 +20,6 @@ build_app:
       - build
   artifacts:
     paths:
-      - app/build/outputs/apk/release/app-release-unsigned.apk
       - app/build/outputs/apk/debug/app-debug.apk
   script:
       - export PATH=/root/gradle-5.0/bin:$PATH

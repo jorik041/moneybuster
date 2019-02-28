@@ -3,6 +3,7 @@ package net.eneiluj.moneybuster.android.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
@@ -15,6 +16,9 @@ import android.widget.Toast;
 
 import net.eneiluj.moneybuster.android.fragment.NewProjectFragment;
 import net.eneiluj.moneybuster.util.ThemeUtils;
+
+import static net.eneiluj.moneybuster.android.fragment.NewProjectFragment.TYPE_LOCAL;
+import static net.eneiluj.moneybuster.android.fragment.NewProjectFragment.TYPE_NEXTCLOUD_COSPEND;
 
 public class NewProjectActivity extends AppCompatActivity implements NewProjectFragment.NewProjectFragmentListener {
 
@@ -72,7 +76,19 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
     private void launchNewProjectFragment() {
         String defaultIhmUrl = getDefaultIhmUrl();
         String defaultNcUrl = getDefaultNcUrl();
-        fragment = NewProjectFragment.newInstance(defaultIhmUrl, defaultNcUrl);
+        String defaultProjectId = null;
+        String defaultProjectType = TYPE_LOCAL;
+
+        if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
+            Uri data = getIntent().getData();
+            if (data.getScheme().equals("cospend")) {
+                defaultProjectId = data.getLastPathSegment();
+                defaultNcUrl = "https://" + data.getHost() +
+                        data.getPath().replaceAll("/"+defaultProjectId+"$", "");
+                defaultProjectType = TYPE_NEXTCLOUD_COSPEND;
+            }
+        }
+        fragment = NewProjectFragment.newInstance(defaultIhmUrl, defaultNcUrl, defaultProjectId, defaultProjectType);
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
     }
 

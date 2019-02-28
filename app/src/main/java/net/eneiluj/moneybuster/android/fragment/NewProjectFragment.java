@@ -45,9 +45,11 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     private static final String SAVEDKEY_PROJECT = "project";
     public static final String PARAM_DEFAULT_IHM_URL = "defaultIhmUrl";
     public static final String PARAM_DEFAULT_NC_URL = "defaultNcUrl";
-    private static final String TYPE_LOCAL = "local";
-    private static final String TYPE_IHATEMONEY = "ihatemoney";
-    private static final String TYPE_NEXTCLOUD_COSPEND = "nextcloudCospend";
+    public static final String PARAM_DEFAULT_PROJECT_ID = "defaultProjectId";
+    public static final String PARAM_DEFAULT_PROJECT_TYPE = "defaultProjectType";
+    public static final String TYPE_LOCAL = "local";
+    public static final String TYPE_IHATEMONEY = "ihatemoney";
+    public static final String TYPE_NEXTCLOUD_COSPEND = "nextcloudCospend";
 
     public interface NewProjectFragmentListener {
         void close(long pid);
@@ -70,11 +72,14 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     protected String defaultIhmUrl;
     protected String defaultNcUrl;
 
-    public static NewProjectFragment newInstance(String defaultIhmUrl, String defaultNCUrl) {
+    public static NewProjectFragment newInstance(String defaultIhmUrl, String defaultNCUrl,
+                                                 @Nullable String defaultProjectId, String defaultProjectType) {
         NewProjectFragment f = new NewProjectFragment();
         Bundle b = new Bundle();
         b.putString(PARAM_DEFAULT_IHM_URL, defaultIhmUrl);
         b.putString(PARAM_DEFAULT_NC_URL, defaultNCUrl);
+        b.putString(PARAM_DEFAULT_PROJECT_ID, defaultProjectId);
+        b.putString(PARAM_DEFAULT_PROJECT_TYPE, defaultProjectType);
         f.setArguments(b);
         return f;
     }
@@ -421,9 +426,6 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         CharSequence[] typeValuesArray = typeValues.toArray(new CharSequence[typeValues.size()]);
         newProjectType.setEntryValues(typeValuesArray);
 
-        newProjectType.setValue(TYPE_LOCAL);
-        newProjectType.setSummary(getString(R.string.project_type_local));
-
         newProjectEmail = (EditTextPreference) this.findPreference("email");
         newProjectName = (EditTextPreference) this.findPreference("name");
         newProjectId = (EditTextPreference) this.findPreference("id");
@@ -433,12 +435,40 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         defaultIhmUrl = getArguments().getString(PARAM_DEFAULT_IHM_URL);
         defaultNcUrl = getArguments().getString(PARAM_DEFAULT_NC_URL);
 
+        newProjectType.setValue(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE));
+        if (TYPE_LOCAL.equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
+            newProjectType.setSummary(getString(R.string.project_type_local));
+        }
+        if (TYPE_IHATEMONEY.equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
+            newProjectType.setSummary(getString(R.string.project_type_ihatemoney));
+            newProjectIHMUrl.setText(getArguments().getString(PARAM_DEFAULT_IHM_URL));
+            newProjectIHMUrl.setSummary(getArguments().getString(PARAM_DEFAULT_IHM_URL));
+
+            newProjectIHMUrl.setTitle(getString(R.string.setting_ihm_project_url));
+            newProjectIHMUrl.setDialogTitle(getString(R.string.setting_ihm_project_url));
+            newProjectIHMUrl.setDialogMessage(getString(R.string.setting_ihm_project_url_long));
+        }
+        if (TYPE_NEXTCLOUD_COSPEND.equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
+            newProjectType.setSummary(getString(R.string.project_type_nextcloud_cospend));
+            newProjectIHMUrl.setText(getArguments().getString(PARAM_DEFAULT_NC_URL));
+            newProjectIHMUrl.setSummary(getArguments().getString(PARAM_DEFAULT_NC_URL));
+
+            newProjectIHMUrl.setTitle(getString(R.string.setting_cospend_project_url));
+            newProjectIHMUrl.setDialogTitle(getString(R.string.setting_cospend_project_url));
+            newProjectIHMUrl.setDialogMessage(getString(R.string.setting_cospend_project_url_long));
+        }
+
+        newProjectId.setText(getArguments().getString(PARAM_DEFAULT_PROJECT_ID));
+        newProjectId.setSummary(getArguments().getString(PARAM_DEFAULT_PROJECT_ID));
+
         newProjectCreate = (CheckBoxPreference) this.findPreference("createonserver");
         newProjectCreate.setChecked(false);
 
-        newProjectIHMUrl.setVisible(false);
-        newProjectPassword.setVisible(false);
-        newProjectCreate.setVisible(false);
+        if (TYPE_LOCAL.equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
+            newProjectIHMUrl.setVisible(false);
+            newProjectPassword.setVisible(false);
+            newProjectCreate.setVisible(false);
+        }
         newProjectEmail.setVisible(false);
         newProjectName.setVisible(false);
     }

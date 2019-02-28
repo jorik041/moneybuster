@@ -1,6 +1,7 @@
 package net.eneiluj.moneybuster.android.fragment;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,6 +17,7 @@ import androidx.preference.Preference;
 //import android.support.v7.preference.PreferenceFragmentCompat;
 import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
@@ -398,6 +400,12 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
 
         DBProject newProject = new DBProject(0, remoteId, password, name, ihmUrl, email);
         long pid = db.addProject(newProject);
+
+        // to make it the selected project even if we got here because of a VIEW intent
+        // this is supposed to be done in activity result in billListViewActivity
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        preferences.edit().putLong("selected_project", pid).apply();
+
         System.out.println("PROJECT local id : "+pid+" : "+newProject);
         return pid;
     }

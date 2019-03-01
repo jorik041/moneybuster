@@ -5,4 +5,5 @@
 /captures
 /.idea/
 *.iml
+.*.swp
 /projectFilesBackup/

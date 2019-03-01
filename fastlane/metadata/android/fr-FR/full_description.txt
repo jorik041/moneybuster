@@ -1,5 +1,4 @@
-MoneyBuster est un gestionnaire de dépenses partagées qui peut fonctionner
-hors ligne ou se synchroniser avec IHateMoney et Nextcloud Cospend.
+MoneyBuster est un gestionnaire de dépenses partagées qui peut fonctionner hors ligne ou se synchroniser avec IHateMoney et Nextcloud Cospend.
 
 En quoi est-il différent des autres gestionnaires de dépenses partagées ?
 
@@ -34,5 +33,4 @@ L'appli fonctionne sur Android>=4.1
 
 # Alternatives
 
-Tricount, Cospender, Splitwise etc... qui ne sont pas des FOSS
-(Free or Open Source Software) et vous obligent à leur donner vos données privées.
+Tricount, Cospender, Splitwise etc... qui ne sont pas des FOSS (Free or Open Source Software) et vous obligent à leur donner vos données privées.

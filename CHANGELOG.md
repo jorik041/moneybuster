@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.0.4 – 2019-03-01
+### Added
+- new option to set app main color
+- now able to receive VIEW attempts for URI like cospend://my.nextcloud.org/projectid
+
+### Changed
+- get rid of butterknife
+- bump to androidx
+- update cert4android
+- CI : keep debug apk only
+
 ## 0.0.3 – 2019-02-15
 ### Added
 

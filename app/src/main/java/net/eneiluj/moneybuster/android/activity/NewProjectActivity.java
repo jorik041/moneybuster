@@ -17,6 +17,7 @@ import android.widget.Toast;
 import net.eneiluj.moneybuster.android.fragment.NewProjectFragment;
 import net.eneiluj.moneybuster.util.ThemeUtils;
 
+import static net.eneiluj.moneybuster.android.fragment.NewProjectFragment.TYPE_IHATEMONEY;
 import static net.eneiluj.moneybuster.android.fragment.NewProjectFragment.TYPE_LOCAL;
 import static net.eneiluj.moneybuster.android.fragment.NewProjectFragment.TYPE_NEXTCLOUD_COSPEND;
 
@@ -86,6 +87,12 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
                 defaultNcUrl = "https://" + data.getHost() +
                         data.getPath().replaceAll("/"+defaultProjectId+"$", "");
                 defaultProjectType = TYPE_NEXTCLOUD_COSPEND;
+            }
+            else if (data.getScheme().equals("ihatemoney")) {
+                defaultProjectId = data.getLastPathSegment();
+                defaultIhmUrl = "https://" + data.getHost() +
+                        data.getPath().replaceAll("/"+defaultProjectId+"$", "");
+                defaultProjectType = TYPE_IHATEMONEY;
             }
         }
         fragment = NewProjectFragment.newInstance(defaultIhmUrl, defaultNcUrl, defaultProjectId, defaultProjectType);

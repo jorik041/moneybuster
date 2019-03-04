@@ -31,7 +31,7 @@
     <string name="setting_project_name_long">Name displayed in user interface</string>
     <string name="setting_password_long">Also named "access code"</string>
     <string name="setting_password">Password</string>
-    <string name="setting_create_project_title">Create project one the server</string>
+    <string name="setting_create_project_title">Create project on the server</string>
     <string name="setting_create_project_summary">Works only if anonymous project creation is allowed on the instance</string>
     <string name="setting_email_long">Contact e-mail</string>
     <string name="setting_email">E-mail</string>

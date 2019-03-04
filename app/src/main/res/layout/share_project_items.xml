@@ -10,6 +10,12 @@
     android:orientation="vertical"
     android:padding="10dp">
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/share_project_dialog_message" />
+
     <ImageView
         android:id="@+id/imageViewShareProject"
         android:layout_width="match_parent"

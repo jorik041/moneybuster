@@ -802,15 +802,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             .replace("/index.php/apps/cospend", "");
                     String password = proj.getPassword();
 
-                    String scheme;
+                    String hostEnd;
                     if (proj.getIhmUrl().contains("index.php/apps/cospend")) {
-                        scheme = "cospend://";
+                        hostEnd = "cospend";
                     }
                     else {
-                        scheme = "ihatemoney://";
+                        hostEnd = "ihatemoney";
                     }
 
-                    final String shareLink = scheme + url + "/" + projId + "/" + password;
+                    final String shareLink = "https://net.eneiluj.moneybuster." + hostEnd + "/" +
+                            url + "/" + projId + "/" + password;
 
                     // generate the dialog
                     AlertDialog.Builder builder = new AlertDialog.Builder(

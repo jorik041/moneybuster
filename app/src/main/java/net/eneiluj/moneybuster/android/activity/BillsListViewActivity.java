@@ -940,6 +940,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabEditMember.setColorPressed(ThemeUtils.primaryColor(this));
         fabEditProject.setColorNormal(ThemeUtils.primaryColor(this));
         fabEditProject.setColorPressed(ThemeUtils.primaryColor(this));
+        fabShareProject.setColorNormal(ThemeUtils.primaryColor(this));
+        fabShareProject.setColorPressed(ThemeUtils.primaryColor(this));
         fabSettle.setColorNormal(ThemeUtils.primaryColor(this));
         fabSettle.setColorPressed(ThemeUtils.primaryColor(this));
         fabStatistics.setColorNormal(ThemeUtils.primaryColor(this));

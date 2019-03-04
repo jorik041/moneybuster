@@ -78,24 +78,30 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
         String defaultIhmUrl = getDefaultIhmUrl();
         String defaultNcUrl = getDefaultNcUrl();
         String defaultProjectId = null;
+        String defaultProjectPassword = null;
         String defaultProjectType = TYPE_LOCAL;
 
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Uri data = getIntent().getData();
-            if (data.getScheme().equals("cospend")) {
-                defaultProjectId = data.getLastPathSegment();
-                defaultNcUrl = "https://" + data.getHost() +
-                        data.getPath().replaceAll("/"+defaultProjectId+"$", "");
+            if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 3) {
+                defaultProjectPassword = data.getLastPathSegment();
+                defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
+                defaultNcUrl = "https:/" +
+                        data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
                 defaultProjectType = TYPE_NEXTCLOUD_COSPEND;
             }
-            else if (data.getScheme().equals("ihatemoney")) {
-                defaultProjectId = data.getLastPathSegment();
-                defaultIhmUrl = "https://" + data.getHost() +
-                        data.getPath().replaceAll("/"+defaultProjectId+"$", "");
+            else if (data.getHost().equals("net.eneiluj.moneybuster.ihatemoney") && data.getPathSegments().size() >= 3) {
+                defaultProjectPassword = data.getLastPathSegment();
+                defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
+                defaultIhmUrl = "https:/" +
+                        data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
                 defaultProjectType = TYPE_IHATEMONEY;
             }
         }
-        fragment = NewProjectFragment.newInstance(defaultIhmUrl, defaultNcUrl, defaultProjectId, defaultProjectType);
+        fragment = NewProjectFragment.newInstance(
+                defaultIhmUrl, defaultNcUrl,
+                defaultProjectId, defaultProjectPassword, defaultProjectType
+        );
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
     }
 

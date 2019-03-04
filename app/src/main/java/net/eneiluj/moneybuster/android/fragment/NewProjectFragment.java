@@ -48,6 +48,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     public static final String PARAM_DEFAULT_IHM_URL = "defaultIhmUrl";
     public static final String PARAM_DEFAULT_NC_URL = "defaultNcUrl";
     public static final String PARAM_DEFAULT_PROJECT_ID = "defaultProjectId";
+    public static final String PARAM_DEFAULT_PROJECT_PASSWORD = "defaultProjectPassword";
     public static final String PARAM_DEFAULT_PROJECT_TYPE = "defaultProjectType";
     public static final String TYPE_LOCAL = "local";
     public static final String TYPE_IHATEMONEY = "ihatemoney";
@@ -75,12 +76,15 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     protected String defaultNcUrl;
 
     public static NewProjectFragment newInstance(String defaultIhmUrl, String defaultNCUrl,
-                                                 @Nullable String defaultProjectId, String defaultProjectType) {
+                                                 @Nullable String defaultProjectId,
+                                                 @Nullable String defaultProjectPassword,
+                                                 String defaultProjectType) {
         NewProjectFragment f = new NewProjectFragment();
         Bundle b = new Bundle();
         b.putString(PARAM_DEFAULT_IHM_URL, defaultIhmUrl);
         b.putString(PARAM_DEFAULT_NC_URL, defaultNCUrl);
         b.putString(PARAM_DEFAULT_PROJECT_ID, defaultProjectId);
+        b.putString(PARAM_DEFAULT_PROJECT_PASSWORD, defaultProjectPassword);
         b.putString(PARAM_DEFAULT_PROJECT_TYPE, defaultProjectType);
         f.setArguments(b);
         return f;
@@ -468,6 +472,17 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
 
         newProjectId.setText(getArguments().getString(PARAM_DEFAULT_PROJECT_ID));
         newProjectId.setSummary(getArguments().getString(PARAM_DEFAULT_PROJECT_ID));
+
+        String defaultPassword = getArguments().getString(PARAM_DEFAULT_PROJECT_PASSWORD);
+        if (defaultPassword != null) {
+            newProjectPassword.setText(getArguments().getString(PARAM_DEFAULT_PROJECT_PASSWORD));
+            int nbChars = ((CharSequence) getArguments().getString(PARAM_DEFAULT_PROJECT_PASSWORD)).length();
+            String sum = "";
+            for (int i = 0; i < nbChars; i++) {
+                sum += "*";
+            }
+            newProjectPassword.setSummary(sum);
+        }
 
         newProjectCreate = (CheckBoxPreference) this.findPreference("createonserver");
         newProjectCreate.setChecked(false);

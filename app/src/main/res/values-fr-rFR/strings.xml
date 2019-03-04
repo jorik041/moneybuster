@@ -8,6 +8,7 @@
     <string name="action_settings">Paramètres</string>
     <string name="action_add_project">Ajouter un projet</string>
     <string name="action_edit_project">Éditer le projet distant</string>
+    <string name="action_share_project">Partager le projet</string>
     <string name="mandatory">(obligatoire)</string>
     <string name="setting_what">Quoi ?</string>
     <string name="setting_what_long">Payé pour quoi ?</string>
@@ -47,6 +48,7 @@
     <string name="simple_about">À propos</string>
     <string name="simple_settle_share">Partager les remboursements</string>
     <string name="simple_stats_share">Partager les statistiques</string>
+    <string name="simple_share_share">Partager le lien de projet</string>
     <string name="action_bill_deleted">Facture supprimée</string>
     <string name="action_bill_restored">Facture restaurée</string>
     <string name="action_undo">Annuler</string>
@@ -108,6 +110,10 @@
     <string name="fab_settle">Remboursements</string>
     <string name="statistic_dialog_title">Statistiques du projet</string>
     <string name="settle_dialog_title">Remboursements du projet</string>
+    <string name="share_dialog_title">Partager le projet</string>
+    <string name="share_project_dialog_message">Scannez ce QRCode avec un téléphone Android avec MoneyBuster installé et ouvrez le lien ou envoyez simplement le lien.</string>
+    <string name="share_share_intent_title">Lien du projet %1$s</string>
+    <string name="share_share_chooser_title">Partager le lien du projet %1$s</string>
     <string name="share_settle_intro">Voila comment régler les remboursement du projet %1$s :</string>
     <string name="share_settle_sentence">%1$s doit %3$.2f à %2$s</string>
     <string name="share_settle_title">Régler les remboursements du projet %1$s</string>

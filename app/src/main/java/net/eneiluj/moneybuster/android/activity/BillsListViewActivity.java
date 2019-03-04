@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
@@ -20,6 +21,8 @@ import android.os.Handler;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.zxing.WriterException;
+
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 import androidx.annotation.Nullable;
@@ -38,6 +41,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback;
 import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -129,6 +133,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     com.github.clans.fab.FloatingActionButton fabSettle;
     com.github.clans.fab.FloatingActionButton fabEditProject;
     com.github.clans.fab.FloatingActionButton fabRemoveProject;
+    com.github.clans.fab.FloatingActionButton fabShareProject;
     FloatingActionButton fabMenu;
     FloatingActionButton fabSelectProject;
     RecyclerView listNavigationMembers;
@@ -193,6 +198,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabStatistics = findViewById(R.id.fabDrawer_statistics);
         fabSettle = findViewById(R.id.fabDrawer_settle);
         fabEditProject = findViewById(R.id.fabDrawer_edit_project);
+        fabShareProject = findViewById(R.id.fabDrawer_share_project);
         fabRemoveProject = findViewById(R.id.fabDrawer_remove_project);
         fabMenu = findViewById(R.id.fab_add_bill);
         fabSelectProject = findViewById(R.id.fab_select_project);
@@ -771,6 +777,80 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_settle_title, proj.getName()));
                             shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
                             startActivity(Intent.createChooser(shareIntent, getString(R.string.share_settle_title, proj.getName())));
+                        }
+                    });
+                    builder.show();
+                    fabMenuDrawerEdit.close(false);
+                }
+            }
+        });
+
+        fabShareProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                long selectedProjectId = preferences.getLong("selected_project", 0);
+
+                final DBProject proj = db.getProject(selectedProjectId);
+
+                if (selectedProjectId != 0 && proj.getIhmUrl() != null && !proj.getIhmUrl().equals("")) {
+                    // get url, id and password
+                    String projId = proj.getRemoteId();
+                    String url = proj.getIhmUrl()
+                            .replace("https://", "")
+                            .replace("http://", "")
+                            .replace("/index.php/apps/cospend", "");
+                    String password = proj.getPassword();
+
+                    String scheme;
+                    if (proj.getIhmUrl().contains("index.php/apps/cospend")) {
+                        scheme = "cospend://";
+                    }
+                    else {
+                        scheme = "ihatemoney://";
+                    }
+
+                    final String shareLink = scheme + url + "/" + projId + "/" + password;
+
+                    // generate the dialog
+                    AlertDialog.Builder builder = new AlertDialog.Builder(
+                            new ContextThemeWrapper(
+                                    view.getContext(),
+                                    R.style.AppThemeDialog
+                            )
+                    );
+                    builder.setTitle(getString(R.string.share_dialog_title));
+
+                    final View tView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.share_project_items, null);
+                    TextView link = tView.findViewById(R.id.textViewShareProject);
+                    link.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
+                    link.setText(shareLink);
+                    ImageView img = tView.findViewById(R.id.imageViewShareProject);
+                    try {
+                        Bitmap bitmap = ThemeUtils.encodeAsBitmap(shareLink);
+                        img.setImageBitmap(bitmap);
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    }
+
+                    builder.setView(tView)
+                            .setIcon(R.drawable.ic_share_grey_24dp);
+                    builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    builder.setNeutralButton(getString(R.string.simple_share_share), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // share it
+                            Intent shareIntent = new Intent();
+                            shareIntent.setAction(Intent.ACTION_SEND);
+                            shareIntent.setType("text/plain");
+                            shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_share_intent_title, proj.getName()));
+                            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareLink);
+                            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_share_chooser_title, proj.getName())));
                         }
                     });
                     builder.show();

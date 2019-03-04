@@ -237,6 +237,18 @@
                         fab:fab_size="normal" /-->
 
                     <com.github.clans.fab.FloatingActionButton
+                        android:id="@+id/fabDrawer_share_project"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_share_white_24dp"
+                        app:fab_colorNormal="@color/primary"
+                        app:fab_colorPressed="@color/primary"
+                        app:fab_hideAnimation="@anim/fab_slide_out_to_left"
+                        app:fab_showAnimation="@anim/fab_slide_in_from_left"
+                        fab:fab_label="@string/action_share_project"
+                        fab:fab_size="mini" />
+
+                    <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/fabDrawer_settle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -246,7 +258,7 @@
                         app:fab_hideAnimation="@anim/fab_slide_out_to_left"
                         app:fab_showAnimation="@anim/fab_slide_in_from_left"
                         fab:fab_label="@string/fab_settle"
-                        fab:fab_size="normal" />
+                        fab:fab_size="mini" />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/fabDrawer_statistics"
@@ -258,7 +270,7 @@
                         app:fab_hideAnimation="@anim/fab_slide_out_to_right"
                         app:fab_showAnimation="@anim/fab_slide_in_from_right"
                         fab:fab_label="@string/fab_statistics"
-                        fab:fab_size="normal" />
+                        fab:fab_size="mini" />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/fabDrawer_edit_member"
@@ -270,7 +282,7 @@
                         app:fab_hideAnimation="@anim/fab_slide_out_to_left"
                         app:fab_showAnimation="@anim/fab_slide_in_from_left"
                         fab:fab_label="@string/fab_edit_member"
-                        fab:fab_size="normal" />
+                        fab:fab_size="mini" />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/fabDrawer_remove_project"
@@ -282,7 +294,7 @@
                         app:fab_hideAnimation="@anim/fab_slide_out_to_right"
                         app:fab_showAnimation="@anim/fab_slide_in_from_right"
                         fab:fab_label="@string/fab_rm_project"
-                        fab:fab_size="normal" />
+                        fab:fab_size="mini" />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/fabDrawer_edit_project"
@@ -294,7 +306,8 @@
                         app:fab_hideAnimation="@anim/fab_slide_out_to_left"
                         app:fab_showAnimation="@anim/fab_slide_in_from_left"
                         fab:fab_label="@string/action_edit_project"
-                        fab:fab_size="normal" />
+                        fab:fab_size="mini" />
+
 
                 </com.github.clans.fab.FloatingActionMenu>
 

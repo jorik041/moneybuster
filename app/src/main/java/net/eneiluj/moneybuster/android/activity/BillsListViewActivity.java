@@ -826,6 +826,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     TextView link = tView.findViewById(R.id.textViewShareProject);
                     link.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
                     link.setText(shareLink);
+                    TextView hint = tView.findViewById(R.id.textViewShareProjectHint);
+                    hint.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
                     ImageView img = tView.findViewById(R.id.imageViewShareProject);
                     try {
                         Bitmap bitmap = ThemeUtils.encodeAsBitmap(shareLink);

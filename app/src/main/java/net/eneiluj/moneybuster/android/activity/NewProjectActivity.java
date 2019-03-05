@@ -83,16 +83,28 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
 
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Uri data = getIntent().getData();
-            if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 3) {
-                defaultProjectPassword = data.getLastPathSegment();
-                defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
+            if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 2) {
+                if (data.getPath().endsWith("/")) {
+                    defaultProjectPassword = "";
+                    defaultProjectId = data.getLastPathSegment();
+                }
+                else {
+                    defaultProjectPassword = data.getLastPathSegment();
+                    defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
+                }
                 defaultNcUrl = "https:/" +
                         data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
                 defaultProjectType = TYPE_NEXTCLOUD_COSPEND;
             }
-            else if (data.getHost().equals("net.eneiluj.moneybuster.ihatemoney") && data.getPathSegments().size() >= 3) {
-                defaultProjectPassword = data.getLastPathSegment();
-                defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
+            else if (data.getHost().equals("net.eneiluj.moneybuster.ihatemoney") && data.getPathSegments().size() >= 2) {
+                if (data.getPath().endsWith("/")) {
+                    defaultProjectPassword = "";
+                    defaultProjectId = data.getLastPathSegment();
+                }
+                else {
+                    defaultProjectPassword = data.getLastPathSegment();
+                    defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
+                }
                 defaultIhmUrl = "https:/" +
                         data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
                 defaultProjectType = TYPE_IHATEMONEY;

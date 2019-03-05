@@ -36,6 +36,7 @@
     <string name="setting_create_project_summary">Nur möglich, wenn anonyme Projekterstellung auf dem Server erlaubt ist</string>
     <string name="setting_email_long">Kontakt E-Mail</string>
     <string name="setting_email">E-Mail</string>
+    <string name="project_added_success">Project successfully added to MoneyBuster</string>
     <string name="action_search">Suche</string>
     <string name="simple_cancel">Abbrechen</string>
     <string name="simple_ok">Ok</string>

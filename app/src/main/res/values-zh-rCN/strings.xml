@@ -36,6 +36,7 @@
     <string name="setting_create_project_summary">仅在实例允许创建匿名项目时可用</string>
     <string name="setting_email_long">联系人电子邮件地址</string>
     <string name="setting_email">电子邮件地址</string>
+    <string name="project_added_success">Project successfully added to MoneyBuster</string>
     <string name="action_search">搜索</string>
     <string name="simple_cancel">取消</string>
     <string name="simple_ok">好</string>

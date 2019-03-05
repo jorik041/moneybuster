@@ -36,6 +36,7 @@
     <string name="setting_create_project_summary">Works only if anonymous project creation is allowed on the instance</string>
     <string name="setting_email_long">Contact e-mail</string>
     <string name="setting_email">E-mail</string>
+    <string name="project_added_success">Project successfully added to MoneyBuster</string>
     <string name="action_search">Search</string>
     <string name="simple_cancel">Cancel</string>
     <string name="simple_ok">Ok</string>

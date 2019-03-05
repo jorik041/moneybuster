@@ -410,6 +410,8 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         preferences.edit().putLong("selected_project", pid).apply();
 
+        showToast(getString(R.string.project_added_success), Toast.LENGTH_LONG);
+
         System.out.println("PROJECT local id : "+pid+" : "+newProject);
         return pid;
     }

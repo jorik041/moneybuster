@@ -35,8 +35,8 @@ This means you can choose where your data is going and preserve your privacy.
 
 ## Install
 
+* F-Droid : [![MoneyBuster App on fdroid.org](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/12078870063ba70ddae219b6187bfcb7/fd.png)](https://f-droid.org/packages/net.eneiluj.moneybuster/)
 * APK Direct download : [builds in Gitlab CI jobs artifacts](https://gitlab.com/eneiluj/moneybuster/pipelines)
-* Coming soon : [![MoneyBuster App on fdroid.org](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/12078870063ba70ddae219b6187bfcb7/fd.png)](https://f-droid.org/packages/net.eneiluj.moneybuster/)
 
 ## Build
 

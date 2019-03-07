@@ -57,7 +57,7 @@ Then open/import the project in Android studio and build it.
 
 
 ## :eyes: Screenshots
-![1](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/4cc6bd1f49d77a84b1881b97c04847ac/1.png) ![2](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/501a1204a978be980e261e8ddfb7d906/2.png)
+[1<img src="https://gitlab.com/eneiluj/moneybuster/wikis/uploads/4cc6bd1f49d77a84b1881b97c04847ac/1.png" width="150"/>](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/4cc6bd1f49d77a84b1881b97c04847ac/1.png) [2<img src="https://gitlab.com/eneiluj/moneybuster/wikis/uploads/501a1204a978be980e261e8ddfb7d906/2.png" width="150"/>](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/501a1204a978be980e261e8ddfb7d906/2.png)
 
 ![3](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/3a541720d5ea2ffdd0d4c15db8db726c/3.png) ![4](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/48a1ff39bdfe174d01d3d05a791a167a/4.png)
 

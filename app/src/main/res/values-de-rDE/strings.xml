@@ -8,7 +8,7 @@
     <string name="action_settings">Einstellungen</string>
     <string name="action_add_project">Neues Projekt</string>
     <string name="action_edit_project">Projekt bearbeiten</string>
-    <string name="action_share_project">Share project</string>
+    <string name="action_share_project">Projekt teilen</string>
     <string name="mandatory">(notwendig)</string>
     <string name="setting_what">Was?</string>
     <string name="setting_what_long">Bezahlt für?</string>
@@ -32,11 +32,11 @@
     <string name="setting_project_name_long">Angezeigter Name in der Anwendung</string>
     <string name="setting_password_long">Auch \"access code\" gennant</string>
     <string name="setting_password">Passwort</string>
-    <string name="setting_create_project_title">Create project on the server</string>
+    <string name="setting_create_project_title">Projekt auf Server erstellen</string>
     <string name="setting_create_project_summary">Nur möglich, wenn anonyme Projekterstellung auf dem Server erlaubt ist</string>
     <string name="setting_email_long">Kontakt E-Mail</string>
     <string name="setting_email">E-Mail</string>
-    <string name="project_added_success">Project successfully added to MoneyBuster</string>
+    <string name="project_added_success">Projekt erfolgreich zu MoneyBuster hinzugefügt</string>
     <string name="action_search">Suche</string>
     <string name="simple_cancel">Abbrechen</string>
     <string name="simple_ok">Ok</string>

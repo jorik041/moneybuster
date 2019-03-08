@@ -12,10 +12,11 @@ This means you can choose where your data is going and preserve your privacy.
 * manage bills (add/remove/edit)
 * search bills (by payer, name, amount, date)
 * project statistics
-* project settle plan
-* share statistics and settle plan
-* dark theme
-* multi-lingual user-interface (translated on [https://crowdin.com/project/moneybuster Crowdin])
+* project settlement plan
+* share statistics and settlement plan
+* dark theme and customizable main app color
+* share/import projects with link/QRCode
+* multi-lingual user-interface (translated on Crowdin: https://crowdin.com/project/moneybuster)
 
 # Requirements
 

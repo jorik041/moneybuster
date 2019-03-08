@@ -15,4 +15,19 @@ cp ../app/src/main/res/es-ES/moneybuster_fastlane/full_description.txt metadata/
 cp ../app/src/main/res/es-ES/moneybuster_fastlane/short_description.txt metadata/android/es-ES/short_description.txt
 echo "MoneyBuster" > metadata/android/es-ES/title.txt
 
+test -d metadata/android/it-IT || mkdir metadata/android/it-IT
+cp ../app/src/main/res/it/moneybuster_fastlane/full_description.txt metadata/android/it-IT/full_description.txt
+cp ../app/src/main/res/it/moneybuster_fastlane/short_description.txt metadata/android/it-IT/short_description.txt
+echo "MoneyBuster" > metadata/android/it-IT/title.txt
+
+test -d metadata/android/zh-CN || mkdir metadata/android/zh-CN
+cp ../app/src/main/res/zh-CN/moneybuster_fastlane/full_description.txt metadata/android/zh-CN/full_description.txt
+cp ../app/src/main/res/zh-CN/moneybuster_fastlane/short_description.txt metadata/android/zh-CN/short_description.txt
+echo "MoneyBuster" > metadata/android/zh-CN/title.txt
+
+test -d metadata/android/pt-BR || mkdir metadata/android/pt-BR
+cp ../app/src/main/res/pt-BR/moneybuster_fastlane/full_description.txt metadata/android/pt-BR/full_description.txt
+cp ../app/src/main/res/pt-BR/moneybuster_fastlane/short_description.txt metadata/android/pt-BR/short_description.txt
+echo "MoneyBuster" > metadata/android/pt-BR/title.txt
+
 git add .

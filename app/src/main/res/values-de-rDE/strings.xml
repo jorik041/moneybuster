@@ -4,7 +4,7 @@
     <string name="app_name">MoneyBuster</string>
     <string name="swipe_left">Noch keine Einträge</string>
     <string name="label_all_bills">Alle Ausgaben</string>
-    <string name="action_create_bill">Neue Ausgabe</string>
+    <string name="action_create_bill">Neue Rechnung</string>
     <string name="action_settings">Einstellungen</string>
     <string name="action_add_project">Neues Projekt</string>
     <string name="action_edit_project">Projekt bearbeiten</string>
@@ -39,7 +39,7 @@
     <string name="project_added_success">Projekt erfolgreich zu MoneyBuster hinzugefügt</string>
     <string name="action_search">Suche</string>
     <string name="simple_cancel">Abbrechen</string>
-    <string name="simple_ok">Ok</string>
+    <string name="simple_ok">OK</string>
     <string name="simple_yes">Ja</string>
     <string name="simple_no">Nein</string>
     <string name="simple_edit_bill">Ausgabe bearbeiten</string>
@@ -49,8 +49,8 @@
     <string name="simple_about">Über</string>
     <string name="simple_settle_share">Abrechnung teilen</string>
     <string name="simple_stats_share">Statistik teilen</string>
-    <string name="simple_share_share">Share project link</string>
-    <string name="action_bill_deleted">Ausgabe entfernt</string>
+    <string name="simple_share_share">Projektlink teilen</string>
+    <string name="action_bill_deleted">Ausgabe gelöscht</string>
     <string name="action_bill_restored">Ausgabe wiederhergestellt</string>
     <string name="action_undo">Wiederherstellen</string>
     <string name="action_drawer_open">Menü öffnen</string>
@@ -79,7 +79,7 @@
     <!-- Settings -->
     <string name="settings_server_settings">Konto</string>
     <string name="settings_url">Server-Adresse</string>
-    <string name="settings_url_warn_http">WARNUNG: \"http\" ist unsicher. Bitte nutze \"https\".</string>
+    <string name="settings_url_warn_http">WARNUNG: \"http\" ist unsicher. Bitte \"https\" benutzen.</string>
     <string name="settings_username">Nutzername</string>
     <string name="settings_password">Passwort</string>
     <string name="settings_password_unchanged">Passwort (nicht geändert)</string>
@@ -111,10 +111,10 @@
     <string name="fab_settle">Abrechnen</string>
     <string name="statistic_dialog_title">Projektstatistik</string>
     <string name="settle_dialog_title">Projekt abrechnen</string>
-    <string name="share_dialog_title">Share the project</string>
+    <string name="share_dialog_title">Projekt teilen</string>
     <string name="share_project_dialog_message">Scan this QRCode with an Android phone with MoneyBuster installed and open the link or simply send the link.</string>
-    <string name="share_share_intent_title">Project link of %1$s</string>
-    <string name="share_share_chooser_title">Share project link of %1$s</string>
+    <string name="share_share_intent_title">Projektlink von %1$s</string>
+    <string name="share_share_chooser_title">Projektlink von %1$s teilen</string>
     <string name="share_settle_intro">Wie man Projekt %1$s abrechnet:</string>
     <string name="share_settle_sentence">%1$s schuldet %3$.2f %2$s</string>
     <string name="share_settle_title">Project %1$s abrechnen</string>

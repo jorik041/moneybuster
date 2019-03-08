@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.0.5 – 2019-03-08
 ### Added
 - able to generate QRCode to share a project to another phone with MoneyBuster installed
 - able to catch VIEW intent when a "moneybuster" link is visited to import a project

@@ -3,8 +3,6 @@ Shared budget manager able to sync with [IHateMoney](https://github.com/spiral-p
 
 [![Crowdin](https://d322cqt584bo4o.cloudfront.net/moneybuster/localized.svg)](https://crowdin.com/project/moneybuster)
 
-This is still a beta version.
-
 This app is originally a fork of [PhoneTrack-Android](https://gitlab.com/eneiluj/phonetrack-android/) which is itself a fork of
 [Nextcloud Notes for Android](https://github.com/stefan-niedermann/nextcloud-notes).
 Many thanks to their developers :heart: !
@@ -20,14 +18,24 @@ This means you can choose where your data is going and preserve your privacy.
 * manage bills (add/remove/edit)
 * search bills (by payer, name, amount, date)
 * project statistics
-* project settle plan
-* share statistics and settle plan
-* dark theme
-* translated in many languages on [Crowdin](https://crowdin.com/project/moneybuster)
+* project settlement plan
+* share statistics and settlement plan
+* dark theme and customizable main app color
+* share/import projects with link/QRCode
+* multi-lingual user-interface (translated on Crowdin: https://crowdin.com/project/moneybuster)
 
 ## :link: Requirements
 * Android >= 4.1
-* Some friends
+
+If you want to host a project in IHateMoney :
+
+* IHateMoney instance running
+
+If you want to host a project in Nextcloud Cospend :
+
+* Nextcloud instance running with Cospend app installed
+
+If you want to be able to create remote projects from MoneyBuster : enable public project creation on your IHateMoney or Nextcloud Cospend instance.
 
 ## User documentation
 

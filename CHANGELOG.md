@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- able to generate QRCode to share a project to another phone with MoneyBuster installed
+- able to catch VIEW intent when a "moneybuster" link is visited to import a project
+
+### Changed
+- bump gradle plugin version
+- allow negative bill amount values
+[#4](https://gitlab.com/eneiluj/moneybuster/issues/4) @Michael-Hofer
+
+### Fixed
+- declare server address field as textURI
+[#3](https://gitlab.com/eneiluj/moneybuster/issues/3) @Salamandar
+
 ## 0.0.4 – 2019-03-01
 ### Added
 - new option to set app main color

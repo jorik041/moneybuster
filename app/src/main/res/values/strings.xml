@@ -43,7 +43,7 @@
     <string name="simple_no">No</string>
     <string name="simple_edit_bill">Edit bill</string>
     <string name="simple_new_bill">New bill</string>
-    <string name="simple_add_project">Add project</string>
+    <string name="simple_add_project">Add project in MoneyBuster</string>
     <string name="simple_edit_project">Edit remote project</string>
     <string name="simple_about">About</string>
     <string name="simple_settle_share">Share settlement</string>

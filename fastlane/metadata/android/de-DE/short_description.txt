@@ -1,1 +1,1 @@
-Multi-project shared budget manager able to sync with self hosted FOSS services
+Budget-Manager, die mehrere Projekte verwalten und mit FOSS-Diensten synchronisieren können, die du selbst hostest

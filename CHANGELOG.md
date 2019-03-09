@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.0.6 – 2019-03-09
+# Added
+- translations
+
+### Changed
+- use different app flavours for F-Droid and CI builds to be able to install both versions in parallel
+
 ## 0.0.5 – 2019-03-08
 ### Added
 - able to generate QRCode to share a project to another phone with MoneyBuster installed

@@ -14,8 +14,9 @@ Cela veut dire que vous pouvez choisir où vont vos données et préserver votre
 * statistiques de projet
 * plan de remboursement de projet
 * partager les statistiques et plan de remboursement
-* thème sombre
-* interface utilisateur multi-langues (traduit sur [https://crowdin.com/project/moneybuster Crowdin])
+* thème sombre et couleur principale de l'application personnalisable
+* partager/importer des projets avec un lien/QRCode
+* interface utilisateur multilingue (traduit sur https://crowdin.com/project/moneybuster)
 
 # Dépendances
 

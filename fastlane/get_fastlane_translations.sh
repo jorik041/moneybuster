@@ -30,4 +30,9 @@ cp ../app/src/main/res/pt-BR/moneybuster_fastlane/full_description.txt metadata/
 cp ../app/src/main/res/pt-BR/moneybuster_fastlane/short_description.txt metadata/android/pt-BR/short_description.txt
 echo "MoneyBuster" > metadata/android/pt-BR/title.txt
 
+test -d metadata/android/nl-NL || mkdir metadata/android/nl-NL
+cp ../app/src/main/res/nl/moneybuster_fastlane/full_description.txt metadata/android/nl-NL/full_description.txt
+cp ../app/src/main/res/nl/moneybuster_fastlane/short_description.txt metadata/android/nl-NL/short_description.txt
+echo "MoneyBuster" > metadata/android/nl-NL/title.txt
+
 git add .

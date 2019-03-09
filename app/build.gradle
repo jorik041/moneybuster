@@ -3,7 +3,6 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
-
     defaultConfig {
         applicationId "net.eneiluj.moneybuster"
         minSdkVersion 16
@@ -21,29 +20,34 @@ android {
         disable 'MissingTranslation'
         abortOnError false
     }
+    productFlavors {
+        normal {
+            resValue "string", "app_name", "MoneyBuster"
+        }
+        dev {
+            applicationId 'dev.net.eneiluj.moneybuster'
+            resValue "string", "app_name", "MoneyDevBuster"
+        }
+    }
+    flavorDimensions "default"
 }
 
 dependencies {
     implementation project(':cert4android')
     implementation 'com.github.clans:fab:1.6.4'
-
     def supportLibVersion = '1.0.0-beta01'
-
     //implementation "com.android.support:preference-v7:${supportLibVersion}"
-    implementation "com.takisoft.fix:preference-v7:28.0.0.0"
+    implementation 'com.takisoft.fix:preference-v7:28.0.0.0'
     implementation 'com.takisoft.fix:preference-v7-extras:28.0.0.0'
-
     implementation "androidx.appcompat:appcompat:${supportLibVersion}"
     implementation "com.google.android.material:material:${supportLibVersion}"
     implementation "androidx.recyclerview:recyclerview:${supportLibVersion}"
     // needed for cert4android (conflict resolution)
     implementation "androidx.cardview:cardview:${supportLibVersion}"
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     androidTestImplementation 'junit:junit:4.12'
-
     implementation 'com.github.kizitonwose.colorpreference:support:1.0.6'
     implementation 'com.larswerkman:lobsterpicker:1.0.1'
-
     implementation 'com.google.zxing:core:3.3.3'
 }
 

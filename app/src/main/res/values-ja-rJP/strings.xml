@@ -9,7 +9,7 @@
     <string name="action_edit_project">Edit remote project</string>
     <string name="action_share_project">Share project</string>
     <string name="mandatory">(mandatory)</string>
-    <string name="setting_what">What ?</string>
+    <string name="setting_what">What?</string>
     <string name="setting_what_long">Paid for what?</string>
     <string name="setting_date">When was it?</string>
     <string name="setting_date_long">The day it was paid</string>

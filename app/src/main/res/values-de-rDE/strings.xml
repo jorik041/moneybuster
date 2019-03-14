@@ -43,7 +43,7 @@
     <string name="simple_no">Nein</string>
     <string name="simple_edit_bill">Ausgabe bearbeiten</string>
     <string name="simple_new_bill">Neue Ausgabe</string>
-    <string name="simple_add_project">Add project in MoneyBuster</string>
+    <string name="simple_add_project">Projekt in MoneyBuster hinzufügen</string>
     <string name="simple_edit_project">Projekt bearbeiten</string>
     <string name="simple_about">Über</string>
     <string name="simple_settle_share">Abrechnung teilen</string>
@@ -111,7 +111,7 @@
     <string name="statistic_dialog_title">Projektstatistik</string>
     <string name="settle_dialog_title">Projekt abrechnen</string>
     <string name="share_dialog_title">Projekt teilen</string>
-    <string name="share_project_dialog_message">Scan this QRCode with an Android phone with MoneyBuster installed and open the link or simply send the link.</string>
+    <string name="share_project_dialog_message">Scannen Sie diesen QRCode mit MoneyBuster auf einem Android-Telefon und öffnen Sie den Link oder versenden Sie den Link einfach.</string>
     <string name="share_share_intent_title">Projektlink von %1$s</string>
     <string name="share_share_chooser_title">Projektlink von %1$s teilen</string>
     <string name="share_settle_intro">Wie man Projekt %1$s abrechnet:</string>
@@ -137,7 +137,7 @@
     <string name="error_server">Serverfehler</string>
     <string name="error_username_password_invalid">Benutzername oder Passwort ungültig</string>
     <string name="error_invalid_email">Ungültige E-Mail-Addresse</string>
-    <string name="error_invalid_url">Ungültige URL</string>
+    <string name="error_invalid_url">Ungültige Adresse</string>
     <string name="error_invalid_project_remote_id">Ungültige Projektnummer</string>
     <string name="error_invalid_project_password">Ungültiges Projektpasswort</string>
     <string name="error_invalid_project_name">Ungültiger Projektname</string>

@@ -57,8 +57,8 @@
     <string name="action_select_project">sélectionner le projet courant</string>
     <string name="menu_delete">Supprimer</string>
     <string name="menu_delete_project_remote">Supprimer le projet sur le serveur</string>
-    <string name="menu_save_project">Sauver le projet</string>
-    <string name="menu_save_bill">Sauver la facture</string>
+    <string name="menu_save_project">Sauvegarder le projet</string>
+    <string name="menu_save_bill">Sauvegarder la facture</string>
     <string name="fab_add_project">Ajouter un projet</string>
     <string name="fab_add_member">Ajouter un membre</string>
     <string name="fab_rm_project">Enlever le projet courant</string>
@@ -100,7 +100,7 @@
     <string name="edit_member_dialog_title">Éditer un membre</string>
     <string name="member_edit_empty_name">Le nom du membre ne peut pas être vide</string>
     <string name="settle_who">Qui doit payer ?</string>
-    <string name="settle_to_whom">À qui?</string>
+    <string name="settle_to_whom">À qui ?</string>
     <string name="settle_how_much">Combien ?</string>
     <string name="stats_who">Qui</string>
     <string name="stats_paid">A payé</string>

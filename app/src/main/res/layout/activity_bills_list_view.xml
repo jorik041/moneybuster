@@ -30,7 +30,7 @@
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/bg_highlighted"
+                android:background="@color/bg_normal"
                 android:scrollbars="vertical" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

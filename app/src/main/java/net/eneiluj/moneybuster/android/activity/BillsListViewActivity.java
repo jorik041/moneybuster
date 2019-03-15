@@ -1038,7 +1038,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 EditText wvi = iView.findViewById(R.id.editMemberWeight);
                 double newMemberWeight = 1.0;
                 try {
-                    newMemberWeight = Double.valueOf(wvi.getText().toString());
+                    newMemberWeight = Double.valueOf(wvi.getText().toString().replace(',', '.'));
                 }
                 catch (Exception e) {
                     showToast(getString(R.string.member_edit_weight_error));

@@ -520,7 +520,12 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         if (editAmount.getText() == null || editAmount.getText().equals("")) {
             return 0.0;
         }
-        return Double.valueOf(editAmount.getText());
+        try {
+            return Double.valueOf(editAmount.getText().replace(',', '.'));
+        }
+        catch (Exception e) {
+            return 0.0;
+        }
     }
     protected long getPayerId() {
         if (editPayer.getValue() == null) {

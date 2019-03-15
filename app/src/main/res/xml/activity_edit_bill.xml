@@ -42,6 +42,7 @@
         android:dialogTitle="@string/setting_amount"
         android:icon="@drawable/ic_dollar_grey_24dp"
         android:inputType="numberSigned|numberDecimal"
+        android:digits="0123456789.,"
         android:key="amount"
         android:persistent="false"
         android:selectAllOnFocus="true"

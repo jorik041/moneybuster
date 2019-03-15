@@ -100,7 +100,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
                 icon.setVisibility(View.GONE);
             }
             //view.setBackgroundColor(isSelected ? view.getResources().getColor(R.color.bg_highlighted) : Color.TRANSPARENT);
-            view.setBackgroundColor(isSelected ? ContextCompat.getColor(view.getContext(), R.color.bg_normal) : Color.TRANSPARENT);
+            view.setBackgroundColor(isSelected ? ContextCompat.getColor(view.getContext(), R.color.bg_highlighted) : Color.TRANSPARENT);
             //int textColor = view.getResources().getColor(isSelected ? R.color.primary_dark : R.color.fg_default);
             //int textColor = ContextCompat.getColor(view.getContext(), isSelected ? R.color.primary : R.color.fg_default);
 

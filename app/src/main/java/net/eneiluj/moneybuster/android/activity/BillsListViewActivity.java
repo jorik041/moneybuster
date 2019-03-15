@@ -13,6 +13,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -80,6 +81,7 @@ import net.eneiluj.moneybuster.persistence.MoneyBusterServerSyncHelper;
 import net.eneiluj.moneybuster.persistence.LoadBillsListTask;
 import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.CospendClientUtil;
+import net.eneiluj.moneybuster.util.MoneyBuster;
 import net.eneiluj.moneybuster.util.SupportUtil;
 import net.eneiluj.moneybuster.util.ThemeUtils;
 
@@ -925,14 +927,26 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         });
 
         // color
-        fabMenu.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
+        boolean darkTheme = MoneyBuster.getAppTheme(this);
+        // if dark theme and main color is black, make fab button lighter/gray
+        if (darkTheme && ThemeUtils.primaryColor(this) == Color.BLACK) {
+            fabMenu.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
+            fabMenuDrawerAdd.setMenuButtonColorNormal(Color.DKGRAY);
+            fabMenuDrawerEdit.setMenuButtonColorNormal(Color.DKGRAY);
+            fabSelectProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
+        }
+        else {
+            fabMenu.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
+            fabMenuDrawerAdd.setMenuButtonColorNormal(ThemeUtils.primaryColor(this));
+            fabMenuDrawerEdit.setMenuButtonColorNormal(ThemeUtils.primaryColor(this));
+            fabSelectProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryDarkColor(this)));
+        }
         fabMenu.setRippleColor(ThemeUtils.primaryDarkColor(this));
-        fabSelectProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryDarkColor(this)));
+
         fabSelectProject.setRippleColor(ThemeUtils.primaryColor(this));
 
-        fabMenuDrawerAdd.setMenuButtonColorNormal(ThemeUtils.primaryColor(this));
+
         fabMenuDrawerAdd.setMenuButtonColorPressed(ThemeUtils.primaryColor(this));
-        fabMenuDrawerEdit.setMenuButtonColorNormal(ThemeUtils.primaryColor(this));
         fabMenuDrawerEdit.setMenuButtonColorPressed(ThemeUtils.primaryColor(this));
 
         fabAddProject.setColorNormal(ThemeUtils.primaryColor(this));

@@ -9,8 +9,8 @@ stages:
 before_script:
     - docker-android-sdk-install "build-tools;28.0.3"
     - cd /root/
-    - wget https://services.gradle.org/distributions/gradle-5.2.1-bin.zip > /dev/null 2>&1
-    - unzip gradle-5.2.1-bin.zip > /dev/null 2>&1
+    - wget https://services.gradle.org/distributions/gradle-5.3-bin.zip > /dev/null 2>&1
+    - unzip gradle-5.3-bin.zip > /dev/null 2>&1
     - cd -
 
 build_app:
@@ -22,7 +22,7 @@ build_app:
     paths:
       - app/build/outputs/apk/dev/debug/app-dev-debug.apk
   script:
-      - export PATH=/root/gradle-5.2.1/bin:$PATH
+      - export PATH=/root/gradle-5.3/bin:$PATH
       - pwd
       - cd app ; gradle assembleDev
 

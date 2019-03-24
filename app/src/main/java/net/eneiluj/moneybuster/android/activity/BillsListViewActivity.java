@@ -867,62 +867,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabSelectProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                final long selectedProjectId = preferences.getLong("selected_project", 0);
+                showProjectSelectionDialog();
+            }
+        });
 
-                final List<DBProject> dbProjects = db.getProjects();
-                List<String> projectNames = new ArrayList<>();
-                List<Long> projectIds = new ArrayList<>();
-                for (DBProject p : dbProjects) {
-                    if (p.getName() == null) {
-                        projectNames.add(p.getRemoteId());
-                    }
-                    else {
-                        projectNames.add(
-                                p.getName()
-                                + "\n(" + p.getRemoteId() + "@"
-                                + p.getIhmUrl()
-                                        .replace("https://", "")
-                                        .replace("http://", "")
-                                        .replace("/index.php/apps/cospend", "")
-                                + ")"
-                        );
-                    }
-                    projectIds.add(p.getId());
-                }
-
-                int checkedItem = -1;
-                if (selectedProjectId != 0) {
-                    checkedItem = projectIds.indexOf(selectedProjectId);
-                }
-                CharSequence[] namescs = projectNames.toArray(new CharSequence[projectNames.size()]);
-
-                AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(view.getContext(), R.style.AppThemeDialog));
-                selectBuilder.setTitle(getString(R.string.choose_project_to_select));
-                selectBuilder.setSingleChoiceItems(namescs, checkedItem, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // user checked an item
-                        setSelectedProject(dbProjects.get(which).getId());
-                        //preferences.edit().putLong("selected_project", dbProjects.get(which).getId()).apply();
-
-                        drawerLayout.closeDrawers();
-                        refreshLists();
-                        synchronize();
-                        dialog.dismiss();
-                    }
-                });
-
-                // add OK and Cancel buttons
-                selectBuilder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-                selectBuilder.setNegativeButton(getString(R.string.simple_cancel), null);
-
-                AlertDialog selectDialog = selectBuilder.create();
-                selectDialog.show();
+        selectedProjectLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                showProjectSelectionDialog();
             }
         });
 
@@ -965,6 +917,65 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabStatistics.setColorPressed(ThemeUtils.primaryColor(this));
         fabRemoveProject.setColorNormal(ThemeUtils.primaryColor(this));
         fabRemoveProject.setColorPressed(ThemeUtils.primaryColor(this));
+    }
+
+    private void showProjectSelectionDialog() {
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        final long selectedProjectId = preferences.getLong("selected_project", 0);
+
+        final List<DBProject> dbProjects = db.getProjects();
+        List<String> projectNames = new ArrayList<>();
+        List<Long> projectIds = new ArrayList<>();
+        for (DBProject p : dbProjects) {
+            if (p.getName() == null) {
+                projectNames.add(p.getRemoteId());
+            }
+            else {
+                projectNames.add(
+                        p.getName()
+                                + "\n(" + p.getRemoteId() + "@"
+                                + p.getIhmUrl()
+                                .replace("https://", "")
+                                .replace("http://", "")
+                                .replace("/index.php/apps/cospend", "")
+                                + ")"
+                );
+            }
+            projectIds.add(p.getId());
+        }
+
+        int checkedItem = -1;
+        if (selectedProjectId != 0) {
+            checkedItem = projectIds.indexOf(selectedProjectId);
+        }
+        CharSequence[] namescs = projectNames.toArray(new CharSequence[projectNames.size()]);
+
+        AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog));
+        selectBuilder.setTitle(getString(R.string.choose_project_to_select));
+        selectBuilder.setSingleChoiceItems(namescs, checkedItem, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // user checked an item
+                setSelectedProject(dbProjects.get(which).getId());
+                //preferences.edit().putLong("selected_project", dbProjects.get(which).getId()).apply();
+
+                drawerLayout.closeDrawers();
+                refreshLists();
+                synchronize();
+                dialog.dismiss();
+            }
+        });
+
+        // add OK and Cancel buttons
+        selectBuilder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        selectBuilder.setNegativeButton(getString(R.string.simple_cancel), null);
+
+        AlertDialog selectDialog = selectBuilder.create();
+        selectDialog.show();
     }
 
     private void setSelectedProject(long projectId) {

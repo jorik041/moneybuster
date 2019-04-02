@@ -136,7 +136,7 @@
     <string name="error_no_network">无网络连接</string>
     <string name="error_server">服务器错误</string>
     <string name="error_username_password_invalid">用户名或密码错误</string>
-    <string name="error_invalid_email">电子邮件地址不正确</string>
+    <string name="error_invalid_email">Invalid e-mail address</string>
     <string name="error_invalid_url">网址不正确</string>
     <string name="error_invalid_project_remote_id">项目编号bzq不正确</string>
     <string name="error_invalid_project_password">项目密码不正确</string>

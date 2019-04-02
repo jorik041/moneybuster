@@ -136,7 +136,7 @@
     <string name="error_no_network">nessuna connessione di rete</string>
     <string name="error_server">errore del server</string>
     <string name="error_username_password_invalid">nome utente o password errati</string>
-    <string name="error_invalid_email">Indirizzo e-mail non valido</string>
+    <string name="error_invalid_email">Invalid e-mail address</string>
     <string name="error_invalid_url">URL non valido</string>
     <string name="error_invalid_project_remote_id">ID progetto non valido</string>
     <string name="error_invalid_project_password">Password del progetto non valida</string>

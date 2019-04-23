@@ -81,16 +81,15 @@ public class MoneyBusterServerSyncHelper {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             cert4androidReady = true;
-            /*if (isSyncPossible()) {
-                String lastId = PreferenceManager.getDefaultSharedPreferences(dbHelper.getContext()).getString("last_selected_project", "");
-
-                if (!lastId.equals("")) {
-                    DBProject proj = dbHelper.getProject(Long.valueOf(lastId));
+            if (isSyncPossible()) {
+                Long lastId = PreferenceManager.getDefaultSharedPreferences(dbHelper.getContext()).getLong("selected_project", 0);
+                if (lastId != 0) {
+                    DBProject proj = dbHelper.getProject(lastId);
                     if (proj != null) {
-                        scheduleSync(false, Long.valueOf(lastId));
+                        scheduleSync(false, lastId);
                     }
                 }
-            }*/
+            }
         }
 
         @Override

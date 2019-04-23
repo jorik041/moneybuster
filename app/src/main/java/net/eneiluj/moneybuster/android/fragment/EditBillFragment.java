@@ -12,6 +12,7 @@ import android.os.Looper;
 //import android.preference.EditTextPreference;
 
 //import android.preference.MultiSelectListPreference;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.MultiSelectListPreference;
 import androidx.preference.EditTextPreference;
@@ -38,10 +39,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import net.eneiluj.moneybuster.R;
@@ -87,13 +91,15 @@ public class EditBillFragment extends Fragment {
     protected EditText editDate;
     protected Spinner editPayer;
     protected EditText editAmount;
-    protected MultiSelectListPreference editOwers;
+    protected LinearLayout owersLayout;
 
     private Calendar calendar;
 
     private List<DBMember> memberList;
     private List<String> memberNameList;
     private List<String> memberIdList;
+
+    private Map<Long, CheckBox> owerCheckboxes;
 
     private DialogInterface.OnClickListener deleteDialogClickListener;
     private AlertDialog.Builder confirmDeleteAlertBuilder;
@@ -108,6 +114,7 @@ public class EditBillFragment extends Fragment {
         editDate = view.findViewById(R.id.editDate);
         editDate.setFocusable(false);
         editPayer = view.findViewById(R.id.editPayerSpinner);
+        owersLayout = view.findViewById(R.id.owerListLayout);
 
         calendar = Calendar.getInstance();
 
@@ -389,8 +396,24 @@ public class EditBillFragment extends Fragment {
         }
 
         // manage payer and owers
+        // build ower list
+        owerCheckboxes = new HashMap<>();
+        for (DBMember member : memberList) {
+            if (member.isActivated()) {
+                View row = LayoutInflater.from(getContext()).inflate(R.layout.ower_row, null);
 
-        // TODO
+                CheckBox cb = row.findViewById(R.id.owerBox);
+                int owerIndex = bill.getBillOwersIds().indexOf(member.getId());
+                if (bill.getId() == 0 || owerIndex != -1) {
+                    cb.setChecked(true);
+                }
+                cb.setText(member.getName());
+                cb.setTextColor(ContextCompat.getColor(owersLayout.getContext(), R.color.fg_default));
+                owerCheckboxes.put(member.getId(), cb);
+
+                owersLayout.addView(row);
+            }
+        }
 
         if (memberNameList.size() > 0) {
             String[] memberNameArray = memberNameList.toArray(new String[memberNameList.size()]);
@@ -410,10 +433,6 @@ public class EditBillFragment extends Fragment {
             editPayer.setAdapter(simpleAdapter);
             editPayer.getSelectedItemPosition();
 
-
-            /*editOwers.setEntries(memberNameArray);
-            editOwers.setEntryValues(memberIdArray);*/
-
             // set selected value for payer
             if (bill.getPayerId() != 0) {
                 String payerId = String.valueOf(bill.getPayerId());
@@ -423,38 +442,6 @@ public class EditBillFragment extends Fragment {
                     editPayer.setSelection(payerIndex);
                 }
             }
-
-            /*
-            // set selected values for owers
-            if (bill.getId() != 0) {
-                if (bill.getBillOwersIds().size() > 0) {
-                    Set<String> owerIdSet = new HashSet<String>();
-                    List<String> selectedNames = new ArrayList<>();
-                    for (long owerId : bill.getBillOwersIds()) {
-                        int owerIndex = memberIdList.indexOf(String.valueOf(owerId));
-                        if (owerIndex != -1) {
-                            owerIdSet.add(String.valueOf(owerId));
-                            selectedNames.add(memberNameList.get(owerIndex));
-                        }
-                    }
-                    editOwers.setValues(owerIdSet);
-                    editOwers.setSummary(TextUtils.join(", ", selectedNames));
-                }
-            }
-            // new bill
-            else {
-                Set<String> owerIdSet = new HashSet<String>();
-                List<String> selectedNames = new ArrayList<>();
-                for (DBMember m : memberList) {
-                    if (m.isActivated()) {
-                        owerIdSet.add(String.valueOf(m.getId()));
-                        selectedNames.add(m.getName());
-                    }
-                }
-                editOwers.setValues(owerIdSet);
-                editOwers.setSummary(TextUtils.join(", ", selectedNames));
-            }
-            */
         }
 
 
@@ -466,12 +453,10 @@ public class EditBillFragment extends Fragment {
                     sdf.parse(bill.getDate())
             );
             updateLabel();
-            Log.d(getClass().getSimpleName(), "SUPER date "+getDate());
         }
         catch (ParseException e) {
             Log.d(getClass().getSimpleName(), "bad date "+bill.getDate());
         }
-        //editDate.setSummary(bill.getDate());
 
         editAmount.setText(String.valueOf(bill.getAmount()));
     }
@@ -505,13 +490,14 @@ public class EditBillFragment extends Fragment {
         }
     }
     protected List<Long> getOwersIds() {
-        return null;
-        /*Set<String> strValues =  editOwers.getValues();
         List<Long> owersIds = new ArrayList<>();
-        for (String strValue : strValues) {
-            owersIds.add(Long.valueOf(strValue));
+        for (Map.Entry<Long, CheckBox> entry : owerCheckboxes.entrySet()) {
+            if (entry.getValue().isChecked()) {
+                owersIds.add(entry.getKey());
+            }
+            System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue().isChecked());
         }
-        return owersIds;*/
+        return owersIds;
     }
 
     protected void showToast(CharSequence text, int duration) {

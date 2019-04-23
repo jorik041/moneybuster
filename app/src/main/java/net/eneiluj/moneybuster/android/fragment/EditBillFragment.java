@@ -39,6 +39,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -115,6 +116,27 @@ public class EditBillFragment extends Fragment {
         editDate.setFocusable(false);
         editPayer = view.findViewById(R.id.editPayerSpinner);
         owersLayout = view.findViewById(R.id.owerListLayout);
+
+        Button bAll = view.findViewById(R.id.owerAllButton);
+        bAll.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                for (Map.Entry<Long, CheckBox> entry : owerCheckboxes.entrySet()) {
+                    entry.getValue().setChecked(true);
+                }
+            }
+        });
+        Button bNone = view.findViewById(R.id.owerNoneButton);
+        bNone.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                for (Map.Entry<Long, CheckBox> entry : owerCheckboxes.entrySet()) {
+                    entry.getValue().setChecked(false);
+                }
+            }
+        });
 
         calendar = Calendar.getInstance();
 

@@ -1818,6 +1818,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         IntentFilter filter = new IntentFilter();
         filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_PROJECT_SYNC_FAILED);
         filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_PROJECT_SYNCED);
+        filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_SYNC_PROJECT);
         registerReceiver(mBroadcastReceiver, filter);
     }
 
@@ -1840,6 +1841,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     String projName = intent.getStringExtra(BROADCAST_EXTRA_PARAM);
                     refreshLists();
                     showToast(getString(R.string.project_sync_success, projName));
+                    break;
+                case MoneyBusterServerSyncHelper.BROADCAST_SYNC_PROJECT:
+                    synchronize();
                     break;
             }
         }

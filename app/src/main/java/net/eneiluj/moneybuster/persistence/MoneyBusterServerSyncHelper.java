@@ -51,6 +51,7 @@ public class MoneyBusterServerSyncHelper {
 
     public static final String BROADCAST_PROJECT_SYNC_FAILED = "net.eneiluj.moneybuster.broadcast.project_sync_failed";
     public static final String BROADCAST_PROJECT_SYNCED = "net.eneiluj.moneybuster.broadcast.project_synced";
+    public static final String BROADCAST_SYNC_PROJECT = "net.eneiluj.moneybuster.broadcast.sync_project";
 
     private static MoneyBusterServerSyncHelper instance;
 
@@ -86,7 +87,9 @@ public class MoneyBusterServerSyncHelper {
                 if (lastId != 0) {
                     DBProject proj = dbHelper.getProject(lastId);
                     if (proj != null) {
-                        scheduleSync(false, lastId);
+                        Intent intent = new Intent(BROADCAST_SYNC_PROJECT);
+                        appContext.sendBroadcast(intent);
+                        //scheduleSync(false, lastId);
                     }
                 }
             }

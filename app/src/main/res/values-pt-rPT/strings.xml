@@ -14,6 +14,8 @@
     <string name="setting_date">Quando foi?</string>
     <string name="setting_date_long">O dia em que foi pago</string>
     <string name="setting_payer">Quem pagou?</string>
+    <string name="setting_all">All</string>
+    <string name="setting_none">None</string>
     <string name="setting_amount">Quanto?</string>
     <string name="setting_amount_long">Quanto custou?</string>
     <string name="setting_owers">De quem?</string>
@@ -136,7 +138,7 @@
     <string name="error_no_network">não há ligação de rede</string>
     <string name="error_server">erro do servidor</string>
     <string name="error_username_password_invalid">nome de utilizador ou senha incorrectos</string>
-    <string name="error_invalid_email">Invalid e-mail address</string>
+    <string name="error_invalid_email">Endereço de e-mail inválido</string>
     <string name="error_invalid_url">URL inválido</string>
     <string name="error_invalid_project_remote_id">ID do projecto inválido</string>
     <string name="error_invalid_project_password">Senha do projecto inválida</string>

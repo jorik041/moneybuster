@@ -14,6 +14,8 @@
     <string name="setting_date">Wanneer?</string>
     <string name="setting_date_long">De dag van betaling</string>
     <string name="setting_payer">Wie heeft er betaald?</string>
+    <string name="setting_all">All</string>
+    <string name="setting_none">None</string>
     <string name="setting_amount">Hoeveel?</string>
     <string name="setting_amount_long">Hoeveel kostte het?</string>
     <string name="setting_owers">Aan wie?</string>

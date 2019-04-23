@@ -14,6 +14,8 @@
     <string name="setting_date">Quand ça ?</string>
     <string name="setting_date_long">Le jour où le paiement a été fait</string>
     <string name="setting_payer">Qui a payé ?</string>
+    <string name="setting_all">Tous</string>
+    <string name="setting_none">Aucun</string>
     <string name="setting_amount">Combien ?</string>
     <string name="setting_amount_long">Combien cela a-t-il couté ?</string>
     <string name="setting_owers">Pour qui ?</string>

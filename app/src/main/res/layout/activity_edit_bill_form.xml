@@ -41,6 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".60"
             android:ems="10"
+            android:selectAllOnFocus="true"
             android:inputType="textPersonName" />
 
     </LinearLayout>
@@ -144,6 +145,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".60"
             android:ems="10"
+            android:selectAllOnFocus="true"
             android:inputType="numberDecimal"
             android:digits="0123456789.," />
 

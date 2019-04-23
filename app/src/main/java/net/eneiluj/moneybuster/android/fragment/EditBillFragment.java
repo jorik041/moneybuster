@@ -2,6 +2,8 @@ package net.eneiluj.moneybuster.android.fragment;
 
 //import android.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog;
+
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.os.Looper;
 //import android.preference.EditTextPreference;
 
 //import android.preference.MultiSelectListPreference;
+import androidx.fragment.app.Fragment;
 import androidx.preference.MultiSelectListPreference;
 import androidx.preference.EditTextPreference;
 //import android.preference.ListPreference;
@@ -25,12 +28,20 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import net.eneiluj.moneybuster.R;
@@ -43,11 +54,14 @@ import net.eneiluj.moneybuster.util.ICallback;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
-public class EditBillFragment extends PreferenceFragmentCompat {
+public class EditBillFragment extends Fragment {
 
     public interface BillFragmentListener {
         void close();
@@ -69,11 +83,13 @@ public class EditBillFragment extends PreferenceFragmentCompat {
 
     private Handler handler;
 
-    protected EditTextPreference editWhat;
-    protected DatePickerPreference editDate;
-    protected ListPreference editPayer;
-    protected EditTextPreference editAmount;
+    protected EditText editWhat;
+    protected EditText editDate;
+    protected Spinner editPayer;
+    protected EditText editAmount;
     protected MultiSelectListPreference editOwers;
+
+    private Calendar calendar;
 
     private List<DBMember> memberList;
     private List<String> memberNameList;
@@ -85,19 +101,46 @@ public class EditBillFragment extends PreferenceFragmentCompat {
     private SimpleDateFormat sdf;
 
     @Override
-    public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
-        //setPreferencesFromResource(R.xml.settings, rootKey);
-        addPreferencesFromResource(R.xml.activity_edit_bill);
-        // additional setup
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_edit_bill_form, container, false);
+        editWhat = view.findViewById(R.id.editWhat);
+        editAmount = view.findViewById(R.id.editAmount);
+        editDate = view.findViewById(R.id.editDate);
+        editDate.setFocusable(false);
+        editPayer = view.findViewById(R.id.editPayerSpinner);
+
+        calendar = Calendar.getInstance();
+
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, monthOfYear);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabel();
+            }
+
+        };
+
+        editDate.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                new DatePickerDialog(EditBillFragment.this.getContext(), date, calendar
+                        .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+        return view;
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        RecyclerView recyclerView = getListView();
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                DividerItemDecoration.VERTICAL);
-        recyclerView.addItemDecoration(dividerItemDecoration);
+    private void updateLabel() {
+        editDate.setText(sdf.format(calendar.getTime()));
     }
 
     @Override
@@ -124,89 +167,6 @@ public class EditBillFragment extends PreferenceFragmentCompat {
         }
         setHasOptionsMenu(true);
         System.out.println("BILL on create : " + bill);
-
-        ///////////////
-        //addPreferencesFromResource(R.xml.activity_edit_bill);
-
-        Preference whatPref = findPreference("what");
-        whatPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference,
-                                              Object newValue) {
-                EditTextPreference pref = (EditTextPreference) findPreference("what");
-                pref.setSummary((CharSequence) newValue);
-                //bill.setWhat((String)newValue);
-                //listener.onBillUpdated(bill);
-                return true;
-            }
-
-        });
-        Preference amountPref = findPreference("amount");
-        amountPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference,
-                                              Object newValue) {
-                EditTextPreference pref = (EditTextPreference) findPreference("amount");
-                pref.setSummary((CharSequence) newValue);
-                //bill.setAmount(Double.valueOf((String) newValue));
-                //listener.onBillUpdated(bill);
-                return true;
-            }
-
-        });
-        Preference datePref = findPreference("date");
-        datePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference,
-                                              Object newValue) {
-                DatePickerPreference pref = (DatePickerPreference) findPreference("date");
-                DatePickerPreference.DateWrapper dw = (DatePickerPreference.DateWrapper) newValue;
-
-                //pref.setSummary(dw.year+"-"+dw.month+"-"+dw.day);
-                //bill.setDate(dw.year+"-"+(dw.month+1)+"-"+dw.day);
-                //listener.onBillUpdated(bill);
-                return true;
-            }
-
-        });
-        Preference payerPref = findPreference("payer");
-        payerPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference,
-                                              Object newValue) {
-                ListPreference pref = (ListPreference) findPreference("payer");
-                int index = pref.findIndexOfValue((String)newValue);
-                preference.setSummary(pref.getEntries()[index]);
-                return true;
-            }
-
-        });
-        Preference owersPref = findPreference("owers");
-        owersPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference,
-                                              Object newValue) {
-                MultiSelectListPreference pref = (MultiSelectListPreference) findPreference("owers");
-                //CharSequence[] selectedValuesArray = pref.getEntryValues();
-                @SuppressWarnings("unchecked")
-                List<String> selectedValuesList = new ArrayList<>((HashSet<String>)newValue);
-                CharSequence[] allEntriesArray = pref.getEntries();
-                String summary = "";
-                //for (int i=0; i < selectedValuesArray.length; i++) {
-                for (String selectedValue : selectedValuesList) {
-                    int owerIndex = pref.findIndexOfValue(selectedValue);
-                    summary += allEntriesArray[owerIndex] + ", ";
-                }
-                pref.setSummary(summary.replaceAll(", $", ""));
-                return true;
-            }
-
-        });
 
         // delete confirmation
         deleteDialogClickListener = new DialogInterface.OnClickListener() {
@@ -236,7 +196,6 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                 .setNegativeButton(getString(R.string.simple_no), deleteDialogClickListener);
 
         handler = new Handler(Looper.getMainLooper());
-
     }
 
     @Override
@@ -431,18 +390,29 @@ public class EditBillFragment extends PreferenceFragmentCompat {
 
         // manage payer and owers
 
-        editPayer = (ListPreference) this.findPreference("payer");
-        editOwers = (MultiSelectListPreference) this.findPreference("owers");
+        // TODO
 
         if (memberNameList.size() > 0) {
-            CharSequence[] memberNameArray = memberNameList.toArray(new CharSequence[memberNameList.size()]);
-            CharSequence[] memberIdArray = memberIdList.toArray(new CharSequence[memberNameList.size()]);
+            String[] memberNameArray = memberNameList.toArray(new String[memberNameList.size()]);
+            String[] memberIdArray = memberIdList.toArray(new String[memberNameList.size()]);
 
-            editPayer.setEntries(memberNameArray);
-            editPayer.setEntryValues(memberIdArray);
+            ArrayList<Map<String, String>> data = new ArrayList<>();
+            for (int i=0; i < memberNameList.size(); i++) {
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("name", memberNameList.get(i));
+                hashMap.put("id", memberIdList.get(i));
+                data.add(hashMap);
+            }
+            String[] from = {"name", "id"};
+            int[] to = new int[] { android.R.id.text1 };
+            SimpleAdapter simpleAdapter = new SimpleAdapter(this.getContext(), data, android.R.layout.simple_spinner_item, from, to);
+            simpleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            editPayer.setAdapter(simpleAdapter);
+            editPayer.getSelectedItemPosition();
 
-            editOwers.setEntries(memberNameArray);
-            editOwers.setEntryValues(memberIdArray);
+
+            /*editOwers.setEntries(memberNameArray);
+            editOwers.setEntryValues(memberIdArray);*/
 
             // set selected value for payer
             if (bill.getPayerId() != 0) {
@@ -450,11 +420,11 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                 // if the id is not found, it means the user is disabled
                 int payerIndex = memberIdList.indexOf(payerId);
                 if (payerIndex != -1) {
-                    editPayer.setValue(payerId);
-                    editPayer.setSummary(memberNameList.get(payerIndex));
+                    editPayer.setSelection(payerIndex);
                 }
             }
 
+            /*
             // set selected values for owers
             if (bill.getId() != 0) {
                 if (bill.getBillOwersIds().size() > 0) {
@@ -484,62 +454,64 @@ public class EditBillFragment extends PreferenceFragmentCompat {
                 editOwers.setValues(owerIdSet);
                 editOwers.setSummary(TextUtils.join(", ", selectedNames));
             }
+            */
         }
 
-        editWhat = (EditTextPreference) this.findPreference("what");
+
         editWhat.setText(bill.getWhat());
-        if (bill.getWhat().isEmpty()) {
-            editWhat.setSummary(getString(R.string.mandatory));
-        }
-        else {
-            editWhat.setSummary(bill.getWhat());
-        }
-        editDate = (DatePickerPreference) this.findPreference("date");
+
+
         try {
-            editDate.setDate(
+            calendar.setTime(
                     sdf.parse(bill.getDate())
             );
+            updateLabel();
+            Log.d(getClass().getSimpleName(), "SUPER date "+getDate());
         }
         catch (ParseException e) {
             Log.d(getClass().getSimpleName(), "bad date "+bill.getDate());
         }
         //editDate.setSummary(bill.getDate());
 
-        editAmount = (EditTextPreference) this.findPreference("amount");
         editAmount.setText(String.valueOf(bill.getAmount()));
-        editAmount.setSummary(String.valueOf(bill.getAmount()));
     }
 
     protected String getWhat() {
-        return editWhat.getText();
+        return editWhat.getText().toString();
     }
     protected String getDate() {
-        return sdf.format(editDate.getDate());
+        return editDate.getText().toString();
     }
     protected double getAmount() {
-        if (editAmount.getText() == null || editAmount.getText().equals("")) {
+        String amount = editAmount.getText().toString();
+        if (amount == null || amount.equals("")) {
             return 0.0;
         }
         try {
-            return Double.valueOf(editAmount.getText().replace(',', '.'));
+            return Double.valueOf(amount.replace(',', '.'));
         }
         catch (Exception e) {
             return 0.0;
         }
     }
     protected long getPayerId() {
-        if (editPayer.getValue() == null) {
+        int i = editPayer.getSelectedItemPosition();
+        if (i < 0) {
             return 0;
         }
-        return Long.valueOf(editPayer.getValue());
+        else {
+            Map<String, String> item = (Map<String, String>) editPayer.getSelectedItem();
+            return Long.valueOf(item.get("id"));
+        }
     }
     protected List<Long> getOwersIds() {
-        Set<String> strValues =  editOwers.getValues();
+        return null;
+        /*Set<String> strValues =  editOwers.getValues();
         List<Long> owersIds = new ArrayList<>();
         for (String strValue : strValues) {
             owersIds.add(Long.valueOf(strValue));
         }
-        return owersIds;
+        return owersIds;*/
     }
 
     protected void showToast(CharSequence text, int duration) {

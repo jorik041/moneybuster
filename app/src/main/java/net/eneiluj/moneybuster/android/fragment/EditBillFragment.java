@@ -60,6 +60,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,6 +96,7 @@ public class EditBillFragment extends Fragment {
     protected LinearLayout owersLayout;
 
     private Calendar calendar;
+    private DatePickerDialog datePickerDialog;
 
     private List<DBMember> memberList;
     private List<String> memberNameList;
@@ -145,23 +147,38 @@ public class EditBillFragment extends Fragment {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
-                // TODO Auto-generated method stub
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, monthOfYear);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 updateLabel();
+
             }
 
         };
+
+        datePickerDialog = new DatePickerDialog(EditBillFragment.this.getContext(), date, calendar
+                .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)) {
+
+            @Override
+            public void onDateChanged(DatePicker view,
+                                      int year,
+                                      int month,
+                                      int dayOfMonth) {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabel();
+                datePickerDialog.dismiss();
+            }
+        };
+
 
         editDate.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-                new DatePickerDialog(EditBillFragment.this.getContext(), date, calendar
-                        .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH)).show();
+                datePickerDialog.show();
             }
         });
 
@@ -482,10 +499,14 @@ public class EditBillFragment extends Fragment {
 
 
         try {
-            calendar.setTime(
-                    sdf.parse(bill.getDate())
-            );
+            Date d = sdf.parse(bill.getDate());
+            calendar.setTime(d);
             updateLabel();
+            datePickerDialog.getDatePicker().updateDate(
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+            );
         }
         catch (ParseException e) {
             Log.d(getClass().getSimpleName(), "bad date "+bill.getDate());

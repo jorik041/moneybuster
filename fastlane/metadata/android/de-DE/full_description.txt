@@ -1,6 +1,6 @@
 MoneyBuster ist ein Budget-Manager für geteilte Ausgaben und synchronisiert mit IHateMoney und Nextcloud Cospend.
 
-Wo liegt der Unterschied zu anderen Budget-Managern für geteilte Ausgaben?
+Was unterscheidet sich von anderen geteilten Budget-Managern?
 
 Du kann ein lokales Projekt anlegen oder es mit IHateMoney und Nextcloud Cospend synchronisieren.
 Du entscheidest wo deine Daten gespeichert werden und schützt damit deine Privatsphäre.
@@ -12,11 +12,11 @@ Du entscheidest wo deine Daten gespeichert werden und schützt damit deine Priva
 * Ausgaben verwalten (hinzufügen/entfernen/bearbeiten)
 * Ausgaben durchsuchen (nach Bezahlendem, Name, Betrag, Datum)
 * Projektstatistiken
-* project settlement plan
-* share statistics and settlement plan
-* dark theme and customizable main app color
-* share/import projects with link/QRCode
-* multi-lingual user-interface (translated on Crowdin: https://crowdin.com/project/moneybuster)
+* Projektabrechnungsplan
+* Projektabrechnungsplan und Statistiken teilen
+* Dunkles Design und benutzerdefinierte App Hauptfarbe
+* Projekte mit Link/QR Code teilen/importieren
+* Mehrsprachige Benutzeroberfläche (Übersetzt auf https://crowdin.com/project/moneybuster Crowdin)
 
 # Anforderungen
 

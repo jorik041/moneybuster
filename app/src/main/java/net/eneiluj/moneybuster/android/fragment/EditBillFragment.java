@@ -375,6 +375,9 @@ public class EditBillFragment extends Fragment {
             }
             long newBillId = db.addBill(newBill);
 
+            // update last payer id
+            db.updateProject(bill.getProjectId(), null, null, null, newPayerId);
+
             // normally sync should be done when we get back to bill list
             // so next line can be commented
             // db.getMoneyBusterServerSyncHelper().scheduleSync(true, bill.getProjectId());
@@ -417,7 +420,6 @@ public class EditBillFragment extends Fragment {
             }
         }
 
-        // manage payer and owers
         // build ower list
         owerCheckboxes = new HashMap<>();
         for (DBMember member : memberList) {
@@ -437,6 +439,7 @@ public class EditBillFragment extends Fragment {
             }
         }
 
+        // build payer list
         if (memberNameList.size() > 0) {
             String[] memberNameArray = memberNameList.toArray(new String[memberNameList.size()]);
             String[] memberIdArray = memberIdList.toArray(new String[memberNameList.size()]);
@@ -460,6 +463,14 @@ public class EditBillFragment extends Fragment {
                 String payerId = String.valueOf(bill.getPayerId());
                 // if the id is not found, it means the user is disabled
                 int payerIndex = memberIdList.indexOf(payerId);
+                if (payerIndex != -1) {
+                    editPayer.setSelection(payerIndex);
+                }
+            }
+            else {
+                // this is a new bill, we try to put last payer id
+                long lastPayerId = db.getProject(bill.getProjectId()).getLastPayerId();
+                int payerIndex = memberIdList.indexOf(String.valueOf(lastPayerId));
                 if (payerIndex != -1) {
                     editPayer.setSelection(payerIndex);
                 }

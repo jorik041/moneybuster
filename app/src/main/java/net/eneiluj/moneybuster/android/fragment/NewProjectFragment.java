@@ -402,7 +402,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
             name = getName();
         }
 
-        DBProject newProject = new DBProject(0, remoteId, password, name, ihmUrl, email);
+        DBProject newProject = new DBProject(0, remoteId, password, name, ihmUrl, email, null);
         long pid = db.addProject(newProject);
 
         // to make it the selected project even if we got here because of a VIEW intent

@@ -10,14 +10,24 @@ public class DBProject implements Serializable {
     private String ihmUrl;
     private String email;
     private String password;
+    private Long lastPayerId;
 
-    public DBProject(long id, String remoteId, String password, String name, String ihmUrl, String email) {
+    public DBProject(long id, String remoteId, String password, String name, String ihmUrl, String email, Long lastPayerId) {
         this.id = id;
         this.remoteId = remoteId;
         this.name = name;
         this.ihmUrl = ihmUrl;
         this.email = email;
         this.password = password;
+        this.lastPayerId = lastPayerId;
+    }
+
+    public Long getLastPayerId() {
+        return lastPayerId;
+    }
+
+    public void setLastPayerId(Long lastPayerId) {
+        this.lastPayerId = lastPayerId;
     }
 
     public boolean isLocal() {

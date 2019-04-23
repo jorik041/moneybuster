@@ -31,7 +31,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String TAG = MoneyBusterSQLiteOpenHelper.class.getSimpleName();
 
-    private static final int database_version = 1;
+    private static final int database_version = 2;
     private static final String database_name = "IHATEMONEY";
 
     private static final String table_members = "MEMBERS";
@@ -50,6 +50,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String key_email = "EMAIL";
     private static final String key_password = "PASSWORD";
     private static final String key_ihmUrl = "IHMURL";
+    private static final String key_lastPayerId = "LASTPAYERID";
 
     private static final String table_bills = "BILLS";
     //private static final String key_id = "ID";
@@ -72,7 +73,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String[] columnsProjects = {
             // long id, String remoteId, String password, String name, String ihmUrl, String email
-            key_id, key_remoteId, key_password,  key_name, key_ihmUrl, key_email
+            key_id, key_remoteId, key_password,  key_name, key_ihmUrl, key_email, key_lastPayerId
     };
 
     private static final String[] columnsBills = {
@@ -142,6 +143,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 key_name + " TEXT, " +
                 key_ihmUrl + " TEXT, " +
                 key_password + " TEXT, " +
+                key_lastPayerId + " INTEGER, " +
                 key_email + " TEXT)");
     }
 
@@ -168,7 +170,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        if (oldVersion < 2) {
+            db.execSQL("ALTER TABLE " + table_projects + " ADD COLUMN " + key_lastPayerId + " INTEGER DEFAULT 0");
+        }
     }
 
     @Override
@@ -285,7 +289,8 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 cursor.getString(2),
                 cursor.getString(3),
                 cursor.getString(4),
-                cursor.getString(5)
+                cursor.getString(5),
+                cursor.getLong(6)
         );
     }
 
@@ -305,7 +310,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(id)});
     }
 
-    public void updateProject(long projId, @Nullable String newName, @Nullable String newEmail, @Nullable String newPassword) {
+    public void updateProject(long projId, @Nullable String newName, @Nullable String newEmail, @Nullable String newPassword, @Nullable Long newLastPayerId) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -317,6 +322,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         }
         if (newPassword != null) {
             values.put(key_password, newPassword);
+        }
+        if (newLastPayerId != null) {
+            values.put(key_lastPayerId, newLastPayerId);
         }
         if (values.size() > 0) {
             int rows = db.update(table_projects, values, key_id + " = ?", new String[]{String.valueOf(projId)});

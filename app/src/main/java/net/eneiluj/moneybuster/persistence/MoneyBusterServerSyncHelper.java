@@ -493,7 +493,7 @@ public class MoneyBusterServerSyncHelper {
                     Log.d(getClass().getSimpleName(), "update local project : "+project);
                     // this is usefull to transmit correct info back to billlistactivity when project was just added
                     project.setName(name);
-                    dbHelper.updateProject(project.getId(), name, email, null);
+                    dbHelper.updateProject(project.getId(), name, email, null, null);
                 }
 
                 // get members
@@ -765,7 +765,7 @@ public class MoneyBusterServerSyncHelper {
                 }
             }
             else {
-                dbHelper.updateProject(project.getId(), newName, newEmail, newPassword);
+                dbHelper.updateProject(project.getId(), newName, newEmail, newPassword, null);
             }
             callback.onFinish(newName, errorString);
         }
@@ -847,7 +847,7 @@ public class MoneyBusterServerSyncHelper {
 
     public boolean createRemoteProject(String remoteId, String name, String email, String password, String ihmUrl, ICallback callback) {
         if (isSyncPossible()) {
-            DBProject proj = new DBProject(0, remoteId, password, name, ihmUrl, email);
+            DBProject proj = new DBProject(0, remoteId, password, name, ihmUrl, email, null);
             CreateRemoteProjectTask createRemoteProjectTask = new CreateRemoteProjectTask(proj, callback);
             createRemoteProjectTask.execute();
             return true;

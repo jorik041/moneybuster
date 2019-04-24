@@ -6,8 +6,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.0.7 – 2019-04-24
+### Added
+- ability to select all/none bill owers in bill edition
+- remember project last payer and use it for new bills
+[#9](https://gitlab.com/eneiluj/moneybuster/issues/9) @zonque
+
+### Changed
+- dark theme: real black
+- click on current project name label => select project dialog
+- bill edition form is now a...form
+[#9](https://gitlab.com/eneiluj/moneybuster/issues/9) @zonque
+- dev flavout icon color: orange
+
+### Fixed
+- accept comas for member weight and bill amount
+[#5](https://gitlab.com/eneiluj/moneybuster/issues/5) @polkillas1
+- bill list background
+- black theme issues with black as app main color
+- reduce top sidebar part height
+[#7](https://gitlab.com/eneiluj/moneybuster/issues/7) @Obigre
+- project sync on startup
+
 ## 0.0.6 – 2019-03-09
-# Added
+### Added
 - translations
 
 ### Changed

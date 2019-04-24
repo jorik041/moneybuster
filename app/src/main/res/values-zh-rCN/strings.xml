@@ -141,7 +141,7 @@
     <string name="error_invalid_email">Invalid e-mail address</string>
     <string name="error_invalid_url">网址不正确</string>
     <string name="error_invalid_project_remote_id">项目编号bzq不正确</string>
-    <string name="error_invalid_project_password">项目密码不正确</string>
+    <string name="error_invalid_project_password">Project password must not be empty</string>
     <string name="error_invalid_project_name">项目名不正确</string>
     <string name="error_invalid_bill_what">账单名不正确</string>
     <string name="error_invalid_bill_date">账单日期不正确</string>

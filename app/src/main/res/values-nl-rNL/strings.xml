@@ -141,7 +141,7 @@
     <string name="error_invalid_email">Invalid e-mail address</string>
     <string name="error_invalid_url">Ongeldige URL</string>
     <string name="error_invalid_project_remote_id">Ongeldige project-ID</string>
-    <string name="error_invalid_project_password">Ongeldig wachtwoord</string>
+    <string name="error_invalid_project_password">Project password must not be empty</string>
     <string name="error_invalid_project_name">Ongeldige projectnaam</string>
     <string name="error_invalid_bill_what">Ongeldige rekeningnaam</string>
     <string name="error_invalid_bill_date">Ongeldige rekeningdatum</string>

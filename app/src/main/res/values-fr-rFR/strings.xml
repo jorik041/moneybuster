@@ -141,7 +141,7 @@
     <string name="error_invalid_email">Adresse e-mail invalide</string>
     <string name="error_invalid_url">URL invalide</string>
     <string name="error_invalid_project_remote_id">ID projet invalide</string>
-    <string name="error_invalid_project_password">Mot de passe invalide</string>
+    <string name="error_invalid_project_password">Le mot de passe de projet ne doit pas être vide</string>
     <string name="error_invalid_project_name">Nom de projet invalide</string>
     <string name="error_invalid_bill_what">Nom de facture invalide</string>
     <string name="error_invalid_bill_date">Date de facture invalide</string>

@@ -1,35 +1,19 @@
 package net.eneiluj.moneybuster.android.fragment;
 
-//import android.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-//import android.preference.EditTextPreference;
 
-//import android.preference.MultiSelectListPreference;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.preference.MultiSelectListPreference;
-import androidx.preference.EditTextPreference;
-//import android.preference.ListPreference;
-//import android.preference.Preference;
-import androidx.preference.ListPreference;
-import androidx.preference.Preference;
-//import android.preference.PreferenceFragment;
-//import android.support.v7.preference.PreferenceFragmentCompat;
-import com.takisoft.fix.support.v7.preference.DatePickerPreference;
-import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 import androidx.annotation.Nullable;
 import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.ArrayMap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,7 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -64,8 +48,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
 
 public class EditBillFragment extends Fragment {
 
@@ -118,6 +100,19 @@ public class EditBillFragment extends Fragment {
         editDate.setFocusable(false);
         editPayer = view.findViewById(R.id.editPayerSpinner);
         owersLayout = view.findViewById(R.id.owerListLayout);
+
+        // fix style of spinner
+        editPayer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                ((TextView)parentView.getChildAt(0)).setTextColor(Color.BLACK);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+
+        });
 
         Button bAll = view.findViewById(R.id.owerAllButton);
         bAll.setOnClickListener(new View.OnClickListener() {

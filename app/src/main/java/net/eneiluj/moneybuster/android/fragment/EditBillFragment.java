@@ -101,19 +101,6 @@ public class EditBillFragment extends Fragment {
         editPayer = view.findViewById(R.id.editPayerSpinner);
         owersLayout = view.findViewById(R.id.owerListLayout);
 
-        // fix style of spinner
-        editPayer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                ((TextView)parentView.getChildAt(0)).setTextColor(Color.BLACK);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-
-        });
-
         Button bAll = view.findViewById(R.id.owerAllButton);
         bAll.setOnClickListener(new View.OnClickListener() {
 

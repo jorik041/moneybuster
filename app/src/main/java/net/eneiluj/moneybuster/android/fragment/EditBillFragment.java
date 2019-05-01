@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -343,8 +344,9 @@ public class EditBillFragment extends Fragment {
     }
 
     public void onCloseBill() {
-
         Log.d(getClass().getSimpleName(), "onCLOSE()");
+        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
     }
 
     /**
@@ -431,10 +433,8 @@ public class EditBillFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         System.out.println("ACT EDIT BILL CREATEDDDDDDD");
-        //ButterKnife.bind(this, getView());
 
-        // hide the keyboard when this window gets the focus
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         // manage member list
         memberList = db.getMembersOfProject(bill.getProjectId(), null);
@@ -504,8 +504,17 @@ public class EditBillFragment extends Fragment {
             }
         }
 
-
-        editWhat.setText(bill.getWhat());
+        // select what and show keyboard if this is a new bill
+        if (bill.getId() == 0) {
+            editWhat.setSelectAllOnFocus(true);
+            editWhat.requestFocus();
+            // show keyboard
+            InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
+        else {
+            editWhat.setText(bill.getWhat());
+        }
 
 
         try {

@@ -49,6 +49,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -403,6 +405,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                             fabMenuDrawerAdd.close(false);
                             //new LoadCategoryListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                            InputMethodManager inputMethodManager = (InputMethodManager) input.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                         }
                     });
                     builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {
@@ -410,10 +414,17 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
                             fabMenuDrawerAdd.close(false);
+                            InputMethodManager inputMethodManager = (InputMethodManager) input.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                         }
                     });
 
                     builder.show();
+                    input.setSelectAllOnFocus(true);
+                    input.requestFocus();
+                    // show keyboard
+                    InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 }
             }
         });
@@ -1086,6 +1097,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     }
                 }
                 fabMenuDrawerEdit.close(false);
+                // restore keyboard auto hide behaviour
+                InputMethodManager inputMethodManager = (InputMethodManager) iView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
             }
         });
         builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {
@@ -1093,10 +1107,18 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
                 fabMenuDrawerEdit.close(false);
+                // restore keyboard auto hide behaviour
+                InputMethodManager inputMethodManager = (InputMethodManager) iView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
             }
         });
 
         builder.show();
+        nv.setSelectAllOnFocus(true);
+        nv.requestFocus();
+        // show keyboard
+        InputMethodManager inputMethodManager = (InputMethodManager) iView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
     private void setupMembersNavigationList(final String selectedItem) {

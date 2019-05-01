@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.Nullable;
 import androidx.appcompat.view.ContextThemeWrapper;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,7 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -30,8 +31,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.model.DBBill;
@@ -39,6 +41,8 @@ import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.util.ICallback;
+import net.eneiluj.moneybuster.util.MoneyBuster;
+import net.eneiluj.moneybuster.util.ThemeUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -76,6 +80,7 @@ public class EditBillFragment extends Fragment {
     protected Spinner editPayer;
     protected EditText editAmount;
     protected LinearLayout owersLayout;
+    protected FloatingActionButton fabSaveBill;
 
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
@@ -100,6 +105,25 @@ public class EditBillFragment extends Fragment {
         editDate.setFocusable(false);
         editPayer = view.findViewById(R.id.editPayerSpinner);
         owersLayout = view.findViewById(R.id.owerListLayout);
+        fabSaveBill = view.findViewById(R.id.fab_edit_ok);
+
+        // color
+        boolean darkTheme = MoneyBuster.getAppTheme(getContext());
+        // if dark theme and main color is black, make fab button lighter/gray
+        if (darkTheme && ThemeUtils.primaryColor(getContext()) == Color.BLACK) {
+            fabSaveBill.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
+        }
+        else {
+            fabSaveBill.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(getContext())));
+        }
+        fabSaveBill.setRippleColor(ThemeUtils.primaryDarkColor(getContext()));
+
+        fabSaveBill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveBillAsked();
+            }
+        });
 
         Button bAll = view.findViewById(R.id.owerAllButton);
         bAll.setOnClickListener(new View.OnClickListener() {
@@ -271,6 +295,28 @@ public class EditBillFragment extends Fragment {
         super.onPrepareOptionsMenu(menu);
     }
 
+    private void saveBillAsked() {
+        if (getWhat() == null || getWhat().equals("")) {
+            showToast(getString(R.string.error_invalid_bill_what), Toast.LENGTH_LONG);
+        }
+        else if (getDate() == null || getDate().equals("")) {
+            showToast(getString(R.string.error_invalid_bill_date), Toast.LENGTH_LONG);
+        }
+        else if (getAmount() == 0.0) {
+            showToast(getString(R.string.error_invalid_bill_amount), Toast.LENGTH_LONG);
+        }
+        else if (getPayerId() == 0) {
+            showToast(getString(R.string.error_invalid_bill_payerid), Toast.LENGTH_LONG);
+        }
+        else if (getOwersIds().size() == 0) {
+            showToast(getString(R.string.error_invalid_bill_owers), Toast.LENGTH_LONG);
+        }
+        else {
+            saveBill(null);
+            listener.close();
+        }
+    }
+
     /**
      * Main-Menu-Handler
      */
@@ -281,25 +327,7 @@ public class EditBillFragment extends Fragment {
                 listener.close();
                 return true;
             case R.id.menu_save:
-                if (getWhat() == null || getWhat().equals("")) {
-                    showToast(getString(R.string.error_invalid_bill_what), Toast.LENGTH_LONG);
-                }
-                else if (getDate() == null || getDate().equals("")) {
-                    showToast(getString(R.string.error_invalid_bill_date), Toast.LENGTH_LONG);
-                }
-                else if (getAmount() == 0.0) {
-                    showToast(getString(R.string.error_invalid_bill_amount), Toast.LENGTH_LONG);
-                }
-                else if (getPayerId() == 0) {
-                    showToast(getString(R.string.error_invalid_bill_payerid), Toast.LENGTH_LONG);
-                }
-                else if (getOwersIds().size() == 0) {
-                    showToast(getString(R.string.error_invalid_bill_owers), Toast.LENGTH_LONG);
-                }
-                else {
-                    saveBill(null);
-                    listener.close();
-                }
+                saveBillAsked();
                 return true;
             case R.id.menu_delete:
                 if (bill.getId() != 0) {

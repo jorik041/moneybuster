@@ -10,7 +10,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/menu_save"
-        android:icon="@drawable/ic_save_white_24dp"
+        android:icon="@drawable/ic_done_white_24dp"
         android:orderInCategory="110"
         android:title="@string/menu_save_bill"
         app:showAsAction="ifRoom" />

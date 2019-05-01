@@ -6,6 +6,7 @@
     <string name="action_create_bill">Nouvelle facture</string>
     <string name="action_settings">Paramètres</string>
     <string name="action_add_project">Ajouter un projet</string>
+    <string name="action_save_bill">Enregistrer la facture</string>
     <string name="action_edit_project">Éditer le projet distant</string>
     <string name="action_share_project">Partager le projet</string>
     <string name="mandatory">(obligatoire)</string>

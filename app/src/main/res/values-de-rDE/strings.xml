@@ -6,6 +6,7 @@
     <string name="action_create_bill">Neue Ausgabe</string>
     <string name="action_settings">Einstellungen</string>
     <string name="action_add_project">Neues Projekt</string>
+    <string name="action_save_bill">Save bill</string>
     <string name="action_edit_project">Remote-Projekt bearbeiten</string>
     <string name="action_share_project">Projekt teilen</string>
     <string name="mandatory">(notwendig)</string>
@@ -14,8 +15,8 @@
     <string name="setting_date">Wann war das?</string>
     <string name="setting_date_long">Tag der Ausgabe</string>
     <string name="setting_payer">Wer hat gezahlt?</string>
-    <string name="setting_all">All</string>
-    <string name="setting_none">None</string>
+    <string name="setting_all">Alle</string>
+    <string name="setting_none">Keine</string>
     <string name="setting_amount">Wie viel?</string>
     <string name="setting_amount_long">Wie viel hat es gekostet?</string>
     <string name="setting_owers">Für wen?</string>
@@ -31,7 +32,7 @@
     <string name="setting_cospend_project_url">Nextcloud Server-Adresse</string>
     <string name="setting_project_name">Projektname</string>
     <string name="setting_project_name_long">Angezeigter Name in der Anwendung</string>
-    <string name="setting_password_long">Auch \"Zugangscode\" gennant</string>
+    <string name="setting_password_long">Auch \"Zugangscode\" genannt</string>
     <string name="setting_password">Passwort</string>
     <string name="setting_create_project_title">Projekt auf Server erstellen</string>
     <string name="setting_create_project_summary">Nur möglich, wenn anonyme Projekterstellung auf dem Server erlaubt ist</string>
@@ -141,7 +142,7 @@
     <string name="error_invalid_email">Ungültige E-Mail-Adresse</string>
     <string name="error_invalid_url">Ungültige Adresse</string>
     <string name="error_invalid_project_remote_id">Ungültige Projekt ID</string>
-    <string name="error_invalid_project_password">Project password must not be empty</string>
+    <string name="error_invalid_project_password">Projektpasswort darf nicht leer sein</string>
     <string name="error_invalid_project_name">Ungültiger Projektname</string>
     <string name="error_invalid_bill_what">Ungültiger Ausgabenname</string>
     <string name="error_invalid_bill_date">Ungültiges Ausgabendatum</string>

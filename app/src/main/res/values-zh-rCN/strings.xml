@@ -6,6 +6,7 @@
     <string name="action_create_bill">新账单</string>
     <string name="action_settings">设置</string>
     <string name="action_add_project">添加项目</string>
+    <string name="action_save_bill">Save bill</string>
     <string name="action_edit_project">编辑远程项目</string>
     <string name="action_share_project">共享项目</string>
     <string name="mandatory">（必填项）</string>

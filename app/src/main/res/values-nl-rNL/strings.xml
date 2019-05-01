@@ -6,6 +6,7 @@
     <string name="action_create_bill">Nieuwe rekening</string>
     <string name="action_settings">Instellingen</string>
     <string name="action_add_project">Project toevoegen</string>
+    <string name="action_save_bill">Save bill</string>
     <string name="action_edit_project">Extern project bewerken</string>
     <string name="action_share_project">Project delen</string>
     <string name="mandatory">(vereist)</string>

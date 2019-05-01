@@ -6,6 +6,7 @@
     <string name="action_create_bill">Nuova spesa</string>
     <string name="action_settings">Impostazioni</string>
     <string name="action_add_project">Aggiungi un progetto</string>
+    <string name="action_save_bill">Save bill</string>
     <string name="action_edit_project">Modifica progetto remoto</string>
     <string name="action_share_project">Condividi progetto</string>
     <string name="mandatory">(obbligatorio)</string>

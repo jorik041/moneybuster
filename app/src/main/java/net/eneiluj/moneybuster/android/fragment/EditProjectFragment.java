@@ -24,6 +24,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -86,21 +88,43 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
+    private void hideKeyboard(Context context) {
+        // hide keyboard
+        InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Preference.OnPreferenceClickListener clickListener =  new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                EditText input = ((com.takisoft.fix.support.v7.preference.EditTextPreference) preference).getEditText();
+                input.setSelectAllOnFocus(true);
+                input.requestFocus();
+                input.setSelected(true);
+                // show keyboard
+                InputMethodManager inputMethodManager = (InputMethodManager) preference.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                return true;
+            }
+        };
+
         Preference namePref = findPreference("name");
+        namePref.setOnPreferenceClickListener(clickListener);
         namePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference,
                                               Object newValue) {
                 EditTextPreference pref = (EditTextPreference) findPreference("name");
                 pref.setSummary((CharSequence) newValue);
+                hideKeyboard(preference.getContext());
                 return true;
             }
         });
         Preference passwordPref = findPreference("password");
+        passwordPref.setOnPreferenceClickListener(clickListener);
         passwordPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 
             @Override
@@ -113,11 +137,13 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                     sum += "*";
                 }
                 pref.setSummary(sum);
+                hideKeyboard(preference.getContext());
                 return true;
             }
 
         });
         Preference emailPref = findPreference("email");
+        emailPref.setOnPreferenceClickListener(clickListener);
         emailPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 
             @Override
@@ -125,6 +151,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                                               Object newValue) {
                 EditTextPreference pref = (EditTextPreference) preference;
                 pref.setSummary((CharSequence) newValue);
+                hideKeyboard(preference.getContext());
                 return true;
             }
 

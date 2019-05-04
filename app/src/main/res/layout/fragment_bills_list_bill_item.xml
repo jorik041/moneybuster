@@ -90,7 +90,7 @@
 
             <ImageButton
                 android:id="@+id/infoButton"
-                android:layout_width="65dp"
+                android:layout_width="48dp"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_info_grey600_24dp"
                 android:tint="#999999"

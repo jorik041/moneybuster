@@ -8,6 +8,7 @@ import android.view.Window;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
 
 import net.eneiluj.moneybuster.android.fragment.PreferencesFragment;
 import net.eneiluj.moneybuster.util.ThemeUtils;
@@ -27,10 +28,17 @@ public class PreferencesActivity extends AppCompatActivity {
         setupActionBar();
     }
 
+    @Override
+    public void onBackPressed() {
+        NavUtils.navigateUpFromSameTask(this);
+        //finish();
+    }
+
     private void setupActionBar() {
         ActionBar actionBar = getDelegate().getSupportActionBar();
 
         if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
             int color = ThemeUtils.primaryColor(this);
             actionBar.setBackgroundDrawable(new ColorDrawable(color));
         }

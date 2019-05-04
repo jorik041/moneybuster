@@ -92,7 +92,7 @@
                 android:id="@+id/infoButton"
                 android:layout_width="65dp"
                 android:layout_height="match_parent"
-                android:src="@android:drawable/ic_dialog_info"
+                android:src="@drawable/ic_info_grey600_24dp"
                 android:tint="#999999"
                 android:clickable="true"
                 android:gravity="left"

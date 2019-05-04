@@ -1699,7 +1699,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                         }
                     })
-                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setIcon(R.drawable.ic_info_grey600_24dp)
                     .show();
         }
     }

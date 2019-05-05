@@ -1,228 +1,241 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fadeScrollbars="false">
+    android:layout_height="match_parent">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="top"
-    android:orientation="vertical"
-    android:paddingRight="10dp">
-
-    <LinearLayout
-        android:id="@+id/editWhatLayout"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/editWhatIcon"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".10"
-            android:paddingTop="0dp"
-            android:src="@drawable/ic_title_grey_24dp" />
-
-        <TextView
-            android:id="@+id/editWhatLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".30"
-            android:text="@string/setting_what" />
-
-        <EditText
-            android:id="@+id/editWhat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".60"
-            android:ems="10"
-            android:selectAllOnFocus="true"
-            android:inputType="textPersonName" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/editDateLayout"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/editDateIcon"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".10"
-            android:paddingTop="0dp"
-            android:src="@drawable/ic_today_grey_24dp" />
-
-        <TextView
-            android:id="@+id/editDateLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".30"
-            android:text="@string/setting_date" />
-
-        <EditText
-            android:id="@+id/editDate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".60"
-            android:ems="10"
-            android:clickable="true"
-            />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/editPayerLayout"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/payerIcon"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".10"
-            android:paddingTop="0dp"
-            android:src="@drawable/ic_person_grey_24dp" />
-
-        <TextView
-            android:id="@+id/editPayerLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".30"
-            android:text="@string/setting_payer" />
-
-        <Spinner
-            android:id="@+id/editPayerSpinner"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".60"
-            style="@style/Widget.AppCompat.Spinner.Underlined"
-            android:spinnerMode="dropdown"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/editAmountLayout"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/amountIcon"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".10"
-            android:paddingTop="0dp"
-            android:src="@drawable/ic_dollar_grey_24dp" />
-
-        <TextView
-            android:id="@+id/editAmountLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".30"
-            android:text="@string/setting_amount" />
-
-        <EditText
-            android:id="@+id/editAmount"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".60"
-            android:ems="10"
-            android:selectAllOnFocus="true"
-            android:inputType="numberDecimal"
-            android:digits="0123456789.," />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/editOwersLayout"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/owersIcon"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".10"
-            android:layout_gravity="top"
-            android:layout_marginTop="12dp"
-            android:src="@drawable/ic_people_grey_24dp" />
-
-        <TextView
-            android:id="@+id/editOwersLabel"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="top"
-            android:layout_marginTop="12dp"
-            android:layout_weight=".30"
-            android:text="@string/setting_owers" />
+        android:layout_height="match_parent"
+        android:fadeScrollbars="false">
 
         <LinearLayout
-            android:id="@+id/owerListLayout"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight=".60"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:gravity="top"
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <LinearLayout
-                android:id="@+id/editOwersAllNone"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
+                android:id="@+id/editWhatLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/owerAllButton"
+                <ImageView
+                    android:id="@+id/editWhatIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".5"
-                    android:text="@string/setting_all" />
+                    android:layout_marginRight="32dp"
+                    android:paddingTop="8dp"
+                    android:src="@drawable/ic_title_grey_24dp" />
 
-                <Button
-                    android:id="@+id/owerNoneButton"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/setting_what">
+
+                    <EditText
+                        android:id="@+id/editWhat"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:selectAllOnFocus="true" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/editDateLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/editDateIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".5"
-                    android:text="@string/setting_none" />
+                    android:layout_marginRight="32dp"
+                    android:paddingTop="8dp"
+                    android:src="@drawable/ic_today_grey_24dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/setting_date">
+
+                    <EditText
+                        android:id="@+id/editDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:ems="10"
+                        android:inputType="text|date"
+                        android:selectAllOnFocus="true" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/editPayerLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/payerIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="32dp"
+                    android:paddingTop="8dp"
+                    android:src="@drawable/ic_person_grey_24dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/editPayerLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="top"
+                        android:paddingStart="2dp"
+                        android:paddingLeft="2dp"
+                        android:paddingEnd="0dp"
+                        android:paddingRight="0dp"
+                        android:text="@string/setting_payer"
+                        android:textColor="#9E9E9E"
+                        android:textSize="12sp" />
+
+                    <Spinner
+                        android:id="@+id/editPayerSpinner"
+                        style="@style/Widget.AppCompat.Spinner.Underlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_weight=".60"
+                        android:spinnerMode="dropdown" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/editAmountLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/amountIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="32dp"
+                    android:paddingTop="8dp"
+                    android:src="@drawable/ic_dollar_grey_24dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/input_layout_hostUrl"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/setting_amount">
+
+                    <EditText
+                        android:id="@+id/editAmount"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:ems="10"
+                        android:inputType="text|numberDecimal"
+                        android:selectAllOnFocus="true" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/editOwnerLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/owersIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_marginRight="32dp"
+                    android:src="@drawable/ic_people_grey_24dp" />
+
+                <LinearLayout
+                    android:id="@+id/owerListLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_weight=".60"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/editOwersLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="top"
+                        android:layout_marginTop="8dp"
+                        android:paddingStart="2dp"
+                        android:paddingLeft="2dp"
+                        android:paddingEnd="0dp"
+                        android:paddingRight="0dp"
+                        android:text="@string/setting_owers"
+                        android:textColor="#9E9E9E"
+                        android:textSize="12sp" />
+
+                    <LinearLayout
+                        android:id="@+id/editOwersAllNone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/owerAllButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight=".5"
+                            android:text="@string/setting_all" />
+
+                        <Button
+                            android:id="@+id/owerNoneButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight=".5"
+                            android:text="@string/setting_none" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 
-
-
-</LinearLayout>
-</ScrollView>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_edit_ok"
         style="@style/fab"

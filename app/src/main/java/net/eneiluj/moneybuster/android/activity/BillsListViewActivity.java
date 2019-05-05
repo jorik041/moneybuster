@@ -30,6 +30,7 @@ import androidx.annotation.Nullable;
 //import android.support.v4.widget.DrawerLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 //import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -1304,7 +1305,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     public void initList() {
         adapter = new ItemAdapter(this, db);
         listView.setAdapter(adapter);
-        listView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        listView.setLayoutManager(linearLayoutManager);
+        listView.addItemDecoration(new DividerItemDecoration(listView.getContext(),
+                linearLayoutManager.getOrientation()));
         ItemTouchHelper touchHelper = new ItemTouchHelper(new SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/billSwipeFrame"
@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:text="@string/swipe_left" />
 
@@ -28,9 +29,43 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/billSwipeable"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="72dp"
         android:background="@drawable/list_item_background_selector">
 
+        <FrameLayout
+            android:id="@+id/avatar_container"
+            android:layout_width="72dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true">
+
+            <ImageView
+                android:id="@+id/avatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="12dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="1dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginBottom="1dp"
+                android:contentDescription="Avatar"
+                android:src="@drawable/ic_info_outline_grey600_24dp" />
+
+            <ImageView
+                android:id="@+id/syncIcon"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="top|end"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/round_bgnd"
+                android:tint="@color/primary"
+                app:srcCompat="@android:drawable/stat_notify_sync" />
+        </FrameLayout>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
@@ -38,8 +73,10 @@
             android:layout_weight="1"
             android:background="@drawable/list_item_background_selector"
             android:orientation="vertical"
-            android:paddingLeft="16dp"
+            android:paddingStart="0dp"
+            android:paddingLeft="0dp"
             android:paddingTop="16dp"
+            android:paddingEnd="16dp"
             android:paddingRight="16dp"
             android:paddingBottom="16dp">
 
@@ -53,9 +90,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:paddingStart="0dp"
+                    android:paddingLeft="0dp"
+                    android:paddingEnd="8dp"
+                    android:paddingRight="8dp"
                     android:singleLine="true"
                     android:textColor="@drawable/list_item_color_selector"
-                    android:textSize="@dimen/primary_font_size" />
+                    android:textSize="@dimen/primary_font_size"
+                    tools:text="Groceries" />
+
+                <TextView
+                    android:id="@+id/billDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:singleLine="true"
+                    android:textColor="@drawable/list_item_color_selector_low"
+                    android:textSize="@dimen/secondary_font_size"
+                    tools:text="2019-05-09" />
+
             </androidx.appcompat.widget.LinearLayoutCompat>
 
 
@@ -63,7 +115,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/list_item_background_selector">
-
 
                 <TextView
                     android:id="@+id/billExcerpt"
@@ -74,45 +125,12 @@
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:paddingTop="1dp"
-                    android:paddingBottom="1dp"
                     android:textColor="@drawable/list_item_color_selector_low"
-                    android:textSize="@dimen/secondary_font_size" />
+                    android:textSize="@dimen/secondary_font_size"
+                    tools:text="400.00 (John Doe ? Mike, Mik, Marci, Diana)" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true">
-
-
-            <ImageButton
-                android:id="@+id/infoButton"
-                android:layout_width="48dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_info_grey600_24dp"
-                android:tint="#999999"
-                android:clickable="true"
-                android:gravity="left"
-                android:background="#00000000"
-                android:textColor="#000000" />
-
-            <ImageView
-                android:id="@+id/syncIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|left"
-                android:tint="@color/primary"
-                app:srcCompat="@android:drawable/stat_notify_sync" />
-
-        </FrameLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:src="@color/separator" />
-
-</FrameLayout>
+</RelativeLayout>

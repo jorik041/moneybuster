@@ -14,11 +14,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.activity.BillsListViewActivity;
+import net.eneiluj.moneybuster.android.ui.TextDrawable;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
@@ -34,6 +36,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private boolean showCategory = true;
     private List<Integer> selected;
     private MoneyBusterSQLiteOpenHelper db;
+    private float avatarRadius;
     private SharedPreferences prefs;
 
     public ItemAdapter(@NonNull BillClickListener billClickListener, MoneyBusterSQLiteOpenHelper db) {
@@ -42,6 +45,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.billClickListener = billClickListener;
         this.db = db;
         this.prefs = PreferenceManager.getDefaultSharedPreferences(db.getContext());
+        this.avatarRadius = db.getContext().getResources().getDimension(R.dimen.avatar_radius);
     }
 
     /**
@@ -111,28 +115,26 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final DBBill bill = (DBBill) item;
             final BillViewHolder nvHolder = ((BillViewHolder) holder);
             nvHolder.billSwipeable.setAlpha(1.0f);
-            String title = bill.getDate() + " -- ";
-            title += bill.getAmount() + " -- ";
-            title += bill.getWhat();
-            nvHolder.billTitle.setText(Html.fromHtml(title));
+            nvHolder.billTitle.setText(Html.fromHtml(bill.getWhat()));
+            try {
+                nvHolder.avatar.setImageDrawable(TextDrawable.createNamedAvatar(db.getMember(bill.getPayerId()).getName(),avatarRadius));
+            } catch (NoSuchAlgorithmException e) {
+                nvHolder.avatar.setImageDrawable(null);
+            }
+            nvHolder.billDate.setText(bill.getDate());
 
             Log.d(TAG, "[get member of project " + bill.getProjectId() + " with remoteid : "+bill.getPayerId()+"]");
-            String subtitle = db.getMember(bill.getPayerId()).getName();
+            String subtitle = String.valueOf(bill.getAmount());
+            subtitle += " (" + db.getMember(bill.getPayerId()).getName();
             subtitle += " → ";
             for (long boRId : bill.getBillOwersIds()) {
                 String name = db.getMember(boRId).getName();
                 subtitle += name + ", ";
             }
             subtitle = subtitle.replaceAll(", $", "");
+            subtitle += ")";
 
             nvHolder.billSubtitle.setText(Html.fromHtml(subtitle));
-
-            nvHolder.infoButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    billClickListener.onBillInfoButtonClick(holder.getAdapterPosition(), view);
-                }
-            });
 
             nvHolder.syncIcon.setVisibility(bill.getState() == DBBill.STATE_OK ? View.INVISIBLE : View.VISIBLE);
         }
@@ -203,11 +205,12 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public class BillViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener {
         public View billSwipeable;
         View billSwipeFrame;
+        ImageView avatar;
         TextView billTextToggleLeft;
         ImageView billDeleteRight;
         TextView billTitle;
+        TextView billDate;
         TextView billSubtitle;
-        ImageButton infoButton;
         ImageView syncIcon;
 
         private BillViewHolder(View v) {
@@ -216,9 +219,10 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             this.billSwipeable = v.findViewById(R.id.billSwipeable);
             this.billTextToggleLeft = v.findViewById(R.id.billTextToggleLeft);
             this.billDeleteRight = v.findViewById(R.id.billDeleteRight);
+            this.avatar = v.findViewById(R.id.avatar);
             this.billTitle = v.findViewById(R.id.billTitle);
+            this.billDate = v.findViewById(R.id.billDate);
             this.billSubtitle = v.findViewById(R.id.billExcerpt);
-            this.infoButton = v.findViewById(R.id.infoButton);
             this.syncIcon = v.findViewById(R.id.syncIcon);
             v.setOnClickListener(this);
             v.setOnLongClickListener(this);

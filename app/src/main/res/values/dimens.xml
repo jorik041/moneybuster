@@ -12,4 +12,6 @@
     <dimen name="primary_font_size">16sp</dimen>
     <dimen name="secondary_font_size">14sp</dimen>
 
+    <dimen name="avatar_radius">20dp</dimen>
+
 </resources>

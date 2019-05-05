@@ -49,6 +49,7 @@ dependencies {
     implementation 'com.github.kizitonwose.colorpreference:support:1.0.6'
     implementation 'com.larswerkman:lobsterpicker:1.0.1'
     implementation 'com.google.zxing:core:3.3.3'
+    implementation 'commons-codec:commons-codec:1.10'
 }
 
 /*gradle.projectsEvaluated {

@@ -197,8 +197,6 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public interface BillClickListener {
         void onBillClick(int position, View v);
 
-        void onBillInfoButtonClick(int position, View v);
-
         boolean onBillLongClick(int position, View v);
     }
 

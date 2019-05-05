@@ -121,7 +121,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             } catch (NoSuchAlgorithmException e) {
                 nvHolder.avatar.setImageDrawable(null);
             }
-            nvHolder.billDate.setText(bill.getDate());
+            nvHolder.billDate.setText(Html.fromHtml(bill.getDate()));
 
             Log.d(TAG, "[get member of project " + bill.getProjectId() + " with remoteid : "+bill.getPayerId()+"]");
             String subtitle = String.valueOf(bill.getAmount());

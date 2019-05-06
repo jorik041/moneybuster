@@ -1,29 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:stretchColumns="*"
-    android:paddingLeft="4dp"
-    android:paddingRight="4dp"
-    android:paddingTop="10dp"
-    android:id="@+id/statTable">
-    <TableRow
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TableLayout
+        android:id="@+id/statTable"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:stretchColumns="*">
 
-        <TextView
-            android:id="@+id/header_who"
-            android:text="@string/stats_who" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/header_paid"
-            android:text="@string/stats_paid" />
+            <TextView
+                android:id="@+id/header_who"
+                android:text="@string/stats_who" />
 
-        <TextView
-            android:id="@+id/header_spent"
-            android:text="@string/stats_spent" />
+            <TextView
+                android:id="@+id/header_paid"
+                android:gravity="end"
+                android:text="@string/stats_paid" />
 
-        <TextView
-            android:id="@+id/header_balance"
-            android:text="@string/stats_balance" />
-    </TableRow>
-</TableLayout>
+            <TextView
+                android:id="@+id/header_spent"
+                android:gravity="end"
+                android:text="@string/stats_spent" />
+
+            <TextView
+                android:id="@+id/header_balance"
+                android:gravity="end"
+                android:text="@string/stats_balance" />
+        </TableRow>
+    </TableLayout>
+</ScrollView>

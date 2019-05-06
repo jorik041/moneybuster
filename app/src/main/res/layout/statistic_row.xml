@@ -1,30 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableRow xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:paddingTop="3dp">
-
 
     <TextView
         android:id="@+id/stat_who"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        tools:text="John Doe" />
 
     <TextView
         android:id="@+id/stat_paid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:gravity="end"
+        tools:text="142.82" />
 
     <TextView
         android:id="@+id/stat_spent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:gravity="end"
+        tools:text="2434.82" />
 
     <TextView
         android:id="@+id/stat_balance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:gravity="end"
+        tools:text="123.42" />
 </TableRow>

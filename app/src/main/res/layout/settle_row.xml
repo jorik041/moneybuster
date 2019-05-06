@@ -9,18 +9,21 @@
         android:id="@+id/settle_who"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         tools:text="John Doe" />
 
     <TextView
         android:id="@+id/settle_towhom"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         tools:text="Simon" />
 
     <TextView
         android:id="@+id/settle_howmuch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:gravity="end"
         tools:text="142.82" />
 </TableRow>

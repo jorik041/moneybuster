@@ -38,6 +38,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private MoneyBusterSQLiteOpenHelper db;
     private float avatarRadius;
     private SharedPreferences prefs;
+    private boolean isProjectLocal;
 
     public ItemAdapter(@NonNull BillClickListener billClickListener, MoneyBusterSQLiteOpenHelper db) {
         this.itemList = new ArrayList<>();
@@ -46,6 +47,10 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.db = db;
         this.prefs = PreferenceManager.getDefaultSharedPreferences(db.getContext());
         this.avatarRadius = db.getContext().getResources().getDimension(R.dimen.avatar_radius);
+    }
+
+    public void setProjectLocal(boolean loc) {
+        this.isProjectLocal = loc;
     }
 
     /**
@@ -136,7 +141,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             nvHolder.billSubtitle.setText(Html.fromHtml(subtitle));
 
-            nvHolder.syncIcon.setVisibility(bill.getState() == DBBill.STATE_OK ? View.INVISIBLE : View.VISIBLE);
+            nvHolder.syncIcon.setVisibility((isProjectLocal || bill.getState() == DBBill.STATE_OK) ? View.INVISIBLE : View.VISIBLE);
         }
     }
 

@@ -1426,8 +1426,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         long selectedProjectId = preferences.getLong("selected_project", 0);
 
+        boolean local = false;
         if (selectedProjectId != 0) {
             DBProject proj = db.getProject(selectedProjectId);
+            local = proj.isLocal();
             if (proj != null) {
                 projId = proj.getId();
                 if (proj.isLocal()) {
@@ -1438,6 +1440,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 }
             }
         }
+        final boolean isProjectLocal = local;
 
         String subtitle;
         if (navigationSelection.memberName != null) {
@@ -1458,6 +1461,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         LoadBillsListTask.BillsLoadedListener callback = new LoadBillsListTask.BillsLoadedListener() {
             @Override
             public void onBillsLoaded(List<Item> billItems, boolean showCategory) {
+                adapter.setProjectLocal(isProjectLocal);
                 adapter.setShowCategory(showCategory);
                 adapter.setItemList(billItems);
                 if(scrollToTop) {

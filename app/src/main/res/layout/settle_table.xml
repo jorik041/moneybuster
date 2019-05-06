@@ -16,14 +16,17 @@
 
             <TextView
                 android:id="@+id/header_who"
+                android:layout_width="0dp"
                 android:text="@string/settle_who" />
 
             <TextView
                 android:id="@+id/header_towhom"
+                android:layout_width="0dp"
                 android:text="@string/settle_to_whom" />
 
             <TextView
                 android:id="@+id/header_howmuch"
+                android:layout_width="0dp"
                 android:gravity="end"
                 android:text="@string/settle_how_much" />
         </TableRow>

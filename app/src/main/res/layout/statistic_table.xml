@@ -16,20 +16,24 @@
 
             <TextView
                 android:id="@+id/header_who"
+                android:layout_width="0dp"
                 android:text="@string/stats_who" />
 
             <TextView
                 android:id="@+id/header_paid"
+                android:layout_width="0dp"
                 android:gravity="end"
                 android:text="@string/stats_paid" />
 
             <TextView
                 android:id="@+id/header_spent"
+                android:layout_width="0dp"
                 android:gravity="end"
                 android:text="@string/stats_spent" />
 
             <TextView
                 android:id="@+id/header_balance"
+                android:layout_width="0dp"
                 android:gravity="end"
                 android:text="@string/stats_balance" />
         </TableRow>

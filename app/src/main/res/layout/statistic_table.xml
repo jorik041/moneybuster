@@ -7,7 +7,7 @@
         android:id="@+id/statTable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:padding="24dp"
         android:stretchColumns="*">
 
         <TableRow

@@ -29,7 +29,7 @@
 
     <EditTextPreference
         android:id="@+id/editProjectEmail"
-        android:icon="@android:drawable/sym_action_email"
+        android:icon="@drawable/ic_email_grey_24dp"
         android:dialogMessage="@string/setting_email_long"
         android:dialogTitle="@string/setting_email"
         android:key="email"

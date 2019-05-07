@@ -1,7 +1,5 @@
 package net.eneiluj.moneybuster.android.fragment;
 
-import androidx.appcompat.app.AlertDialog;
-
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,12 +8,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.annotation.Nullable;
-import androidx.appcompat.view.ContextThemeWrapper;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,6 +25,12 @@ import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -55,6 +53,8 @@ import java.util.List;
 import java.util.Map;
 
 public class EditBillFragment extends Fragment {
+
+    private static final String TAG = EditBillFragment.class.getSimpleName();
 
     public interface BillFragmentListener {
         void close();
@@ -219,7 +219,7 @@ public class EditBillFragment extends Fragment {
             bill = (DBBill) savedInstanceState.getSerializable(SAVEDKEY_BILL);
         }
         setHasOptionsMenu(true);
-        System.out.println("BILL on create : " + bill);
+        Log.d(TAG, "BILL on create : " + bill);
 
         // delete confirmation
         deleteDialogClickListener = new DialogInterface.OnClickListener() {
@@ -387,7 +387,7 @@ public class EditBillFragment extends Fragment {
                     ) {
                 Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed "+bill.getWhat()+" "+newWhat);
             } else {
-                System.out.println("====== update bill");
+                Log.d(TAG, "====== update bill");
                 db.updateBillAndSync(bill, newPayerId, newAmount, newDate, newWhat, newOwersIds);
                 //listener.onBillUpdated(bill);
                 //listener.close();
@@ -430,7 +430,7 @@ public class EditBillFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        System.out.println("ACT EDIT BILL CREATEDDDDDDD");
+        Log.d(TAG, "ACT EDIT BILL CREATED");
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
@@ -566,7 +566,7 @@ public class EditBillFragment extends Fragment {
             if (entry.getValue().isChecked()) {
                 owersIds.add(entry.getKey());
             }
-            System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue().isChecked());
+            Log.i(TAG, "Key : " + entry.getKey() + " Value : " + entry.getValue().isChecked());
         }
         return owersIds;
     }

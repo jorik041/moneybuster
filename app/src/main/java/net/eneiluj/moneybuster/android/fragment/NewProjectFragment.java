@@ -5,21 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-//import android.preference.EditTextPreference;
-import androidx.preference.CheckBoxPreference;
-//import android.support.v7.preference.EditTextPreference;
-import com.takisoft.fix.support.v7.preference.EditTextPreference;
-//import android.preference.ListPreference;
-//import android.preference.Preference;
-import androidx.preference.ListPreference;
-import androidx.preference.Preference;
-//import android.preference.PreferenceFragment;
-//import android.support.v7.preference.PreferenceFragmentCompat;
-import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
-import androidx.annotation.Nullable;
-import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +18,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.preference.CheckBoxPreference;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.takisoft.fix.support.v7.preference.EditTextPreference;
+import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
+
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
@@ -45,6 +41,7 @@ import java.util.List;
 import static android.webkit.URLUtil.isValidUrl;
 
 public class NewProjectFragment extends PreferenceFragmentCompat {
+    private static final String TAG = NewProjectFragment.class.getSimpleName();
 
     private static final String SAVEDKEY_PROJECT = "project";
     public static final String PARAM_DEFAULT_IHM_URL = "defaultIhmUrl";
@@ -124,7 +121,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                                               Object newValue) {
                 ListPreference pref = (ListPreference) findPreference("type");
                 int index = pref.findIndexOfValue((String)newValue);
-                System.out.println(index+" ----> "+newValue);
+                Log.d(TAG, index + " ----> " + newValue);
                 preference.setSummary(pref.getEntries()[index]);
 
                 EditTextPreference urlPref = (EditTextPreference) findPreference("url");
@@ -269,7 +266,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
 
         handler = new Handler(Looper.getMainLooper());
 
-        System.out.println("PROJECT on create : ");
+        Log.d(TAG, "PROJECT on create : ");
 
         setHasOptionsMenu(true);
     }
@@ -306,7 +303,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        System.out.println("PROJECT SAVE INSTANCE STATEEEEEEEE");
+        Log.d(TAG, "PROJECT SAVE INSTANCE STATE");
         //saveBill(null);
         //outState.putSerializable(SAVEDKEY_PROJECT, project);
     }
@@ -443,14 +440,14 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
 
         showToast(getString(R.string.project_added_success), Toast.LENGTH_LONG);
 
-        System.out.println("PROJECT local id : "+pid+" : "+newProject);
+        Log.i(TAG, "PROJECT local id : "+pid+" : "+newProject);
         return pid;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        System.out.println("ACT CREATEDDDDDDD");
+        Log.d(TAG, "ACT CREATED");
         //ButterKnife.bind(this, getView());
 
         // hide the keyboard when this window gets the focus

@@ -1,8 +1,14 @@
 package net.eneiluj.moneybuster.util;
 
-import androidx.annotation.WorkerThread;
 import android.util.Base64;
 import android.util.Log;
+
+import androidx.annotation.WorkerThread;
+
+import net.eneiluj.moneybuster.BuildConfig;
+import net.eneiluj.moneybuster.model.DBBill;
+import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.DBProject;
 
 import org.json.JSONException;
 
@@ -18,13 +24,11 @@ import java.util.List;
 import java.util.Map;
 
 import at.bitfire.cert4android.CustomCertManager;
-import net.eneiluj.moneybuster.BuildConfig;
-import net.eneiluj.moneybuster.model.DBBill;
-import net.eneiluj.moneybuster.model.DBMember;
-import net.eneiluj.moneybuster.model.DBProject;
 
 @WorkerThread
 public class IHateMoneyClient {
+
+    private static final String TAG = IHateMoneyClient.class.getSimpleName();
 
     /**
      * This entity class is used to return relevant data of the HTTP reponse.
@@ -408,7 +412,7 @@ public class IHateMoneyClient {
             throw new ServerResponse.NotModifiedException();
         }
 
-        System.out.println("METHOD : "+method);
+        Log.d(TAG, "METHOD : " + method);
         BufferedReader rd;
         if (responseCode >= 200 && responseCode < 400) {
             rd = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -426,8 +430,8 @@ public class IHateMoneyClient {
         // create response object
         String etag = con.getHeaderField("ETag");
         long lastModified = con.getHeaderFieldDate("Last-Modified", 0) / 1000;
-        Log.i(getClass().getSimpleName(), "Result length:  " + result.length() + (paramData == null ? "" : "; Request length: " + paramData.length));
-        Log.d(getClass().getSimpleName(), "ETag: " + etag + "; Last-Modified: " + lastModified + " (" + con.getHeaderField("Last-Modified") + ")");
+        Log.i(TAG, "Result length:  " + result.length() + (paramData == null ? "" : "; Request length: " + paramData.length));
+        Log.d(TAG, "ETag: " + etag + "; Last-Modified: " + lastModified + " (" + con.getHeaderField("Last-Modified") + ")");
         // return these header fields since they should only be saved after successful processing the result!
         return new ResponseData(result.toString(), etag, lastModified);
     }

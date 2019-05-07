@@ -171,11 +171,11 @@
     <string name="about_maintainer_title">Maintainer</string>
     <string name="about_maintainer" translatable="false">Julien Veyssier</string>
     <string name="about_developers_title">Developers</string>
-    <string name="about_developers" translatable="false">Julien Veyssier</string>
+    <string name="about_developers" translatable="false">Julien Veyssier, Andy Scherzinger</string>
     <string name="about_translators_title">Translators</string>
     <string name="about_translators_crowdin">MoneyBuster community on &lt;a href="%1$s">Crowdin&lt;/a></string>
     <string name="about_testers_title">Testers</string>
-    <string name="about_testers" translatable="false">Julien Veyssier</string>
+    <string name="about_testers" translatable="false">Julien Veyssier, Andy Scherzinger</string>
     <string name="about_source_title">Source code</string>
     <string name="about_source">This project is hosted on Gitlab: &lt;a href="%1$s">%1$s&lt;/a></string>
     <string name="about_issues_title">Issues</string>

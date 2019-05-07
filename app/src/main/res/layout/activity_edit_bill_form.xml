@@ -214,21 +214,23 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
-                        android:gravity="center"
+                        android:gravity="start"
                         android:orientation="horizontal">
 
                         <Button
                             android:id="@+id/owerAllButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight=".5"
+                            android:drawableStart="@drawable/ic_all"
+                            android:drawableLeft="@drawable/ic_all"
                             android:text="@string/setting_all" />
 
                         <Button
                             android:id="@+id/owerNoneButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight=".5"
+                            android:drawableStart="@drawable/ic_none"
+                            android:drawableLeft="@drawable/ic_none"
                             android:text="@string/setting_none" />
                     </LinearLayout>
 

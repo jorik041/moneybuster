@@ -294,6 +294,10 @@ public class EditBillFragment extends Fragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
+
+        if (bill.getId() < 1) {
+            menu.removeItem(R.id.menu_delete);
+        }
     }
 
     private void saveBillAsked() {

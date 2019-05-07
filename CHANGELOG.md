@@ -6,10 +6,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.0.9 – 2019-05-08
+### Added
+
+### Changed
+- improve bill edition form design
+- improve bill list items
+- remove bill info dialog
+- improve settlement/stats dialogs design
+- improve settings theme icon
+
+### Fixed
+- use our own icons instead of system ones (which can change)
+- prevent fields autofill
+- don't show sync icon for local projects
+[#13](https://gitlab.com/eneiluj/moneybuster/issues/13) @Nuntius0
+- remove duplicated ways to validate/delete/cancel in bill edition
+
 ## 0.0.8 – 2019-05-04
 ### Added
 - FAB button to save bill
 [#10](https://gitlab.com/eneiluj/moneybuster/issues/10) @Nuntius0
+
 ### Changed
 - improve keyboard/selection behaviour in forms/preferences screens
 [#11](https://gitlab.com/eneiluj/moneybuster/issues/11) @Nuntius0

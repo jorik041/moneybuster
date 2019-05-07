@@ -247,6 +247,7 @@ public class ServerResponse {
         double amount = 0;
         String date = "";
         String what = "";
+        String repeat = "n";
         if (!json.isNull("id")) {
             remoteId = json.getLong("id");
         }
@@ -264,7 +265,10 @@ public class ServerResponse {
         if (!json.isNull("what")) {
             what = json.getString("what");
         }
-        DBBill bill = new DBBill(0, remoteId, projId, payerId, amount, date, what, DBBill.STATE_OK);
+        if (json.has("repeat") && !json.isNull("repeat")) {
+            repeat = json.getString("repeat");
+        }
+        DBBill bill = new DBBill(0, remoteId, projId, payerId, amount, date, what, DBBill.STATE_OK, repeat);
         bill.setBillOwers(getBillOwersFromJson(json, memberRemoteIdToId));
         return bill;
     }

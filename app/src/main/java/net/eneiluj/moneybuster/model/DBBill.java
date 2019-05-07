@@ -17,12 +17,29 @@ public class DBBill implements Item, Serializable {
     // OK, ADDED, EDITED, DELETED
     private int state;
 
+    private String repeat;
+
     private List<DBBillOwer> billOwers;
 
     public static final int STATE_OK = 0;
     public static final int STATE_ADDED = 1;
     public static final int STATE_EDITED = 2;
     public static final int STATE_DELETED = 3;
+
+    public DBBill(long id, long remoteId, long projectId, long payerId, double amount, String date, String what, int state, String repeat) {
+        this.id = id;
+        this.remoteId = remoteId;
+        this.projectId = projectId;
+        this.payerId = payerId;
+        this.amount = amount;
+        this.date = date;
+        this.what = what;
+        this.repeat = repeat;
+
+        this.billOwers = new ArrayList<>();
+
+        this.state = state;
+    }
 
     public DBBill(long id, long remoteId, long projectId, long payerId, double amount, String date, String what, int state) {
         this.id = id;
@@ -32,6 +49,7 @@ public class DBBill implements Item, Serializable {
         this.amount = amount;
         this.date = date;
         this.what = what;
+        this.repeat = "n";
 
         this.billOwers = new ArrayList<>();
 
@@ -116,6 +134,14 @@ public class DBBill implements Item, Serializable {
 
     public void setWhat(String what) {
         this.what = what;
+    }
+
+    public String getRepeat() {
+        return repeat;
+    }
+
+    public void setRepeat(String repeat) {
+        this.repeat = repeat;
     }
 
     @Override

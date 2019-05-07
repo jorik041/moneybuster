@@ -328,12 +328,6 @@ public class EditBillFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_cancel:
-                listener.close();
-                return true;
-            case R.id.menu_save:
-                saveBillAsked();
-                return true;
             case R.id.menu_delete:
                 if (bill.getId() != 0) {
                     confirmDeleteAlertBuilder.show();

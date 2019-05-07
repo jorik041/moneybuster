@@ -11,11 +11,11 @@
 
     <item
         android:id="@+id/menu_save"
-        android:icon="@drawable/ic_save_white_24dp"
+        android:icon="@drawable/ic_check_white_24dp"
         android:orderInCategory="110"
         android:title="@string/menu_save_project"
         compat:actionViewClass="android.widget.ImageView"
-        compat:showAsAction="always"
+        compat:showAsAction="ifRoom"
         />
 
 </menu>

@@ -245,7 +245,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
         inflater.inflate(R.menu.menu_edit_project_fragment, menu);
         myMenu = menu;
         final ImageView saveButton = (ImageView) menu.findItem(R.id.menu_save).getActionView();
-        saveButton.setImageResource(R.drawable.ic_save_white_24dp);
+        saveButton.setImageResource(R.drawable.ic_check_white_24dp);
         saveButton.setPadding(20,0,20,0);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override

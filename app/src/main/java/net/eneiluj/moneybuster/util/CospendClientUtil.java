@@ -1,8 +1,11 @@
 package net.eneiluj.moneybuster.util;
 
-import androidx.annotation.StringRes;
 import android.util.Base64;
 import android.util.Log;
+
+import androidx.annotation.StringRes;
+
+import net.eneiluj.moneybuster.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,7 +19,6 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 
 import at.bitfire.cert4android.CustomCertManager;
-import net.eneiluj.moneybuster.R;
 
 
 public class CospendClientUtil {

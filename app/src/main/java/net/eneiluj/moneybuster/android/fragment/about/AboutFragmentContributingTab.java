@@ -1,15 +1,17 @@
 package net.eneiluj.moneybuster.android.fragment.about;
 
 import android.os.Bundle;
-//import android.support.v4.app.Fragment;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.util.SupportUtil;
+
+//import android.support.v4.app.Fragment;
 
 public class AboutFragmentContributingTab extends Fragment {
 

@@ -14,10 +14,21 @@ import android.net.NetworkRequest;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
-//import android.preference.PreferenceManager;
-import androidx.preference.PreferenceManager;
-//import android.util.ArrayMap;
 import android.util.Log;
+
+import androidx.preference.PreferenceManager;
+
+import net.eneiluj.moneybuster.R;
+import net.eneiluj.moneybuster.android.activity.BillsListViewActivity;
+import net.eneiluj.moneybuster.model.DBBill;
+import net.eneiluj.moneybuster.model.DBBillOwer;
+import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.DBProject;
+import net.eneiluj.moneybuster.util.CospendClientUtil.LoginStatus;
+import net.eneiluj.moneybuster.util.ICallback;
+import net.eneiluj.moneybuster.util.IHateMoneyClient;
+import net.eneiluj.moneybuster.util.ServerResponse;
+import net.eneiluj.moneybuster.util.SupportUtil;
 
 import org.json.JSONException;
 
@@ -29,18 +40,9 @@ import java.util.Map;
 
 import at.bitfire.cert4android.CustomCertManager;
 import at.bitfire.cert4android.CustomCertService;
-import net.eneiluj.moneybuster.R;
-import net.eneiluj.moneybuster.android.activity.BillsListViewActivity;
 
-import net.eneiluj.moneybuster.model.DBBill;
-import net.eneiluj.moneybuster.model.DBBillOwer;
-import net.eneiluj.moneybuster.model.DBMember;
-import net.eneiluj.moneybuster.model.DBProject;
-import net.eneiluj.moneybuster.util.ICallback;
-import net.eneiluj.moneybuster.util.IHateMoneyClient;
-import net.eneiluj.moneybuster.util.CospendClientUtil.LoginStatus;
-import net.eneiluj.moneybuster.util.ServerResponse;
-import net.eneiluj.moneybuster.util.SupportUtil;
+//import android.preference.PreferenceManager;
+//import android.util.ArrayMap;
 
 /**
  * Helps to synchronize the Database to the Server.

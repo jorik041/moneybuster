@@ -1,21 +1,12 @@
 package net.eneiluj.moneybuster.android.fragment;
 
 //import android.app.AlertDialog;
-import androidx.appcompat.app.AlertDialog;
+
 import android.content.Context;
 import android.content.DialogInterface;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import androidx.preference.EditTextPreference;
-import androidx.preference.Preference;
-//import android.support.v7.preference.PreferenceFragmentCompat;
-import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
-import androidx.annotation.Nullable;
-import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,11 +20,23 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.preference.EditTextPreference;
+import androidx.preference.Preference;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
+
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.SupportUtil;
+
+//import android.support.v7.preference.PreferenceFragmentCompat;
 
 public class EditProjectFragment extends PreferenceFragmentCompat {
 

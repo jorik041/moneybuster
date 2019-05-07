@@ -5,23 +5,25 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Window;
 
-import com.google.android.material.tabs.TabLayout;
-//import android.support.v4.app.Fragment;
 import androidx.appcompat.app.ActionBar;
-import androidx.fragment.app.Fragment;
-//import android.support.v4.app.FragmentManager;
-import androidx.fragment.app.FragmentManager;
-//import android.support.v4.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentPagerAdapter;
-//import android.support.v4.view.ViewPager;
-import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.fragment.about.AboutFragmentContributingTab;
 import net.eneiluj.moneybuster.android.fragment.about.AboutFragmentCreditsTab;
 import net.eneiluj.moneybuster.android.fragment.about.AboutFragmentLicenseTab;
 import net.eneiluj.moneybuster.util.ThemeUtils;
+
+//import android.support.v4.app.Fragment;
+//import android.support.v4.app.FragmentManager;
+//import android.support.v4.app.FragmentPagerAdapter;
+//import android.support.v4.view.ViewPager;
 
 public class AboutActivity extends AppCompatActivity {
 

@@ -1,10 +1,11 @@
 package net.eneiluj.moneybuster.android;
 
 import android.content.Context;
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.WindowManager;
+
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 
 /**
  * Extension of the {@link AppCompatAutoCompleteTextView}, but this one is always open, i.e. you can see the list of suggestions even the TextView is empty.

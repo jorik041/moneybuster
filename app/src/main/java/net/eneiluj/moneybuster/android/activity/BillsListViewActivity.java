@@ -1,7 +1,6 @@
 package net.eneiluj.moneybuster.android.activity;
 
 import android.annotation.SuppressLint;
-import androidx.appcompat.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,29 +18,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.zxing.WriterException;
-
-import androidx.core.content.ContextCompat;
-import androidx.preference.PreferenceManager;
-import androidx.annotation.Nullable;
-//import android.support.v4.widget.DrawerLayout;
-import androidx.drawerlayout.widget.DrawerLayout;
-//import android.support.v4.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.ActionMode;
-import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,7 +26,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -60,6 +35,47 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.zxing.WriterException;
+
+import net.eneiluj.moneybuster.R;
+import net.eneiluj.moneybuster.android.fragment.NewProjectFragment;
+import net.eneiluj.moneybuster.model.Category;
+import net.eneiluj.moneybuster.model.DBBill;
+import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.DBProject;
+import net.eneiluj.moneybuster.model.Item;
+import net.eneiluj.moneybuster.model.ItemAdapter;
+import net.eneiluj.moneybuster.model.NavigationAdapter;
+import net.eneiluj.moneybuster.model.Transaction;
+import net.eneiluj.moneybuster.persistence.LoadBillsListTask;
+import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
+import net.eneiluj.moneybuster.persistence.MoneyBusterServerSyncHelper;
+import net.eneiluj.moneybuster.util.CospendClientUtil;
+import net.eneiluj.moneybuster.util.ICallback;
+import net.eneiluj.moneybuster.util.MoneyBuster;
+import net.eneiluj.moneybuster.util.SupportUtil;
+import net.eneiluj.moneybuster.util.ThemeUtils;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -67,28 +83,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.eneiluj.moneybuster.R;
-import net.eneiluj.moneybuster.android.fragment.NewProjectFragment;
-import net.eneiluj.moneybuster.model.Category;
-import net.eneiluj.moneybuster.model.DBBill;
-import net.eneiluj.moneybuster.model.DBBillOwer;
-import net.eneiluj.moneybuster.model.DBMember;
-import net.eneiluj.moneybuster.model.DBProject;
-import net.eneiluj.moneybuster.model.Item;
-import net.eneiluj.moneybuster.model.ItemAdapter;
-import net.eneiluj.moneybuster.model.NavigationAdapter;
-import net.eneiluj.moneybuster.model.Transaction;
-import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
-import net.eneiluj.moneybuster.persistence.MoneyBusterServerSyncHelper;
-import net.eneiluj.moneybuster.persistence.LoadBillsListTask;
-import net.eneiluj.moneybuster.util.ICallback;
-import net.eneiluj.moneybuster.util.CospendClientUtil;
-import net.eneiluj.moneybuster.util.MoneyBuster;
-import net.eneiluj.moneybuster.util.SupportUtil;
-import net.eneiluj.moneybuster.util.ThemeUtils;
-
 import static net.eneiluj.moneybuster.android.activity.EditProjectActivity.PARAM_PROJECT_ID;
 import static net.eneiluj.moneybuster.util.SupportUtil.settleBills;
+
+//import android.support.v4.widget.DrawerLayout;
+//import android.support.v4.widget.SwipeRefreshLayout;
 
 public class BillsListViewActivity extends AppCompatActivity implements ItemAdapter.BillClickListener {
 

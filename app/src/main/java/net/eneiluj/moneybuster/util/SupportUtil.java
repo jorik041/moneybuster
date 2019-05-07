@@ -3,15 +3,22 @@ package net.eneiluj.moneybuster.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
-//import android.preference.PreferenceManager;
-import androidx.preference.PreferenceManager;
-import androidx.annotation.WorkerThread;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-//import android.util.ArrayMap;
 import android.util.Log;
 import android.widget.TextView;
+
+import androidx.annotation.WorkerThread;
+import androidx.preference.PreferenceManager;
+
+import net.eneiluj.moneybuster.R;
+import net.eneiluj.moneybuster.model.CreditDebt;
+import net.eneiluj.moneybuster.model.DBBill;
+import net.eneiluj.moneybuster.model.DBBillOwer;
+import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.Transaction;
+import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -29,13 +36,9 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
 import at.bitfire.cert4android.CustomCertManager;
-import net.eneiluj.moneybuster.R;
-import net.eneiluj.moneybuster.model.CreditDebt;
-import net.eneiluj.moneybuster.model.DBBill;
-import net.eneiluj.moneybuster.model.DBBillOwer;
-import net.eneiluj.moneybuster.model.DBMember;
-import net.eneiluj.moneybuster.model.Transaction;
-import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
+
+//import android.preference.PreferenceManager;
+//import android.util.ArrayMap;
 
 /**
  * Some helper functionality in alike the Android support library.

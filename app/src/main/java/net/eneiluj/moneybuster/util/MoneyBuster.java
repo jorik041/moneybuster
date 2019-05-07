@@ -3,9 +3,11 @@ package net.eneiluj.moneybuster.util;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-//import android.preference.PreferenceManager;
-import androidx.preference.PreferenceManager;
+
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
+
+//import android.preference.PreferenceManager;
 
 public class MoneyBuster extends Application {
     private static final String DARK_THEME = "darkTheme";

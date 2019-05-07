@@ -16,7 +16,6 @@ import net.eneiluj.moneybuster.util.ThemeUtils;
 /**
  * Allows to change application settings.
  */
-
 public class PreferencesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

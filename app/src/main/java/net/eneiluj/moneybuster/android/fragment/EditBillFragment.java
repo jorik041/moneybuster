@@ -146,6 +146,10 @@ public class EditBillFragment extends Fragment {
                 }
             }
         });
+        if (darkTheme) {
+            bAll.setTextColor(ColorStateList.valueOf(Color.BLACK));
+            bNone.setTextColor(ColorStateList.valueOf(Color.BLACK));
+        }
 
         calendar = Calendar.getInstance();
 

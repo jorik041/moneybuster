@@ -77,12 +77,15 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
         Boolean darkTheme = sp.getBoolean(getString(R.string.pref_key_theme), false);
 
         setThemePreferenceSummary(themePref, darkTheme);
+        setThemePreferenceIcon(themePref, darkTheme);
+
         themePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 Boolean darkTheme = (Boolean) newValue;
                 MoneyBuster.setAppTheme(darkTheme);
                 setThemePreferenceSummary(themePref, darkTheme);
+                setThemePreferenceIcon(themePref, darkTheme);
                 //getActivity().setResult(Activity.RESULT_OK);
                 //getActivity().finish();
                 return true;
@@ -96,6 +99,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                 return true;
             }
         });
+    }
+
+    private void setThemePreferenceIcon(Preference preference, boolean darkThemeActive) {
+        if (darkThemeActive) {
+            preference.setIcon(R.drawable.ic_brightness_2_grey_24dp);
+        } else {
+            preference.setIcon(R.drawable.ic_sunny_grey_24dp);
+        }
     }
 
     private void setThemePreferenceSummary(SwitchPreferenceCompat themePref, Boolean darkTheme) {

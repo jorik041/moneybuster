@@ -3,6 +3,9 @@ package net.eneiluj.moneybuster.model;
 import java.io.Serializable;
 
 public class DBProject implements Serializable {
+    public static final String TYPE_LOCAL = "l";
+    public static final String TYPE_COSPEND = "c";
+    public static final String TYPE_IHATEMONEY = "i";
 
     private long id;
     private String remoteId;
@@ -11,8 +14,9 @@ public class DBProject implements Serializable {
     private String email;
     private String password;
     private Long lastPayerId;
+    private ProjectType type;
 
-    public DBProject(long id, String remoteId, String password, String name, String ihmUrl, String email, Long lastPayerId) {
+    public DBProject(long id, String remoteId, String password, String name, String ihmUrl, String email, Long lastPayerId, ProjectType type) {
         this.id = id;
         this.remoteId = remoteId;
         this.name = name;
@@ -20,6 +24,7 @@ public class DBProject implements Serializable {
         this.email = email;
         this.password = password;
         this.lastPayerId = lastPayerId;
+        this.type = type;
     }
 
     public Long getLastPayerId() {
@@ -70,8 +75,6 @@ public class DBProject implements Serializable {
         this.email = email;
     }
 
-
-
     public long getId() {
         return id;
     }
@@ -82,6 +85,14 @@ public class DBProject implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ProjectType getType() {
+        return type;
+    }
+
+    public void setType(ProjectType type) {
+        this.type = type;
     }
 
     @Override

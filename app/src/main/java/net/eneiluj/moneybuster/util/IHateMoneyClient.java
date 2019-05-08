@@ -9,6 +9,7 @@ import net.eneiluj.moneybuster.BuildConfig;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.DBProject;
+import net.eneiluj.moneybuster.model.ProjectType;
 
 import org.json.JSONException;
 
@@ -75,7 +76,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
+        if (ProjectType.COSPEND.equals(project.getType())) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/" + project.getPassword();
         }
@@ -93,7 +94,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
+        if (ProjectType.COSPEND.equals(project.getType())) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/" + project.getPassword();
         }
@@ -119,7 +120,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
+        if (ProjectType.COSPEND.equals(project.getType())) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/"
                     + project.getPassword() + "/members/" + member.getRemoteId();
@@ -160,7 +161,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
+        if (ProjectType.COSPEND.equals(project.getType())) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/"
                     + project.getPassword() + "/bills/" + bill.getRemoteId();
@@ -172,6 +173,9 @@ public class IHateMoneyClient {
             }
             payedFor = payedFor.replaceAll(",$", "");
             paramValues.add(payedFor);
+
+            // TODO add repeat info here
+            // bill.getRepeat();
         }
         else {
             target = project.getIhmUrl().replaceAll("/+$", "")
@@ -195,7 +199,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
+        if (ProjectType.COSPEND.equals(project.getType())) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/" + project.getPassword();
         }
@@ -212,7 +216,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
+        if (ProjectType.COSPEND.equals(project.getType())) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/"
                     + project.getPassword() + "/bills/" + billRemoteId;
@@ -261,7 +265,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
+        if (ProjectType.COSPEND.equals(project.getType())) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/"
                     + project.getPassword() + "/bills";
@@ -273,6 +277,9 @@ public class IHateMoneyClient {
             }
             payedFor = payedFor.replaceAll(",$", "");
             paramValues.add(payedFor);
+
+            // TODO add repeat info here
+            // bill.getRepeat();
         }
         else {
             target = project.getIhmUrl().replaceAll("/+$", "")
@@ -297,7 +304,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
+        if (ProjectType.COSPEND.equals(project.getType())) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/"
                     + project.getPassword() + "/members";
@@ -319,7 +326,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
+        if (ProjectType.COSPEND.equals(project.getType())) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/"
                     + project.getPassword() + "/bills";
@@ -337,7 +344,7 @@ public class IHateMoneyClient {
         String target;
         String username = null;
         String password = null;
-        if (project.getIhmUrl().contains("index.php/apps/cospend")) {
+        if (ProjectType.COSPEND.equals(project.getType())) {
             target = project.getIhmUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/"
                     + project.getPassword() + "/members";

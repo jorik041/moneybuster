@@ -11,4 +11,21 @@
         <item>2</item>
         <item>3</item>
     </string-array>
+
+
+    <string-array name="repeatBillEntries">
+        <item>do not repeat</item>
+        <item>day</item>
+        <item>week</item>
+        <item>month</item>
+        <item>year</item>
+    </string-array>
+
+    <string-array name="repeatBillValues" translatable="false">
+        <item>n</item>
+        <item>d</item>
+        <item>w</item>
+        <item>m</item>
+        <item>y</item>
+    </string-array>
 </resources>

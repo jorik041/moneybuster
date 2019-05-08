@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -42,11 +43,13 @@ import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.MoneyBuster;
 import net.eneiluj.moneybuster.util.ThemeUtils;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,6 +63,7 @@ import java.util.concurrent.TimeUnit;
 public class EditBillFragment extends Fragment {
 
     private static final String TAG = EditBillFragment.class.getSimpleName();
+    private ProjectType projectType;
 
     public interface BillFragmentListener {
         void close();
@@ -71,7 +75,9 @@ public class EditBillFragment extends Fragment {
 
     public static final String PARAM_BILL_ID = "billId";
     public static final String PARAM_NEWBILL = "newBill";
+    public static final String PARAM_PROJECT_TYPE = "projectType";
     private static final String SAVEDKEY_BILL = "bill";
+    private static final String SAVEDKEY_PROJECT_TYPE = "type";
     private static final String SAVEDKEY_ORIGINAL_BILL = "original_bill";
 
     protected DBBill bill;
@@ -85,10 +91,12 @@ public class EditBillFragment extends Fragment {
     protected EditText editDate;
     protected Spinner editPayer;
     protected EditText editAmount;
+    protected Spinner editRepeat;
     protected LinearLayout owersLayout;
     protected FloatingActionButton fabSaveBill;
     private Button bAll;
     private Button bNone;
+    private LinearLayout editRepeatLayout;
 
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
@@ -115,6 +123,8 @@ public class EditBillFragment extends Fragment {
         editDate.setFocusable(false);
         editPayer = view.findViewById(R.id.editPayerSpinner);
         owersLayout = view.findViewById(R.id.owerListLayout);
+        editRepeat = view.findViewById(R.id.editRepeatSpinner);
+        editRepeatLayout = view.findViewById(R.id.editRepeatLayout);
         fabSaveBill = view.findViewById(R.id.fab_edit_ok);
 
         // color
@@ -286,6 +296,7 @@ public class EditBillFragment extends Fragment {
 
         if (savedInstanceState == null) {
             long id = getArguments().getLong(PARAM_BILL_ID);
+            projectType = ProjectType.getTypeById(getArguments().getString(PARAM_PROJECT_TYPE, ProjectType.LOCAL.getId()));
             if (id > 0) {
                 bill = db.getBill(id);
                 listener.onBillUpdated(bill);
@@ -299,6 +310,7 @@ public class EditBillFragment extends Fragment {
             }
         } else {
             bill = (DBBill) savedInstanceState.getSerializable(SAVEDKEY_BILL);
+            projectType = (ProjectType) savedInstanceState.getSerializable(SAVEDKEY_PROJECT_TYPE);
         }
         setHasOptionsMenu(true);
         Log.d(TAG, "BILL on create : " + bill);
@@ -441,6 +453,11 @@ public class EditBillFragment extends Fragment {
         String newDate = getDate();
         double newAmount = getAmount();
         long newPayerId = getPayerId();
+        String repeat = "n";
+
+        if (ProjectType.COSPEND.equals(projectType)) {
+            repeat = getRepeat();
+        }
 
         List<Long> newOwersIds = getOwersIds();
 
@@ -478,7 +495,7 @@ public class EditBillFragment extends Fragment {
         // this is a new bill
         else {
             // add the bill
-            DBBill newBill = new DBBill(0, 0, bill.getProjectId(), newPayerId, newAmount, newDate, newWhat, DBBill.STATE_ADDED);
+            DBBill newBill = new DBBill(0, 0, bill.getProjectId(), newPayerId, newAmount, newDate, newWhat, DBBill.STATE_ADDED, repeat);
             for (long newOwerId : newOwersIds) {
                 newBill.getBillOwers().add(new DBBillOwer(0, 0, newOwerId));
             }
@@ -493,18 +510,20 @@ public class EditBillFragment extends Fragment {
         }
     }
 
-    public static EditBillFragment newInstance(long billId) {
+    public static EditBillFragment newInstance(long billId, ProjectType projectType) {
         EditBillFragment f = new EditBillFragment();
         Bundle b = new Bundle();
         b.putLong(PARAM_BILL_ID, billId);
+        b.putString(PARAM_PROJECT_TYPE, projectType.getId());
         f.setArguments(b);
         return f;
     }
 
-    public static EditBillFragment newInstanceWithNewBill(DBBill newBill) {
+    public static EditBillFragment newInstanceWithNewBill(DBBill newBill, ProjectType projectType) {
         EditBillFragment f = new EditBillFragment();
         Bundle b = new Bundle();
         b.putSerializable(PARAM_NEWBILL, newBill);
+        b.putString(PARAM_PROJECT_TYPE, projectType.getId());
         f.setArguments(b);
         return f;
     }
@@ -630,6 +649,15 @@ public class EditBillFragment extends Fragment {
 
         fabSaveBill.hide();
         Log.d(TAG, "HIIIIIIIIIIDE FAB");
+
+        if (ProjectType.COSPEND.equals(projectType)) {
+            ArrayAdapter<String> simpleAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.repeatBillEntries));
+            simpleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            editRepeat.setAdapter(simpleAdapter);
+            editRepeat.getSelectedItemPosition();
+        } else {
+            editRepeatLayout.setVisibility(View.GONE);
+        }
     }
 
     protected String getWhat() {
@@ -669,6 +697,10 @@ public class EditBillFragment extends Fragment {
             Log.i(TAG, "Key : " + entry.getKey() + " Value : " + entry.getValue().isChecked());
         }
         return owersIds;
+    }
+
+    private String getRepeat() {
+        return getResources().getStringArray(R.array.repeatBillValues)[editRepeat.getSelectedItemPosition()];
     }
 
     protected void showToast(CharSequence text, int duration) {

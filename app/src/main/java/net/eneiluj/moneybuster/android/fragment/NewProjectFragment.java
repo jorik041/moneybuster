@@ -31,6 +31,7 @@ import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.model.DBProject;
+import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.SupportUtil;
@@ -332,9 +333,9 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                     return;
                 }
 
-                String type = getProjectType();
+                ProjectType type = getProjectType();
 
-                if (!type.equals(TYPE_LOCAL)) {
+                if (!ProjectType.LOCAL.equals(type)) {
                     // check values
                     String url = getIhmUrl();
                     if (!isValidUrl(url)) {
@@ -417,7 +418,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
      * @param callback Observer which is called after save/synchronization
      */
     protected long saveProject(@Nullable ICallback callback) {
-        String type = getProjectType();
+        ProjectType type = getProjectType();
         String remoteId = getRemoteId();
         String ihmUrl = null;
         String password = null;
@@ -428,9 +429,11 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
             password = getPassword();
             email = getEmail();
             name = getName();
+        } else {
+
         }
 
-        DBProject newProject = new DBProject(0, remoteId, password, name, ihmUrl, email, null);
+        DBProject newProject = new DBProject(0, remoteId, password, name, ihmUrl, email, null, type);
         long pid = db.addProject(newProject);
 
         // to make it the selected project even if we got here because of a VIEW intent
@@ -462,9 +465,9 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         newProjectType.setEntries(typesArray);
 
         List<String> typeValues = new ArrayList<>();
-        typeValues.add(TYPE_LOCAL);
-        typeValues.add(TYPE_IHATEMONEY);
-        typeValues.add(TYPE_NEXTCLOUD_COSPEND);
+        typeValues.add(ProjectType.LOCAL.getId());
+        typeValues.add(ProjectType.IHATEMONEY.getId());
+        typeValues.add(ProjectType.COSPEND.getId());
         CharSequence[] typeValuesArray = typeValues.toArray(new CharSequence[typeValues.size()]);
         newProjectType.setEntryValues(typeValuesArray);
 
@@ -526,16 +529,16 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         newProjectName.setVisible(false);
     }
 
-    protected String getProjectType() {
-        return newProjectType.getValue();
+    protected ProjectType getProjectType() {
+        return ProjectType.getTypeById(newProjectType.getValue());
     }
     protected String getRemoteId() {
         return newProjectId.getText();
     }
     protected String getIhmUrl() {
         String url = newProjectIHMUrl.getText();
-        String type = getProjectType();
-        if (type.equals(TYPE_NEXTCLOUD_COSPEND)) {
+        ProjectType type = getProjectType();
+        if (ProjectType.COSPEND.equals(type)) {
             url = url.replaceAll("/+$", "") + "/index.php/apps/cospend";
         }
         return url;

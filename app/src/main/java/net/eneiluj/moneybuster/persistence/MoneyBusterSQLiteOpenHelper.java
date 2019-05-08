@@ -17,6 +17,7 @@ import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.DBProject;
+import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.util.SupportUtil;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String TAG = MoneyBusterSQLiteOpenHelper.class.getSimpleName();
 
-    private static final int database_version = 3;
+    private static final int database_version = 4;
     private static final String database_name = "IHATEMONEY";
 
     private static final String table_members = "MEMBERS";
@@ -53,6 +54,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String key_password = "PASSWORD";
     private static final String key_ihmUrl = "IHMURL";
     private static final String key_lastPayerId = "LASTPAYERID";
+    private static final String key_type = "TYPE";
 
     private static final String table_bills = "BILLS";
     //private static final String key_id = "ID";
@@ -76,7 +78,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String[] columnsProjects = {
             // long id, String remoteId, String password, String name, String ihmUrl, String email
-            key_id, key_remoteId, key_password,  key_name, key_ihmUrl, key_email, key_lastPayerId
+            key_id, key_remoteId, key_password,  key_name, key_ihmUrl, key_email, key_lastPayerId, key_type
     };
 
     private static final String[] columnsBills = {
@@ -147,7 +149,8 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 key_ihmUrl + " TEXT, " +
                 key_password + " TEXT, " +
                 key_lastPayerId + " INTEGER, " +
-                key_email + " TEXT)");
+                key_email + " TEXT, " +
+                key_type + " TEXT)");
     }
 
     //key_id, key_remoteId, key_projectid, key_payerid, key_amount, key_date, key_what
@@ -178,7 +181,24 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + table_projects + " ADD COLUMN " + key_lastPayerId + " INTEGER DEFAULT 0");
         }
         if (oldVersion < 3) {
-            db.execSQL("ALTER TABLE " + table_bills + " ADD COLUMN " + key_repeat);
+            db.execSQL("ALTER TABLE " + table_bills + " ADD COLUMN " + key_repeat + "TEXT");
+        }
+
+        if (oldVersion < 4) {
+            db.execSQL("ALTER TABLE " + table_projects + " ADD COLUMN " + key_type + " TEXT");
+            List<DBProject> projects = getProjects();
+
+            String url;
+            for (DBProject project : projects) {
+                url = project.getIhmUrl();
+                if (url == null) {
+                    project.setType(ProjectType.LOCAL);
+                } else if (url.contains("index.php/apps/cospend")) {
+                    project.setType(ProjectType.COSPEND);
+                } else {
+                    project.setType(ProjectType.IHATEMONEY);
+                }
+            }
         }
     }
 
@@ -234,6 +254,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_password, project.getPassword());
         values.put(key_email, project.getEmail());
         values.put(key_ihmUrl, project.getIhmUrl());
+        values.put(key_type, project.getType().getId());
         return db.insert(table_projects, null, values);
     }
 
@@ -297,7 +318,8 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 cursor.getString(3),
                 cursor.getString(4),
                 cursor.getString(5),
-                cursor.getLong(6)
+                cursor.getLong(6),
+                ProjectType.getTypeById(cursor.getString(7))
         );
     }
 

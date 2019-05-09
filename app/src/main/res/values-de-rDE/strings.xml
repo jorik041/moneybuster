@@ -6,7 +6,7 @@
     <string name="action_create_bill">Neue Ausgabe</string>
     <string name="action_settings">Einstellungen</string>
     <string name="action_add_project">Neues Projekt</string>
-    <string name="action_save_bill">Save bill</string>
+    <string name="action_save_bill">Ausgabe speichern</string>
     <string name="action_edit_project">Remote-Projekt bearbeiten</string>
     <string name="action_share_project">Projekt teilen</string>
     <string name="mandatory">(notwendig)</string>

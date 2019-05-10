@@ -175,7 +175,8 @@ public class IHateMoneyClient {
             paramValues.add(payedFor);
 
             // TODO add repeat info here
-            // bill.getRepeat();
+            paramKeys.add("repeat");
+            paramValues.add(bill.getRepeat());
         }
         else {
             target = project.getIhmUrl().replaceAll("/+$", "")
@@ -279,7 +280,8 @@ public class IHateMoneyClient {
             paramValues.add(payedFor);
 
             // TODO add repeat info here
-            // bill.getRepeat();
+            paramKeys.add("repeat");
+            paramValues.add(bill.getRepeat());
         }
         else {
             target = project.getIhmUrl().replaceAll("/+$", "")

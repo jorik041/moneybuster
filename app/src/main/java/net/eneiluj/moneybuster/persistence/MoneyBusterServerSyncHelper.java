@@ -24,6 +24,7 @@ import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.DBProject;
+import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.util.CospendClientUtil.LoginStatus;
 import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.IHateMoneyClient;
@@ -41,8 +42,6 @@ import java.util.Map;
 import at.bitfire.cert4android.CustomCertManager;
 import at.bitfire.cert4android.CustomCertService;
 
-//import android.preference.PreferenceManager;
-//import android.util.ArrayMap;
 
 /**
  * Helps to synchronize the Database to the Server.
@@ -863,9 +862,9 @@ public class MoneyBusterServerSyncHelper {
         }
     }
 
-    public boolean createRemoteProject(String remoteId, String name, String email, String password, String ihmUrl, ICallback callback) {
+    public boolean createRemoteProject(String remoteId, String name, String email, String password, String ihmUrl, ProjectType projectType, ICallback callback) {
         if (isSyncPossible()) {
-            DBProject proj = new DBProject(0, remoteId, password, name, ihmUrl, email, null);
+            DBProject proj = new DBProject(0, remoteId, password, name, ihmUrl, email, null, projectType);
             CreateRemoteProjectTask createRemoteProjectTask = new CreateRemoteProjectTask(proj, callback);
             createRemoteProjectTask.execute();
             return true;

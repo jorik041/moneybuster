@@ -483,6 +483,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     }
                     else {
                         createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, selectedProjectId);
+                        createIntent.putExtra(EditBillActivity.PARAM_PROJECT_TYPE, db.getProject(selectedProjectId).getType().getId());
                         startActivityForResult(createIntent, create_bill_cmd);
                     }
                 }
@@ -1694,6 +1695,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             Intent intent;
             intent = new Intent(getApplicationContext(), EditBillActivity.class);
             intent.putExtra(EditBillActivity.PARAM_BILL_ID, bill.getId());
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            long selectedProjectId = preferences.getLong("selected_project", 0);
+            intent.putExtra(EditBillActivity.PARAM_PROJECT_TYPE, db.getProject(selectedProjectId).getType().getId());
             //intent.putExtra(EditBillActivity.PARAM_MEMBERS_BALANCE, membersBalance);
             startActivityForResult(intent, show_single_bill_cmd);
 

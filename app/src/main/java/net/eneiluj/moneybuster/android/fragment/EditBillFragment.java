@@ -53,6 +53,7 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -651,10 +652,16 @@ public class EditBillFragment extends Fragment {
         Log.d(TAG, "HIIIIIIIIIIDE FAB");
 
         if (ProjectType.COSPEND.equals(projectType)) {
-            ArrayAdapter<String> simpleAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.repeatBillEntries));
+            String[] repeatValues = getResources().getStringArray(R.array.repeatBillValues);
+            int index = Arrays.asList(repeatValues).indexOf(bill.getRepeat());
+            ArrayAdapter<String> simpleAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, repeatValues);
             simpleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             editRepeat.setAdapter(simpleAdapter);
-            editRepeat.getSelectedItemPosition();
+            if (index > -1) {
+                editRepeat.setSelection(index);
+            } else {
+                editRepeat.setSelection(0);
+            }
         } else {
             editRepeatLayout.setVisibility(View.GONE);
         }

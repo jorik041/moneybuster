@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.fragment.EditBillFragment;
 import net.eneiluj.moneybuster.model.DBBill;
+import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.util.ThemeUtils;
 
 import java.text.SimpleDateFormat;
@@ -28,6 +29,7 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
 
     public static final String PARAM_BILL_ID = "billId";
     public static final String PARAM_PROJECT_ID = "projectId";
+    public static final String PARAM_PROJECT_TYPE = "projectType";
 
     protected EditBillFragment fragment;
 
@@ -76,6 +78,15 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         return getIntent().getLongExtra(PARAM_PROJECT_ID, 0);
     }
 
+    protected ProjectType getProjectType() {
+        String type = getIntent().getStringExtra(PARAM_PROJECT_TYPE);
+        if (type != null && type.length() > 0) {
+            return ProjectType.getTypeById(type);
+        } else {
+            return ProjectType.LOCAL;
+        }
+    }
+
     /**
      * Starts the EditBillFragment for an existing bill or a new bill
      */
@@ -99,7 +110,7 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         if (fragment != null) {
             savedState = getSupportFragmentManager().saveFragmentInstanceState(fragment);
         }
-        fragment = EditBillFragment.newInstance(billId);
+        fragment = EditBillFragment.newInstance(billId, getProjectType());
         if (savedState != null) {
             fragment.setInitialSavedState(savedState);
         }
@@ -120,7 +131,7 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         String newDate = sdf.format(new Date());
         DBBill newBill = new DBBill(0, 0, projectId, 0, 0, newDate, "", DBBill.STATE_ADDED);
 
-        fragment = EditBillFragment.newInstanceWithNewBill(newBill);
+        fragment = EditBillFragment.newInstanceWithNewBill(newBill, getProjectType());
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
 
         ActionBar actionBar = getSupportActionBar();

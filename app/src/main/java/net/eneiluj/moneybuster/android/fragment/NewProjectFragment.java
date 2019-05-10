@@ -50,9 +50,6 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     public static final String PARAM_DEFAULT_PROJECT_ID = "defaultProjectId";
     public static final String PARAM_DEFAULT_PROJECT_PASSWORD = "defaultProjectPassword";
     public static final String PARAM_DEFAULT_PROJECT_TYPE = "defaultProjectType";
-    public static final String TYPE_LOCAL = "local";
-    public static final String TYPE_IHATEMONEY = "ihatemoney";
-    public static final String TYPE_NEXTCLOUD_COSPEND = "nextcloudCospend";
 
     public interface NewProjectFragmentListener {
         void close(long pid);
@@ -78,14 +75,14 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     public static NewProjectFragment newInstance(String defaultIhmUrl, String defaultNCUrl,
                                                  @Nullable String defaultProjectId,
                                                  @Nullable String defaultProjectPassword,
-                                                 String defaultProjectType) {
+                                                 ProjectType defaultProjectType) {
         NewProjectFragment f = new NewProjectFragment();
         Bundle b = new Bundle();
         b.putString(PARAM_DEFAULT_IHM_URL, defaultIhmUrl);
         b.putString(PARAM_DEFAULT_NC_URL, defaultNCUrl);
         b.putString(PARAM_DEFAULT_PROJECT_ID, defaultProjectId);
         b.putString(PARAM_DEFAULT_PROJECT_PASSWORD, defaultProjectPassword);
-        b.putString(PARAM_DEFAULT_PROJECT_TYPE, defaultProjectType);
+        b.putString(PARAM_DEFAULT_PROJECT_TYPE, defaultProjectType.getId());
         f.setArguments(b);
         return f;
     }
@@ -131,15 +128,15 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                 EditTextPreference emailPref = (EditTextPreference) findPreference("email");
                 EditTextPreference namePref = (EditTextPreference) findPreference("name");
 
-                urlPref.setVisible(!newValue.equals(TYPE_LOCAL));
-                passwordPref.setVisible(!newValue.equals(TYPE_LOCAL));
-                createPref.setVisible(!newValue.equals(TYPE_LOCAL));
-                if (newValue.equals(TYPE_LOCAL)) {
+                urlPref.setVisible(!newValue.equals(ProjectType.LOCAL.getId()));
+                passwordPref.setVisible(!newValue.equals(ProjectType.LOCAL.getId()));
+                createPref.setVisible(!newValue.equals(ProjectType.LOCAL.getId()));
+                if (newValue.equals(ProjectType.LOCAL.getId())) {
                     createPref.setChecked(false);
                     emailPref.setVisible(false);
                     namePref.setVisible(false);
                 }
-                else if (newValue.equals(TYPE_IHATEMONEY)) {
+                else if (newValue.equals(ProjectType.IHATEMONEY.getId())) {
                     urlPref.setTitle(getString(R.string.setting_ihm_project_url));
                     urlPref.setDialogTitle(getString(R.string.setting_ihm_project_url));
                     urlPref.setDialogMessage(getString(R.string.setting_ihm_project_url_long));
@@ -147,7 +144,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                     newProjectIHMUrl.setText(defaultIhmUrl);
                     newProjectIHMUrl.setSummary(defaultIhmUrl);
                 }
-                else if (newValue.equals(TYPE_NEXTCLOUD_COSPEND)) {
+                else if (newValue.equals(ProjectType.COSPEND.getId())) {
                     urlPref.setTitle(getString(R.string.setting_cospend_project_url));
                     urlPref.setDialogTitle(getString(R.string.setting_cospend_project_url));
                     urlPref.setDialogMessage(getString(R.string.setting_cospend_project_url_long));
@@ -370,7 +367,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                         addButton.clearAnimation();
                         return;
                     }
-                    if (!db.getMoneyBusterServerSyncHelper().createRemoteProject(getRemoteId(), getName(), getEmail(), getPassword(), getIhmUrl(), createRemoteCallBack)) {
+                    if (!db.getMoneyBusterServerSyncHelper().createRemoteProject(getRemoteId(), getName(), getEmail(), getPassword(), getIhmUrl(), getProjectType(), createRemoteCallBack)) {
                         showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
                         addButton.clearAnimation();
                     }
@@ -424,7 +421,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         String password = null;
         String email = null;
         String name = null;
-        if (!type.equals(TYPE_LOCAL)) {
+        if (!type.equals(ProjectType.LOCAL)) {
             ihmUrl = getIhmUrl();
             password = getPassword();
             email = getEmail();
@@ -481,10 +478,10 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         defaultNcUrl = getArguments().getString(PARAM_DEFAULT_NC_URL);
 
         newProjectType.setValue(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE));
-        if (TYPE_LOCAL.equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
+        if (ProjectType.LOCAL.getId().equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
             newProjectType.setSummary(getString(R.string.project_type_local));
         }
-        if (TYPE_IHATEMONEY.equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
+        if (ProjectType.IHATEMONEY.getId().equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
             newProjectType.setSummary(getString(R.string.project_type_ihatemoney));
             newProjectIHMUrl.setText(getArguments().getString(PARAM_DEFAULT_IHM_URL));
             newProjectIHMUrl.setSummary(getArguments().getString(PARAM_DEFAULT_IHM_URL));
@@ -493,7 +490,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
             newProjectIHMUrl.setDialogTitle(getString(R.string.setting_ihm_project_url));
             newProjectIHMUrl.setDialogMessage(getString(R.string.setting_ihm_project_url_long));
         }
-        if (TYPE_NEXTCLOUD_COSPEND.equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
+        if (ProjectType.COSPEND.getId().equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
             newProjectType.setSummary(getString(R.string.project_type_nextcloud_cospend));
             newProjectIHMUrl.setText(getArguments().getString(PARAM_DEFAULT_NC_URL));
             newProjectIHMUrl.setSummary(getArguments().getString(PARAM_DEFAULT_NC_URL));
@@ -520,7 +517,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         newProjectCreate = (CheckBoxPreference) this.findPreference("createonserver");
         newProjectCreate.setChecked(false);
 
-        if (TYPE_LOCAL.equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
+        if (ProjectType.LOCAL.getId().equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
             newProjectIHMUrl.setVisible(false);
             newProjectPassword.setVisible(false);
             newProjectCreate.setVisible(false);

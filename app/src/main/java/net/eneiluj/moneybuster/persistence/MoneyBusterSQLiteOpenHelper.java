@@ -186,7 +186,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
         if (oldVersion < 4) {
             db.execSQL("ALTER TABLE " + table_projects + " ADD COLUMN " + key_type + " TEXT");
-            List<DBProject> projects = getProjects();
+            List<DBProject> projects = getProjectsCustom("", new String[]{}, default_order, db);
 
             String url;
             for (DBProject project : projects) {
@@ -198,6 +198,8 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 } else {
                     project.setType(ProjectType.IHATEMONEY);
                 }
+
+                updateProject(project.getId(), project.getName(), project.getEmail(), project.getPassword(), project.getLastPayerId(), project.getType());
             }
         }
     }
@@ -291,7 +293,20 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     @NonNull
     @WorkerThread
     private List<DBProject> getProjectsCustom(@NonNull String selection, @NonNull String[] selectionArgs, @Nullable String orderBy) {
-        SQLiteDatabase db = getReadableDatabase();
+        return getProjectsCustom(selection, selectionArgs,orderBy,getReadableDatabase());
+    }
+
+    /**
+     * Query the database with a custom raw query.
+     *
+     * @param selection     A filter declaring which rows to return, formatted as an SQL WHERE clause (excluding the WHERE itself).
+     * @param selectionArgs You may include ?s in selection, which will be replaced by the values from selectionArgs, in order that they appear in the selection. The values will be bound as Strings.
+     * @param orderBy       How to order the rows, formatted as an SQL ORDER BY clause (excluding the ORDER BY itself). Passing null will use the default sort order, which may be unordered.
+     * @return list of projects
+     */
+    @NonNull
+    @WorkerThread
+    private List<DBProject> getProjectsCustom(@NonNull String selection, @NonNull String[] selectionArgs, @Nullable String orderBy, SQLiteDatabase db) {
         if (selectionArgs.length > 2) {
             Log.v("Project", selection + "   ----   " + selectionArgs[0] + " " + selectionArgs[1] + " " + selectionArgs[2]);
         }
@@ -355,6 +370,28 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         if (newLastPayerId != null) {
             values.put(key_lastPayerId, newLastPayerId);
         }
+        if (values.size() > 0) {
+            int rows = db.update(table_projects, values, key_id + " = ?", new String[]{String.valueOf(projId)});
+        }
+    }
+
+    public void updateProject(long projId, @Nullable String newName, @Nullable String newEmail, @Nullable String newPassword, @Nullable Long newLastPayerId, @NonNull ProjectType projectType) {
+        //debugPrintFullDB();
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        if (newName != null) {
+            values.put(key_name, newName);
+        }
+        if (newEmail != null) {
+            values.put(key_email, newEmail);
+        }
+        if (newPassword != null) {
+            values.put(key_password, newPassword);
+        }
+        if (newLastPayerId != null) {
+            values.put(key_lastPayerId, newLastPayerId);
+        }
+        values.put(key_type, projectType.getId());
         if (values.size() > 0) {
             int rows = db.update(table_projects, values, key_id + " = ?", new String[]{String.valueOf(projId)});
         }

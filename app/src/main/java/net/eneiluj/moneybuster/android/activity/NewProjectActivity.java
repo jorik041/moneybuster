@@ -15,11 +15,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import net.eneiluj.moneybuster.android.fragment.NewProjectFragment;
+import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.util.ThemeUtils;
-
-import static net.eneiluj.moneybuster.android.fragment.NewProjectFragment.TYPE_IHATEMONEY;
-import static net.eneiluj.moneybuster.android.fragment.NewProjectFragment.TYPE_LOCAL;
-import static net.eneiluj.moneybuster.android.fragment.NewProjectFragment.TYPE_NEXTCLOUD_COSPEND;
 
 public class NewProjectActivity extends AppCompatActivity implements NewProjectFragment.NewProjectFragmentListener {
 
@@ -79,7 +76,7 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
         String defaultNcUrl = getDefaultNcUrl();
         String defaultProjectId = null;
         String defaultProjectPassword = null;
-        String defaultProjectType = TYPE_LOCAL;
+        ProjectType defaultProjectType = ProjectType.LOCAL;
 
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Uri data = getIntent().getData();
@@ -94,7 +91,7 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
                 }
                 defaultNcUrl = "https:/" +
                         data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
-                defaultProjectType = TYPE_NEXTCLOUD_COSPEND;
+                defaultProjectType = ProjectType.COSPEND;
             }
             else if (data.getHost().equals("net.eneiluj.moneybuster.ihatemoney") && data.getPathSegments().size() >= 2) {
                 if (data.getPath().endsWith("/")) {
@@ -107,7 +104,7 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
                 }
                 defaultIhmUrl = "https:/" +
                         data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
-                defaultProjectType = TYPE_IHATEMONEY;
+                defaultProjectType = ProjectType.IHATEMONEY;
             }
         }
         fragment = NewProjectFragment.newInstance(

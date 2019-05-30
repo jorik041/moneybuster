@@ -645,13 +645,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
 
                         TextView bv = row.findViewById(R.id.stat_balance);
-                        double rbalance = Math.round( (membersBalance.get(m.getId())) * 100.0 ) / 100.0;
-                        String sign = "";
-                        if (rbalance > 0) {
+                        double balance = membersBalance.get(m.getId());
+                        double rbalance = Math.round( Math.abs(balance) * 100.0 ) / 100.0;
+                        String sign = "-";
+                        if (balance > 0) {
                             bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.green));
                             sign = "+";
                         }
-                        else if (rbalance < 0) {
+                        else if (balance < 0) {
                             bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.red));
                         }
                         else {

@@ -1212,15 +1212,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             NumberFormat weightFormatter = new DecimalFormat("#.##");
 
             for (DBMember m : dbMembers) {
-                double balance = Math.round( (membersBalance.get(m.getId())) * 100.0 ) / 100.0;
-                String balanceStr = balanceFormatter.format(balance).replace(",", ".");
+                double balance = membersBalance.get(m.getId());
+                double rbalance = Math.round( Math.abs(balance) * 100.0 ) / 100.0;
+                String balanceStr = balanceFormatter.format(rbalance).replace(",", ".");
 
                 if (m.isActivated() || balance != 0.0) {
                     String weightStr = "";
                     if (m.getWeight() != 1) {
                         weightStr = " x" + weightFormatter.format(m.getWeight()).replace(",", ".");
                     }
-                    String sign = balance > 0.0 ? "+" : "";
+                    String sign = balance > 0.0 ? "+" : "-";
                     NavigationAdapter.NavigationItem it = new NavigationAdapter.NavigationItem(
                             String.valueOf(m.getId()),
                             m.getName()+" ("+sign+balanceStr+")"+weightStr,

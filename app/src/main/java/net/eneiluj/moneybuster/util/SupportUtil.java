@@ -205,12 +205,15 @@ public class SupportUtil {
         // Create lists of credits and debts
         for (DBMember m : members) {
             long memberId = m.getId();
-            double rBalance = Math.round( (membersBalance.get(memberId)) * 100.0 ) / 100.0;
-            if (rBalance > 0) {
-                credits.add(new CreditDebt(memberId, membersBalance.get(memberId)));
+            double balance = membersBalance.get(memberId);
+            double rBalance = Math.round( Math.abs(balance) * 100.0 ) / 100.0;
+            if (balance < 0.0) rBalance = -rBalance;
+
+            if (rBalance > 0.0) {
+                credits.add(new CreditDebt(memberId, balance));
             }
-            else if (rBalance < 0) {
-                debts.add(new CreditDebt(memberId, -membersBalance.get(memberId)));
+            else if (rBalance < 0.0) {
+                debts.add(new CreditDebt(memberId, -balance));
             }
         }
 

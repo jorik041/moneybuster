@@ -197,6 +197,12 @@ public class SupportUtil {
         return nbBills;
     }
 
+    public static double round2(double n) {
+        double r = Math.round( Math.abs(n) * 100.0 ) / 100.0;
+        if (n < 0.0) r = -r;
+        return r;
+    }
+
     public static List<Transaction> settleBills(List<DBMember> members, Map<Long, Double> membersBalance) {
         List<CreditDebt> credits = new ArrayList<>();
         List<CreditDebt> debts = new ArrayList<>();
@@ -206,20 +212,18 @@ public class SupportUtil {
         for (DBMember m : members) {
             long memberId = m.getId();
             double balance = membersBalance.get(memberId);
-            double rBalance = Math.round( Math.abs(balance) * 100.0 ) / 100.0;
-            if (balance < 0.0) rBalance = -rBalance;
 
-            if (rBalance > 0.0) {
+            if (round2(balance) > 0.0) {
                 credits.add(new CreditDebt(memberId, balance));
             }
-            else if (rBalance < 0.0) {
+            else if (round2(balance) < 0.0) {
                 debts.add(new CreditDebt(memberId, -balance));
             }
         }
 
         // Try and find exact matches
         for (CreditDebt credit : credits) {
-            List<CreditDebt> match = exactMatch(credit.getBalance(), debts, 0);
+            List<CreditDebt> match = exactMatch(round2(credit.getBalance()), debts, 0);
             if (match != null && match.size() > 0) {
                 for (CreditDebt m : match) {
                     transactions.add(new Transaction(m.getMemberId(), credit.getMemberId(), m.getBalance()));

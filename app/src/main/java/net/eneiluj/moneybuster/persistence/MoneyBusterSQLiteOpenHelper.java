@@ -40,7 +40,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     public static final String key_id = "ID";
     public static final String key_remoteId = "REMOTEID";
     private static final String key_projectid = "PROJECTID";
-    private static final String key_name = "NAME";
+    public static final String key_name = "NAME";
     private static final String key_activated = "ACTIVATED";
     private static final String key_weight = "WEIGHT";
     private static final String key_state = "STATE";

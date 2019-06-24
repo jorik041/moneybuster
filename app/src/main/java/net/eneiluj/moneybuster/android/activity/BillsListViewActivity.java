@@ -711,7 +711,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             membersNbBills, membersBalance, membersPaid, membersSpent
                     );
 
-                    List<DBMember> membersSortedByName = db.getMembersOfProject(proj.getId(), MoneyBusterSQLiteOpenHelper.key_remoteId);
+                    List<DBMember> membersSortedByName = db.getMembersOfProject(proj.getId(), MoneyBusterSQLiteOpenHelper.key_name);
 
                     final List<Transaction> transactions = settleBills(membersSortedByName, membersBalance);
                     // get members names per id

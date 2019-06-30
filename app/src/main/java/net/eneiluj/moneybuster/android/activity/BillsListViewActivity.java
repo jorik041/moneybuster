@@ -195,7 +195,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         fabAddProject = findViewById(R.id.fabDrawer_add_project);
         fabAddMember = findViewById(R.id.fabDrawer_add_member);
-        fabMenuDrawerAdd = findViewById(R.id.floatingMenuDrawer);
+        fabMenuDrawerAdd = findViewById(R.id.floatingMenuDrawerAdd);
         fabMenuDrawerEdit = findViewById(R.id.floatingMenuDrawerEdit);
         fabEditMember = findViewById(R.id.fabDrawer_edit_member);
         fabStatistics = findViewById(R.id.fabDrawer_statistics);
@@ -317,6 +317,34 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 }
             }
         });
+
+        fabMenuDrawerEdit.setOnMenuButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "[3 DOTS clicked]");
+                if (fabMenuDrawerEdit.isOpened()) {
+                    fabMenuDrawerEdit.close(true);
+                }
+                else
+                    fabMenuDrawerEdit.open(true);
+                    fabMenuDrawerAdd.close(true);
+            }
+        });
+
+        fabMenuDrawerAdd.setOnMenuButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "[Addclicked]");
+                if (fabMenuDrawerAdd.isOpened()) {
+                    fabMenuDrawerAdd.close(true);
+                }
+                else
+                    fabMenuDrawerAdd.open(true);
+                    fabMenuDrawerEdit.close(true);
+            }
+        });
+
+
 
         fabAddProject.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -879,6 +907,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             @Override
             public void onClick(final View view) {
                 showProjectSelectionDialog();
+                fabMenuDrawerEdit.close(true);
+                fabMenuDrawerAdd.close(true);
             }
         });
 

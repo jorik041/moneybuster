@@ -156,7 +156,7 @@
 
 
                 <com.github.clans.fab.FloatingActionMenu
-                    android:id="@+id/floatingMenuDrawer"
+                    android:id="@+id/floatingMenuDrawerAdd"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     fab:menu_icon="@drawable/ic_add_white_24dp"

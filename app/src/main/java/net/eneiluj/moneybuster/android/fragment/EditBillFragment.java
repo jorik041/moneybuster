@@ -19,6 +19,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -82,6 +83,8 @@ public class EditBillFragment extends Fragment {
     protected EditText editAmount;
     protected LinearLayout owersLayout;
     protected FloatingActionButton fabSaveBill;
+    private Button bAll;
+    private Button bNone;
 
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
@@ -126,7 +129,7 @@ public class EditBillFragment extends Fragment {
             }
         });
 
-        Button bAll = view.findViewById(R.id.owerAllButton);
+        bAll = view.findViewById(R.id.owerAllButton);
         bAll.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -136,7 +139,7 @@ public class EditBillFragment extends Fragment {
                 }
             }
         });
-        Button bNone = view.findViewById(R.id.owerNoneButton);
+        bNone = view.findViewById(R.id.owerNoneButton);
         bNone.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -198,6 +201,21 @@ public class EditBillFragment extends Fragment {
 
     private void updateLabel() {
         editDate.setText(sdf.format(calendar.getTime()));
+    }
+
+    private void showHideAllNoneButtons() {
+        Log.d(TAG, "SHOWHIDEALLNONE ");
+        int nbChecked = 0;
+        int nbTot = 0;
+
+        for (Map.Entry<Long, CheckBox> entry : owerCheckboxes.entrySet()) {
+            nbTot++;
+            if (entry.getValue().isChecked()) {
+                nbChecked++;
+            }
+        }
+        bAll.setVisibility((nbChecked < nbTot) ? View.VISIBLE : View.GONE);
+        bNone.setVisibility((nbChecked > 0) ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -465,8 +483,19 @@ public class EditBillFragment extends Fragment {
                 owerCheckboxes.put(member.getId(), cb);
 
                 owersLayout.addView(row);
+
+                // checkbox change listener
+                cb.setOnCheckedChangeListener(
+                        new CompoundButton.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                showHideAllNoneButtons();
+                            }
+                        }
+                );
             }
         }
+        showHideAllNoneButtons();
 
         // build payer list
         if (memberNameList.size() > 0) {

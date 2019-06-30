@@ -88,6 +88,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                 setThemePreferenceIcon(themePref, darkTheme);
                 //getActivity().setResult(Activity.RESULT_OK);
                 //getActivity().finish();
+                if (getActivity() != null) {
+                    getActivity().recreate();
+                }
                 return true;
             }
         });

@@ -313,10 +313,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     synchronize();
                 } else {
                     swipeRefreshLayout.setRefreshing(false);
+
                     Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(CospendClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
                 }
             }
         });
+
+        if (!db.getMoneyBusterServerSyncHelper().isSyncPossible()) {
+            System.out.println("DISABLLLLLL");
+            swipeRefreshLayout.setEnabled(false);
+        }
 
         fabMenuDrawerEdit.setOnMenuButtonClickListener(new View.OnClickListener() {
             @Override
@@ -1821,6 +1827,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_PROJECT_SYNC_FAILED);
         filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_PROJECT_SYNCED);
         filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_SYNC_PROJECT);
+        filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_NETWORK_AVAILABLE);
+        filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_NETWORK_UNAVAILABLE);
         registerReceiver(mBroadcastReceiver, filter);
     }
 
@@ -1846,6 +1854,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     break;
                 case MoneyBusterServerSyncHelper.BROADCAST_SYNC_PROJECT:
                     synchronize();
+                    break;
+                case MoneyBusterServerSyncHelper.BROADCAST_NETWORK_AVAILABLE:
+                    swipeRefreshLayout.setEnabled(true);
+                    break;
+                case MoneyBusterServerSyncHelper.BROADCAST_NETWORK_UNAVAILABLE:
+                    swipeRefreshLayout.setEnabled(false);
                     break;
             }
         }

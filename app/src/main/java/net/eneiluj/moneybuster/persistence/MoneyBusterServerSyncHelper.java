@@ -54,6 +54,8 @@ public class MoneyBusterServerSyncHelper {
     public static final String BROADCAST_PROJECT_SYNC_FAILED = "net.eneiluj.moneybuster.broadcast.project_sync_failed";
     public static final String BROADCAST_PROJECT_SYNCED = "net.eneiluj.moneybuster.broadcast.project_synced";
     public static final String BROADCAST_SYNC_PROJECT = "net.eneiluj.moneybuster.broadcast.sync_project";
+    public static final String BROADCAST_NETWORK_AVAILABLE = "net.eneiluj.moneybuster.broadcast.network_available";
+    public static final String BROADCAST_NETWORK_UNAVAILABLE = "net.eneiluj.moneybuster.broadcast.network_unavailable";
 
     private static MoneyBusterServerSyncHelper instance;
 
@@ -91,6 +93,8 @@ public class MoneyBusterServerSyncHelper {
                     if (proj != null) {
                         Intent intent = new Intent(BROADCAST_SYNC_PROJECT);
                         appContext.sendBroadcast(intent);
+                        Intent intent2 = new Intent(BROADCAST_NETWORK_AVAILABLE);
+                        appContext.sendBroadcast(intent2);
                         //scheduleSync(false, lastId);
                     }
                 }
@@ -176,6 +180,16 @@ public class MoneyBusterServerSyncHelper {
                 if (lastId != 0 && proj != null && !proj.isLocal()) {
                     scheduleSync(false, lastId);
                 }
+                Intent intent2 = new Intent(BROADCAST_NETWORK_AVAILABLE);
+                appContext.sendBroadcast(intent2);
+            }
+        }
+
+        @Override
+        public void onLost(Network network) {
+            if (!isSyncPossible()) {
+                Intent intent2 = new Intent(BROADCAST_NETWORK_UNAVAILABLE);
+                appContext.sendBroadcast(intent2);
             }
         }
     }

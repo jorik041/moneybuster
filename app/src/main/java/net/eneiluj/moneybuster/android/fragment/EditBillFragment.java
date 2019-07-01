@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -52,6 +55,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class EditBillFragment extends Fragment {
 
@@ -99,6 +103,8 @@ public class EditBillFragment extends Fragment {
     private AlertDialog.Builder confirmDeleteAlertBuilder;
 
     private SimpleDateFormat sdf;
+
+    private boolean isSpinnerUserAction = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -196,11 +202,52 @@ public class EditBillFragment extends Fragment {
             }
         });
 
+        // on value changes
+
+        editWhat.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                Log.d(TAG, "WHWHWHWHAAAATTT");
+                showHideValidationButtons();
+            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+        editAmount.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                Log.d(TAG, "AMOUNTTTT");
+                showHideValidationButtons();
+            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+        editPayer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                Log.d(TAG, "PAYERRRR");
+                if (isSpinnerUserAction) {
+                    showHideValidationButtons();
+                }
+
+                isSpinnerUserAction = true;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                Log.d(TAG, "PAYERRRR NOTHING");
+                showHideValidationButtons();
+            }
+
+        });
+
+        Log.d(TAG, "CREATEVIEW FINISHEDDDDDDD");
+
         return view;
     }
 
     private void updateLabel() {
         editDate.setText(sdf.format(calendar.getTime()));
+        Log.d(TAG, "DATEUUUU");
+        showHideValidationButtons();
     }
 
     private void showHideAllNoneButtons() {
@@ -216,6 +263,19 @@ public class EditBillFragment extends Fragment {
         }
         bAll.setVisibility((nbChecked < nbTot) ? View.VISIBLE : View.GONE);
         bNone.setVisibility((nbChecked > 0) ? View.VISIBLE : View.GONE);
+    }
+
+    private void showHideValidationButtons() {
+        if (getWhat() == null || getWhat().equals("") ||
+                getDate() == null || getDate().equals("") ||
+                getAmount() == 0.0 ||
+                getPayerId() == 0 ||
+                getOwersIds().size() == 0) {
+            fabSaveBill.hide();
+        }
+        else {
+            fabSaveBill.show();
+        }
     }
 
     @Override
@@ -490,6 +550,8 @@ public class EditBillFragment extends Fragment {
                             @Override
                             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                                 showHideAllNoneButtons();
+                                Log.d(TAG, "OWERRRR");
+                                showHideValidationButtons();
                             }
                         }
                 );
@@ -563,6 +625,11 @@ public class EditBillFragment extends Fragment {
         }
 
         editAmount.setText(String.valueOf(bill.getAmount()));
+
+        // hide the validation button so that it appears if a value changes
+
+        fabSaveBill.hide();
+        Log.d(TAG, "HIIIIIIIIIIDE FAB");
     }
 
     protected String getWhat() {

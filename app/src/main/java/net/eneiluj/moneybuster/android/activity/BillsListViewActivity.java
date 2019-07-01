@@ -237,9 +237,18 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             refreshLists();
         }
         swipeRefreshLayout.setRefreshing(false);
-        db.getMoneyBusterServerSyncHelper().addCallbackPull(syncCallBack);
-        if (DEBUG) { Log.d(TAG, "[onResume]"); }
-        synchronize();
+
+        if (!db.getMoneyBusterServerSyncHelper().isSyncPossible()) {
+            swipeRefreshLayout.setEnabled(false);
+        }
+        else {
+            swipeRefreshLayout.setEnabled(true);
+            db.getMoneyBusterServerSyncHelper().addCallbackPull(syncCallBack);
+            if (DEBUG) {
+                Log.d(TAG, "[onResume]");
+            }
+            synchronize();
+        }
 
         registerBroadcastReceiver();
     }

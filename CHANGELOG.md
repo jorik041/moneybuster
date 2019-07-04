@@ -5,6 +5,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## 0.0.10 – 2019-07-04
+### Added
+
+### Changed
+- settlement: sort members like IHateMoney does to get same results
+[#15](https://gitlab.com/eneiluj/moneybuster/issues/15) @nicocool84
+- show/hide all/none buttons dynamically
+- UI improvements in sidebar
+- show bill edition validate button only if something changed and values are valid
+
+### Fixed
+- negative number rounding
+[#14](https://gitlab.com/eneiluj/moneybuster/issues/14) @jeisonp
+- apply new theme/color immediately
+- disable ability to refresh list layout when no network connectivity
+- bill list item layout are now displayed correctly with big font size
+[#17](https://gitlab.com/eneiluj/moneybuster/issues/17) @Aldarone
 
 ## 0.0.9 – 2019-05-08
 ### Added

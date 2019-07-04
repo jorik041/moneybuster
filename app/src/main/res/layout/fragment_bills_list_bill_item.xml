@@ -77,10 +77,11 @@
             android:orientation="vertical"
             android:paddingStart="0dp"
             android:paddingLeft="0dp"
-            android:paddingTop="16dp"
+            android:paddingTop="0dp"
             android:paddingEnd="16dp"
             android:paddingRight="16dp"
-            android:paddingBottom="16dp">
+            android:paddingBottom="0dp"
+            android:layout_gravity="center_vertical">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"

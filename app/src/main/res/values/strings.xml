@@ -23,6 +23,7 @@
     <string name="setting_project_id_long">Project identifier</string>
     <string name="setting_project_id">Project ID</string>
     <string name="setting_project_type">Project type</string>
+    <string name="setting_project_repetition">Repeat this bill every</string>
     <string name="project_type_local">Local project</string>
     <string name="project_type_ihatemoney">IHateMoney project</string>
     <string name="project_type_nextcloud_cospend">Nextcloud Cospend project</string>
@@ -191,7 +192,6 @@
     <string name="about_credits_tab_title">Credits</string>
     <string name="about_contribution_tab_title">Contribution</string>
     <string name="about_license_tab_title">License</string>
-
 
     <!-- Shortcuts -->
     <string name="shortcut_create_project_long">Add a project</string>

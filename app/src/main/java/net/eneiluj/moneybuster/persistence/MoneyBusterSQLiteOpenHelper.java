@@ -181,7 +181,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + table_projects + " ADD COLUMN " + key_lastPayerId + " INTEGER DEFAULT 0");
         }
         if (oldVersion < 3) {
-            db.execSQL("ALTER TABLE " + table_bills + " ADD COLUMN " + key_repeat + "TEXT");
+            db.execSQL("ALTER TABLE " + table_bills + " ADD COLUMN " + key_repeat + " TEXT");
         }
 
         if (oldVersion < 4) {
@@ -199,7 +199,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                     project.setType(ProjectType.IHATEMONEY);
                 }
 
-                updateProject(project.getId(), project.getName(), project.getEmail(), project.getPassword(), project.getLastPayerId(), project.getType());
+                updateProject(project.getId(), project.getName(), project.getEmail(), project.getPassword(), project.getLastPayerId(), project.getType(), db);
             }
         }
     }
@@ -378,6 +378,11 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     public void updateProject(long projId, @Nullable String newName, @Nullable String newEmail, @Nullable String newPassword, @Nullable Long newLastPayerId, @NonNull ProjectType projectType) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
+        updateProject(projId, newName, newEmail, newPassword, newLastPayerId, projectType, db);
+    }
+
+    private void updateProject(long projId, @Nullable String newName, @Nullable String newEmail, @Nullable String newPassword, @Nullable Long newLastPayerId, @NonNull ProjectType projectType, SQLiteDatabase db) {
+        //debugPrintFullDB();
         ContentValues values = new ContentValues();
         if (newName != null) {
             values.put(key_name, newName);
@@ -396,8 +401,6 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
             int rows = db.update(table_projects, values, key_id + " = ?", new String[]{String.valueOf(projId)});
         }
     }
-
-
 
     public void debugPrintFullDB() {
         List<DBProject> projects = getProjectsCustom("", new String[]{}, default_order);
@@ -580,6 +583,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_date, b.getDate());
         values.put(key_what, b.getWhat());
         values.put(key_state, b.getState());
+        values.put(key_repeat, b.getRepeat());
 
         long billId = db.insert(table_bills, null, values);
 
@@ -589,7 +593,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         return billId;
     }
 
-    public void updateBill(long remoteId, long projId, long newPayerId, double newAmount, @Nullable String newDate, @Nullable String newWhat, int newState) {
+    public void updateBill(long remoteId, long projId, long newPayerId, double newAmount, @Nullable String newDate, @Nullable String newWhat, int newState, @Nullable String newRepeat) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -602,6 +606,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_payer_id, newPayerId);
         values.put(key_amount, newAmount);
         values.put(key_state, newState);
+        values.put(key_repeat, newRepeat);
         if (values.size() > 0) {
             int rows = db.update(table_bills, values, key_remoteId + " = ? AND "+key_projectid+" = ?",
                     new String[]{String.valueOf(remoteId), String.valueOf(projId)});
@@ -616,7 +621,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                     new String[]{String.valueOf(billId)});
     }
 
-    public void updateBill(long billId, @Nullable Long newRemoteId, @Nullable Long newPayerId, @Nullable Double newAmount, @Nullable String newDate, @Nullable String newWhat, @Nullable Integer newState) {
+    public void updateBill(long billId, @Nullable Long newRemoteId, @Nullable Long newPayerId, @Nullable Double newAmount, @Nullable String newDate, @Nullable String newWhat, @Nullable Integer newState, @Nullable String newRepeat) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -638,20 +643,23 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         if (newState != null) {
             values.put(key_state, newState);
         }
+        if (newRepeat != null) {
+            values.put(key_repeat, newRepeat);
+        }
         if (values.size() > 0) {
             int rows = db.update(table_bills, values, key_id + " = ?",
                     new String[]{String.valueOf(billId)});
         }
     }
 
-    public void updateBillAndSync(DBBill bill, long newPayerId, double newAmount, @Nullable String newDate, @Nullable String newWhat, @Nullable List<Long> newOwersIds) {
+    public void updateBillAndSync(DBBill bill, long newPayerId, double newAmount, @Nullable String newDate, @Nullable String newWhat, @Nullable List<Long> newOwersIds, @Nullable String newRepeat) {
         // bill values
         // state
         int newState = DBBill.STATE_EDITED;
         if (bill.getState() == DBBill.STATE_ADDED) {
             newState = DBBill.STATE_ADDED;
         }
-        updateBill(bill.getId(), null, newPayerId, newAmount, newDate, newWhat, newState);
+        updateBill(bill.getId(), null, newPayerId, newAmount, newDate, newWhat, newState, newRepeat);
 
         // bill owers
         List<DBBillOwer> dbBillOwers = getBillowersOfBill(bill.getId());

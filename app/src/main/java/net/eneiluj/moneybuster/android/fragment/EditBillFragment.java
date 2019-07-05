@@ -451,6 +451,7 @@ public class EditBillFragment extends Fragment {
     protected void saveBill(@Nullable ICallback callback) {
         Log.d(getClass().getSimpleName(), "CUSTOM saveData()");
         String newWhat = getWhat();
+        String newRepeat = getRepeat();
         String newDate = getDate();
         double newAmount = getAmount();
         long newPayerId = getPayerId();
@@ -483,12 +484,13 @@ public class EditBillFragment extends Fragment {
                     bill.getDate().equals(newDate) &&
                     bill.getAmount() == newAmount &&
                     bill.getPayerId() == newPayerId &&
+                    bill.getRepeat() == newRepeat &&
                     !owersChanged
                     ) {
                 Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed "+bill.getWhat()+" "+newWhat);
             } else {
                 Log.d(TAG, "====== update bill");
-                db.updateBillAndSync(bill, newPayerId, newAmount, newDate, newWhat, newOwersIds);
+                db.updateBillAndSync(bill, newPayerId, newAmount, newDate, newWhat, newOwersIds, newRepeat);
                 //listener.onBillUpdated(bill);
                 //listener.close();
             }
@@ -652,11 +654,23 @@ public class EditBillFragment extends Fragment {
         Log.d(TAG, "HIIIIIIIIIIDE FAB");
 
         if (ProjectType.COSPEND.equals(projectType)) {
-            String[] repeatValues = getResources().getStringArray(R.array.repeatBillValues);
-            int index = Arrays.asList(repeatValues).indexOf(bill.getRepeat());
-            ArrayAdapter<String> simpleAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, repeatValues);
+            String[] repeatNames = getResources().getStringArray(R.array.repeatBillEntries);
+            String[] repeatIds = getResources().getStringArray(R.array.repeatBillValues);
+            int index = Arrays.asList(repeatIds).indexOf(bill.getRepeat());
+
+            ArrayList<Map<String, String>> data = new ArrayList<>();
+            for (int i=0; i < repeatNames.length; i++) {
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("name", repeatNames[i]);
+                hashMap.put("id", repeatIds[i]);
+                data.add(hashMap);
+            }
+            String[] from = {"name", "id"};
+            int[] to = new int[] { android.R.id.text1 };
+            SimpleAdapter simpleAdapter = new SimpleAdapter(this.getContext(), data, android.R.layout.simple_spinner_item, from, to);
             simpleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             editRepeat.setAdapter(simpleAdapter);
+
             if (index > -1) {
                 editRepeat.setSelection(index);
             } else {
@@ -707,7 +721,14 @@ public class EditBillFragment extends Fragment {
     }
 
     private String getRepeat() {
-        return getResources().getStringArray(R.array.repeatBillValues)[editRepeat.getSelectedItemPosition()];
+        int i = editRepeat.getSelectedItemPosition();
+        if (i < 0) {
+            return "n";
+        }
+        else {
+            Map<String, String> item = (Map<String, String>) editRepeat.getSelectedItem();
+            return item.get("id");
+        }
     }
 
     protected void showToast(CharSequence text, int duration) {

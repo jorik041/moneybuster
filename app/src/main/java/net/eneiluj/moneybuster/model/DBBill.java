@@ -41,21 +41,6 @@ public class DBBill implements Item, Serializable {
         this.state = state;
     }
 
-    public DBBill(long id, long remoteId, long projectId, long payerId, double amount, String date, String what, int state) {
-        this.id = id;
-        this.remoteId = remoteId;
-        this.projectId = projectId;
-        this.payerId = payerId;
-        this.amount = amount;
-        this.date = date;
-        this.what = what;
-        this.repeat = "n";
-
-        this.billOwers = new ArrayList<>();
-
-        this.state = state;
-    }
-
     public List<Long> getBillOwersIds() {
         List<Long> result = new ArrayList<>();
         for (DBBillOwer bo : billOwers) {
@@ -146,10 +131,10 @@ public class DBBill implements Item, Serializable {
 
     @Override
     public String toString() {
-        // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what
+        // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what, key_repeat
         return "#DBBill" + getId() + "/" + this.remoteId + "," + this.projectId
                 + ", " + this.payerId + ", " + this.amount + ", " + this.date + ", "
-                + this.what + ", " + this.state;
+                + this.what + ", " + this.state + ", " + this.repeat;
     }
 
     @Override

@@ -467,7 +467,8 @@ public class MoneyBusterServerSyncHelper {
                     if (newRemoteId > 0) {
                         dbHelper.updateBill(
                                 bToAdd.getId(), newRemoteId, null,
-                                null, null, null, DBBill.STATE_OK
+                                null, null, null,
+                                DBBill.STATE_OK, null
                         );
                     }
                 }
@@ -594,7 +595,7 @@ public class MoneyBusterServerSyncHelper {
                             dbHelper.updateBill(
                                     localBill.getId(), null, remoteBill.getPayerId(),
                                     remoteBill.getAmount(), remoteBill.getDate(),
-                                    remoteBill.getWhat(), DBBill.STATE_OK
+                                    remoteBill.getWhat(), DBBill.STATE_OK, remoteBill.getRepeat()
                             );
                             Log.d(getClass().getSimpleName(), "Update local bill : "+remoteBill);
                         }

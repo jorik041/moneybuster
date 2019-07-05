@@ -26,6 +26,8 @@ public class DBBill implements Item, Serializable {
     public static final int STATE_EDITED = 2;
     public static final int STATE_DELETED = 3;
 
+    public static final String NON_REPEATED = "n";
+
     public DBBill(long id, long remoteId, long projectId, long payerId, double amount, String date, String what, int state, String repeat) {
         this.id = id;
         this.remoteId = remoteId;

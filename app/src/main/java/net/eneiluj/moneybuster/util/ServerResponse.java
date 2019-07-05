@@ -247,7 +247,7 @@ public class ServerResponse {
         double amount = 0;
         String date = "";
         String what = "";
-        String repeat = "n";
+        String repeat = DBBill.NON_REPEATED;
         if (!json.isNull("id")) {
             remoteId = json.getLong("id");
         }

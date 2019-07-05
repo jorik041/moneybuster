@@ -455,7 +455,7 @@ public class EditBillFragment extends Fragment {
         String newDate = getDate();
         double newAmount = getAmount();
         long newPayerId = getPayerId();
-        String repeat = "n";
+        String repeat = DBBill.NON_REPEATED;
 
         if (ProjectType.COSPEND.equals(projectType)) {
             repeat = getRepeat();
@@ -723,7 +723,7 @@ public class EditBillFragment extends Fragment {
     private String getRepeat() {
         int i = editRepeat.getSelectedItemPosition();
         if (i < 0) {
-            return "n";
+            return DBBill.NON_REPEATED;
         }
         else {
             Map<String, String> item = (Map<String, String>) editRepeat.getSelectedItem();

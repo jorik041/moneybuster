@@ -142,6 +142,9 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             nvHolder.billSubtitle.setText(Html.fromHtml(subtitle));
 
             nvHolder.syncIcon.setVisibility((isProjectLocal || bill.getState() == DBBill.STATE_OK) ? View.INVISIBLE : View.VISIBLE);
+
+            String repeat = bill.getRepeat() == null ? DBBill.NON_REPEATED : bill.getRepeat();
+            nvHolder.repeatIcon.setVisibility(DBBill.NON_REPEATED.equals(repeat) ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -215,6 +218,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         TextView billDate;
         TextView billSubtitle;
         ImageView syncIcon;
+        ImageView repeatIcon;
 
         private BillViewHolder(View v) {
             super(v);
@@ -227,6 +231,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             this.billDate = v.findViewById(R.id.billDate);
             this.billSubtitle = v.findViewById(R.id.billExcerpt);
             this.syncIcon = v.findViewById(R.id.syncIcon);
+            this.repeatIcon = v.findViewById(R.id.repeatIcon);
             v.setOnClickListener(this);
             v.setOnLongClickListener(this);
         }

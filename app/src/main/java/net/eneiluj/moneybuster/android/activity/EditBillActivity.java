@@ -129,7 +129,7 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String newDate = sdf.format(new Date());
-        DBBill newBill = new DBBill(0, 0, projectId, 0, 0, newDate, "", DBBill.STATE_ADDED, "n");
+        DBBill newBill = new DBBill(0, 0, projectId, 0, 0, newDate, "", DBBill.STATE_ADDED, DBBill.NON_REPEATED);
 
         fragment = EditBillFragment.newInstanceWithNewBill(newBill, getProjectType());
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();

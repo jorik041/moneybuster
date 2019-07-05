@@ -937,8 +937,8 @@ public class MoneyBusterServerSyncHelper {
                         localBill.getDate().equals(remoteBill.getDate()) &&
                         localBill.getWhat().equals(remoteBill.getWhat())
         ) {
-            String localRepeat = localBill.getRepeat() == null ? "n" : localBill.getRepeat();
-            String remoteRepeat = remoteBill.getRepeat() == null ? "n" : remoteBill.getRepeat();
+            String localRepeat = localBill.getRepeat() == null ? DBBill.NON_REPEATED : localBill.getRepeat();
+            String remoteRepeat = remoteBill.getRepeat() == null ? DBBill.NON_REPEATED : remoteBill.getRepeat();
 
             return !localRepeat.equals(remoteRepeat);
         } else {

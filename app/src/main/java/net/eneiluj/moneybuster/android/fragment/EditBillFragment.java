@@ -451,14 +451,13 @@ public class EditBillFragment extends Fragment {
     protected void saveBill(@Nullable ICallback callback) {
         Log.d(getClass().getSimpleName(), "CUSTOM saveData()");
         String newWhat = getWhat();
-        String newRepeat = getRepeat();
         String newDate = getDate();
         double newAmount = getAmount();
         long newPayerId = getPayerId();
-        String repeat = DBBill.NON_REPEATED;
+        String newRepeat = DBBill.NON_REPEATED;
 
         if (ProjectType.COSPEND.equals(projectType)) {
-            repeat = getRepeat();
+            newRepeat = getRepeat();
         }
 
         List<Long> newOwersIds = getOwersIds();
@@ -484,7 +483,7 @@ public class EditBillFragment extends Fragment {
                     bill.getDate().equals(newDate) &&
                     bill.getAmount() == newAmount &&
                     bill.getPayerId() == newPayerId &&
-                    bill.getRepeat() == newRepeat &&
+                    newRepeat.equals(bill.getRepeat()) &&
                     !owersChanged
                     ) {
                 Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed "+bill.getWhat()+" "+newWhat);
@@ -498,7 +497,7 @@ public class EditBillFragment extends Fragment {
         // this is a new bill
         else {
             // add the bill
-            DBBill newBill = new DBBill(0, 0, bill.getProjectId(), newPayerId, newAmount, newDate, newWhat, DBBill.STATE_ADDED, repeat);
+            DBBill newBill = new DBBill(0, 0, bill.getProjectId(), newPayerId, newAmount, newDate, newWhat, DBBill.STATE_ADDED, newRepeat);
             for (long newOwerId : newOwersIds) {
                 newBill.getBillOwers().add(new DBBillOwer(0, 0, newOwerId));
             }

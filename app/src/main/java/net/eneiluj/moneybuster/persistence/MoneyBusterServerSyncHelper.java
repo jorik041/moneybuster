@@ -159,7 +159,7 @@ public class MoneyBusterServerSyncHelper {
 
         public void enable(Context context) {
             ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            connectivityManager.registerNetworkCallback(networkRequest , this);
+            connectivityManager.registerNetworkCallback(networkRequest, this);
         }
 
         // Likewise, you can have a disable method that simply calls ConnectivityManager#unregisterCallback(networkRequest) too.
@@ -171,7 +171,9 @@ public class MoneyBusterServerSyncHelper {
 
         @Override
         public void onAvailable(Network network) {
-            if (BillsListViewActivity.DEBUG) { Log.d(TAG, "NETWORK AVAILABLE in synchelper !!!!"); }
+            if (BillsListViewActivity.DEBUG) {
+                Log.d(TAG, "NETWORK AVAILABLE in synchelper !!!!");
+            }
             updateNetworkStatus();
             if (isSyncPossible()) {
                 long lastId = PreferenceManager.getDefaultSharedPreferences(appContext).getLong("selected_project", 0);
@@ -261,9 +263,8 @@ public class MoneyBusterServerSyncHelper {
                     callbacksPull = new ArrayList<>();
                 }
                 syncTask.execute();
-            }
-            else {
-                Log.d(getClass().getSimpleName(), "sync asked for project "+projId+" which does not exist : DOING NOTHING");
+            } else {
+                Log.d(getClass().getSimpleName(), "sync asked for project " + projId + " which does not exist : DOING NOTHING");
             }
         } else if (!onlyLocalChanges) {
             Log.d(getClass().getSimpleName(), "... scheduled");
@@ -304,7 +305,7 @@ public class MoneyBusterServerSyncHelper {
 
         public SyncTask(boolean onlyLocalChanges, DBProject project) {
             this.onlyLocalChanges = onlyLocalChanges;
-            Log.i(getClass().getSimpleName(), "SYNC TASK project : "+project.getRemoteId());
+            Log.i(getClass().getSimpleName(), "SYNC TASK project : " + project.getRemoteId());
             this.project = project;
         }
 
@@ -389,8 +390,7 @@ public class MoneyBusterServerSyncHelper {
                                     null, null, DBBill.STATE_OK, null
                             );
                         }
-                    }
-                    catch (IOException e) {
+                    } catch (IOException e) {
                         if (e.getMessage().equals("{\"message\": \"Internal Server Error\"}")) {
                             Log.d(getClass().getSimpleName(), "EDIT MEMBER FAILED : it does not exist remotely");
                             // what if member does not exist anymore :
@@ -399,8 +399,7 @@ public class MoneyBusterServerSyncHelper {
                             // wait untill the end of pullremotechanges to check
                             // and delete useless members
                             //dbHelper.deleteMember(mToEdit.getId());
-                        }
-                        else {
+                        } else {
                             throw e;
                         }
                     }
@@ -423,14 +422,12 @@ public class MoneyBusterServerSyncHelper {
                             Log.d(getClass().getSimpleName(), "successfully deleted bill on remote project : delete it locally");
                             dbHelper.deleteBill(bToDel.getId());
                         }
-                    }
-                    catch (IOException e) {
+                    } catch (IOException e) {
                         // if it's not there on the server
                         if (e.getMessage().equals("\"Not Found\"")) {
                             Log.d(getClass().getSimpleName(), "failed to delete bill on remote project : delete it locally anyway");
                             dbHelper.deleteBill(bToDel.getId());
-                        }
-                        else {
+                        } else {
                             throw e;
                         }
                     }
@@ -446,15 +443,13 @@ public class MoneyBusterServerSyncHelper {
                         } else {
                             Log.d(getClass().getSimpleName(), "FAILED to edit remote bill (" + editRemoteBillResponse.getStringContent() + ")");
                         }
-                    }
-                    catch (IOException e) {
+                    } catch (IOException e) {
                         // if it's not there on the server
                         if (e.getMessage().equals("{\"message\": \"Internal Server Error\"}")) {
                             Log.d(getClass().getSimpleName(), "FAILED to edit remote bill : it does not exist remotely");
                             // pullremotechanges will take care of deletion
                             //dbHelper.deleteBill(bToEdit.getId());
-                        }
-                        else {
+                        } else {
                             throw e;
                         }
                     }
@@ -480,7 +475,7 @@ public class MoneyBusterServerSyncHelper {
                 Log.e(getClass().getSimpleName(), "Exception", e);
                 exceptions.add(e);
                 status = LoginStatus.CONNECTION_FAILED;
-            }  catch (JSONException e) {
+            } catch (JSONException e) {
                 Log.e(getClass().getSimpleName(), "Exception", e);
                 exceptions.add(e);
                 status = LoginStatus.JSON_FAILED;
@@ -493,7 +488,7 @@ public class MoneyBusterServerSyncHelper {
          * Pull remote Changes: update or create each remote members/bills and remove remotely deleted ones
          */
         private LoginStatus pullRemoteChanges() {
-            Log.d(getClass().getSimpleName(), "pullRemoteChanges("+project+")");
+            Log.d(getClass().getSimpleName(), "pullRemoteChanges(" + project + ")");
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
             String lastETag = null;
             long lastModified = 0;
@@ -508,7 +503,7 @@ public class MoneyBusterServerSyncHelper {
                         || project.getEmail() == null
                         || project.getEmail().equals("")
                         || !email.equals(project.getEmail())) {
-                    Log.d(getClass().getSimpleName(), "update local project : "+project);
+                    Log.d(getClass().getSimpleName(), "update local project : " + project);
                     // this is usefull to transmit correct info back to billlistactivity when project was just added
                     project.setName(name);
                     dbHelper.updateProject(project.getId(), name, email, null, null);
@@ -526,7 +521,7 @@ public class MoneyBusterServerSyncHelper {
                     DBMember localMember = dbHelper.getMember(m.getRemoteId(), project.getId());
                     // member does not exist locally, add it
                     if (localMember == null) {
-                        Log.d(getClass().getSimpleName(), "Add local member : "+m);
+                        Log.d(getClass().getSimpleName(), "Add local member : " + m);
                         dbHelper.addMember(m);
                     }
                     // member exists, check if needs update
@@ -534,12 +529,11 @@ public class MoneyBusterServerSyncHelper {
                         if (m.getName().equals(localMember.getName()) &&
                                 m.getWeight() == localMember.getWeight() &&
                                 m.isActivated() == localMember.isActivated()
-                                ) {
+                        ) {
                             // alright
-                            Log.d(getClass().getSimpleName(), "Nothing to do for member : "+localMember);
-                        }
-                        else {
-                            Log.d(getClass().getSimpleName(), "Update local member : "+m);
+                            Log.d(getClass().getSimpleName(), "Nothing to do for member : " + localMember);
+                        } else {
+                            Log.d(getClass().getSimpleName(), "Update local member : " + m);
                             // long memberId, @Nullable String newName, @Nullable Double newWeight,
                             // @Nullable Boolean newActivated, @Nullable Integer newState, @Nullable Long newRemoteId
                             dbHelper.updateMember(localMember.getId(), m.getName(), m.getWeight(), m.isActivated(), null, null);
@@ -573,7 +567,7 @@ public class MoneyBusterServerSyncHelper {
                     // add if local does not exist
                     if (!localBillsByRemoteId.containsKey(remoteBill.getRemoteId())) {
                         long billId = dbHelper.addBill(remoteBill);
-                        Log.d(getClass().getSimpleName(), "Add local bill : " + remoteBill);
+                        Log.d(TAG, "Add local bill : " + remoteBill);
                         /*//////// billowers
                         for (DBBillOwer rbo : remoteBill.getBillOwers()) {
                             dbHelper.addBillower(billId, rbo);
@@ -583,21 +577,16 @@ public class MoneyBusterServerSyncHelper {
                     // and billOwers if necessary
                     else {
                         DBBill localBill = localBillsByRemoteId.get(remoteBill.getRemoteId());
-                        if (localBill.getPayerId() == remoteBill.getPayerId() &&
-                                localBill.getAmount() == remoteBill.getAmount() &&
-                                localBill.getDate().equals(remoteBill.getDate()) &&
-                                localBill.getWhat().equals(remoteBill.getWhat())
-                                ) {
-                            // fine
-                            Log.d(getClass().getSimpleName(), "Nothing to do for bill : "+localBill);
-                        }
-                        else {
+                        if (hasChanged(localBill, remoteBill)) {
                             dbHelper.updateBill(
                                     localBill.getId(), null, remoteBill.getPayerId(),
                                     remoteBill.getAmount(), remoteBill.getDate(),
                                     remoteBill.getWhat(), DBBill.STATE_OK, remoteBill.getRepeat()
                             );
-                            Log.d(getClass().getSimpleName(), "Update local bill : "+remoteBill);
+                            Log.d(TAG, "Update local bill : " + remoteBill);
+                        } else {
+                            // fine
+                            Log.d(TAG, "Nothing to do for bill : " + localBill);
                         }
                         //////// billowers
                         Map<Long, DBBillOwer> localBillOwersByIds = new HashMap<>();
@@ -612,14 +601,14 @@ public class MoneyBusterServerSyncHelper {
                         for (DBBillOwer rbo : remoteBill.getBillOwers()) {
                             if (!localBillOwersByIds.containsKey(rbo.getMemberId())) {
                                 dbHelper.addBillower(localBill.getId(), rbo.getMemberId());
-                                Log.d(getClass().getSimpleName(), "Add local billOwer : " + rbo);
+                                Log.d(TAG, "Add local billOwer : " + rbo);
                             }
                         }
                         // delete local which are not there remotely
                         for (DBBillOwer lbo : localBill.getBillOwers()) {
                             if (!remoteBillOwersByIds.containsKey(lbo.getMemberId())) {
                                 dbHelper.deleteBillOwer(lbo.getId());
-                                Log.d(getClass().getSimpleName(), "Delete local billOwer : " + lbo);
+                                Log.d(TAG, "Delete local billOwer : " + lbo);
                             }
                         }
                     }
@@ -629,7 +618,7 @@ public class MoneyBusterServerSyncHelper {
                     // if local bill does not exist remotely
                     if (!remoteBillsByRemoteId.containsKey(localBill.getRemoteId())) {
                         dbHelper.deleteBill(localBill.getId());
-                        Log.d(getClass().getSimpleName(), "Delete local bill : " + localBill);
+                        Log.d(TAG, "Delete local bill : " + localBill);
                     }
                 }
 
@@ -645,25 +634,24 @@ public class MoneyBusterServerSyncHelper {
                         if (dbHelper.getBillsOfMember(localMember.getId()).size() == 0
                                 && dbHelper.getBillowersOfMember(localMember.getId()).size() == 0) {
                             dbHelper.deleteMember(localMember.getId());
-                            Log.d(getClass().getSimpleName(), "Delete local member : " + localMember);
-                        }
-                        else {
-                            Log.d(getClass().getSimpleName(),
+                            Log.d(TAG, "Delete local member : " + localMember);
+                        } else {
+                            Log.d(TAG,
                                     "WARNING local member : " + localMember.getName() + " does not exist remotely but is " +
-                                        "still involved in some bills");
+                                            "still involved in some bills");
                         }
                     }
                 }
                 status = LoginStatus.OK;
             } catch (ServerResponse.NotModifiedException e) {
-                Log.d(getClass().getSimpleName(), "No changes, nothing to do.");
+                Log.d(TAG, "No changes, nothing to do.");
                 status = LoginStatus.OK;
             } catch (IOException e) {
-                Log.e(getClass().getSimpleName(), "Exception", e);
+                Log.e(TAG, "Exception", e);
                 exceptions.add(e);
                 status = LoginStatus.CONNECTION_FAILED;
             } catch (JSONException e) {
-                Log.e(getClass().getSimpleName(), "Exception", e);
+                Log.e(TAG, "Exception", e);
                 exceptions.add(e);
                 status = LoginStatus.JSON_FAILED;
             }
@@ -687,8 +675,7 @@ public class MoneyBusterServerSyncHelper {
                 Intent intent = new Intent(BROADCAST_PROJECT_SYNC_FAILED);
                 intent.putExtra(BillsListViewActivity.BROADCAST_ERROR_MESSAGE, errorString);
                 appContext.sendBroadcast(intent);
-            }
-            else {
+            } else {
                 Intent intent = new Intent(BROADCAST_PROJECT_SYNCED);
                 intent.putExtra(BillsListViewActivity.BROADCAST_EXTRA_PARAM, project.getName());
                 appContext.sendBroadcast(intent);
@@ -722,7 +709,6 @@ public class MoneyBusterServerSyncHelper {
     /**
      * task to ask server to create public share with name restriction on device
      * or just get the share token if it already exists
-     *
      */
     private class EditRemoteProjectTask extends AsyncTask<Void, Void, LoginStatus> {
         private IHateMoneyClient client;
@@ -750,11 +736,15 @@ public class MoneyBusterServerSyncHelper {
         protected LoginStatus doInBackground(Void... voids) {
             client = createIHateMoneyClient();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
-            if (BillsListViewActivity.DEBUG) { Log.i(getClass().getSimpleName(), "STARTING edit remote project"); }
+            if (BillsListViewActivity.DEBUG) {
+                Log.i(getClass().getSimpleName(), "STARTING edit remote project");
+            }
             LoginStatus status = LoginStatus.OK;
             try {
                 ServerResponse.EditRemoteProjectResponse response = client.editRemoteProject(customCertManager, project, newName, newEmail, newPassword);
-                if (BillsListViewActivity.DEBUG) { Log.i(getClass().getSimpleName(), "RESPONSE edit remote project : "+response.getStringContent()); }
+                if (BillsListViewActivity.DEBUG) {
+                    Log.i(getClass().getSimpleName(), "RESPONSE edit remote project : " + response.getStringContent());
+                }
             } catch (IOException e) {
                 if (BillsListViewActivity.DEBUG) {
                     Log.e(getClass().getSimpleName(), "Exception", e);
@@ -781,8 +771,7 @@ public class MoneyBusterServerSyncHelper {
                 for (Throwable e : exceptions) {
                     errorString += e.getClass().getName() + ": " + e.getMessage();
                 }
-            }
-            else {
+            } else {
                 dbHelper.updateProject(project.getId(), newName, newEmail, newPassword, null);
             }
             callback.onFinish(newName, errorString);
@@ -802,7 +791,6 @@ public class MoneyBusterServerSyncHelper {
     /**
      * task to ask server to create public share with name restriction on device
      * or just get the share token if it already exists
-     *
      */
     private class DeleteRemoteProjectTask extends AsyncTask<Void, Void, LoginStatus> {
         private IHateMoneyClient client;
@@ -824,11 +812,15 @@ public class MoneyBusterServerSyncHelper {
         protected LoginStatus doInBackground(Void... voids) {
             client = createIHateMoneyClient();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
-            if (BillsListViewActivity.DEBUG) { Log.i(getClass().getSimpleName(), "STARTING delete remote project"); }
+            if (BillsListViewActivity.DEBUG) {
+                Log.i(getClass().getSimpleName(), "STARTING delete remote project");
+            }
             LoginStatus status = LoginStatus.OK;
             try {
                 ServerResponse.DeleteRemoteProjectResponse response = client.deleteRemoteProject(customCertManager, project);
-                if (BillsListViewActivity.DEBUG) { Log.i(getClass().getSimpleName(), "RESPONSE delete remote project : "+response.getStringContent()); }
+                if (BillsListViewActivity.DEBUG) {
+                    Log.i(getClass().getSimpleName(), "RESPONSE delete remote project : " + response.getStringContent());
+                }
             } catch (IOException e) {
                 if (BillsListViewActivity.DEBUG) {
                     Log.e(getClass().getSimpleName(), "Exception", e);
@@ -855,8 +847,7 @@ public class MoneyBusterServerSyncHelper {
                 for (Throwable e : exceptions) {
                     errorString += e.getClass().getName() + ": " + e.getMessage();
                 }
-            }
-            else {
+            } else {
                 dbHelper.deleteProject(project.getId());
             }
             callback.onFinish(String.valueOf(project.getId()), errorString);
@@ -876,7 +867,6 @@ public class MoneyBusterServerSyncHelper {
     /**
      * task to ask server to create public share with name restriction on device
      * or just get the share token if it already exists
-     *
      */
     private class CreateRemoteProjectTask extends AsyncTask<Void, Void, LoginStatus> {
         private IHateMoneyClient client;
@@ -898,11 +888,15 @@ public class MoneyBusterServerSyncHelper {
         protected LoginStatus doInBackground(Void... voids) {
             client = createIHateMoneyClient();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
-            if (BillsListViewActivity.DEBUG) { Log.i(getClass().getSimpleName(), "STARTING create remote project"); }
+            if (BillsListViewActivity.DEBUG) {
+                Log.i(getClass().getSimpleName(), "STARTING create remote project");
+            }
             LoginStatus status = LoginStatus.OK;
             try {
                 ServerResponse.CreateRemoteProjectResponse response = client.createRemoteProject(customCertManager, project);
-                if (BillsListViewActivity.DEBUG) { Log.i(getClass().getSimpleName(), "RESPONSE create remote project : "+response.getStringContent()); }
+                if (BillsListViewActivity.DEBUG) {
+                    Log.i(getClass().getSimpleName(), "RESPONSE create remote project : " + response.getStringContent());
+                }
             } catch (IOException e) {
                 if (BillsListViewActivity.DEBUG) {
                     Log.e(getClass().getSimpleName(), "Exception", e);
@@ -929,12 +923,26 @@ public class MoneyBusterServerSyncHelper {
                 for (Throwable e : exceptions) {
                     errorString += e.getClass().getName() + ": " + e.getMessage();
                 }
-            }
-            else {
+            } else {
                 //dbHelper.deleteProject(project.getId());
             }
             callback.onFinish(project.getRemoteId(), errorString);
         }
     }
 
+    private boolean hasChanged(DBBill localBill, DBBill remoteBill) {
+        if (
+                localBill.getPayerId() == remoteBill.getPayerId() &&
+                        localBill.getAmount() == remoteBill.getAmount() &&
+                        localBill.getDate().equals(remoteBill.getDate()) &&
+                        localBill.getWhat().equals(remoteBill.getWhat())
+        ) {
+            String localRepeat = localBill.getRepeat() == null ? "n" : localBill.getRepeat();
+            String remoteRepeat = remoteBill.getRepeat() == null ? "n" : remoteBill.getRepeat();
+
+            return !localRepeat.equals(remoteRepeat);
+        } else {
+            return true;
+        }
+    }
 }

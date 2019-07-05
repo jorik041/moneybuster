@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -49,7 +48,6 @@ import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.MoneyBuster;
 import net.eneiluj.moneybuster.util.ThemeUtils;
 
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,12 +57,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class EditBillFragment extends Fragment {
 
     private static final String TAG = EditBillFragment.class.getSimpleName();
     private ProjectType projectType;
+    private String originalRepeatValue = null;
 
     public interface BillFragmentListener {
         void close();
@@ -114,6 +112,7 @@ public class EditBillFragment extends Fragment {
     private SimpleDateFormat sdf;
 
     private boolean isSpinnerUserAction = false;
+    private boolean isSpinnerRepeatAction = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -247,6 +246,24 @@ public class EditBillFragment extends Fragment {
                 Log.d(TAG, "PAYERRRR NOTHING");
                 showHideValidationButtons();
             }
+        });
+
+        editRepeat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                Log.d(TAG, "REPEAT");
+                if (isSpinnerRepeatAction) {
+                    showHideValidationButtons();
+                }
+
+                isSpinnerRepeatAction = true;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                Log.d(TAG, "REPEAT NOTHING");
+                showHideValidationButtons();
+            }
 
         });
 
@@ -277,16 +294,19 @@ public class EditBillFragment extends Fragment {
     }
 
     private void showHideValidationButtons() {
-        if (getWhat() == null || getWhat().equals("") ||
+        if (hideSaveButton()) {
+            fabSaveBill.hide();
+        } else {
+            fabSaveBill.show();
+        }
+    }
+
+    private boolean hideSaveButton() {
+        return getWhat() == null || getWhat().equals("") ||
                 getDate() == null || getDate().equals("") ||
                 getAmount() == 0.0 ||
                 getPayerId() == 0 ||
-                getOwersIds().size() == 0) {
-            fabSaveBill.hide();
-        }
-        else {
-            fabSaveBill.show();
-        }
+                getOwersIds().size() == 0;
     }
 
     @Override
@@ -675,6 +695,8 @@ public class EditBillFragment extends Fragment {
             } else {
                 editRepeat.setSelection(0);
             }
+
+            originalRepeatValue = bill.getRepeat();
         } else {
             editRepeatLayout.setVisibility(View.GONE);
         }

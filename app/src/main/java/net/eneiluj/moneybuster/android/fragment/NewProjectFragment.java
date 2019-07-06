@@ -132,11 +132,13 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                 passwordPref.setVisible(!newValue.equals(ProjectType.LOCAL.getId()));
                 createPref.setVisible(!newValue.equals(ProjectType.LOCAL.getId()));
                 if (newValue.equals(ProjectType.LOCAL.getId())) {
+                    newProjectType.setIcon(R.drawable.ic_cellphone_grey_24dp);
                     createPref.setChecked(false);
                     emailPref.setVisible(false);
                     namePref.setVisible(false);
                 }
                 else if (newValue.equals(ProjectType.IHATEMONEY.getId())) {
+                    newProjectType.setIcon(R.drawable.ic_ihm_grey_24dp);
                     urlPref.setTitle(getString(R.string.setting_ihm_project_url));
                     urlPref.setDialogTitle(getString(R.string.setting_ihm_project_url));
                     urlPref.setDialogMessage(getString(R.string.setting_ihm_project_url_long));
@@ -145,6 +147,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                     newProjectIHMUrl.setSummary(defaultIhmUrl);
                 }
                 else if (newValue.equals(ProjectType.COSPEND.getId())) {
+                    newProjectType.setIcon(R.drawable.ic_cospend_grey_24dp);
                     urlPref.setTitle(getString(R.string.setting_cospend_project_url));
                     urlPref.setDialogTitle(getString(R.string.setting_cospend_project_url));
                     urlPref.setDialogMessage(getString(R.string.setting_cospend_project_url_long));
@@ -480,9 +483,11 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         newProjectType.setValue(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE));
         if (ProjectType.LOCAL.getId().equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
             newProjectType.setSummary(getString(R.string.project_type_local));
+            newProjectType.setIcon(R.drawable.ic_cellphone_grey_24dp);
         }
         if (ProjectType.IHATEMONEY.getId().equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
             newProjectType.setSummary(getString(R.string.project_type_ihatemoney));
+            newProjectType.setIcon(R.drawable.ic_ihm_grey_24dp);
             newProjectIHMUrl.setText(getArguments().getString(PARAM_DEFAULT_IHM_URL));
             newProjectIHMUrl.setSummary(getArguments().getString(PARAM_DEFAULT_IHM_URL));
 
@@ -492,6 +497,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         }
         if (ProjectType.COSPEND.getId().equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
             newProjectType.setSummary(getString(R.string.project_type_nextcloud_cospend));
+            newProjectType.setIcon(R.drawable.ic_cospend_grey_24dp);
             newProjectIHMUrl.setText(getArguments().getString(PARAM_DEFAULT_NC_URL));
             newProjectIHMUrl.setSummary(getArguments().getString(PARAM_DEFAULT_NC_URL));
 

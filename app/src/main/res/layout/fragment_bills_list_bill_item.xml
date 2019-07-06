@@ -53,8 +53,8 @@
                 android:layout_marginEnd="1dp"
                 android:layout_marginRight="1dp"
                 android:layout_marginBottom="1dp"
-                android:contentDescription="Avatar"
-                app:srcCompat="@drawable/ic_info_outline_grey600_24dp" />
+                android:contentDescription="@string/avatar"
+                android:src="@drawable/ic_info_outline_grey600_24dp" />
 
             <ImageView
                 android:id="@+id/repeatIcon"
@@ -68,7 +68,7 @@
                 android:background="@drawable/round_bgnd"
                 android:tint="@color/primary"
                 android:visibility="gone"
-                app:srcCompat="@drawable/ic_calendar_repeat_grey_24dp" />
+                android:src="@drawable/ic_calendar_repeat_grey_24dp" />
 
             <ImageView
                 android:id="@+id/syncIcon"
@@ -80,7 +80,7 @@
                 android:layout_marginRight="16dp"
                 android:background="@drawable/round_bgnd"
                 android:tint="@color/primary"
-                app:srcCompat="@android:drawable/stat_notify_sync" />
+                android:src="@drawable/ic_sync_grey_24dp" />
         </FrameLayout>
 
         <androidx.appcompat.widget.LinearLayoutCompat

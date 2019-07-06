@@ -23,6 +23,7 @@
     <string name="setting_project_id_long">Projectidentificatie</string>
     <string name="setting_project_id">Project-ID</string>
     <string name="setting_project_type">Soort project</string>
+    <string name="setting_project_repetition">Repeat this bill every</string>
     <string name="project_type_local">Lokaal project</string>
     <string name="project_type_ihatemoney">IHateMoney-project</string>
     <string name="project_type_nextcloud_cospend">Nextcloud Cospend-project</string>
@@ -180,6 +181,7 @@
     <!-- Key / Values for preferences -->
     <string name="pref_value_theme_light">Licht</string>
     <string name="pref_value_theme_dark">Donker</string>
+    <string name="avatar">Avatar</string>
     <!-- Plurals -->
     <plurals name="ab_selected">
         <item quantity="one">%d selected</item>

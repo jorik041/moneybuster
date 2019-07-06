@@ -23,6 +23,7 @@
     <string name="setting_project_id_long">项目标识符</string>
     <string name="setting_project_id">项目编号</string>
     <string name="setting_project_type">项目类型</string>
+    <string name="setting_project_repetition">Repeat this bill every</string>
     <string name="project_type_local">本地项目</string>
     <string name="project_type_ihatemoney">IHateMoney 项目</string>
     <string name="project_type_nextcloud_cospend">Nextcloud Cospend 项目</string>
@@ -180,6 +181,7 @@
     <!-- Key / Values for preferences -->
     <string name="pref_value_theme_light">亮色主题</string>
     <string name="pref_value_theme_dark">暗色主题</string>
+    <string name="avatar">Avatar</string>
     <!-- Plurals -->
     <plurals name="ab_selected">
         <item quantity="other">已选择 %d 个</item>

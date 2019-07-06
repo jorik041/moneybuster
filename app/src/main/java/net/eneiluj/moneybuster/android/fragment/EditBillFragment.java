@@ -673,7 +673,16 @@ public class EditBillFragment extends Fragment {
         Log.d(TAG, "HIIIIIIIIIIDE FAB");
 
         if (ProjectType.COSPEND.equals(projectType)) {
-            String[] repeatNames = getResources().getStringArray(R.array.repeatBillEntries);
+            List<String> repeatNameList = new ArrayList<>();
+            repeatNameList.add(getString(R.string.repeat_no));
+            repeatNameList.add(getString(R.string.repeat_day));
+            repeatNameList.add(getString(R.string.repeat_week));
+            repeatNameList.add(getString(R.string.repeat_month));
+            repeatNameList.add(getString(R.string.repeat_year));
+
+            String[] repeatNames = repeatNameList.toArray(new String[repeatNameList.size()]);
+            //String[] repeatNames = getResources().getStringArray(R.array.repeatBillEntries);
+
             String[] repeatIds = getResources().getStringArray(R.array.repeatBillValues);
             int index = Arrays.asList(repeatIds).indexOf(bill.getRepeat());
 

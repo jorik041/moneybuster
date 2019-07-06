@@ -539,7 +539,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         return newProjectId.getText();
     }
     protected String getIhmUrl() {
-        String url = newProjectIHMUrl.getText();
+        String url = newProjectIHMUrl.getText().trim();
         ProjectType type = getProjectType();
         if (ProjectType.COSPEND.equals(type)) {
             url = url.replaceAll("/+$", "") + "/index.php/apps/cospend";

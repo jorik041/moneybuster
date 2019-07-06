@@ -24,6 +24,11 @@
     <string name="setting_project_id">ID du projet</string>
     <string name="setting_project_type">Type de projet</string>
     <string name="setting_project_repetition">Répéter cette facture tous les</string>
+    <string name="repeat_no">ne pas répéter</string>
+    <string name="repeat_day">jours</string>
+    <string name="repeat_week">semaines</string>
+    <string name="repeat_month">mois</string>
+    <string name="repeat_year">ans</string>
     <string name="project_type_local">Projet local</string>
     <string name="project_type_ihatemoney">Projet IHateMoney</string>
     <string name="project_type_nextcloud_cospend">Projet Nextcloud Cospend</string>

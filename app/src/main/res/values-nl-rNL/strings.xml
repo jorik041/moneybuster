@@ -24,6 +24,11 @@
     <string name="setting_project_id">Project-ID</string>
     <string name="setting_project_type">Soort project</string>
     <string name="setting_project_repetition">Repeat this bill every</string>
+    <string name="repeat_no">do not repeat</string>
+    <string name="repeat_day">day</string>
+    <string name="repeat_week">week</string>
+    <string name="repeat_month">month</string>
+    <string name="repeat_year">year</string>
     <string name="project_type_local">Lokaal project</string>
     <string name="project_type_ihatemoney">IHateMoney-project</string>
     <string name="project_type_nextcloud_cospend">Nextcloud Cospend-project</string>

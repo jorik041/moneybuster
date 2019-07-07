@@ -23,12 +23,12 @@
     <string name="setting_project_id_long">Projekt Identifikation</string>
     <string name="setting_project_id">Projekt ID</string>
     <string name="setting_project_type">Projekttyp</string>
-    <string name="setting_project_repetition">Repeat this bill every</string>
-    <string name="repeat_no">do not repeat</string>
-    <string name="repeat_day">day</string>
-    <string name="repeat_week">week</string>
-    <string name="repeat_month">month</string>
-    <string name="repeat_year">year</string>
+    <string name="setting_project_repetition">Wiederhole diese Ausgabe jede(n)</string>
+    <string name="repeat_no">nicht wiederholen</string>
+    <string name="repeat_day">Tag</string>
+    <string name="repeat_week">Woche</string>
+    <string name="repeat_month">Monat</string>
+    <string name="repeat_year">Jahr</string>
     <string name="project_type_local">Lokales Projekt</string>
     <string name="project_type_ihatemoney">IHateMoney Projekt</string>
     <string name="project_type_nextcloud_cospend">Nextcloud Cospend Projekt</string>
@@ -186,7 +186,7 @@
     <!-- Key / Values for preferences -->
     <string name="pref_value_theme_light">Hell</string>
     <string name="pref_value_theme_dark">Dunkel</string>
-    <string name="avatar">Avatar</string>
+    <string name="avatar">Benutzerbild</string>
     <!-- Plurals -->
     <plurals name="ab_selected">
         <item quantity="one">%d ausgewählt</item>

@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- ability to manipulate recurring bills (cospend-only)
+[!6](https://gitlab.com/eneiluj/moneybuster/merge_requests/6) @AndyScherzinger
+
+### Changed
+- change project type icon in new project form
+[!7](https://gitlab.com/eneiluj/moneybuster/merge_requests/7) @AndyScherzinger
+
+### Fixed
+- trim project URL
+[!8](https://gitlab.com/eneiluj/moneybuster/merge_requests/8) @AndyScherzinger
+
 ## 0.0.10 – 2019-07-04
 ### Added
 

@@ -34,5 +34,6 @@
     <color name="fg_default_selection_dark_theme">#333333</color>
     <color name="fg_default_low_dark_theme">#666666</color>
     <color name="fg_default_high_dark_theme">#cccccc</color>
+    <color name="black">#000000</color>
 
 </resources>

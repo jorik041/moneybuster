@@ -39,6 +39,8 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import net.eneiluj.moneybuster.R;
+import net.eneiluj.moneybuster.android.ui.UserAdapter;
+import net.eneiluj.moneybuster.android.ui.UserItem;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBMember;
@@ -133,8 +135,7 @@ public class EditBillFragment extends Fragment {
         // if dark theme and main color is black, make fab button lighter/gray
         if (darkTheme && ThemeUtils.primaryColor(getContext()) == Color.BLACK) {
             fabSaveBill.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
-        }
-        else {
+        } else {
             fabSaveBill.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(getContext())));
         }
         fabSaveBill.setRippleColor(ThemeUtils.primaryDarkColor(getContext()));
@@ -220,16 +221,24 @@ public class EditBillFragment extends Fragment {
                 Log.d(TAG, "WHWHWHWHAAAATTT");
                 showHideValidationButtons();
             }
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
         });
         editAmount.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 Log.d(TAG, "AMOUNTTTT");
                 showHideValidationButtons();
             }
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
         });
         editPayer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -341,13 +350,12 @@ public class EditBillFragment extends Fragment {
         deleteDialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which){
+                switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         //Yes button clicked
                         if (db.getBill(bill.getId()).getState() == DBBill.STATE_ADDED) {
                             db.deleteBill(bill.getId());
-                        }
-                        else {
+                        } else {
                             db.setBillState(bill.getId(), DBBill.STATE_DELETED);
                         }
                         listener.closeOnDelete(bill.getId());
@@ -419,20 +427,15 @@ public class EditBillFragment extends Fragment {
     private void saveBillAsked() {
         if (getWhat() == null || getWhat().equals("")) {
             showToast(getString(R.string.error_invalid_bill_what), Toast.LENGTH_LONG);
-        }
-        else if (getDate() == null || getDate().equals("")) {
+        } else if (getDate() == null || getDate().equals("")) {
             showToast(getString(R.string.error_invalid_bill_date), Toast.LENGTH_LONG);
-        }
-        else if (getAmount() == 0.0) {
+        } else if (getAmount() == 0.0) {
             showToast(getString(R.string.error_invalid_bill_amount), Toast.LENGTH_LONG);
-        }
-        else if (getPayerId() == 0) {
+        } else if (getPayerId() == 0) {
             showToast(getString(R.string.error_invalid_bill_payerid), Toast.LENGTH_LONG);
-        }
-        else if (getOwersIds().size() == 0) {
+        } else if (getOwersIds().size() == 0) {
             showToast(getString(R.string.error_invalid_bill_owers), Toast.LENGTH_LONG);
-        }
-        else {
+        } else {
             saveBill(null);
             listener.close();
         }
@@ -447,8 +450,7 @@ public class EditBillFragment extends Fragment {
             case R.id.menu_delete:
                 if (bill.getId() != 0) {
                     confirmDeleteAlertBuilder.show();
-                }
-                else {
+                } else {
                     listener.close();
                 }
                 return true;
@@ -488,8 +490,7 @@ public class EditBillFragment extends Fragment {
         List<Long> billOwersIds = bill.getBillOwersIds();
         if (newOwersIds.size() != billOwersIds.size()) {
             owersChanged = true;
-        }
-        else {
+        } else {
             if (!newOwersIds.containsAll(billOwersIds)) {
                 owersChanged = true;
             }
@@ -506,8 +507,8 @@ public class EditBillFragment extends Fragment {
                     bill.getPayerId() == newPayerId &&
                     newRepeat.equals(bill.getRepeat()) &&
                     !owersChanged
-                    ) {
-                Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed "+bill.getWhat()+" "+newWhat);
+            ) {
+                Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed " + bill.getWhat() + " " + newWhat);
             } else {
                 Log.d(TAG, "====== update bill");
                 db.updateBillAndSync(bill, newPayerId, newAmount, newDate, newWhat, newOwersIds, newRepeat);
@@ -603,21 +604,13 @@ public class EditBillFragment extends Fragment {
 
         // build payer list
         if (memberNameList.size() > 0) {
-            String[] memberNameArray = memberNameList.toArray(new String[memberNameList.size()]);
-            String[] memberIdArray = memberIdList.toArray(new String[memberNameList.size()]);
-
-            ArrayList<Map<String, String>> data = new ArrayList<>();
+            List<UserItem> userList = new ArrayList<>();
             for (int i=0; i < memberNameList.size(); i++) {
-                HashMap<String, String> hashMap = new HashMap<>();
-                hashMap.put("name", memberNameList.get(i));
-                hashMap.put("id", memberIdList.get(i));
-                data.add(hashMap);
+                userList.add(new UserItem(Long.valueOf(memberIdList.get(i)), memberNameList.get(i)));
             }
-            String[] from = {"name", "id"};
-            int[] to = new int[] { android.R.id.text1 };
-            SimpleAdapter simpleAdapter = new SimpleAdapter(this.getContext(), data, android.R.layout.simple_spinner_item, from, to);
-            simpleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            editPayer.setAdapter(simpleAdapter);
+
+            UserAdapter userAdapter = new UserAdapter(this.getActivity(), userList);
+            editPayer.setAdapter(userAdapter);
             editPayer.getSelectedItemPosition();
 
             // set selected value for payer
@@ -628,8 +621,7 @@ public class EditBillFragment extends Fragment {
                 if (payerIndex != -1) {
                     editPayer.setSelection(payerIndex);
                 }
-            }
-            else {
+            } else {
                 // this is a new bill, we try to put last payer id
                 long lastPayerId = db.getProject(bill.getProjectId()).getLastPayerId();
                 int payerIndex = memberIdList.indexOf(String.valueOf(lastPayerId));
@@ -646,8 +638,7 @@ public class EditBillFragment extends Fragment {
             // show keyboard
             InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-        }
-        else {
+        } else {
             editWhat.setText(bill.getWhat());
         }
 
@@ -661,9 +652,8 @@ public class EditBillFragment extends Fragment {
                     calendar.get(Calendar.MONTH),
                     calendar.get(Calendar.DAY_OF_MONTH)
             );
-        }
-        catch (ParseException e) {
-            Log.d(getClass().getSimpleName(), "bad date "+bill.getDate());
+        } catch (ParseException e) {
+            Log.d(getClass().getSimpleName(), "bad date " + bill.getDate());
         }
 
         editAmount.setText(String.valueOf(bill.getAmount()));
@@ -688,14 +678,14 @@ public class EditBillFragment extends Fragment {
             int index = Arrays.asList(repeatIds).indexOf(bill.getRepeat());
 
             ArrayList<Map<String, String>> data = new ArrayList<>();
-            for (int i=0; i < repeatNames.length; i++) {
+            for (int i = 0; i < repeatNames.length; i++) {
                 HashMap<String, String> hashMap = new HashMap<>();
                 hashMap.put("name", repeatNames[i]);
                 hashMap.put("id", repeatIds[i]);
                 data.add(hashMap);
             }
             String[] from = {"name", "id"};
-            int[] to = new int[] { android.R.id.text1 };
+            int[] to = new int[]{android.R.id.text1};
             SimpleAdapter simpleAdapter = new SimpleAdapter(this.getContext(), data, android.R.layout.simple_spinner_item, from, to);
             simpleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             editRepeat.setAdapter(simpleAdapter);
@@ -715,9 +705,11 @@ public class EditBillFragment extends Fragment {
     protected String getWhat() {
         return editWhat.getText().toString();
     }
+
     protected String getDate() {
         return isoDate;
     }
+
     protected void setDateFromIso(String isoDate) {
         this.isoDate = isoDate;
         try {
@@ -728,6 +720,7 @@ public class EditBillFragment extends Fragment {
             editDate.setText(isoDate);
         }
     }
+
     protected double getAmount() {
         String amount = editAmount.getText().toString();
         if (amount == null || amount.equals("")) {
@@ -735,21 +728,21 @@ public class EditBillFragment extends Fragment {
         }
         try {
             return Double.valueOf(amount.replace(',', '.'));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return 0.0;
         }
     }
+
     protected long getPayerId() {
         int i = editPayer.getSelectedItemPosition();
         if (i < 0) {
             return 0;
-        }
-        else {
-            Map<String, String> item = (Map<String, String>) editPayer.getSelectedItem();
-            return Long.valueOf(item.get("id"));
+        } else {
+            UserItem item = (UserItem) editPayer.getSelectedItem();
+            return item.getId();
         }
     }
+
     protected List<Long> getOwersIds() {
         List<Long> owersIds = new ArrayList<>();
         for (Map.Entry<Long, CheckBox> entry : owerCheckboxes.entrySet()) {
@@ -765,8 +758,7 @@ public class EditBillFragment extends Fragment {
         int i = editRepeat.getSelectedItemPosition();
         if (i < 0) {
             return DBBill.NON_REPEATED;
-        }
-        else {
+        } else {
             Map<String, String> item = (Map<String, String>) editRepeat.getSelectedItem();
             return item.get("id");
         }

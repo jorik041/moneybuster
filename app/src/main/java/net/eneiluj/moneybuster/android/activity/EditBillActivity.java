@@ -22,6 +22,7 @@ import net.eneiluj.moneybuster.util.ThemeUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 //import android.support.v4.app.Fragment;
 
@@ -30,6 +31,8 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
     public static final String PARAM_BILL_ID = "billId";
     public static final String PARAM_PROJECT_ID = "projectId";
     public static final String PARAM_PROJECT_TYPE = "projectType";
+
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
 
     protected EditBillFragment fragment;
 
@@ -174,7 +177,7 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             //actionBar.setTitle();
-            actionBar.setSubtitle("[" + bill.getDate() + "] " + bill.getAmount() + " (" + bill.getWhat() + ")");
+            actionBar.setSubtitle("[" + getFormattedDate(bill.getDate()) + "] " + bill.getAmount() + " (" + bill.getWhat() + ")");
         }
     }
 
@@ -182,5 +185,14 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         Context context = getApplicationContext();
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
+    }
+    private String getFormattedDate(String stringDate) {
+        try {
+            Date date = sdf.parse(stringDate);
+            java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this);
+           return dateFormat.format(date);
+        } catch (Exception e) {
+            return stringDate;
+        }
     }
 }

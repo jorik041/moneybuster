@@ -16,5 +16,6 @@
     <color name="fg_default_low">#aaaaaa</color>
     <color name="fg_default_high">#666666</color>
     <color name="fg_contrast">#000000</color>
+    <color name="primary_text">#FFFFFF</color>
 
 </resources>

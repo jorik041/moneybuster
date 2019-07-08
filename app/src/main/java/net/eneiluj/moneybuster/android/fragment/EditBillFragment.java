@@ -88,6 +88,7 @@ public class EditBillFragment extends Fragment {
 
     protected EditText editWhat;
     protected EditText editDate;
+    protected String isoDate;
     protected Spinner editPayer;
     protected EditText editAmount;
     protected Spinner editRepeat;
@@ -273,7 +274,7 @@ public class EditBillFragment extends Fragment {
     }
 
     private void updateLabel() {
-        editDate.setText(sdf.format(calendar.getTime()));
+        setDateFromIso(sdf.format(calendar.getTime()));
         Log.d(TAG, "DATEUUUU");
         showHideValidationButtons();
     }
@@ -715,7 +716,17 @@ public class EditBillFragment extends Fragment {
         return editWhat.getText().toString();
     }
     protected String getDate() {
-        return editDate.getText().toString();
+        return isoDate;
+    }
+    protected void setDateFromIso(String isoDate) {
+        this.isoDate = isoDate;
+        try {
+            Date date = sdf.parse(isoDate);
+            java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(db.getContext());
+            editDate.setText(dateFormat.format(date));
+        } catch (Exception e) {
+            editDate.setText(isoDate);
+        }
     }
     protected double getAmount() {
         String amount = editAmount.getText().toString();

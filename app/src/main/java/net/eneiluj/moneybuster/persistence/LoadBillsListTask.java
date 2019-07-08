@@ -17,8 +17,11 @@ import net.eneiluj.moneybuster.model.Category;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.Item;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,12 +32,18 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
     private final Category category;
     private final CharSequence searchQuery;
     private final long projectId;
+
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+    private java.text.DateFormat dateFormat;
+
     public LoadBillsListTask(@NonNull Context context, @NonNull BillsLoadedListener callback, @NonNull Category category, @Nullable CharSequence searchQuery, @NonNull Long projectId) {
         this.context = context;
         this.callback = callback;
         this.category = category;
         this.searchQuery = searchQuery;
         this.projectId = projectId;
+
+        dateFormat = android.text.format.DateFormat.getDateFormat(context);
     }
 
     @Override
@@ -67,7 +76,14 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
 
             dbBill.setWhat(Html.toHtml(spannableString));
 
-            spannableString = new SpannableString(dbBill.getDate());
+            String formattedDate;
+            try {
+                Date date = sdf.parse(dbBill.getDate());
+                formattedDate = dateFormat.format(date);
+            } catch (Exception e) {
+                formattedDate = dbBill.getDate();
+            }
+            spannableString = new SpannableString(formattedDate);
             matcher = Pattern.compile("(" + searchQuery + ")", Pattern.CASE_INSENSITIVE).matcher(spannableString);
             while (matcher.find()) {
                 spannableString.setSpan(

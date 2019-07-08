@@ -19,8 +19,12 @@ import net.eneiluj.moneybuster.android.ui.TextDrawable;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
@@ -31,6 +35,9 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int section_type = 0;
     private static final int bill_type = 1;
+
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+
     private final BillClickListener billClickListener;
     private List<Item> itemList;
     private boolean showCategory = true;
@@ -126,7 +133,8 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             } catch (NoSuchAlgorithmException e) {
                 nvHolder.avatar.setImageDrawable(null);
             }
-            nvHolder.billDate.setText(Html.fromHtml(bill.getDate()));
+
+            setFormattedDate(nvHolder.billDate, bill.getDate());
 
             Log.d(TAG, "[get member of project " + bill.getProjectId() + " with remoteid : "+bill.getPayerId()+"]");
             String subtitle = String.valueOf(bill.getAmount());
@@ -145,6 +153,16 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             String repeat = bill.getRepeat() == null ? DBBill.NON_REPEATED : bill.getRepeat();
             nvHolder.repeatIcon.setVisibility(DBBill.NON_REPEATED.equals(repeat) ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    private void setFormattedDate(TextView billDate, String stringDate) {
+        try {
+            Date date = sdf.parse(stringDate);
+            java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(db.getContext());
+            billDate.setText(Html.fromHtml(dateFormat.format(date)));
+        } catch (Exception e) {
+            billDate.setText(Html.fromHtml(stringDate));
         }
     }
 

@@ -30,6 +30,7 @@ import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
@@ -58,13 +59,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class EditBillFragment extends Fragment {
 
     private static final String TAG = EditBillFragment.class.getSimpleName();
     private ProjectType projectType;
-    private String originalRepeatValue = null;
 
     public interface BillFragmentListener {
         void close();
@@ -74,38 +75,34 @@ public class EditBillFragment extends Fragment {
         void onBillUpdated(DBBill bill);
     }
 
-    public static final String PARAM_BILL_ID = "billId";
-    public static final String PARAM_NEWBILL = "newBill";
-    public static final String PARAM_PROJECT_TYPE = "projectType";
+    private static final String PARAM_BILL_ID = "billId";
+    private static final String PARAM_NEWBILL = "newBill";
+    private static final String PARAM_PROJECT_TYPE = "projectType";
     private static final String SAVEDKEY_BILL = "bill";
     private static final String SAVEDKEY_PROJECT_TYPE = "type";
     private static final String SAVEDKEY_ORIGINAL_BILL = "original_bill";
 
     protected DBBill bill;
 
-    protected MoneyBusterSQLiteOpenHelper db;
-    protected BillFragmentListener listener;
+    private MoneyBusterSQLiteOpenHelper db;
+    private BillFragmentListener listener;
 
     private Handler handler;
 
-    protected EditText editWhat;
-    protected EditText editDate;
-    protected String isoDate;
-    protected Spinner editPayer;
-    protected EditText editAmount;
-    protected Spinner editRepeat;
-    protected LinearLayout owersLayout;
-    protected FloatingActionButton fabSaveBill;
+    private EditText editWhat;
+    private EditText editDate;
+    private String isoDate;
+    private Spinner editPayer;
+    private EditText editAmount;
+    private Spinner editRepeat;
+    private LinearLayout owersLayout;
+    private FloatingActionButton fabSaveBill;
     private Button bAll;
     private Button bNone;
     private LinearLayout editRepeatLayout;
 
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
-
-    private List<DBMember> memberList;
-    private List<String> memberNameList;
-    private List<String> memberIdList;
 
     private Map<Long, CheckBox> owerCheckboxes;
 
@@ -118,7 +115,7 @@ public class EditBillFragment extends Fragment {
     private boolean isSpinnerRepeatAction = false;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_edit_bill_form, container, false);
         editWhat = view.findViewById(R.id.editWhat);
         editAmount = view.findViewById(R.id.editAmount);
@@ -183,7 +180,6 @@ public class EditBillFragment extends Fragment {
                 calendar.set(Calendar.MONTH, monthOfYear);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 updateLabel();
-
             }
 
         };
@@ -323,7 +319,7 @@ public class EditBillFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
 
         if (savedInstanceState == null) {
             long id = getArguments().getLong(PARAM_BILL_ID);
@@ -404,7 +400,7 @@ public class EditBillFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         //saveBill(null);
         outState.putSerializable(SAVEDKEY_BILL, bill);
@@ -560,9 +556,9 @@ public class EditBillFragment extends Fragment {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         // manage member list
-        memberList = db.getMembersOfProject(bill.getProjectId(), null);
-        memberNameList = new ArrayList<>();
-        memberIdList = new ArrayList<>();
+        List<DBMember> memberList = db.getMembersOfProject(bill.getProjectId(), null);
+        List<String> memberNameList = new ArrayList<>();
+        List<String> memberIdList = new ArrayList<>();
         for (DBMember member : memberList) {
             if (member.isActivated()) {
                 memberNameList.add(member.getName());
@@ -605,7 +601,7 @@ public class EditBillFragment extends Fragment {
         // build payer list
         if (memberNameList.size() > 0) {
             List<UserItem> userList = new ArrayList<>();
-            for (int i=0; i < memberNameList.size(); i++) {
+            for (int i = 0; i < memberNameList.size(); i++) {
                 userList.add(new UserItem(Long.valueOf(memberIdList.get(i)), memberNameList.get(i)));
             }
 
@@ -696,7 +692,6 @@ public class EditBillFragment extends Fragment {
                 editRepeat.setSelection(0);
             }
 
-            originalRepeatValue = bill.getRepeat();
         } else {
             editRepeatLayout.setVisibility(View.GONE);
         }

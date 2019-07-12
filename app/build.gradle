@@ -30,7 +30,7 @@ android {
         }
     }
     flavorDimensions "default"
-    // solves cert4android crash in device emulator, Android 9
+    // solves cert4android crash
     dataBinding {
         enabled = true
     }

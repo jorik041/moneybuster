@@ -25,6 +25,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
@@ -40,6 +41,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import net.eneiluj.moneybuster.R;
+import net.eneiluj.moneybuster.android.ui.TextDrawable;
 import net.eneiluj.moneybuster.android.ui.UserAdapter;
 import net.eneiluj.moneybuster.android.ui.UserItem;
 import net.eneiluj.moneybuster.model.DBBill;
@@ -51,6 +53,7 @@ import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.MoneyBuster;
 import net.eneiluj.moneybuster.util.ThemeUtils;
 
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -572,7 +575,7 @@ public class EditBillFragment extends Fragment {
             if (member.isActivated()) {
                 View row = LayoutInflater.from(getContext()).inflate(R.layout.ower_row, null);
 
-                CheckBox cb = row.findViewById(R.id.owerBox);
+                final CheckBox cb = row.findViewById(R.id.owerBox);
                 int owerIndex = bill.getBillOwersIds().indexOf(member.getId());
                 if (bill.getId() == 0 || owerIndex != -1) {
                     cb.setChecked(true);
@@ -580,6 +583,23 @@ public class EditBillFragment extends Fragment {
                 cb.setText(member.getName());
                 cb.setTextColor(ContextCompat.getColor(owersLayout.getContext(), R.color.fg_default));
                 owerCheckboxes.put(member.getId(), cb);
+
+                // avatar
+                ImageView avatar = row.findViewById(R.id.avatar);
+                try {
+                    avatar.setImageDrawable(TextDrawable.createNamedAvatar(member.getName(), 36));
+                } catch (NoSuchAlgorithmException e) {
+                    Log.e(TAG, "error creating avatar", e);
+                    avatar.setImageDrawable(null);
+                }
+                // click on avatar
+                avatar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        cb.performClick();
+                    }
+                });
+
 
                 owersLayout.addView(row);
 

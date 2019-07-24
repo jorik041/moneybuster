@@ -9,6 +9,8 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.preference.PreferenceManager;
 
@@ -27,8 +29,13 @@ import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -204,9 +211,8 @@ public class SupportUtil {
     }
 
     public static List<Transaction> settleBills(List<DBMember> members, Map<Long, Double> membersBalance) {
-        List<CreditDebt> credits = new ArrayList<>();
-        List<CreditDebt> debts = new ArrayList<>();
-        List<Transaction> transactions = new ArrayList<>();
+        List<CreditDebt> crediters = new ArrayList<>();
+        List<CreditDebt> debiters = new ArrayList<>();
 
         // Create lists of credits and debts
         for (DBMember m : members) {
@@ -214,71 +220,106 @@ public class SupportUtil {
             double balance = membersBalance.get(memberId);
 
             if (round2(balance) > 0.0) {
-                credits.add(new CreditDebt(memberId, balance));
+                crediters.add(new CreditDebt(memberId, balance));
             }
             else if (round2(balance) < 0.0) {
-                debts.add(new CreditDebt(memberId, -balance));
+                debiters.add(new CreditDebt(memberId, balance));
             }
         }
 
-        // Try and find exact matches
-        for (CreditDebt credit : credits) {
-            List<CreditDebt> match = exactMatch(round2(credit.getBalance()), debts, 0);
-            if (match != null && match.size() > 0) {
-                for (CreditDebt m : match) {
-                    transactions.add(new Transaction(m.getMemberId(), credit.getMemberId(), m.getBalance()));
-                    debts.remove(m);
-                }
-                credits.remove(credit);
-            }
-        }
-
-        // Split any remaining debts & credits
-        while (credits.size() > 0 && debts.size() > 0) {
-            if (credits.get(0).getBalance() > debts.get(0).getBalance()) {
-                transactions.add(new Transaction(
-                        debts.get(0).getMemberId(),
-                        credits.get(0).getMemberId(),
-                        debts.get(0).getBalance())
-                );
-                credits.get(0).setBalance(credits.get(0).getBalance() - debts.get(0).getBalance());
-                debts.remove(0);
-            }
-            else {
-                transactions.add(new Transaction(
-                        debts.get(0).getMemberId(),
-                        credits.get(0).getMemberId(),
-                        credits.get(0).getBalance())
-                );
-                debts.get(0).setBalance(debts.get(0).getBalance() - credits.get(0).getBalance());
-                credits.remove(0);
-            }
-        }
-
-        return transactions;
+        return reduceBalance(crediters, debiters, null);
     }
 
-    private static List<CreditDebt> exactMatch(double credit, List<CreditDebt> debts, int startIndex) {
-        if (startIndex >= debts.size()) {
-            return null;
+    public static List<Transaction> reduceBalance(List<CreditDebt> crediters, List<CreditDebt> debiters, List<Transaction> results) {
+        if (debiters.size() == 0 || crediters.size() == 0) {
+            return results;
         }
-        if (debts.get(startIndex).getBalance() > credit) {
-            return exactMatch(credit, debts, startIndex+1);
+
+        if (results == null) {
+            results = new ArrayList<>();
         }
-        else if (debts.get(startIndex).getBalance() == credit) {
-            List<CreditDebt> res = new ArrayList<>();
-            res.add(debts.get(startIndex));
-            return res;
+
+        Collections.sort(crediters, new Comparator<CreditDebt>() {
+            @Override
+            public int compare(CreditDebt cd2, CreditDebt cd1)
+            {
+                if (cd1.getBalance() == cd2.getBalance()) {
+                    return 0;
+                }
+                else {
+                    return (cd1.getBalance() < cd2.getBalance()) ? 1 : -1;
+                }
+            }
+        });
+        //Log.e(SupportUtil.class.getSimpleName(), "CREEEEEEEEEEEEEEEEEE");
+        for (CreditDebt c : crediters) {
+            Log.e(SupportUtil.class.getSimpleName(), "* "+c.getMemberId()+" : "+c.getBalance());
+        }
+        Collections.sort(debiters, new Comparator<CreditDebt>() {
+            @Override
+            public int compare(CreditDebt cd2, CreditDebt cd1)
+            {
+                if (cd1.getBalance() == cd2.getBalance()) {
+                    return 0;
+                }
+                else {
+                    return (cd1.getBalance() > cd2.getBalance()) ? 1 : -1;
+                }
+            }
+        });
+
+        CreditDebt deb = debiters.remove(debiters.size()-1);
+        long debiter = deb.getMemberId();
+        double debiterBalance = deb.getBalance();
+
+        CreditDebt cred = crediters.remove(crediters.size()-1);
+        long crediter = cred.getMemberId();
+        double crediterBalance = cred.getBalance();
+
+        double amount;
+        if (Math.abs(debiterBalance) > Math.abs(crediterBalance)) {
+            amount = Math.abs(crediterBalance);
         }
         else {
-            List<CreditDebt> match = exactMatch(credit - debts.get(startIndex).getBalance(), debts, startIndex+1);
-            if (match != null && match.size() > 0) {
-                match.add(debts.get(startIndex));
-            }
-            else {
-                match = exactMatch(credit, debts, startIndex+1);
-            }
-            return match;
+            amount = Math.abs(debiterBalance);
         }
+
+        results.add(new Transaction(debiter, crediter, amount));
+
+        double newDebiterBalance = debiterBalance + amount;
+        if (newDebiterBalance < 0.0) {
+            debiters.add(new CreditDebt(debiter, newDebiterBalance));
+            Collections.sort(debiters, new Comparator<CreditDebt>() {
+                @Override
+                public int compare(CreditDebt cd2, CreditDebt cd1)
+                {
+                    if (cd1.getBalance() == cd2.getBalance()) {
+                        return 0;
+                    }
+                    else {
+                        return (cd1.getBalance() > cd2.getBalance()) ? 1 : -1;
+                    }
+                }
+            });
+        }
+
+        double newCrediterBalance = crediterBalance - amount;
+        if (newCrediterBalance > 0.0) {
+            crediters.add(new CreditDebt(crediter, newCrediterBalance));
+            Collections.sort(crediters, new Comparator<CreditDebt>() {
+                @Override
+                public int compare(CreditDebt cd2, CreditDebt cd1)
+                {
+                    if (cd1.getBalance() == cd2.getBalance()) {
+                        return 0;
+                    }
+                    else {
+                        return (cd1.getBalance() < cd2.getBalance()) ? 1 : -1;
+                    }
+                }
+            });
+        }
+
+        return reduceBalance(crediters, debiters, results);
     }
 }

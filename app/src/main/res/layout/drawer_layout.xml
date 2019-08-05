@@ -178,6 +178,18 @@
                     fab:menu_openDirection="down">
 
                     <com.github.clans.fab.FloatingActionButton
+                        android:id="@+id/fabDrawer_scan_qrcode_import"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_qrcode_white_24dp"
+                        app:fab_colorNormal="@color/primary"
+                        app:fab_colorPressed="@color/primary"
+                        app:fab_hideAnimation="@anim/fab_slide_out_to_right"
+                        app:fab_showAnimation="@anim/fab_slide_in_from_right"
+                        fab:fab_label="@string/fab_scan_qrcode_import"
+                        fab:fab_size="normal" />
+
+                    <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/fabDrawer_add_member"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

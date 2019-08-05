@@ -1,5 +1,6 @@
 package net.eneiluj.moneybuster.android.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
@@ -14,6 +15,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,6 +45,7 @@ import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.preference.PreferenceManager;
@@ -119,6 +122,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private final static int addproject = 4;
     private final static int removeproject = 5;
     private final static int editproject = 6;
+    private final static int scan_qrcode_import_cmd = 7;
 
     //private HashMap<Long, Double> membersBalance;
 
@@ -129,6 +133,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     SwipeRefreshLayout swipeRefreshLayout;
     com.github.clans.fab.FloatingActionButton fabAddProject;
     com.github.clans.fab.FloatingActionButton fabAddMember;
+    com.github.clans.fab.FloatingActionButton fabScanQrcodeImport;
     com.github.clans.fab.FloatingActionMenu fabMenuDrawerAdd;
     com.github.clans.fab.FloatingActionMenu fabMenuDrawerEdit;
     com.github.clans.fab.FloatingActionButton fabEditMember;
@@ -195,6 +200,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         fabAddProject = findViewById(R.id.fabDrawer_add_project);
         fabAddMember = findViewById(R.id.fabDrawer_add_member);
+        fabScanQrcodeImport = findViewById(R.id.fabDrawer_scan_qrcode_import);
         fabMenuDrawerAdd = findViewById(R.id.floatingMenuDrawerAdd);
         fabMenuDrawerEdit = findViewById(R.id.floatingMenuDrawerEdit);
         fabEditMember = findViewById(R.id.fabDrawer_edit_member);
@@ -469,6 +475,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 }
+            }
+        });
+        fabScanQrcodeImport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent createIntent = new Intent(getApplicationContext(), QrCodeScanner.class);
+                startActivityForResult(createIntent, scan_qrcode_import_cmd);
             }
         });
         fabAddBill.setOnClickListener(new View.OnClickListener() {
@@ -962,6 +975,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabAddProject.setColorPressed(ThemeUtils.primaryColor(this));
         fabAddMember.setColorNormal(ThemeUtils.primaryColor(this));
         fabAddMember.setColorPressed(ThemeUtils.primaryColor(this));
+        fabScanQrcodeImport.setColorNormal(ThemeUtils.primaryColor(this));
+        fabScanQrcodeImport.setColorPressed(ThemeUtils.primaryColor(this));
         fabEditMember.setColorNormal(ThemeUtils.primaryColor(this));
         fabEditMember.setColorPressed(ThemeUtils.primaryColor(this));
         fabEditProject.setColorNormal(ThemeUtils.primaryColor(this));
@@ -1635,6 +1650,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         } else if (requestCode == show_single_bill_cmd) {
 
+        } else if (requestCode == scan_qrcode_import_cmd) {
+            if (data != null) {
+                // adapt after project has been deleted
+                String scannedUrl = data.getStringExtra(QrCodeScanner.KEY_QR_CODE);
+                Log.d(TAG, "onActivityResult SCANNED URL : "+scannedUrl);
+                Intent i = new Intent(this, NewProjectActivity.class);
+                i.setAction(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(scannedUrl));
+                startActivity(i);
+            }
         }
         /*else if (requestCode == server_settings) {
             // Create new Instance with new URL and credentials

@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.fragment.NewProjectFragment;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.util.ThemeUtils;
@@ -78,6 +79,8 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
         String defaultProjectPassword = null;
         ProjectType defaultProjectType = ProjectType.LOCAL;
 
+        Boolean shouldCloseActivity = false;
+
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Uri data = getIntent().getData();
             if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 2) {
@@ -106,12 +109,22 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
                         data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
                 defaultProjectType = ProjectType.IHATEMONEY;
             }
+            else {
+                showToast(getString(R.string.import_bad_url), Toast.LENGTH_LONG);
+                shouldCloseActivity = true;
+            }
         }
         fragment = NewProjectFragment.newInstance(
                 defaultIhmUrl, defaultNcUrl,
-                defaultProjectId, defaultProjectPassword, defaultProjectType
+                defaultProjectId, defaultProjectPassword, defaultProjectType,
+                (Intent.ACTION_VIEW.equals(getIntent().getAction()))
         );
+
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
+
+        if (shouldCloseActivity) {
+            close(0);
+        }
     }
 
     @Override

@@ -50,6 +50,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     public static final String PARAM_DEFAULT_PROJECT_ID = "defaultProjectId";
     public static final String PARAM_DEFAULT_PROJECT_PASSWORD = "defaultProjectPassword";
     public static final String PARAM_DEFAULT_PROJECT_TYPE = "defaultProjectType";
+    public static final String PARAM_IS_IMPORT = "isImport";
 
     public interface NewProjectFragmentListener {
         void close(long pid);
@@ -75,7 +76,8 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     public static NewProjectFragment newInstance(String defaultIhmUrl, String defaultNCUrl,
                                                  @Nullable String defaultProjectId,
                                                  @Nullable String defaultProjectPassword,
-                                                 ProjectType defaultProjectType) {
+                                                 ProjectType defaultProjectType,
+                                                 Boolean isImport) {
         NewProjectFragment f = new NewProjectFragment();
         Bundle b = new Bundle();
         b.putString(PARAM_DEFAULT_IHM_URL, defaultIhmUrl);
@@ -83,6 +85,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         b.putString(PARAM_DEFAULT_PROJECT_ID, defaultProjectId);
         b.putString(PARAM_DEFAULT_PROJECT_PASSWORD, defaultProjectPassword);
         b.putString(PARAM_DEFAULT_PROJECT_TYPE, defaultProjectType.getId());
+        b.putBoolean(PARAM_IS_IMPORT, isImport);
         f.setArguments(b);
         return f;
     }
@@ -526,6 +529,9 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         if (ProjectType.LOCAL.getId().equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
             newProjectIHMUrl.setVisible(false);
             newProjectPassword.setVisible(false);
+            newProjectCreate.setVisible(false);
+        }
+        if (getArguments().getBoolean(PARAM_IS_IMPORT)) {
             newProjectCreate.setVisible(false);
         }
         newProjectEmail.setVisible(false);

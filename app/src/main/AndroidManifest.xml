@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- For web sync retries -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- For QRCode scanner -->
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name="net.eneiluj.moneybuster.util.MoneyBuster"
@@ -49,6 +51,13 @@
             android:parentActivityName="net.eneiluj.moneybuster.android.activity.BillsListViewActivity"
             android:windowSoftInputMode="stateHidden"
             android:theme="@style/Preferences"
+            />
+
+        <activity
+            android:name="net.eneiluj.moneybuster.android.activity.QrCodeScanner"
+            android:label="@string/action_scan_qrcode"
+            android:parentActivityName="net.eneiluj.moneybuster.android.activity.BillsListViewActivity"
+            android:windowSoftInputMode="stateHidden"
             />
 
         <activity

@@ -52,6 +52,7 @@ dependencies {
     implementation 'com.github.kizitonwose.colorpreference:support:1.0.6'
     implementation 'com.larswerkman:lobsterpicker:1.0.1'
     implementation 'com.google.zxing:core:3.4.0'
+    implementation 'me.dm7.barcodescanner:zxing:1.9.13'
     implementation 'commons-codec:commons-codec:1.12'
 }
 

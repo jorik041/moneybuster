@@ -13,7 +13,20 @@ before_script:
     - unzip gradle-5.3-bin.zip > /dev/null 2>&1
     - cd -
 
-build_app:
+build_release_app:
+  stage: build
+  only:
+    refs:
+      - release
+  artifacts:
+    paths:
+      - app/build/outputs/apk/normal/release/app-normal-release-unsigned.apk
+  script:
+      - export PATH=/root/gradle-5.3/bin:$PATH
+      - pwd
+      - cd app ; gradle assembleNormal
+
+build_dev_app:
   stage: build
   only:
     refs:

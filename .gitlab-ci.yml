@@ -1,44 +1,3 @@
-#image: livexp/android-sdk
-#
-#variables:
-#  GIT_SUBMODULE_STRATEGY: recursive
-#
-#stages:
-#  - build
-#
-#before_script:
-#    - docker-android-sdk-install "build-tools;28.0.3"
-#    - cd /root/
-#    - wget https://services.gradle.org/distributions/gradle-5.3-bin.zip > /dev/null 2>&1
-#    - unzip gradle-5.3-bin.zip > /dev/null 2>&1
-#    - cd -
-#
-#build_release_app:
-#  stage: build
-#  only:
-#    refs:
-#      - release
-#  artifacts:
-#    paths:
-#      - app/build/outputs/apk/normal/release/app-normal-release-unsigned.apk
-#  script:
-#      - export PATH=/root/gradle-5.3/bin:$PATH
-#      - pwd
-#      - cd app ; gradle assembleNormal
-#
-#build_dev_app:
-#  stage: build
-#  only:
-#    refs:
-#      - build
-#  artifacts:
-#    paths:
-#      - app/build/outputs/apk/dev/debug/app-dev-debug.apk
-#  script:
-#      - export PATH=/root/gradle-5.3/bin:$PATH
-#      - pwd
-#      - cd app ; gradle assembleDev
-
 image: openjdk:8-jdk
 
 variables:
@@ -84,7 +43,7 @@ assembleDevDebug:
     - ./gradlew assembleDevDebug
   artifacts:
     paths:
-    - app/build/outputs/
+    - app/build/outputs/apk/dev/debug/*.apk
 
 assembleNormalRelease:
   stage: build
@@ -92,10 +51,16 @@ assembleNormalRelease:
     refs:
       - release
   script:
+    - cat $KEY_STORE_FILE | base64 -d > my.keystore
     - ./gradlew assembleNormalRelease
+          -Pandroid.injected.signing.store.file=$(pwd)/my.keystore
+          -Pandroid.injected.signing.store.password="$KEY_STORE_PASSWORD"
+          -Pandroid.injected.signing.key.alias=$KEY_ALIAS
+          -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
   artifacts:
     paths:
-    - app/build/outputs/
+    - app/build/outputs/apk/normal/release/*.apk
+    - CHANGELOG.md
 
 debugTests:
   stage: test

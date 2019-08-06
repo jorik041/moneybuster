@@ -482,6 +482,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             public void onClick(View view) {
                 Intent createIntent = new Intent(getApplicationContext(), QrCodeScanner.class);
                 startActivityForResult(createIntent, scan_qrcode_import_cmd);
+
+                fabMenuDrawerAdd.close(true);
+                drawerLayout.closeDrawers();
             }
         });
         fabAddBill.setOnClickListener(new View.OnClickListener() {

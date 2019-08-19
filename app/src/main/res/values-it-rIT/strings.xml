@@ -23,12 +23,12 @@
     <string name="setting_project_id_long">Identificatore di progetto</string>
     <string name="setting_project_id">ID Progetto</string>
     <string name="setting_project_type">Tipo di progetto</string>
-    <string name="setting_project_repetition">Repeat this bill every</string>
-    <string name="repeat_no">do not repeat</string>
-    <string name="repeat_day">day</string>
-    <string name="repeat_week">week</string>
-    <string name="repeat_month">month</string>
-    <string name="repeat_year">year</string>
+    <string name="setting_project_repetition">Ripeti questa spesa ogni</string>
+    <string name="repeat_no">Non ripetere</string>
+    <string name="repeat_day">giorno</string>
+    <string name="repeat_week">settimana</string>
+    <string name="repeat_month">mese</string>
+    <string name="repeat_year">anno</string>
     <string name="project_type_local">Progetto locale</string>
     <string name="project_type_ihatemoney">Progetto IHateMoney</string>
     <string name="project_type_nextcloud_cospend">Progetto Nextcloud Cospend</string>
@@ -148,7 +148,7 @@
     <string name="error_invalid_email">Indirizzo e-mail non valido</string>
     <string name="error_invalid_url">URL non valido</string>
     <string name="error_invalid_project_remote_id">ID progetto non valido</string>
-    <string name="error_invalid_project_password">Ja password del progetto non può essere vuota</string>
+    <string name="error_invalid_project_password">La password del progetto non può essere vuota</string>
     <string name="error_invalid_project_name">Nome del progetto non valido</string>
     <string name="error_invalid_bill_what">Nome spesa non valida</string>
     <string name="error_invalid_bill_date">Data spesa non valida</string>
@@ -186,7 +186,7 @@
     <!-- Key / Values for preferences -->
     <string name="pref_value_theme_light">Chiaro</string>
     <string name="pref_value_theme_dark">Scuro</string>
-    <string name="avatar">Avatar</string>
+    <string name="avatar">Immagine di profilo</string>
     <!-- Plurals -->
     <plurals name="ab_selected">
         <item quantity="one">%d selezionato</item>

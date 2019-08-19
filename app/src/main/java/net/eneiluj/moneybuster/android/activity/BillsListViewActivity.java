@@ -20,7 +20,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.text.InputType;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -876,15 +878,21 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     String password = proj.getPassword();
 
                     String hostEnd;
+                    final String publicWebUrl;
+                    String publicWebLink;
                     if (proj.getIhmUrl().contains("index.php/apps/cospend")) {
                         hostEnd = "cospend";
+                        publicWebUrl = proj.getIhmUrl() + "/loginproject/" + proj.getRemoteId();
                     }
                     else {
                         hostEnd = "ihatemoney";
+                        publicWebUrl = proj.getIhmUrl() + "/" + proj.getRemoteId();
                     }
+                    publicWebLink = "<a href=\"" + publicWebUrl + "\">" + publicWebUrl + "</a>";
 
-                    final String shareLink = "https://net.eneiluj.moneybuster." + hostEnd + "/" +
+                    final String shareUrl = "https://net.eneiluj.moneybuster." + hostEnd + "/" +
                             url + "/" + projId + "/" + password;
+                    final String shareLink = "<a href=\"" + shareUrl + "\">" + shareUrl + "</a>";
 
                     // generate the dialog
                     AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -896,14 +904,43 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     builder.setTitle(getString(R.string.share_dialog_title));
 
                     final View tView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.share_project_items, null);
+
+                    TextView publicUrlTitle = tView.findViewById(R.id.textViewShareProjectPublicUrlTitle);
+                    publicUrlTitle.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
+
+                    TextView qrCodeTitle = tView.findViewById(R.id.textViewShareProjectQRCodeTitle);
+                    qrCodeTitle.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
+
+                    TextView publicUrlHint = tView.findViewById(R.id.textViewShareProjectPublicUrlHint);
+                    publicUrlHint.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
+
+                    TextView publicUrl = tView.findViewById(R.id.textViewShareProjectPublicUrl);
+                    publicUrl.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
+                    publicUrl.setText(Html.fromHtml(publicWebLink));
+                    publicUrl.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(final View view) {
+                            Intent i = new Intent(Intent.ACTION_VIEW);
+                            i.setData(Uri.parse(publicWebUrl));
+                            startActivity(i);
+                        }
+                    });
+
                     TextView link = tView.findViewById(R.id.textViewShareProject);
                     link.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
-                    link.setText(shareLink);
+                    link.setText(Html.fromHtml(shareLink));
+                    link.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(final View view) {
+                            showToast(getString(R.string.qrcode_link_open_attempt_warning));
+                        }
+                    });
+
                     TextView hint = tView.findViewById(R.id.textViewShareProjectHint);
                     hint.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
                     ImageView img = tView.findViewById(R.id.imageViewShareProject);
                     try {
-                        Bitmap bitmap = ThemeUtils.encodeAsBitmap(shareLink);
+                        Bitmap bitmap = ThemeUtils.encodeAsBitmap(shareUrl);
                         img.setImageBitmap(bitmap);
                     } catch (WriterException e) {
                         e.printStackTrace();
@@ -925,7 +962,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             shareIntent.setAction(Intent.ACTION_SEND);
                             shareIntent.setType("text/plain");
                             shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_share_intent_title, proj.getName()));
-                            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareLink);
+                            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareUrl);
                             startActivity(Intent.createChooser(shareIntent, getString(R.string.share_share_chooser_title, proj.getName())));
                         }
                     });

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:divider="@drawable/dummydivider"
+
     android:showDividers="middle"
     android:dividerPadding="22dp"
     android:gravity="center_vertical"
@@ -11,10 +14,45 @@
     android:padding="10dp">
 
     <TextView
-        android:id="@+id/textViewShareProjectHint"
+        android:id="@+id/textViewShareProjectPublicUrlTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/share_project_dialog_message" />
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:text="@string/share_project_public_url_title" />
+
+
+    <TextView
+        android:id="@+id/textViewShareProjectPublicUrl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textIsSelectable="true"
+        android:textAlignment="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="" />
+    <TextView
+        android:id="@+id/textViewShareProjectPublicUrlHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/share_project_public_url_dialog_message" />
+
+    <ImageView
+        android:src="@drawable/dummydivider"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <TextView
+        android:id="@+id/textViewShareProjectQRCodeTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/share_project_public_qrcode_title" />
 
     <ImageView
         android:id="@+id/imageViewShareProject"
@@ -23,12 +61,21 @@
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         />
-
     <TextView
         android:id="@+id/textViewShareProject"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="TextView" />
+        android:textIsSelectable="true"
+        android:text="" />
+    <TextView
+        android:id="@+id/textViewShareProjectHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/share_project_dialog_message" />
+
+
+
 
 </LinearLayout>
+</ScrollView>

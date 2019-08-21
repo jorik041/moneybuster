@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+- qr scanner to import projects
+[#20](https://gitlab.com/eneiluj/moneybuster/issues/20) @denics
+- web link in sharing dialog
+[cospend#42](https://gitlab.com/eneiluj/cospend-nc/issues/42) @jreybert
+
+### Changed
+- settlement algorithm: use the same as Cospend and IHateMoney (from https://framagit.org/almet/debts)
+[#15](https://gitlab.com/eneiluj/moneybuster/issues/15) @nicocool84
+- improve CI script, now can sign release apk
+
+### Fixed
+- hide 'create on server' when importing a project from QR/url
+
+## 0.0.11 – 2019-07-12
+### Added
 - ability to manipulate recurring bills (cospend projects only)
 [!6](https://gitlab.com/eneiluj/moneybuster/merge_requests/6) @AndyScherzinger
 - avatar in bill edition

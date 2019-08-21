@@ -1,8 +1,12 @@
 package net.eneiluj.moneybuster.android.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -58,6 +62,16 @@ public class QrCodeScanner extends AppCompatActivity implements ZXingScannerView
         Log.v(TAG, "QRresult" + rawResult.getBarcodeFormat().toString());
         //If you would like to resume scanning, call this method below:
         //mScannerView.resumeCameraPreview(this);
+
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 300 milliseconds
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            //deprecated in API 26
+            v.vibrate(300);
+        }
+
         Intent intent = new Intent();
         intent.putExtra(KEY_QR_CODE, rawResult.getText());
         setResult(RESULT_OK, intent);

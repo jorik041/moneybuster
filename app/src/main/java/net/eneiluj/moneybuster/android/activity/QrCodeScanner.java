@@ -44,6 +44,7 @@ public class QrCodeScanner extends AppCompatActivity implements ZXingScannerView
         mScannerView.setResultHandler(this);
         // Start camera on resume
         mScannerView.startCamera();
+        if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[Scanner onResume]"); }
     }
 
     @Override
@@ -51,6 +52,7 @@ public class QrCodeScanner extends AppCompatActivity implements ZXingScannerView
         super.onPause();
         // Stop camera on pause
         mScannerView.stopCamera();
+        if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[Scanner onPause]"); }
     }
 
     @Override

@@ -44,6 +44,7 @@ If you want to be able to create remote projects from MoneyBuster : enable publi
 ## Install
 
 * F-Droid : [![MoneyBuster App on fdroid.org](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/12078870063ba70ddae219b6187bfcb7/fd.png)](https://f-droid.org/packages/net.eneiluj.moneybuster/)
+* Play Store [<img src="https://gitlab.com/eneiluj/moneybuster/wikis/uploads/26dba6c5f776bab761cebf4e9543bf67/play.png" width="200"/>](https://play.google.com/store/apps/details?id=net.eneiluj.moneybuster)
 * APK Direct download : [builds in Gitlab CI jobs artifacts](https://gitlab.com/eneiluj/moneybuster/pipelines)
 
 ## Build

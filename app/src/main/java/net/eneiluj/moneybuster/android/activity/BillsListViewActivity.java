@@ -374,6 +374,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             public void onClick(View view) {
                 addProject();
                 fabMenuDrawerAdd.close(false);
+                drawerLayout.closeDrawers();
             }
         });
         fabAddMember.setOnClickListener(new View.OnClickListener() {
@@ -960,6 +961,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 }
                 else {
                     addProject();
+                    drawerLayout.closeDrawers();
                 }
             }
         });

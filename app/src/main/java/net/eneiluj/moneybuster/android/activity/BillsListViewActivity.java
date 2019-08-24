@@ -372,36 +372,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabAddProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String defaultNcUrl = "https://mynextcloud.org";
-                String defaultIhmUrl = "https://ihatemoney.org";
-                Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
-                List<DBProject> projects = db.getProjects();
-
-                String url;
-                // look for a default NC url in existing projects
-                for (DBProject project : projects) {
-                    url = project.getIhmUrl();
-                    if (url != null && !url.equals("")) {
-                        if (url.contains("/index.php/apps/cospend")) {
-                            defaultNcUrl = url.replace("/index.php/apps/cospend", "");
-                            break;
-                        }
-                    }
-                }
-                // look for a default IHM url in existing projects
-                for (DBProject project : projects) {
-                    url = project.getIhmUrl();
-                    if (url != null && !url.equals("")) {
-                        if (!url.contains("/index.php/apps/cospend")) {
-                            defaultIhmUrl = url;
-                            break;
-                        }
-                    }
-                }
-
-                newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_NC_URL, defaultNcUrl);
-                newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_IHM_URL, defaultIhmUrl);
-                startActivityForResult(newProjectIntent, addproject);
+                addProject();
                 fabMenuDrawerAdd.close(false);
             }
         });
@@ -984,7 +955,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         selectedProjectLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                showProjectSelectionDialog();
+                if (db.getProjects().size() > 0) {
+                    showProjectSelectionDialog();
+                }
+                else {
+                    addProject();
+                }
             }
         });
 
@@ -1029,6 +1005,39 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabStatistics.setColorPressed(ThemeUtils.primaryColor(this));
         fabRemoveProject.setColorNormal(ThemeUtils.primaryColor(this));
         fabRemoveProject.setColorPressed(ThemeUtils.primaryColor(this));
+    }
+
+    private void addProject() {
+        String defaultNcUrl = "https://mynextcloud.org";
+        String defaultIhmUrl = "https://ihatemoney.org";
+        Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
+        List<DBProject> projects = db.getProjects();
+
+        String url;
+        // look for a default NC url in existing projects
+        for (DBProject project : projects) {
+            url = project.getIhmUrl();
+            if (url != null && !url.equals("")) {
+                if (url.contains("/index.php/apps/cospend")) {
+                    defaultNcUrl = url.replace("/index.php/apps/cospend", "");
+                    break;
+                }
+            }
+        }
+        // look for a default IHM url in existing projects
+        for (DBProject project : projects) {
+            url = project.getIhmUrl();
+            if (url != null && !url.equals("")) {
+                if (!url.contains("/index.php/apps/cospend")) {
+                    defaultIhmUrl = url;
+                    break;
+                }
+            }
+        }
+
+        newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_NC_URL, defaultNcUrl);
+        newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_IHM_URL, defaultIhmUrl);
+        startActivityForResult(newProjectIntent, addproject);
     }
 
     private void showProjectSelectionDialog() {

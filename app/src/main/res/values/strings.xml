@@ -113,6 +113,7 @@
     <string name="settle_who">Who pays?</string>
     <string name="settle_to_whom">To whom?</string>
     <string name="settle_how_much">How much?</string>
+    <string name="total_payed">Total payed by all the members: %.2f</string>
     <string name="stats_who">Who</string>
     <string name="stats_paid">Paid</string>
     <string name="stats_spent">Spent</string>

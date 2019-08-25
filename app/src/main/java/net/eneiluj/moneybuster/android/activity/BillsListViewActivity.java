@@ -645,7 +645,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     hbalance.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
                     final TableLayout tl = tView.findViewById(R.id.statTable);
 
+                    double totalPayed = 0.0;
+
                     for (DBMember m : membersSortedByName) {
+                        totalPayed += membersPaid.get(m.getId());
                         statsText += "\n" + m.getName() + " (";
 
                         View row = LayoutInflater.from(getApplicationContext()).inflate(R.layout.statistic_row, null);
@@ -698,6 +701,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         tl.addView(row);
                     }
                     final String statsTextToShare = statsText;
+
+                    TextView totalPayedTV = tView.findViewById(R.id.totalPayedText);
+                    totalPayedTV.setText(getString(R.string.total_payed, totalPayed));
+                    totalPayedTV.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
 
                     builder.setView(tView).setIcon(R.drawable.ic_chart_grey_24dp);
                     builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {

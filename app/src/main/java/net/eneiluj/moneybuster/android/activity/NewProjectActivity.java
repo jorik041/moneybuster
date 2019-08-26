@@ -109,6 +109,13 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
                         data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
                 defaultProjectType = ProjectType.IHATEMONEY;
             }
+            else if (data.getHost().equals("ihatemoney.org") && data.getPathSegments().size() == 1) {
+                defaultProjectPassword = "";
+                defaultProjectId = data.getLastPathSegment();
+
+                defaultIhmUrl = "https://ihatemoney.org";
+                defaultProjectType = ProjectType.IHATEMONEY;
+            }
             else {
                 showToast(getString(R.string.import_bad_url), Toast.LENGTH_LONG);
                 shouldCloseActivity = true;

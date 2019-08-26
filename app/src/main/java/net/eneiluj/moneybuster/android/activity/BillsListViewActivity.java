@@ -24,10 +24,12 @@ import android.text.Html;
 import android.text.InputType;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -1958,7 +1960,22 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 case MoneyBusterServerSyncHelper.BROADCAST_PROJECT_SYNCED:
                     String projName = intent.getStringExtra(BROADCAST_EXTRA_PARAM);
                     refreshLists();
-                    showToast(getString(R.string.project_sync_success, projName));
+                    //showToast(getString(R.string.project_sync_success, projName));
+
+                    // show sync success toast
+                    LayoutInflater inflater = getLayoutInflater();
+                    View layout = inflater.inflate(R.layout.sync_success_toast,
+                            (ViewGroup) findViewById(R.id.custom_toast_container));
+
+                    TextView text = (TextView) layout.findViewById(R.id.text);
+                    text.setText(getString(R.string.project_sync_success, projName));
+
+                    Toast toast = new Toast(getApplicationContext());
+                    toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                    toast.setDuration(Toast.LENGTH_SHORT);
+                    toast.setView(layout);
+                    toast.show();
+
                     break;
                 case MoneyBusterServerSyncHelper.BROADCAST_SYNC_PROJECT:
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

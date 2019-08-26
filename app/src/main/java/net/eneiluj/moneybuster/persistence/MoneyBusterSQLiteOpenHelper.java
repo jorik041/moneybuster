@@ -2,6 +2,7 @@ package net.eneiluj.moneybuster.persistence;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -11,7 +12,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
+import androidx.preference.PreferenceManager;
 
+import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.activity.BillsListViewActivity;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
@@ -438,7 +441,11 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         addMember(m);
         DBProject proj = getProject(m.getProjectId());
         if (!proj.isLocal()) {
-            serverSyncHelper.scheduleSync(true, m.getProjectId());
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            boolean offlineMode = preferences.getBoolean(getContext().getString(R.string.pref_key_offline_mode), false);
+            if (!offlineMode) {
+                serverSyncHelper.scheduleSync(true, m.getProjectId());
+            }
         }
     }
 
@@ -479,7 +486,11 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         Log.v(TAG, "UPDATE BILL AND SYNC");
         DBProject proj = getProject(m.getProjectId());
         if (!proj.isLocal()) {
-            serverSyncHelper.scheduleSync(true, m.getProjectId());
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            boolean offlineMode = preferences.getBoolean(getContext().getString(R.string.pref_key_offline_mode), false);
+            if (!offlineMode) {
+                serverSyncHelper.scheduleSync(true, m.getProjectId());
+            }
         }
     }
 
@@ -682,7 +693,11 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         Log.v(TAG, "UPDATE BILL AND SYNC");
         DBProject proj = getProject(bill.getProjectId());
         if (!proj.isLocal()) {
-            serverSyncHelper.scheduleSync(true, bill.getProjectId());
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            boolean offlineMode = preferences.getBoolean(getContext().getString(R.string.pref_key_offline_mode), false);
+            if (!offlineMode) {
+                serverSyncHelper.scheduleSync(true, bill.getProjectId());
+            }
         }
     }
 

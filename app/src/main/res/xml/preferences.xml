@@ -19,6 +19,13 @@
         app:colorShape="circle"
         app:showDialog="false" />
 
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:icon="@drawable/ic_sync_grey_24dp"
+        android:key="@string/pref_key_offline_mode"
+        android:summary="@string/settings_offline_mode_summary"
+        android:title="@string/settings_offline_mode_title" />
+
     <PreferenceScreen
         android:key="@string/pref_key_certs"
         android:persistent="false"

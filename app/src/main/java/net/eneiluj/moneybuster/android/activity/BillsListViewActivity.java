@@ -255,7 +255,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             if (DEBUG) {
                 Log.d(TAG, "[onResume]");
             }
-            synchronize();
+            boolean offlineMode = preferences.getBoolean(getString(R.string.pref_key_offline_mode), false);
+            if (!offlineMode) {
+                synchronize();
+            }
         }
 
         registerBroadcastReceiver();
@@ -1091,7 +1094,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                 drawerLayout.closeDrawers();
                 refreshLists();
-                synchronize();
+                boolean offlineMode = preferences.getBoolean(getString(R.string.pref_key_offline_mode), false);
+                if (!offlineMode) {
+                    synchronize();
+                }
                 dialog.dismiss();
             }
         });
@@ -1471,6 +1477,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         }
                         adapter.remove(dbBill);
                         refreshLists();
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        final boolean offlineMode = preferences.getBoolean(getString(R.string.pref_key_offline_mode), false);
                         Log.v(TAG, "Item deleted through swipe ----------------------------------------------");
                         Snackbar.make(swipeRefreshLayout, R.string.action_bill_deleted, Snackbar.LENGTH_LONG)
                                 .setAction(R.string.action_undo, new View.OnClickListener() {
@@ -1485,7 +1493,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                         refreshLists();
                                         Snackbar.make(swipeRefreshLayout, R.string.action_bill_restored, Snackbar.LENGTH_SHORT)
                                                 .show();
-                                        synchronize();
+                                        if (!offlineMode) {
+                                            synchronize();
+                                        }
                                         //notifyLoggerService(dbBill.getId());
                                     }
                                 })
@@ -1496,7 +1506,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                         //see Snackbar.Callback docs for event details
                                         Log.v(TAG, "DISMISSED "+event);
                                         if (event == DISMISS_EVENT_TIMEOUT) {
-                                            synchronize();
+                                            if (!offlineMode) {
+                                                synchronize();
+                                            }
                                         }
                                     }
 
@@ -1949,7 +1961,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     showToast(getString(R.string.project_sync_success, projName));
                     break;
                 case MoneyBusterServerSyncHelper.BROADCAST_SYNC_PROJECT:
-                    synchronize();
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    boolean offlineMode = preferences.getBoolean(getString(R.string.pref_key_offline_mode), false);
+                    if (!offlineMode) {
+                        synchronize();
+                    }
                     break;
                 case MoneyBusterServerSyncHelper.BROADCAST_NETWORK_AVAILABLE:
                     swipeRefreshLayout.setEnabled(true);

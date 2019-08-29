@@ -15,4 +15,15 @@
         <item>m</item>
         <item>y</item>
     </string-array>
+
+    <string-array name="whatTodoValues" translatable="false">
+        <item>j</item>
+        <item>c</item>
+    </string-array>
+
+    <string-array name="whereValues" translatable="false">
+        <item>l</item>
+        <item>i</item>
+        <item>c</item>
+    </string-array>
 </resources>

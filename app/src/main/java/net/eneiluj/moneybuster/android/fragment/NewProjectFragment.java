@@ -1,35 +1,41 @@
 package net.eneiluj.moneybuster.android.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.preference.CheckBoxPreference;
-import androidx.preference.ListPreference;
-import androidx.preference.Preference;
+import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.takisoft.fix.support.v7.preference.EditTextPreference;
-import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputLayout;
 
 import net.eneiluj.moneybuster.R;
+import net.eneiluj.moneybuster.android.activity.EditBillActivity;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
@@ -37,11 +43,14 @@ import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.SupportUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.webkit.URLUtil.isValidUrl;
 
-public class NewProjectFragment extends PreferenceFragmentCompat {
+public class NewProjectFragment extends Fragment {
     private static final String TAG = NewProjectFragment.class.getSimpleName();
 
     private static final String SAVEDKEY_PROJECT = "project";
@@ -62,16 +71,32 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
 
     private Handler handler;
 
-    protected ListPreference newProjectType;
-    protected EditTextPreference newProjectId;
-    protected EditTextPreference newProjectIHMUrl;
-    protected EditTextPreference newProjectPassword;
-    protected CheckBoxPreference newProjectCreate;
-    protected EditTextPreference newProjectEmail;
-    protected EditTextPreference newProjectName;
+    protected EditText newProjectId;
+    protected EditText newProjectUrl;
+    protected EditText newProjectPassword;
+    protected Spinner whatTodoSpinner;
+    protected Spinner whereSpinner;
+    protected EditText newProjectEmail;
+    protected EditText newProjectName;
+
+    protected ImageView whereIcon;
+
+    protected LinearLayout newProjectIdLayout;
+    protected LinearLayout newProjectUrlLayout;
+    protected TextInputLayout newProjectUrlInputLayout;
+    protected LinearLayout newProjectPasswordLayout;
+    protected LinearLayout newProjectNameLayout;
+    protected LinearLayout newProjectEmailLayout;
+
+    protected ImageView scanButton;
+
+    protected FloatingActionButton fabOk;
 
     protected String defaultIhmUrl;
     protected String defaultNcUrl;
+
+    private boolean isSpinnerWhereAction = false;
+    private boolean isSpinnerWhatTodoAction = false;
 
     public static NewProjectFragment newInstance(String defaultIhmUrl, String defaultNCUrl,
                                                  @Nullable String defaultProjectId,
@@ -91,17 +116,227 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     }
 
     @Override
-    public void onCreatePreferencesFix(Bundle savedInstanceState, String rootkey) {
-        addPreferencesFromResource(R.xml.activity_new_project);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView");
+        View view = inflater.inflate(R.layout.activity_new_project_form, container, false);
+        whatTodoSpinner = view.findViewById(R.id.whatTodoSpinner);
+        whereSpinner = view.findViewById(R.id.whereSpinner);
+        whereIcon = view.findViewById(R.id.whereIcon);
+
+        newProjectId = view.findViewById(R.id.editProjectId);
+        newProjectUrl = view.findViewById(R.id.editProjectUrl);
+        newProjectPassword = view.findViewById(R.id.editProjectPassword);
+        newProjectEmail = view.findViewById(R.id.editProjectEmail);
+        newProjectName = view.findViewById(R.id.editProjectName);
+
+        newProjectIdLayout = view.findViewById(R.id.editProjectIdLayout);
+        newProjectUrlLayout = view.findViewById(R.id.editProjectUrlLayout);
+        newProjectUrlInputLayout = view.findViewById(R.id.editProjectUrlInputLayout);
+        newProjectPasswordLayout = view.findViewById(R.id.editProjectPasswordLayout);
+        newProjectEmailLayout = view.findViewById(R.id.editProjectEmailLayout);
+        newProjectNameLayout = view.findViewById(R.id.editProjectNameLayout);
+
+        scanButton = view.findViewById(R.id.scanButton);
+
+        fabOk = view.findViewById(R.id.fab_new_ok);
+
+        fabOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onPressOk();
+            }
+        });
+
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "Scan button pressed");
+            }
+        });
+
+        whatTodoSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                Log.d(TAG, "WHAT TODO spinner");
+                Log.d(TAG, position + " ----> " + id);
+                if (isSpinnerWhatTodoAction) {
+                    showHideInputFields();
+                    showHideValidationButtons();
+                }
+
+                isSpinnerWhatTodoAction = true;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                Log.d(TAG, "WHAT TODO spinner NOTHING");
+                showHideValidationButtons();
+            }
+
+        });
+
+        whereSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                Log.d(TAG, "WHERE spinner");
+                Log.d(TAG, position + " ----> " + id);
+                if (isSpinnerWhereAction) {
+                    showHideInputFields();
+                    showHideValidationButtons();
+                }
+
+                isSpinnerWhereAction = true;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                Log.d(TAG, "where spinner NOTHING");
+                showHideValidationButtons();
+            }
+
+        });
+
+        newProjectId.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                Log.d(TAG, "project id change");
+                showHideValidationButtons();
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+        newProjectUrl.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                Log.d(TAG, "project url change");
+                showHideValidationButtons();
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+        newProjectName.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                Log.d(TAG, "project name change");
+                showHideValidationButtons();
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+        newProjectPassword.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                Log.d(TAG, "project password change");
+                showHideValidationButtons();
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+        newProjectEmail.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                Log.d(TAG, "project email change");
+                showHideValidationButtons();
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+        return view;
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        RecyclerView recyclerView = getListView();
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                DividerItemDecoration.VERTICAL);
-        recyclerView.addItemDecoration(dividerItemDecoration);
+    private void showHideValidationButtons() {
+        if (isFormValid()) {
+            fabOk.show();
+        }
+        else {
+            fabOk.hide();
+        }
+    }
+
+    private boolean isFormValid() {
+        boolean todoCreate = getTodoCreate();
+        ProjectType type = getProjectType();
+
+        String projectId = getRemoteId();
+        String projectUrl = getUrl();
+        String projectPassword = getPassword();
+        String projectName = getName();
+        String projectEmail = getEmail();
+
+        // always check project ID
+        if (projectId.equals("")) {
+            return false;
+        }
+
+        // first, what is independent from creation/join
+        if (!type.equals(ProjectType.LOCAL)) {
+            if (projectUrl.equals("") || !isValidUrl(projectUrl) || projectPassword.equals("")) {
+                return false;
+            }
+        }
+
+        // create
+        if (todoCreate) {
+            if (!type.equals(ProjectType.LOCAL)) {
+                if (projectName.equals("") || !SupportUtil.isValidEmail(projectEmail)) {
+                    return false;
+                }
+            }
+        }
+        // join
+        else {
+            if (type.equals(ProjectType.LOCAL)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void showHideInputFields() {
+        boolean todoCreate = getTodoCreate();
+        ProjectType type = getProjectType();
+
+        newProjectUrlLayout.setVisibility(!type.equals(ProjectType.LOCAL) ? View.VISIBLE : View.GONE);
+        newProjectPasswordLayout.setVisibility(!type.equals(ProjectType.LOCAL) ? View.VISIBLE : View.GONE);
+
+        boolean showNameEmail = (todoCreate && !type.equals(ProjectType.LOCAL));
+        newProjectNameLayout.setVisibility(showNameEmail ? View.VISIBLE : View.GONE);
+        newProjectEmailLayout.setVisibility(showNameEmail ? View.VISIBLE : View.GONE);
+
+        scanButton.setVisibility(todoCreate ? View.GONE : View.VISIBLE);
+
+        if (type.equals(ProjectType.LOCAL)) {
+            whereIcon.setImageResource(R.drawable.ic_cellphone_grey_24dp);
+        }
+        else if (type.equals(ProjectType.IHATEMONEY)) {
+            whereIcon.setImageResource(R.drawable.ic_ihm_grey_24dp);
+            newProjectUrl.setText(defaultIhmUrl);
+            newProjectUrlInputLayout.setHint(getString(R.string.setting_ihm_project_url));
+        }
+        else if (type.equals(ProjectType.COSPEND)) {
+            whereIcon.setImageResource(R.drawable.ic_cospend_grey_24dp);
+            newProjectUrl.setText(defaultNcUrl);
+            newProjectUrlInputLayout.setHint(getString(R.string.setting_cospend_project_url));
+        }
     }
 
     private void hideKeyboard(Context context) {
@@ -113,160 +348,6 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Preference typePref = findPreference("type");
-        typePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference,
-                                              Object newValue) {
-                ListPreference pref = (ListPreference) findPreference("type");
-                int index = pref.findIndexOfValue((String)newValue);
-                Log.d(TAG, index + " ----> " + newValue);
-                preference.setSummary(pref.getEntries()[index]);
-
-                EditTextPreference urlPref = (EditTextPreference) findPreference("url");
-                EditTextPreference passwordPref = (EditTextPreference) findPreference("password");
-                CheckBoxPreference createPref = (CheckBoxPreference) findPreference("createonserver");
-                EditTextPreference emailPref = (EditTextPreference) findPreference("email");
-                EditTextPreference namePref = (EditTextPreference) findPreference("name");
-
-                urlPref.setVisible(!newValue.equals(ProjectType.LOCAL.getId()));
-                passwordPref.setVisible(!newValue.equals(ProjectType.LOCAL.getId()));
-                createPref.setVisible(!newValue.equals(ProjectType.LOCAL.getId()));
-                if (newValue.equals(ProjectType.LOCAL.getId())) {
-                    newProjectType.setIcon(R.drawable.ic_cellphone_grey_24dp);
-                    createPref.setChecked(false);
-                    emailPref.setVisible(false);
-                    namePref.setVisible(false);
-                }
-                else if (newValue.equals(ProjectType.IHATEMONEY.getId())) {
-                    newProjectType.setIcon(R.drawable.ic_ihm_grey_24dp);
-                    urlPref.setTitle(getString(R.string.setting_ihm_project_url));
-                    urlPref.setDialogTitle(getString(R.string.setting_ihm_project_url));
-                    urlPref.setDialogMessage(getString(R.string.setting_ihm_project_url_long));
-
-                    newProjectIHMUrl.setText(defaultIhmUrl);
-                    newProjectIHMUrl.setSummary(defaultIhmUrl);
-                }
-                else if (newValue.equals(ProjectType.COSPEND.getId())) {
-                    newProjectType.setIcon(R.drawable.ic_cospend_grey_24dp);
-                    urlPref.setTitle(getString(R.string.setting_cospend_project_url));
-                    urlPref.setDialogTitle(getString(R.string.setting_cospend_project_url));
-                    urlPref.setDialogMessage(getString(R.string.setting_cospend_project_url_long));
-
-                    newProjectIHMUrl.setText(defaultNcUrl);
-                    newProjectIHMUrl.setSummary(defaultNcUrl);
-                }
-                return true;
-            }
-
-        });
-
-        Preference.OnPreferenceClickListener clickListener =  new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                EditText input = ((EditTextPreference) preference).getEditText();
-                input.setSelectAllOnFocus(true);
-                input.requestFocus();
-                input.setSelected(true);
-                // show keyboard
-                InputMethodManager inputMethodManager = (InputMethodManager) preference.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                return true;
-            }
-        };
-
-        Preference idPref = findPreference("id");
-        idPref.setOnPreferenceClickListener(clickListener);
-        idPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference,
-                                              Object newValue) {
-                EditTextPreference pref = (EditTextPreference) findPreference("id");
-                pref.setSummary((CharSequence) newValue);
-                hideKeyboard(preference.getContext());
-                return true;
-            }
-
-        });
-        Preference URLPref = findPreference("url");
-        URLPref.setOnPreferenceClickListener(clickListener);
-        URLPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference,
-                                              Object newValue) {
-                EditTextPreference pref = (EditTextPreference) findPreference("url");
-                pref.setSummary((CharSequence) newValue);
-                hideKeyboard(preference.getContext());
-                return true;
-            }
-
-        });
-        Preference namePref = findPreference("name");
-        namePref.setOnPreferenceClickListener(clickListener);
-        namePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference,
-                                              Object newValue) {
-                EditTextPreference pref = (EditTextPreference) findPreference("name");
-                pref.setSummary((CharSequence) newValue);
-                hideKeyboard(preference.getContext());
-                return true;
-            }
-
-        });
-        Preference passwordPref = findPreference("password");
-        passwordPref.setOnPreferenceClickListener(clickListener);
-        passwordPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference,
-                                              Object newValue) {
-                EditTextPreference pref = (EditTextPreference) findPreference("password");
-                int nbChars = ((CharSequence)newValue).length();
-                String sum = "";
-                for (int i=0; i < nbChars; i++) {
-                    sum += "*";
-                }
-                pref.setSummary(sum);
-                hideKeyboard(preference.getContext());
-                return true;
-            }
-
-        });
-        Preference emailPref = findPreference("email");
-        emailPref.setOnPreferenceClickListener(clickListener);
-        emailPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference,
-                                              Object newValue) {
-                EditTextPreference pref = (EditTextPreference) preference;
-                pref.setSummary((CharSequence) newValue);
-                hideKeyboard(preference.getContext());
-                return true;
-            }
-
-        });
-
-        Preference createPref = findPreference("createonserver");
-        createPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference,
-                                              Object newValue) {
-                CheckBoxPreference pref = (CheckBoxPreference) findPreference("createonserver");
-                EditTextPreference emailPref = (EditTextPreference) findPreference("email");
-                emailPref.setVisible((Boolean) newValue);
-                EditTextPreference namePref = (EditTextPreference) findPreference("name");
-                namePref.setVisible((Boolean) newValue);
-                return true;
-            }
-
-        });
 
         handler = new Handler(Looper.getMainLooper());
 
@@ -312,9 +393,56 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         //outState.putSerializable(SAVEDKEY_PROJECT, project);
     }
 
+    private void onPressOk() {
+        String rid = getRemoteId();
+        if (rid == null || rid.equals("")) {
+            //showToast(getString(R.string.error_invalid_project_remote_id), Toast.LENGTH_LONG);
+            return;
+        }
+
+        ProjectType type = getProjectType();
+
+        if (!ProjectType.LOCAL.equals(type)) {
+            // check values
+            String url = getUrl();
+            if (!isValidUrl(url)) {
+                //showToast(getString(R.string.error_invalid_url), Toast.LENGTH_LONG);
+                return;
+            }
+            String pwd = getPassword();
+            if (url != null && !url.equals("") && (pwd == null || pwd.equals(""))) {
+                //showToast(getString(R.string.error_invalid_project_password), Toast.LENGTH_LONG);
+                return;
+            }
+        }
+
+        // join or create local
+        boolean todoCreate = getTodoCreate();
+        if (!todoCreate || ProjectType.LOCAL.equals(type)) {
+            long pid = saveProject(null);
+            listener.close(pid);
+        }
+        // create remote project (we know the type is not local)
+        // the callback will quit this activity
+        else {
+            String name = getName();
+            if (name == null || name.equals("")) {
+                //showToast(getString(R.string.error_invalid_project_name), Toast.LENGTH_LONG);
+                return;
+            }
+            if (!SupportUtil.isValidEmail(getEmail())) {
+                //showToast(getString(R.string.error_invalid_email), Toast.LENGTH_LONG);
+                return;
+            }
+            if (!db.getMoneyBusterServerSyncHelper().createRemoteProject(getRemoteId(), getName(), getEmail(), getPassword(), getUrl(), getProjectType(), createRemoteCallBack)) {
+                //showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
+            }
+        }
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_new_project_fragment, menu);
+        /*inflater.inflate(R.menu.menu_new_project_fragment, menu);
         //ImageView addButton = getActivity().findViewById(R.id.menu_create);
         final ImageView addButton = (ImageView) menu.findItem(R.id.menu_create).getActionView();
         addButton.setImageResource(R.drawable.ic_add_circle_white_24dp);
@@ -329,58 +457,10 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
                         );
                 addButton.startAnimation(animation1);
 
-                String rid = getRemoteId();
-                if (rid == null || rid.equals("")) {
-                    showToast(getString(R.string.error_invalid_project_remote_id), Toast.LENGTH_LONG);
-                    addButton.clearAnimation();
-                    return;
-                }
 
-                ProjectType type = getProjectType();
-
-                if (!ProjectType.LOCAL.equals(type)) {
-                    // check values
-                    String url = getIhmUrl();
-                    if (!isValidUrl(url)) {
-                        showToast(getString(R.string.error_invalid_url), Toast.LENGTH_LONG);
-                        addButton.clearAnimation();
-                        return;
-                    }
-                    String pwd = getPassword();
-                    if (url != null && !url.equals("") && (pwd == null || pwd.equals(""))) {
-                        showToast(getString(R.string.error_invalid_project_password), Toast.LENGTH_LONG);
-                        addButton.clearAnimation();
-                        return;
-                    }
-                }
-
-                // do not create remote : quit immediately
-                if (!newProjectCreate.isChecked()) {
-                    long pid = saveProject(null);
-                    listener.close(pid);
-                }
-                // create remote project (we know the type is not local)
-                // the callback will quit this activity
-                else {
-                    String name = getName();
-                    if (name == null || name.equals("")) {
-                        showToast(getString(R.string.error_invalid_project_name), Toast.LENGTH_LONG);
-                        addButton.clearAnimation();
-                        return;
-                    }
-                    if (!SupportUtil.isValidEmail(getEmail())) {
-                        showToast(getString(R.string.error_invalid_email), Toast.LENGTH_LONG);
-                        addButton.clearAnimation();
-                        return;
-                    }
-                    if (!db.getMoneyBusterServerSyncHelper().createRemoteProject(getRemoteId(), getName(), getEmail(), getPassword(), getIhmUrl(), getProjectType(), createRemoteCallBack)) {
-                        showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
-                        addButton.clearAnimation();
-                    }
-                }
 
             }
-        });
+        });*/
 
     }
 
@@ -396,16 +476,6 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_create:
-                // remote project should already exists, just add it locally
-                /*if (!newProjectCreate.isChecked()) {
-                    long pid = saveProject(null);
-                    listener.close(pid);
-                }
-                else {
-                    db.getMoneyBusterServerSyncHelper().createRemoteProject(getRemoteId(), getName(), getEmail(), getPassword(), getIhmUrl(), createRemoteCallBack);
-                }*/
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -423,12 +493,12 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
     protected long saveProject(@Nullable ICallback callback) {
         ProjectType type = getProjectType();
         String remoteId = getRemoteId();
-        String ihmUrl = null;
+        String url = null;
         String password = null;
         String email = null;
         String name = null;
         if (!type.equals(ProjectType.LOCAL)) {
-            ihmUrl = getIhmUrl();
+            url = getUrl();
             password = getPassword();
             email = getEmail();
             name = getName();
@@ -436,7 +506,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
 
         }
 
-        DBProject newProject = new DBProject(0, remoteId, password, name, ihmUrl, email, null, type);
+        DBProject newProject = new DBProject(0, remoteId, password, name, url, email, null, type);
         long pid = db.addProject(newProject);
 
         // to make it the selected project even if we got here because of a VIEW intent
@@ -459,93 +529,91 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         // hide the keyboard when this window gets the focus
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        newProjectType = (ListPreference) this.findPreference("type");
-        List<String> types = new ArrayList<>();
-        types.add(getString(R.string.project_type_local));
-        types.add(getString(R.string.project_type_ihatemoney));
-        types.add(getString(R.string.project_type_nextcloud_cospend));
-        CharSequence[] typesArray = types.toArray(new CharSequence[types.size()]);
-        newProjectType.setEntries(typesArray);
+        // what to do spinner
+        List<String> whatTodoNameList = new ArrayList<>();
+        whatTodoNameList.add(getString(R.string.todo_join));
+        whatTodoNameList.add(getString(R.string.todo_create));
 
-        List<String> typeValues = new ArrayList<>();
-        typeValues.add(ProjectType.LOCAL.getId());
-        typeValues.add(ProjectType.IHATEMONEY.getId());
-        typeValues.add(ProjectType.COSPEND.getId());
-        CharSequence[] typeValuesArray = typeValues.toArray(new CharSequence[typeValues.size()]);
-        newProjectType.setEntryValues(typeValuesArray);
+        String[] whatTodoNames = whatTodoNameList.toArray(new String[whatTodoNameList.size()]);
 
-        newProjectEmail = (EditTextPreference) this.findPreference("email");
-        newProjectName = (EditTextPreference) this.findPreference("name");
-        newProjectId = (EditTextPreference) this.findPreference("id");
-        newProjectPassword = (EditTextPreference) this.findPreference("password");
-        newProjectIHMUrl = (EditTextPreference) this.findPreference("url");
+        String[] whatTodoIds = getResources().getStringArray(R.array.whatTodoValues);
+        //int index = Arrays.asList(whatTodoIds).indexOf(bill.getRepeat());
+
+        ArrayList<Map<String, String>> data = new ArrayList<>();
+        for (int i = 0; i < whatTodoNames.length; i++) {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("name", whatTodoNames[i]);
+            hashMap.put("id", whatTodoIds[i]);
+            Log.d(TAG, "TODO add "+whatTodoIds[i]);
+            data.add(hashMap);
+        }
+        String[] from = {"name", "id"};
+        int[] to = new int[]{android.R.id.text1};
+        SimpleAdapter simpleAdapter = new SimpleAdapter(this.getContext(), data, android.R.layout.simple_spinner_item, from, to);
+        simpleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        whatTodoSpinner.setAdapter(simpleAdapter);
+
+        whatTodoSpinner.setSelection(0);
+
+        // where spinner
+        List<String> whereNameList = new ArrayList<>();
+        whereNameList.add(getString(R.string.where_local));
+        whereNameList.add(getString(R.string.where_ihm));
+        whereNameList.add(getString(R.string.where_cospend));
+
+        String[] whereNames = whereNameList.toArray(new String[whereNameList.size()]);
+
+        List<String> whereIdsList = new ArrayList<>();
+        whereIdsList.add(ProjectType.LOCAL.getId());
+        whereIdsList.add(ProjectType.IHATEMONEY.getId());
+        whereIdsList.add(ProjectType.COSPEND.getId());
+        String[] whereIds = whereIdsList.toArray(new String[whereIdsList.size()]);
+        //String[] whereIds = getResources().getStringArray(R.array.whereValues);
+        //int index = Arrays.asList(whereIds).indexOf(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE));
+        int index = whereIdsList.indexOf(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE));
+
+        ArrayList<Map<String, String>> dataWhere = new ArrayList<>();
+        for (int i = 0; i < whereNames.length; i++) {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("name", whereNames[i]);
+            hashMap.put("id", whereIds[i]);
+            Log.d(TAG, "WHERE add "+whereIds[i]);
+            dataWhere.add(hashMap);
+        }
+        String[] fromWhere = {"name", "id"};
+        int[] toWhere = new int[]{android.R.id.text1};
+        SimpleAdapter simpleAdapterWhere = new SimpleAdapter(this.getContext(), dataWhere, android.R.layout.simple_spinner_item, fromWhere, toWhere);
+        simpleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        whereSpinner.setAdapter(simpleAdapterWhere);
+
+        if (index == -1) {
+            whereSpinner.setSelection(0);
+        }
 
         defaultIhmUrl = getArguments().getString(PARAM_DEFAULT_IHM_URL);
         defaultNcUrl = getArguments().getString(PARAM_DEFAULT_NC_URL);
 
-        newProjectType.setValue(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE));
-        if (ProjectType.LOCAL.getId().equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
-            newProjectType.setSummary(getString(R.string.project_type_local));
-            newProjectType.setIcon(R.drawable.ic_cellphone_grey_24dp);
-        }
-        if (ProjectType.IHATEMONEY.getId().equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
-            newProjectType.setSummary(getString(R.string.project_type_ihatemoney));
-            newProjectType.setIcon(R.drawable.ic_ihm_grey_24dp);
-            newProjectIHMUrl.setText(getArguments().getString(PARAM_DEFAULT_IHM_URL));
-            newProjectIHMUrl.setSummary(getArguments().getString(PARAM_DEFAULT_IHM_URL));
-
-            newProjectIHMUrl.setTitle(getString(R.string.setting_ihm_project_url));
-            newProjectIHMUrl.setDialogTitle(getString(R.string.setting_ihm_project_url));
-            newProjectIHMUrl.setDialogMessage(getString(R.string.setting_ihm_project_url_long));
-        }
-        if (ProjectType.COSPEND.getId().equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
-            newProjectType.setSummary(getString(R.string.project_type_nextcloud_cospend));
-            newProjectType.setIcon(R.drawable.ic_cospend_grey_24dp);
-            newProjectIHMUrl.setText(getArguments().getString(PARAM_DEFAULT_NC_URL));
-            newProjectIHMUrl.setSummary(getArguments().getString(PARAM_DEFAULT_NC_URL));
-
-            newProjectIHMUrl.setTitle(getString(R.string.setting_cospend_project_url));
-            newProjectIHMUrl.setDialogTitle(getString(R.string.setting_cospend_project_url));
-            newProjectIHMUrl.setDialogMessage(getString(R.string.setting_cospend_project_url_long));
-        }
+        showHideInputFields();
 
         newProjectId.setText(getArguments().getString(PARAM_DEFAULT_PROJECT_ID));
-        newProjectId.setSummary(getArguments().getString(PARAM_DEFAULT_PROJECT_ID));
 
         String defaultPassword = getArguments().getString(PARAM_DEFAULT_PROJECT_PASSWORD);
         if (defaultPassword != null) {
             newProjectPassword.setText(getArguments().getString(PARAM_DEFAULT_PROJECT_PASSWORD));
-            int nbChars = ((CharSequence) getArguments().getString(PARAM_DEFAULT_PROJECT_PASSWORD)).length();
-            String sum = "";
-            for (int i = 0; i < nbChars; i++) {
-                sum += "*";
-            }
-            newProjectPassword.setSummary(sum);
         }
-
-        newProjectCreate = (CheckBoxPreference) this.findPreference("createonserver");
-        newProjectCreate.setChecked(false);
-
-        if (ProjectType.LOCAL.getId().equals(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE))) {
-            newProjectIHMUrl.setVisible(false);
-            newProjectPassword.setVisible(false);
-            newProjectCreate.setVisible(false);
-        }
-        if (getArguments().getBoolean(PARAM_IS_IMPORT)) {
-            newProjectCreate.setVisible(false);
-        }
-        newProjectEmail.setVisible(false);
-        newProjectName.setVisible(false);
     }
 
     protected ProjectType getProjectType() {
-        return ProjectType.getTypeById(newProjectType.getValue());
+        Map<String, String> item = (Map<String, String>) whereSpinner.getSelectedItem();
+        Log.d(TAG, "project type item id "+item.get("id"));
+        Log.d(TAG, "project type item name "+item.get("name"));
+        return ProjectType.getTypeById(item.get("id"));
     }
     protected String getRemoteId() {
-        return newProjectId.getText();
+        return newProjectId.getText().toString();
     }
-    protected String getIhmUrl() {
-        String url = newProjectIHMUrl.getText().trim();
+    protected String getUrl() {
+        String url = newProjectUrl.getText().toString().trim();
         ProjectType type = getProjectType();
         if (ProjectType.COSPEND.equals(type)) {
             url = url.replaceAll("/+$", "") + "/index.php/apps/cospend";
@@ -553,16 +621,17 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
         return url;
     }
     protected String getPassword() {
-        return newProjectPassword.getText();
+        return newProjectPassword.getText().toString();
     }
-    protected boolean getCreateRemote() {
-        return newProjectCreate.isChecked();
+    protected boolean getTodoCreate() {
+        Map<String, String> item = (Map<String, String>) whatTodoSpinner.getSelectedItem();
+        return (item.get("id").equals("c"));
     }
     protected String getName() {
-        return newProjectName.getText();
+        return newProjectName.getText().toString();
     }
     protected String getEmail() {
-        return newProjectEmail.getText();
+        return newProjectEmail.getText().toString();
     }
 
     private ICallback createRemoteCallBack = new ICallback() {
@@ -577,9 +646,7 @@ public class NewProjectFragment extends PreferenceFragmentCompat {
             }
             else {
                 showToast(getString(R.string.error_create_remote_project_helper, message), Toast.LENGTH_LONG);
-                // stop animation
-                ImageView addButton = getActivity().findViewById(R.id.menu_create);
-                addButton.clearAnimation();
+                // TODO stop animation
             }
         }
 

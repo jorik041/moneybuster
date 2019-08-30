@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -38,6 +39,9 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.activity.EditBillActivity;
+import net.eneiluj.moneybuster.android.activity.NewProjectActivity;
+import net.eneiluj.moneybuster.android.activity.QrCodeScanner;
+import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
@@ -62,6 +66,8 @@ public class NewProjectFragment extends Fragment {
     public static final String PARAM_DEFAULT_PROJECT_PASSWORD = "defaultProjectPassword";
     public static final String PARAM_DEFAULT_PROJECT_TYPE = "defaultProjectType";
     public static final String PARAM_IS_IMPORT = "isImport";
+
+    private final static int scan_qrcode_import_cmd = 33;
 
     public interface NewProjectFragmentListener {
         void close(long pid);
@@ -153,6 +159,8 @@ public class NewProjectFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "Scan button pressed");
+                Intent createIntent = new Intent(getContext(), QrCodeScanner.class);
+                startActivityForResult(createIntent, scan_qrcode_import_cmd);
             }
         });
 
@@ -399,6 +407,76 @@ public class NewProjectFragment extends Fragment {
         Log.d(TAG, "PROJECT SAVE INSTANCE STATE");
         //saveBill(null);
         //outState.putSerializable(SAVEDKEY_PROJECT, project);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "[ACT RESULT]");
+        // Check which request we're responding to
+        if (requestCode == scan_qrcode_import_cmd) {
+            if (data != null) {
+                // adapt after project has been deleted
+                String scannedUrl = data.getStringExtra(QrCodeScanner.KEY_QR_CODE);
+                Log.d(TAG, "onActivityResult SCANNED URL : "+scannedUrl);
+                applyMBLink(Uri.parse(scannedUrl));
+            }
+        }
+    }
+
+    private void applyMBLink(Uri data) {
+        String password;
+        String url;
+        String pid;
+        if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 2) {
+            if (data.getPath().endsWith("/")) {
+                password = "";
+                pid = data.getLastPathSegment();
+            }
+            else {
+                password = data.getLastPathSegment();
+                pid = data.getPathSegments().get(data.getPathSegments().size() - 2);
+            }
+            url = "https:/" +
+                    data.getPath().replaceAll("/"+pid+"/" + password + "$", "");
+            newProjectPassword.setText(password);
+            newProjectId.setText(pid);
+            newProjectUrl.setText(url);
+            whereSpinner.setSelection(2);
+            showHideInputFields();
+            showHideValidationButtons();
+        }
+        else if (data.getHost().equals("net.eneiluj.moneybuster.ihatemoney") && data.getPathSegments().size() >= 2) {
+            if (data.getPath().endsWith("/")) {
+                password = "";
+                pid = data.getLastPathSegment();
+            }
+            else {
+                password = data.getLastPathSegment();
+                pid = data.getPathSegments().get(data.getPathSegments().size() - 2);
+            }
+            url = "https:/" +
+                    data.getPath().replaceAll("/" + pid + "/" + password + "$", "");
+            newProjectPassword.setText(password);
+            newProjectId.setText(pid);
+            newProjectUrl.setText(url);
+            whereSpinner.setSelection(1);
+            showHideInputFields();
+            showHideValidationButtons();
+        }
+        else if (data.getHost().equals("ihatemoney.org") && data.getPathSegments().size() == 1) {
+            password = "";
+            pid = data.getLastPathSegment();
+            url = "https://ihatemoney.org";
+            newProjectPassword.setText(password);
+            newProjectId.setText(pid);
+            newProjectUrl.setText(url);
+            whereSpinner.setSelection(1);
+            showHideInputFields();
+            showHideValidationButtons();
+        }
+        else {
+            showToast(getString(R.string.import_bad_url), Toast.LENGTH_LONG);
+        }
     }
 
     private void onPressOk() {

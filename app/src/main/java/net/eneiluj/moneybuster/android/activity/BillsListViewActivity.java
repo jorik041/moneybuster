@@ -978,6 +978,28 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         });
 
+        fabMenuDrawerAdd.setOnMenuToggleListener(new com.github.clans.fab.FloatingActionMenu.OnMenuToggleListener() {
+            @Override
+            public void onMenuToggle(boolean opened) {
+
+                int drawableId;
+                final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                final long selectedProjectId = preferences.getLong("selected_project", 0);
+                if (opened) {
+                    if (selectedProjectId != 0) {
+                        fabAddMember.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        fabAddMember.setVisibility(View.GONE);
+                    }
+                } else {
+
+                }
+
+            }
+        });
+
+
         // color
         boolean darkTheme = MoneyBuster.getAppTheme(this);
         // if dark theme and main color is black, make fab button lighter/gray

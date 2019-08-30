@@ -141,6 +141,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         ((ColorPreferenceCompat) preference).setValue(lobsterPicker.getColor());
+                        if (getActivity() != null) {
+                            getActivity().recreate();
+                        }
                     }
                 })
                 .setNegativeButton(getString(R.string.simple_cancel), null)

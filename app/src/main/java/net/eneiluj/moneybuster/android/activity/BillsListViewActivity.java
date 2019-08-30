@@ -147,6 +147,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     com.github.clans.fab.FloatingActionButton fabRemoveProject;
     com.github.clans.fab.FloatingActionButton fabShareProject;
     FloatingActionButton fabAddBill;
+    FloatingActionButton fabMainAddProject;
     FloatingActionButton fabSelectProject;
     RecyclerView listNavigationMembers;
     RecyclerView listNavigationMenu;
@@ -214,6 +215,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabShareProject = findViewById(R.id.fabDrawer_share_project);
         fabRemoveProject = findViewById(R.id.fabDrawer_remove_project);
         fabAddBill = findViewById(R.id.fab_add_bill);
+        fabMainAddProject = findViewById(R.id.fab_add_project);
         fabSelectProject = findViewById(R.id.fab_select_project);
         listNavigationMembers = findViewById(R.id.navigationList);
         listNavigationMenu = findViewById(R.id.navigationMenu);
@@ -372,8 +374,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         });
 
-
-
         fabAddProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -382,6 +382,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 drawerLayout.closeDrawers();
             }
         });
+
+        fabMainAddProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addProject();
+                fabMenuDrawerAdd.close(false);
+                drawerLayout.closeDrawers();
+            }
+        });
+
         fabAddMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1005,17 +1015,20 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         // if dark theme and main color is black, make fab button lighter/gray
         if (darkTheme && ThemeUtils.primaryColor(this) == Color.BLACK) {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
+            fabMainAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabMenuDrawerAdd.setMenuButtonColorNormal(Color.DKGRAY);
             fabMenuDrawerEdit.setMenuButtonColorNormal(Color.DKGRAY);
             fabSelectProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
         }
         else {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
+            fabMainAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabMenuDrawerAdd.setMenuButtonColorNormal(ThemeUtils.primaryColor(this));
             fabMenuDrawerEdit.setMenuButtonColorNormal(ThemeUtils.primaryColor(this));
             fabSelectProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryDarkColor(this)));
         }
         fabAddBill.setRippleColor(ThemeUtils.primaryDarkColor(this));
+        fabMainAddProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
 
         fabSelectProject.setRippleColor(ThemeUtils.primaryColor(this));
 
@@ -1663,11 +1676,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 if (currentVisibility != oldVisibility) {
                     if (currentVisibility == View.VISIBLE) {
                         fabAddBill.setVisibility(View.INVISIBLE);
+                        fabMainAddProject.setVisibility(View.INVISIBLE);
                     } else {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 fabAddBill.setVisibility(View.VISIBLE);
+                                fabMainAddProject.setVisibility(View.VISIBLE);
                             }
                         }, 150);
                     }

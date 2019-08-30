@@ -3,6 +3,7 @@ package net.eneiluj.moneybuster.android.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -46,7 +47,9 @@ import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.util.ICallback;
+import net.eneiluj.moneybuster.util.MoneyBuster;
 import net.eneiluj.moneybuster.util.SupportUtil;
+import net.eneiluj.moneybuster.util.ThemeUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -154,6 +157,15 @@ public class NewProjectFragment extends Fragment {
                 onPressOk();
             }
         });
+
+        boolean darkTheme = MoneyBuster.getAppTheme(getContext());
+        // if dark theme and main color is black, make fab button lighter/gray
+        if (darkTheme && ThemeUtils.primaryColor(getContext()) == Color.BLACK) {
+            fabOk.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
+        } else {
+            fabOk.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(getContext())));
+        }
+        fabOk.setRippleColor(ThemeUtils.primaryDarkColor(getContext()));
 
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -79,7 +79,7 @@ public class CospendClientUtil {
      */
     public static LoginStatus isValidLogin(CustomCertManager ccm, String url, String username, String password) {
         try {
-            String targetURL = url + "index.php/apps/ihatemoney/api/ping";
+            String targetURL = url + "index.php/apps/cospend/api/ping";
             HttpURLConnection con = SupportUtil.getHttpURLConnection(ccm, targetURL);
             con.setRequestMethod("GET");
             con.setRequestProperty(

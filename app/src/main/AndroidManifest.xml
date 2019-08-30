@@ -47,6 +47,14 @@
         </activity>
 
         <activity
+            android:name="net.eneiluj.moneybuster.android.activity.SettingsActivity"
+            android:label="@string/settings_server_settings"
+            android:parentActivityName="net.eneiluj.moneybuster.android.activity.PreferencesActivity"
+            android:windowSoftInputMode="stateVisible"
+            android:launchMode="standard"
+            />
+
+        <activity
             android:name="net.eneiluj.moneybuster.android.activity.PreferencesActivity"
             android:label="@string/action_settings"
             android:parentActivityName="net.eneiluj.moneybuster.android.activity.BillsListViewActivity"

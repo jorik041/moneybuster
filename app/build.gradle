@@ -20,13 +20,20 @@ android {
         disable 'MissingTranslation'
         abortOnError false
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     productFlavors {
         normal {
+            applicationId "net.eneiluj.moneybuster"
             resValue "string", "app_name", "MoneyBuster"
+            resValue "string", "applicationId", applicationId
         }
         dev {
-            applicationId 'dev.net.eneiluj.moneybuster'
+            applicationId 'net.eneiluj.moneybuster.dev'
             resValue "string", "app_name", "MoneyDevBuster"
+            resValue "string", "applicationId", applicationId
         }
     }
     flavorDimensions "default"
@@ -54,6 +61,7 @@ dependencies {
     implementation 'com.google.zxing:core:3.4.0'
     implementation 'me.dm7.barcodescanner:zxing:1.9.13'
     implementation 'commons-codec:commons-codec:1.12'
+    implementation 'com.github.nextcloud:Android-SingleSignOn:0.3.1'
 }
 
 /*gradle.projectsEvaluated {

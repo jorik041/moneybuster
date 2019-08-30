@@ -180,6 +180,7 @@
     <string name="error_invalid_bill_owers">Bill should have at least one ower</string>
     <string name="error_create_remote_project_helper">Error at remote project creation : %s</string>
     <string name="error_edit_remote_project_helper">Error at remote project edition : %s</string>
+    <string name="error_token_mismatch">Please reauthenticate your SSO account in settings</string>
 
     <!-- Snackbar Actions -->
 
@@ -229,6 +230,9 @@
     <string name="pref_value_theme_light">Light</string>
     <string name="pref_value_theme_dark">Dark</string>
     <string name="avatar">Avatar</string>
+    <string name="fallback_weblogin_text">Revert to old login method</string>
+    <string name="fallback_weblogin_back">Back</string>
+    <string name="use_sso_toggle">Use account from Nextcloud Files app</string>
 
     <!-- Plurals -->
     <plurals name="ab_selected">

@@ -14,12 +14,14 @@ import android.net.NetworkRequest;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.activity.BillsListViewActivity;
+import net.eneiluj.moneybuster.android.activity.SettingsActivity;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBMember;
@@ -41,6 +43,8 @@ import java.util.Map;
 
 import at.bitfire.cert4android.CustomCertManager;
 import at.bitfire.cert4android.CustomCertService;
+import at.bitfire.cert4android.ICustomCertService;
+import at.bitfire.cert4android.IOnCertificateDecision;
 
 
 /**
@@ -77,6 +81,7 @@ public class MoneyBusterServerSyncHelper {
     private final Context appContext;
 
     private CustomCertManager customCertManager;
+    private ICustomCertService iCustomCertService;
 
     private boolean networkConnected = false;
 
@@ -84,6 +89,7 @@ public class MoneyBusterServerSyncHelper {
     private final ServiceConnection certService = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            iCustomCertService = ICustomCertService.Stub.asInterface(iBinder);
             cert4androidReady = true;
             if (isSyncPossible()) {
                 Long lastId = PreferenceManager.getDefaultSharedPreferences(dbHelper.getContext()).getLong("selected_project", 0);
@@ -103,6 +109,7 @@ public class MoneyBusterServerSyncHelper {
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             cert4androidReady = false;
+            iCustomCertService = null;
         }
     };
 
@@ -195,9 +202,9 @@ public class MoneyBusterServerSyncHelper {
         }
     }
 
-    /*public static boolean isConfigured(Context context) {
+    public static boolean isNextcloudAccountConfigured(Context context) {
         return !PreferenceManager.getDefaultSharedPreferences(context).getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS).isEmpty();
-    }*/
+    }
 
     /**
      * Synchronization is only possible, if there is an active network connection and
@@ -214,6 +221,10 @@ public class MoneyBusterServerSyncHelper {
 
     public CustomCertManager getCustomCertManager() {
         return customCertManager;
+    }
+
+    public void checkCertificate(byte[] cert, IOnCertificateDecision callback) throws RemoteException {
+        iCustomCertService.checkTrusted(cert, true, false, callback);
     }
 
     /**

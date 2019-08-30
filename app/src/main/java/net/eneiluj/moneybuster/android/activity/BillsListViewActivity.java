@@ -114,6 +114,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     public final static String DELETED_BILL = "net.eneiluj.moneybuster.deleted_bill";
     public static final String ADAPTER_KEY_ALL = "all";
 
+    public final static String CREDENTIALS_CHANGED = "net.eneiluj.moneybuster.CREDENTIALS_CHANGED";
 
     private static final String SAVED_STATE_NAVIGATION_SELECTION = "navigationSelection";
     private static final String SAVED_STATE_NAVIGATION_ADAPTER_SLECTION = "navigationAdapterSelection";
@@ -1869,6 +1870,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
             else {
                 swipeRefreshLayout.setRefreshing(false);
+            }
+            // then sync the nextcloud account projects
+            if (MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(getApplicationContext())) {
+                //db.getMoneyBusterServerSyncHelper().scheduleAccountProjectsSync();
             }
         }
     }

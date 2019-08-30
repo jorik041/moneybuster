@@ -1948,7 +1948,20 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
      */
     private void showToast(CharSequence text, int duration) {
         Context context = getApplicationContext();
-        Toast toast = Toast.makeText(context, text, duration);
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.sync_success_toast,
+                (ViewGroup) findViewById(R.id.custom_toast_container));
+
+        ImageView im = layout.findViewById(R.id.toast_icon);
+        im.setImageResource(R.drawable.ic_info_outline_grey600_24dp);
+        TextView tv = (TextView) layout.findViewById(R.id.text);
+        tv.setText(text);
+
+        Toast toast = new Toast(context);
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+        toast.setDuration(duration);
+        toast.setView(layout);
         toast.show();
     }
 

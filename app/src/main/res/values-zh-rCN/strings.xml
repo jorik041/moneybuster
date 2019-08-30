@@ -33,6 +33,14 @@
     <string name="project_type_local">本地项目</string>
     <string name="project_type_ihatemoney">IHateMoney 项目</string>
     <string name="project_type_nextcloud_cospend">Nextcloud Cospend 项目</string>
+    <string name="new_project_what_todo">What do you want to do?</string>
+    <string name="new_project_where">Where?</string>
+    <string name="where_local">Just my phone (local)</string>
+    <string name="where_ihm">IHateMoney server</string>
+    <string name="where_cospend">Cospend Nextcloud app</string>
+    <string name="new_project_scan">Scan a MoneyBuster QRCode</string>
+    <string name="todo_join">Join an existing project</string>
+    <string name="todo_create">Create a project</string>
     <string name="setting_ihm_project_url_long">托管项目的 IHateMoney 实例地址</string>
     <string name="setting_ihm_project_url">IHateMoney 地址</string>
     <string name="setting_cospend_project_url_long">托管 Cospend 项目的 Nextcloud 实例地址</string>
@@ -95,6 +103,8 @@
     <string name="settings_submit">连接</string>
     <string name="settings_submitting">正在连接至 &#8230;</string>
     <string name="settings_theme_title">主题</string>
+    <string name="settings_offline_mode_title">Offline mode</string>
+    <string name="settings_offline_mode_summary">Do not automatically sync. Only sync when user asks.</string>
     <string name="settings_color_title">应用主颜色</string>
     <string name="settings_color_summary">动作栏、地图按钮等等的颜色</string>
     <string name="settings_colorpicker_title">选择颜色</string>
@@ -112,6 +122,7 @@
     <string name="settle_who">谁购买了？</string>
     <string name="settle_to_whom">向谁购买？</string>
     <string name="settle_how_much">多少钱？</string>
+    <string name="total_payed">Total payed by all the members: %.2f</string>
     <string name="stats_who">谁</string>
     <string name="stats_paid">购买了</string>
     <string name="stats_spent">支出</string>
@@ -136,7 +147,7 @@
     <string name="share_stats_intro">%1$s 的项目数据:</string>
     <string name="share_stats_title">分享 %1$s 的项目数据</string>
     <string name="share_stats_header">成员名（支付 | 花费 | 余额）</string>
-    <string name="drawer_no_project">暂无项目。\n请创建或添加一个。</string>
+    <string name="drawer_no_project">There is no project.\nTap here to create/add one</string>
     <string name="choose_project_to_select">选择项目</string>
     <string name="edit_bill_impossible_no_member">需要至少两名已激活成员以添加账单</string>
     <string name="edit_project_local_impossible">不可用于本地项目</string>

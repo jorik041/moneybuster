@@ -33,6 +33,14 @@
     <string name="project_type_local">Local project</string>
     <string name="project_type_ihatemoney">IHateMoney project</string>
     <string name="project_type_nextcloud_cospend">Nextcloud Cospend project</string>
+    <string name="new_project_what_todo">What do you want to do?</string>
+    <string name="new_project_where">Where?</string>
+    <string name="where_local">Just my phone (local)</string>
+    <string name="where_ihm">IHateMoney server</string>
+    <string name="where_cospend">Cospend Nextcloud app</string>
+    <string name="new_project_scan">Scan a MoneyBuster QRCode</string>
+    <string name="todo_join">Join an existing project</string>
+    <string name="todo_create">Create a project</string>
     <string name="setting_ihm_project_url_long">Address of IHateMoney instance hosting the project</string>
     <string name="setting_ihm_project_url">IHateMoney address</string>
     <string name="setting_cospend_project_url_long">Address of Nextcloud instance hosting the Cospend project</string>
@@ -95,6 +103,8 @@
     <string name="settings_submit">Connect</string>
     <string name="settings_submitting">Connecting &#8230;</string>
     <string name="settings_theme_title">Theme</string>
+    <string name="settings_offline_mode_title">Offline mode</string>
+    <string name="settings_offline_mode_summary">Do not automatically sync. Only sync when user asks.</string>
     <string name="settings_color_title">App main color</string>
     <string name="settings_color_summary">Color for action bars, map buttons etc...</string>
     <string name="settings_colorpicker_title">Choose color</string>
@@ -112,6 +122,7 @@
     <string name="settle_who">Who pays?</string>
     <string name="settle_to_whom">To whom?</string>
     <string name="settle_how_much">How much?</string>
+    <string name="total_payed">Total payed by all the members: %.2f</string>
     <string name="stats_who">Who</string>
     <string name="stats_paid">Paid</string>
     <string name="stats_spent">Spent</string>
@@ -136,7 +147,7 @@
     <string name="share_stats_intro">Statistics of project %1$s :</string>
     <string name="share_stats_title">Share statistics of project %1$s</string>
     <string name="share_stats_header">MEMBER_NAME (PAID | SPENT | BALANCE)</string>
-    <string name="drawer_no_project">There is no project.\nCreate/add one</string>
+    <string name="drawer_no_project">There is no project.\nTap here to create/add one</string>
     <string name="choose_project_to_select">Select a project</string>
     <string name="edit_bill_impossible_no_member">At least two activated members are required to add a bill</string>
     <string name="edit_project_local_impossible">Impossible for local projects</string>

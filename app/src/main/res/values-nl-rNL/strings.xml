@@ -33,6 +33,14 @@
     <string name="project_type_local">Lokaal project</string>
     <string name="project_type_ihatemoney">IHateMoney-project</string>
     <string name="project_type_nextcloud_cospend">Nextcloud Cospend-project</string>
+    <string name="new_project_what_todo">What do you want to do?</string>
+    <string name="new_project_where">Where?</string>
+    <string name="where_local">Just my phone (local)</string>
+    <string name="where_ihm">IHateMoney server</string>
+    <string name="where_cospend">Cospend Nextcloud app</string>
+    <string name="new_project_scan">Scan a MoneyBuster QRCode</string>
+    <string name="todo_join">Join an existing project</string>
+    <string name="todo_create">Create a project</string>
     <string name="setting_ihm_project_url_long">Adres van IHateMoney-instantie die het project host</string>
     <string name="setting_ihm_project_url">IHateMoney-adres</string>
     <string name="setting_cospend_project_url_long">Adres van de Nextcloud-instantie die het Cospend-project host</string>
@@ -95,6 +103,8 @@
     <string name="settings_submit">Verbinden</string>
     <string name="settings_submitting">Bezig met verbinden...</string>
     <string name="settings_theme_title">Thema</string>
+    <string name="settings_offline_mode_title">Offline mode</string>
+    <string name="settings_offline_mode_summary">Do not automatically sync. Only sync when user asks.</string>
     <string name="settings_color_title">Hoofdkleur van app</string>
     <string name="settings_color_summary">Kleur voor actiebalken, knoppen, etc...</string>
     <string name="settings_colorpicker_title">Kleur kiezen</string>
@@ -112,6 +122,7 @@
     <string name="settle_who">Wie betaalt?</string>
     <string name="settle_to_whom">Aan wie?</string>
     <string name="settle_how_much">Hoeveel?</string>
+    <string name="total_payed">Total payed by all the members: %.2f</string>
     <string name="stats_who">Wie</string>
     <string name="stats_paid">Betaald</string>
     <string name="stats_spent">Uitgegeven</string>
@@ -136,7 +147,7 @@
     <string name="share_stats_intro">Statistieken van project \'%1$s\':</string>
     <string name="share_stats_title">Statistieken delen van project \'%1$s\'</string>
     <string name="share_stats_header">NAAM_VAN_DEELNEMER (BETAALD | UITGEGEVEN | SALDO)</string>
-    <string name="drawer_no_project">Er is nog geen project.\nCreëer er één of voeg er één toe</string>
+    <string name="drawer_no_project">There is no project.\nTap here to create/add one</string>
     <string name="choose_project_to_select">Project kiezen</string>
     <string name="edit_bill_impossible_no_member">Er zijn minimaal twee geactiveerde deelnemers nodig om een rekening toe te kunnen voegen</string>
     <string name="edit_project_local_impossible">Onmogelijk voor lokale projecten</string>

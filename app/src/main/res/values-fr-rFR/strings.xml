@@ -33,6 +33,14 @@
     <string name="project_type_local">Projet local</string>
     <string name="project_type_ihatemoney">Projet IHateMoney</string>
     <string name="project_type_nextcloud_cospend">Projet Nextcloud Cospend</string>
+    <string name="new_project_what_todo">Que voulez-vous faire ?</string>
+    <string name="new_project_where">Où ça ?</string>
+    <string name="where_local">Juste mon appareil (localement)</string>
+    <string name="where_ihm">Serveur IHateMoney</string>
+    <string name="where_cospend">Appli Nextcloud Cospend</string>
+    <string name="new_project_scan">Scanner un QRCode MoneyBuster</string>
+    <string name="todo_join">Rejoindre un projet existant</string>
+    <string name="todo_create">Créer un projet</string>
     <string name="setting_ihm_project_url_long">Adresse de l\'instance IHateMoney hébergeant le projet</string>
     <string name="setting_ihm_project_url">Adresse du IHateMoney</string>
     <string name="setting_cospend_project_url_long">Adresse de l\'instance Nextcloud hébergeant le projet Cospend</string>
@@ -95,6 +103,8 @@
     <string name="settings_submit">Se connecter</string>
     <string name="settings_submitting">Connexion en cours &#8230;</string>
     <string name="settings_theme_title">Thème</string>
+    <string name="settings_offline_mode_title">Mode hors-ligne</string>
+    <string name="settings_offline_mode_summary">Ne pas synchroniser automatiquement. Seulement à la demande de l\'utilisateur.</string>
     <string name="settings_color_title">Couleur principale de l\'appli</string>
     <string name="settings_color_summary">Couleur pour les barres d\'action, les boutons de la carte etc...</string>
     <string name="settings_colorpicker_title">Choisissez une couleur</string>
@@ -112,6 +122,7 @@
     <string name="settle_who">Qui doit payer ?</string>
     <string name="settle_to_whom">À qui ?</string>
     <string name="settle_how_much">Combien ?</string>
+    <string name="total_payed">Total payé par tous les membres : %.2f</string>
     <string name="stats_who">Qui</string>
     <string name="stats_paid">A payé</string>
     <string name="stats_spent">A dépensé</string>
@@ -136,7 +147,7 @@
     <string name="share_stats_intro">Statistiques du projet %1$s :</string>
     <string name="share_stats_title">Partager les statistiques du projet %1$s</string>
     <string name="share_stats_header">NOM_DU_MEMBRE (A_PAYÉ | A_DÉPENSÉ | SOLDE)</string>
-    <string name="drawer_no_project">Aucun projet.\nCréez/ajoutez-en un</string>
+    <string name="drawer_no_project">Aucun projet trouvé.\nAppuyez ici pour en créer/ajouter un</string>
     <string name="choose_project_to_select">Sélectionnez un projet</string>
     <string name="edit_bill_impossible_no_member">Au moins deux membres actifs sont nécessaires pour ajouter une facture</string>
     <string name="edit_project_local_impossible">Impossible pour les projets locaux</string>

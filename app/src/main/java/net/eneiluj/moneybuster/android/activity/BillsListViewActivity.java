@@ -102,6 +102,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     public static boolean DEBUG = true;
     public static final String BROADCAST_EXTRA_PARAM = "net.eneiluj.moneybuster.broadcast_extra_param";
     public static final String BROADCAST_ERROR_MESSAGE = "net.eneiluj.moneybuster.broadcast_error_message";
+    public static final String BROADCAST_ACCOUNT_PROJECTS_SYNC_FAILED = "net.eneiluj.moneybuster.broadcast_acc_proj_failed";
+    public static final String BROADCAST_SSO_TOKEN_MISMATCH = "net.eneiluj.moneybuster.broadcast.token_mismatch";
+    public static final String BROADCAST_ACCOUNT_PROJECTS_SYNCED = "net.eneiluj.moneybuster.broadcast.broadcast_acc_proj_synced";
 
     private final static int PERMISSION_FOREGROUND_SERVICE = 1;
 
@@ -1873,7 +1876,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
             // then sync the nextcloud account projects
             if (MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(getApplicationContext())) {
-                //db.getMoneyBusterServerSyncHelper().scheduleAccountProjectsSync();
+                db.getMoneyBusterServerSyncHelper().runAccountProjectsSync();
             }
         }
     }

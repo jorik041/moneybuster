@@ -12,6 +12,8 @@
     <!-- For QRCode scanner -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- For SSO account import -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
 
     <application
         android:name="net.eneiluj.moneybuster.util.MoneyBuster"

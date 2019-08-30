@@ -19,14 +19,24 @@ import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
+import com.google.gson.GsonBuilder;
+import com.nextcloud.android.sso.api.NextcloudAPI;
+import com.nextcloud.android.sso.exceptions.NextcloudFilesAppAccountNotFoundException;
+import com.nextcloud.android.sso.exceptions.NoCurrentAccountSelectedException;
+import com.nextcloud.android.sso.exceptions.TokenMismatchException;
+import com.nextcloud.android.sso.helper.SingleAccountHelper;
+import com.nextcloud.android.sso.model.SingleSignOnAccount;
+
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.activity.BillsListViewActivity;
 import net.eneiluj.moneybuster.android.activity.SettingsActivity;
+import net.eneiluj.moneybuster.model.DBAccountProject;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
+import net.eneiluj.moneybuster.util.CospendClient;
 import net.eneiluj.moneybuster.util.CospendClientUtil.LoginStatus;
 import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.IHateMoneyClient;
@@ -38,8 +48,10 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import at.bitfire.cert4android.CustomCertManager;
 import at.bitfire.cert4android.CustomCertService;
@@ -116,6 +128,9 @@ public class MoneyBusterServerSyncHelper {
     // current state of the synchronization
     private boolean syncActive = false;
     private boolean syncScheduled = false;
+
+    // current state of the account projects synchronization
+    private boolean syncAccountProjectsActive = false;
 
     // list of callbacks for both parts of synchronziation
     private List<ICallback> callbacksPush = new ArrayList<>();
@@ -954,6 +969,171 @@ public class MoneyBusterServerSyncHelper {
             return !localRepeat.equals(remoteRepeat);
         } else {
             return true;
+        }
+    }
+
+    // ACCOUNT SYNC
+
+    public void runAccountProjectsSync() {
+        Log.d(getClass().getSimpleName(), "Account projects sync requested; " + (syncAccountProjectsActive ? "sync active" : "sync NOT active") + ") ...");
+        Log.d(getClass().getSimpleName(), "(network:" + networkConnected + "; cert4android:" + cert4androidReady + ")");
+        updateNetworkStatus();
+        if (isNextcloudAccountConfigured(appContext) && isSyncPossible() && (!syncAccountProjectsActive)) {
+            SyncAccountProjectsTask syncAccountProjectTask = new SyncAccountProjectsTask();
+            syncAccountProjectTask.execute();
+        }
+    }
+
+    private NextcloudAPI.ApiConnectedListener apiCallback = new NextcloudAPI.ApiConnectedListener() {
+        @Override
+        public void onConnected() {
+            // ignore this one..
+            Log.d(getClass().getSimpleName(), "API connected!!!!");
+        }
+
+        @Override
+        public void onError(Exception ex) {
+            // TODO handle error in your app
+        }
+    };
+
+    private CospendClient createCospendClient() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext.getApplicationContext());
+        String url = "";
+        String username = "";
+        String password = "";
+        boolean useSSO = preferences.getBoolean(SettingsActivity.SETTINGS_USE_SSO, false);
+        if (useSSO) {
+            try {
+                SingleSignOnAccount ssoAccount = SingleAccountHelper.getCurrentSingleSignOnAccount(appContext.getApplicationContext());
+                NextcloudAPI nextcloudAPI = new NextcloudAPI(appContext.getApplicationContext(), ssoAccount, new GsonBuilder().create(), apiCallback);
+                return new CospendClient(url, username, password, nextcloudAPI);
+            }
+            catch (NextcloudFilesAppAccountNotFoundException e) {
+                return null;
+            }
+            catch (NoCurrentAccountSelectedException e) {
+                return null;
+            }
+        }
+        else {
+            url = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS);
+            username = preferences.getString(SettingsActivity.SETTINGS_USERNAME, SettingsActivity.DEFAULT_SETTINGS);
+            password = preferences.getString(SettingsActivity.SETTINGS_PASSWORD, SettingsActivity.DEFAULT_SETTINGS);
+            return new CospendClient(url, username, password, null);
+        }
+    }
+
+    private class SyncAccountProjectsTask extends AsyncTask<Void, Void, LoginStatus> {
+        private final List<ICallback> callbacks = new ArrayList<>();
+        private CospendClient client;
+        private List<Throwable> exceptions = new ArrayList<>();
+
+        public SyncAccountProjectsTask() {
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            syncAccountProjectsActive = true;
+        }
+
+        @Override
+        protected LoginStatus doInBackground(Void... voids) {
+            client = createCospendClient(); // recreate client on every sync in case the connection settings was changed
+            Log.i(getClass().getSimpleName(), "STARTING account projects SYNCHRONIZATION");
+            LoginStatus status = LoginStatus.OK;
+
+            if (client != null) {
+                status = pullRemoteProjects();
+            }
+            else {
+                status = LoginStatus.SSO_TOKEN_MISMATCH;
+            }
+            Log.i(getClass().getSimpleName(), "SYNCHRONIZATION FINISHED");
+            return status;
+        }
+
+        /**
+         * Pull remote Changes: update or create each remote session and remove remotely deleted sessions.
+         */
+        private LoginStatus pullRemoteProjects() {
+            Log.d(getClass().getSimpleName(), "pullRemoteProjects()");
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
+            LoginStatus status;
+            try {
+                // get NC url
+                String url = "";
+                boolean useSSO = preferences.getBoolean(SettingsActivity.SETTINGS_USE_SSO, false);
+                if (useSSO) {
+                    try {
+                        SingleSignOnAccount ssoAccount = SingleAccountHelper.getCurrentSingleSignOnAccount(appContext.getApplicationContext());
+                        url = ssoAccount.url;
+                    }
+                    catch (NextcloudFilesAppAccountNotFoundException e) {
+                    }
+                    catch (NoCurrentAccountSelectedException e) {
+                    }
+                }
+                else {
+                    url = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS);
+                }
+
+                ServerResponse.AccountProjectsResponse response = client.getAccountProjects(customCertManager);
+                List<DBAccountProject> remoteAccountProjects = response.getAccountProjects(url);
+                // we successfully got accounts (or zero), so we can clear local ones before adding new ones
+                //dbHelper.clearAccountProjects(remoteAccountProject);
+                for (DBAccountProject remoteAccountProject : remoteAccountProjects) {
+                    //dbHelper.addAccountProject(remoteAccountProject);
+                    Log.v(getClass().getSimpleName(), "received account project "+remoteAccountProject);
+                }
+                status = LoginStatus.OK;
+            } catch (ServerResponse.NotModifiedException e) {
+                Log.d(getClass().getSimpleName(), "No changes, nothing to do.");
+                status = LoginStatus.OK;
+            } catch (IOException e) {
+                Log.e(getClass().getSimpleName(), "Exception", e);
+                exceptions.add(e);
+                status = LoginStatus.CONNECTION_FAILED;
+            } catch (JSONException e) {
+                Log.e(getClass().getSimpleName(), "Exception", e);
+                exceptions.add(e);
+                status = LoginStatus.JSON_FAILED;
+            } catch (TokenMismatchException e) {
+                Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
+                status = LoginStatus.SSO_TOKEN_MISMATCH;
+            }
+
+            return status;
+        }
+
+        @Override
+        protected void onPostExecute(LoginStatus status) {
+            super.onPostExecute(status);
+            if (status != LoginStatus.OK) {
+                String errorString = appContext.getString(
+                        R.string.error_sync,
+                        appContext.getString(status.str)
+                );
+                errorString += "\n\n";
+                for (Throwable e : exceptions) {
+                    errorString += e.getClass().getName() + ": " + e.getMessage();
+                }
+                // broadcast the error
+                // if the bill list is not visible, no toast
+                Intent intent = new Intent(BillsListViewActivity.BROADCAST_ACCOUNT_PROJECTS_SYNC_FAILED);
+                intent.putExtra(BillsListViewActivity.BROADCAST_ERROR_MESSAGE, errorString);
+                appContext.sendBroadcast(intent);
+                if (status == LoginStatus.SSO_TOKEN_MISMATCH) {
+                    Intent intent2 = new Intent(BillsListViewActivity.BROADCAST_SSO_TOKEN_MISMATCH);
+                    appContext.sendBroadcast(intent2);
+                }
+            }
+            else {
+                Intent intent = new Intent(BillsListViewActivity.BROADCAST_ACCOUNT_PROJECTS_SYNCED);
+                appContext.sendBroadcast(intent);
+            }
+            syncAccountProjectsActive = false;
         }
     }
 }

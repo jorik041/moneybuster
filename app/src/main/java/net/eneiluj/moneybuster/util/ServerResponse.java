@@ -2,6 +2,7 @@ package net.eneiluj.moneybuster.util;
 
 //import android.preference.PreferenceManager;
 
+import net.eneiluj.moneybuster.model.DBAccountProject;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBMember;
@@ -138,6 +139,16 @@ public class ServerResponse {
 
         public List<DBMember> getMembers(long projId) throws JSONException {
             return getMembersFromJSONArray(new JSONArray(getContent()), projId);
+        }
+    }
+
+    public static class AccountProjectsResponse extends ServerResponse {
+        public AccountProjectsResponse(IHateMoneyClient.ResponseData response) {
+            super(response);
+        }
+
+        public List<DBAccountProject> getAccountProjects(String ncUrl) throws JSONException {
+            return getAccountProjectsFromJSONArray(new JSONArray(getContent()), ncUrl);
         }
     }
 
@@ -286,5 +297,35 @@ public class ServerResponse {
             }
         }
         return billOwers;
+    }
+
+    protected List<DBAccountProject> getAccountProjectsFromJSONArray(JSONArray jsonAPs, String ncUrl) throws JSONException {
+        List<DBAccountProject> accountProjects = new ArrayList<>();
+        for (int i = 0; i < jsonAPs.length(); i++) {
+            JSONObject jsonAP = jsonAPs.getJSONObject(i);
+            accountProjects.add(getAccountProjectFromJSON(jsonAP, ncUrl));
+        }
+
+        return accountProjects;
+    }
+
+    protected DBAccountProject getAccountProjectFromJSON(JSONObject json, String accountNcUrl) throws JSONException {
+        String remoteId = "";
+        String name = "";
+        String ncUrl = "";
+
+        if (!json.isNull("name")) {
+            name = json.getString("name");
+        }
+        if (!json.isNull("id")) {
+            remoteId = json.getString("id");
+        }
+        if (!json.isNull("ncurl")) {
+            ncUrl = json.getString("ncUrl");
+        }
+        if (ncUrl.isEmpty()) {
+            ncUrl = accountNcUrl;
+        }
+        return new DBAccountProject(0, remoteId, null, name, ncUrl);
     }
 }

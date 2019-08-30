@@ -214,7 +214,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                     // empty account list
                     MoneyBusterSQLiteOpenHelper db = MoneyBusterSQLiteOpenHelper.getInstance(view.getContext());
-                    // TODO db.clearNextcloudAccountProjects();
+                    // TODO db.clearAccountProjects();
                 }
             }
 

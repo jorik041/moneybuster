@@ -981,9 +981,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             fabShareProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabAddMember.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabAbout.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
-            fabMainAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabMenuDrawerEdit.setMenuButtonColorNormal(Color.DKGRAY);
             fabSelectProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
+            fabMainAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
         }
         else {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
@@ -992,7 +992,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             fabShareProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabAddMember.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabAbout.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
-            fabMainAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
+            fabMainAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryDarkColor(this)));
             fabMenuDrawerEdit.setMenuButtonColorNormal(ThemeUtils.primaryColor(this));
             fabSelectProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryDarkColor(this)));
         }
@@ -1002,7 +1002,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabShareProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabAbout.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabAddMember.setRippleColor(ThemeUtils.primaryDarkColor(this));
-        fabMainAddProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
+        fabMainAddProject.setRippleColor(ThemeUtils.primaryColor(this));
 
         fabSelectProject.setRippleColor(ThemeUtils.primaryColor(this));
 

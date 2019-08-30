@@ -135,19 +135,17 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     DrawerLayout drawerLayout;
     TextView selectedProjectLabel;
     SwipeRefreshLayout swipeRefreshLayout;
-    com.github.clans.fab.FloatingActionButton fabAddProject;
-    com.github.clans.fab.FloatingActionButton fabAddMember;
-    com.github.clans.fab.FloatingActionButton fabScanQrcodeImport;
-    com.github.clans.fab.FloatingActionMenu fabMenuDrawerAdd;
     com.github.clans.fab.FloatingActionMenu fabMenuDrawerEdit;
     com.github.clans.fab.FloatingActionButton fabEditMember;
-    com.github.clans.fab.FloatingActionButton fabStatistics;
-    com.github.clans.fab.FloatingActionButton fabSettle;
     com.github.clans.fab.FloatingActionButton fabEditProject;
     com.github.clans.fab.FloatingActionButton fabRemoveProject;
-    com.github.clans.fab.FloatingActionButton fabShareProject;
     FloatingActionButton fabAddBill;
+    FloatingActionButton fabAddMember;
     FloatingActionButton fabMainAddProject;
+    FloatingActionButton fabAbout;
+    FloatingActionButton fabStatistics;
+    FloatingActionButton fabSettle;
+    FloatingActionButton fabShareProject;
     FloatingActionButton fabSelectProject;
     RecyclerView listNavigationMembers;
     RecyclerView listNavigationMenu;
@@ -203,18 +201,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         drawerLayout = findViewById(R.id.drawerLayout);
         selectedProjectLabel = findViewById(R.id.selectedProject);
         swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
-        fabAddProject = findViewById(R.id.fabDrawer_add_project);
-        fabAddMember = findViewById(R.id.fabDrawer_add_member);
-        fabScanQrcodeImport = findViewById(R.id.fabDrawer_scan_qrcode_import);
-        fabMenuDrawerAdd = findViewById(R.id.floatingMenuDrawerAdd);
         fabMenuDrawerEdit = findViewById(R.id.floatingMenuDrawerEdit);
         fabEditMember = findViewById(R.id.fabDrawer_edit_member);
-        fabStatistics = findViewById(R.id.fabDrawer_statistics);
-        fabSettle = findViewById(R.id.fabDrawer_settle);
+        fabStatistics = findViewById(R.id.fab_statistics);
+        fabSettle = findViewById(R.id.fab_settle);
         fabEditProject = findViewById(R.id.fabDrawer_edit_project);
-        fabShareProject = findViewById(R.id.fabDrawer_share_project);
+        fabShareProject = findViewById(R.id.fab_share);
         fabRemoveProject = findViewById(R.id.fabDrawer_remove_project);
         fabAddBill = findViewById(R.id.fab_add_bill);
+        fabAddMember = findViewById(R.id.fab_add_member);
+        fabAbout = findViewById(R.id.fab_about);
         fabMainAddProject = findViewById(R.id.fab_add_project);
         fabSelectProject = findViewById(R.id.fab_select_project);
         listNavigationMembers = findViewById(R.id.navigationList);
@@ -355,31 +351,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 if (fabMenuDrawerEdit.isOpened()) {
                     fabMenuDrawerEdit.close(true);
                 }
-                else
+                else {
                     fabMenuDrawerEdit.open(true);
-                    fabMenuDrawerAdd.close(true);
-            }
-        });
-
-        fabMenuDrawerAdd.setOnMenuButtonClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "[Addclicked]");
-                if (fabMenuDrawerAdd.isOpened()) {
-                    fabMenuDrawerAdd.close(true);
                 }
-                else
-                    fabMenuDrawerAdd.open(true);
-                    fabMenuDrawerEdit.close(true);
-            }
-        });
-
-        fabAddProject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addProject();
-                fabMenuDrawerAdd.close(false);
-                drawerLayout.closeDrawers();
             }
         });
 
@@ -387,7 +361,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             @Override
             public void onClick(View view) {
                 addProject();
-                fabMenuDrawerAdd.close(false);
                 drawerLayout.closeDrawers();
             }
         });
@@ -441,7 +414,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                 showToast(getString(R.string.member_edit_empty_name));
                             }
 
-                            fabMenuDrawerAdd.close(false);
                             //new LoadCategoryListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                             InputMethodManager inputMethodManager = (InputMethodManager) input.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                             inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -451,7 +423,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
-                            fabMenuDrawerAdd.close(false);
                             InputMethodManager inputMethodManager = (InputMethodManager) input.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                             inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                         }
@@ -466,16 +437,25 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 }
             }
         });
-        fabScanQrcodeImport.setOnClickListener(new View.OnClickListener() {
+        /*fabScanQrcodeImport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent createIntent = new Intent(getApplicationContext(), QrCodeScanner.class);
                 startActivityForResult(createIntent, scan_qrcode_import_cmd);
 
-                fabMenuDrawerAdd.close(true);
+                drawerLayout.closeDrawers();
+            }
+        });*/
+        fabAbout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent aboutIntent = new Intent(getApplicationContext(), AboutActivity.class);
+                startActivityForResult(aboutIntent, about);
+
                 drawerLayout.closeDrawers();
             }
         });
+
         fabAddBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -770,6 +750,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     List<DBMember> membersSortedByName = db.getMembersOfProject(proj.getId(), MoneyBusterSQLiteOpenHelper.key_name);
 
                     final List<Transaction> transactions = settleBills(membersSortedByName, membersBalance);
+                    if (transactions == null || transactions.size() == 0) {
+                        return;
+                    }
                     // get members names per id
                     final Map<Long, String> memberIdToName = new HashMap<>();
                     for (DBMember m : membersSortedByName) {
@@ -814,7 +797,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         tl.addView(row);
                     }
 
-                    builder.setView(tView).setIcon(R.drawable.ic_money_off_grey_24dp);
+                    builder.setView(tView).setIcon(R.drawable.ic_compare_arrows_white_24dp);
                     builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -971,7 +954,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             public void onClick(final View view) {
                 showProjectSelectionDialog();
                 fabMenuDrawerEdit.close(true);
-                fabMenuDrawerAdd.close(true);
             }
         });
 
@@ -988,72 +970,72 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         });
 
-        fabMenuDrawerAdd.setOnMenuToggleListener(new com.github.clans.fab.FloatingActionMenu.OnMenuToggleListener() {
-            @Override
-            public void onMenuToggle(boolean opened) {
-
-                int drawableId;
-                final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                final long selectedProjectId = preferences.getLong("selected_project", 0);
-                if (opened) {
-                    if (selectedProjectId != 0) {
-                        fabAddMember.setVisibility(View.VISIBLE);
-                    }
-                    else {
-                        fabAddMember.setVisibility(View.GONE);
-                    }
-                } else {
-
-                }
-
-            }
-        });
-
 
         // color
         boolean darkTheme = MoneyBuster.getAppTheme(this);
         // if dark theme and main color is black, make fab button lighter/gray
         if (darkTheme && ThemeUtils.primaryColor(this) == Color.BLACK) {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
+            fabStatistics.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
+            fabSettle.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
+            fabShareProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
+            fabAddMember.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
+            fabAbout.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabMainAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
-            fabMenuDrawerAdd.setMenuButtonColorNormal(Color.DKGRAY);
             fabMenuDrawerEdit.setMenuButtonColorNormal(Color.DKGRAY);
             fabSelectProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
         }
         else {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
+            fabStatistics.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
+            fabSettle.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
+            fabShareProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
+            fabAddMember.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
+            fabAbout.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabMainAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
-            fabMenuDrawerAdd.setMenuButtonColorNormal(ThemeUtils.primaryColor(this));
             fabMenuDrawerEdit.setMenuButtonColorNormal(ThemeUtils.primaryColor(this));
             fabSelectProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryDarkColor(this)));
         }
         fabAddBill.setRippleColor(ThemeUtils.primaryDarkColor(this));
+        fabStatistics.setRippleColor(ThemeUtils.primaryDarkColor(this));
+        fabSettle.setRippleColor(ThemeUtils.primaryDarkColor(this));
+        fabShareProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
+        fabAbout.setRippleColor(ThemeUtils.primaryDarkColor(this));
+        fabAddMember.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabMainAddProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
 
         fabSelectProject.setRippleColor(ThemeUtils.primaryColor(this));
 
-
-        fabMenuDrawerAdd.setMenuButtonColorPressed(ThemeUtils.primaryColor(this));
         fabMenuDrawerEdit.setMenuButtonColorPressed(ThemeUtils.primaryColor(this));
 
-        fabAddProject.setColorNormal(ThemeUtils.primaryColor(this));
-        fabAddProject.setColorPressed(ThemeUtils.primaryColor(this));
-        fabAddMember.setColorNormal(ThemeUtils.primaryColor(this));
-        fabAddMember.setColorPressed(ThemeUtils.primaryColor(this));
-        fabScanQrcodeImport.setColorNormal(ThemeUtils.primaryColor(this));
-        fabScanQrcodeImport.setColorPressed(ThemeUtils.primaryColor(this));
         fabEditMember.setColorNormal(ThemeUtils.primaryColor(this));
         fabEditMember.setColorPressed(ThemeUtils.primaryColor(this));
         fabEditProject.setColorNormal(ThemeUtils.primaryColor(this));
         fabEditProject.setColorPressed(ThemeUtils.primaryColor(this));
-        fabShareProject.setColorNormal(ThemeUtils.primaryColor(this));
-        fabShareProject.setColorPressed(ThemeUtils.primaryColor(this));
-        fabSettle.setColorNormal(ThemeUtils.primaryColor(this));
-        fabSettle.setColorPressed(ThemeUtils.primaryColor(this));
-        fabStatistics.setColorNormal(ThemeUtils.primaryColor(this));
-        fabStatistics.setColorPressed(ThemeUtils.primaryColor(this));
         fabRemoveProject.setColorNormal(ThemeUtils.primaryColor(this));
         fabRemoveProject.setColorPressed(ThemeUtils.primaryColor(this));
+    }
+
+    private void showHideButtons() {
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        final long selectedProjectId = preferences.getLong("selected_project", 0);
+
+        if (selectedProjectId == 0) {
+            fabAddBill.hide();
+            fabAddMember.hide();
+            fabStatistics.hide();
+            fabSettle.hide();
+            fabShareProject.hide();
+            fabMenuDrawerEdit.setVisibility(View.GONE);
+        }
+        else {
+            fabAddBill.show();
+            fabAddMember.show();
+            fabStatistics.show();
+            fabSettle.show();
+            fabShareProject.show();
+            fabMenuDrawerEdit.setVisibility(View.VISIBLE);
+        }
     }
 
     private void addProject() {
@@ -1154,6 +1136,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private void setSelectedProject(long projectId) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         preferences.edit().putLong("selected_project", projectId).apply();
+
+        showHideButtons();
 
         DBProject proj = db.getProject(projectId);
         if (proj == null) {
@@ -1411,7 +1395,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         //final NavigationAdapter.NavigationItem itemEditProject = new NavigationAdapter.NavigationItem("editproject", getString(R.string.action_edit_project), null, android.R.drawable.ic_menu_edit);
         //final NavigationAdapter.NavigationItem itemRemoveProject = new NavigationAdapter.NavigationItem("removeproject", getString(R.string.action_remove_project), null, android.R.drawable.ic_menu_delete);
         final NavigationAdapter.NavigationItem itemSettings = new NavigationAdapter.NavigationItem("settings", getString(R.string.action_settings), null, R.drawable.ic_settings_grey600_24dp, true);
-        final NavigationAdapter.NavigationItem itemAbout = new NavigationAdapter.NavigationItem("about", getString(R.string.simple_about), null, R.drawable.ic_info_outline_grey600_24dp, true);
+        final NavigationAdapter.NavigationItem itemAbout = new NavigationAdapter.NavigationItem("about", "", null, -1, true);
 
         ArrayList<NavigationAdapter.NavigationItem> itemsMenu = new ArrayList<>();
         //itemsMenu.add(itemAddProject);
@@ -1427,8 +1411,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     Intent settingsIntent = new Intent(getApplicationContext(), PreferencesActivity.class);
                     startActivityForResult(settingsIntent, server_settings);
                 } else if (item == itemAbout) {
-                    Intent aboutIntent = new Intent(getApplicationContext(), AboutActivity.class);
-                    startActivityForResult(aboutIntent, about);
+                    // about is now triggered by a fab
                 }
             }
 
@@ -1612,11 +1595,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         final boolean isProjectLocal = local;
 
         String subtitle;
-        if (navigationSelection.memberName != null) {
-            subtitle = projName + " - " + navigationSelection.memberName;
+        if (selectedProjectId != 0) {
+            if (navigationSelection.memberName != null) {
+                subtitle = projName + " - " + navigationSelection.memberName;
+            } else {
+                subtitle = projName + " - " + getString(R.string.label_all_bills);
+            }
         }
         else {
-            subtitle = projName + " - " + getString(R.string.label_all_bills);
+            subtitle = getString(R.string.app_name);
         }
         // to display correct name on project selector when project was just added
         setSelectedProject(selectedProjectId);

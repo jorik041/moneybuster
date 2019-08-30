@@ -97,7 +97,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
                 icon.setVisibility(View.VISIBLE);
 
             } else {
-                icon.setVisibility(View.GONE);
+                icon.setVisibility(View.INVISIBLE);
             }
             //view.setBackgroundColor(isSelected ? view.getResources().getColor(R.color.bg_highlighted) : Color.TRANSPARENT);
             view.setBackgroundColor(isSelected ? ContextCompat.getColor(view.getContext(), R.color.bg_highlighted) : Color.TRANSPARENT);

@@ -181,7 +181,7 @@
                         android:id="@+id/fabDrawer_scan_qrcode_import"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_qrcode_white_24dp"
+                        android:src="@drawable/ic_qrcode_white"
                         app:fab_colorNormal="@color/primary"
                         app:fab_colorPressed="@color/primary"
                         app:fab_hideAnimation="@anim/fab_slide_out_to_right"

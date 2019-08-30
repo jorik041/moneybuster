@@ -3,6 +3,7 @@ package net.eneiluj.moneybuster.android.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -315,6 +317,12 @@ public class NewProjectFragment extends Fragment {
         boolean todoCreate = getTodoCreate();
         ProjectType type = getProjectType();
 
+        // change 'where' selection if we want to join a project and 'where' is local
+        if (!todoCreate && type.equals(ProjectType.LOCAL)) {
+            whereSpinner.setSelection(1);
+            type = getProjectType();
+        }
+
         newProjectUrlLayout.setVisibility(!type.equals(ProjectType.LOCAL) ? View.VISIBLE : View.GONE);
         newProjectPasswordLayout.setVisibility(!type.equals(ProjectType.LOCAL) ? View.VISIBLE : View.GONE);
 
@@ -582,12 +590,41 @@ public class NewProjectFragment extends Fragment {
         }
         String[] fromWhere = {"name", "id"};
         int[] toWhere = new int[]{android.R.id.text1};
-        SimpleAdapter simpleAdapterWhere = new SimpleAdapter(this.getContext(), dataWhere, android.R.layout.simple_spinner_item, fromWhere, toWhere);
-        simpleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        SimpleAdapter simpleAdapterWhere = new SimpleAdapter(this.getContext(), dataWhere, android.R.layout.simple_spinner_item, fromWhere, toWhere) {
+            // Disable click item < month current
+            @Override
+            public boolean isEnabled(int position) {
+                boolean todoCreate = getTodoCreate();
+                if (!todoCreate && position == 0) {
+                    return false;
+                }
+                return true;
+            }
+            // Change item appearance
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View v = null;
+                boolean todoCreate = getTodoCreate();
+                if (!todoCreate && position == 0) {
+                    TextView tv = new TextView(getContext());
+                    tv.setVisibility(View.GONE);
+                    tv.setHeight(0);
+                    v = tv;
+                } else {
+                    v = super.getDropDownView(position, null, parent);
+                }
+                return v;
+            }
+        };
+        simpleAdapterWhere.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         whereSpinner.setAdapter(simpleAdapterWhere);
 
         if (index == -1) {
             whereSpinner.setSelection(0);
+        }
+        else {
+            whereSpinner.setSelection(index);
         }
 
         defaultIhmUrl = getArguments().getString(PARAM_DEFAULT_IHM_URL);

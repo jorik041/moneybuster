@@ -1991,11 +1991,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     View layout = inflater.inflate(R.layout.sync_success_toast,
                             (ViewGroup) findViewById(R.id.custom_toast_container));
 
+                    LinearLayout ll = layout.findViewById(R.id.custom_toast_container);
+                    ll.setBackgroundColor(Color.TRANSPARENT);
                     TextView text = (TextView) layout.findViewById(R.id.text);
                     text.setText(getString(R.string.project_sync_success, projName));
+                    text.setText("");
 
                     Toast toast = new Toast(getApplicationContext());
-                    toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                    toast.setGravity(Gravity.TOP | Gravity.LEFT, 16, 16);
                     toast.setDuration(Toast.LENGTH_SHORT);
                     toast.setView(layout);
                     toast.show();

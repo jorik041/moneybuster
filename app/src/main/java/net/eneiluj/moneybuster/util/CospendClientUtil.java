@@ -130,7 +130,7 @@ public class CospendClientUtil {
         StringBuilder result = new StringBuilder();
         try {
             HttpURLConnection con = SupportUtil.getHttpURLConnection(ccm, url + "status.php");
-            con.setRequestMethod(IHateMoneyClient.METHOD_GET);
+            con.setRequestMethod(VersatileProjectSyncClient.METHOD_GET);
             con.setConnectTimeout(10 * 1000); // 10 seconds
             BufferedReader rd = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String line;

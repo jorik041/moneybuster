@@ -27,9 +27,9 @@ import java.util.Map;
 import at.bitfire.cert4android.CustomCertManager;
 
 @WorkerThread
-public class IHateMoneyClient {
+public class VersatileProjectSyncClient {
 
-    private static final String TAG = IHateMoneyClient.class.getSimpleName();
+    private static final String TAG = VersatileProjectSyncClient.class.getSimpleName();
 
     /**
      * This entity class is used to return relevant data of the HTTP reponse.
@@ -68,7 +68,7 @@ public class IHateMoneyClient {
     private static final String application_json = "application/json";
 
 
-    public IHateMoneyClient() {
+    public VersatileProjectSyncClient() {
 
     }
 

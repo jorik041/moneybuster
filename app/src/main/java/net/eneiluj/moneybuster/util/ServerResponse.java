@@ -25,7 +25,7 @@ public class ServerResponse {
     }
 
     public static class ProjectResponse extends ServerResponse {
-        public ProjectResponse(IHateMoneyClient.ResponseData response) {
+        public ProjectResponse(VersatileProjectSyncClient.ResponseData response) {
             super(response);
         }
 
@@ -43,7 +43,7 @@ public class ServerResponse {
     }
 
     public static class CreateRemoteMemberResponse extends ServerResponse {
-        public CreateRemoteMemberResponse(IHateMoneyClient.ResponseData response) {
+        public CreateRemoteMemberResponse(VersatileProjectSyncClient.ResponseData response) {
             super(response);
         }
 
@@ -53,7 +53,7 @@ public class ServerResponse {
     }
 
     public static class EditRemoteProjectResponse extends ServerResponse {
-        public EditRemoteProjectResponse(IHateMoneyClient.ResponseData response) {
+        public EditRemoteProjectResponse(VersatileProjectSyncClient.ResponseData response) {
             super(response);
         }
 
@@ -63,7 +63,7 @@ public class ServerResponse {
     }
 
     public static class EditRemoteMemberResponse extends ServerResponse {
-        public EditRemoteMemberResponse(IHateMoneyClient.ResponseData response) {
+        public EditRemoteMemberResponse(VersatileProjectSyncClient.ResponseData response) {
             super(response);
         }
 
@@ -73,7 +73,7 @@ public class ServerResponse {
     }
 
     public static class EditRemoteBillResponse extends ServerResponse {
-        public EditRemoteBillResponse(IHateMoneyClient.ResponseData response) {
+        public EditRemoteBillResponse(VersatileProjectSyncClient.ResponseData response) {
             super(response);
         }
 
@@ -83,7 +83,7 @@ public class ServerResponse {
     }
 
     public static class CreateRemoteBillResponse extends ServerResponse {
-        public CreateRemoteBillResponse(IHateMoneyClient.ResponseData response) {
+        public CreateRemoteBillResponse(VersatileProjectSyncClient.ResponseData response) {
             super(response);
         }
 
@@ -93,7 +93,7 @@ public class ServerResponse {
     }
 
     public static class DeleteRemoteBillResponse extends ServerResponse {
-        public DeleteRemoteBillResponse(IHateMoneyClient.ResponseData response) {
+        public DeleteRemoteBillResponse(VersatileProjectSyncClient.ResponseData response) {
             super(response);
         }
 
@@ -103,7 +103,7 @@ public class ServerResponse {
     }
 
     public static class DeleteRemoteProjectResponse extends ServerResponse {
-        public DeleteRemoteProjectResponse(IHateMoneyClient.ResponseData response) {
+        public DeleteRemoteProjectResponse(VersatileProjectSyncClient.ResponseData response) {
             super(response);
         }
 
@@ -113,7 +113,7 @@ public class ServerResponse {
     }
 
     public static class CreateRemoteProjectResponse extends ServerResponse {
-        public CreateRemoteProjectResponse(IHateMoneyClient.ResponseData response) {
+        public CreateRemoteProjectResponse(VersatileProjectSyncClient.ResponseData response) {
             super(response);
         }
 
@@ -123,7 +123,7 @@ public class ServerResponse {
     }
 
     public static class BillsResponse extends ServerResponse {
-        public BillsResponse(IHateMoneyClient.ResponseData response) {
+        public BillsResponse(VersatileProjectSyncClient.ResponseData response) {
             super(response);
         }
 
@@ -133,7 +133,7 @@ public class ServerResponse {
     }
 
     public static class MembersResponse extends ServerResponse {
-        public MembersResponse(IHateMoneyClient.ResponseData response) {
+        public MembersResponse(VersatileProjectSyncClient.ResponseData response) {
             super(response);
         }
 
@@ -143,7 +143,7 @@ public class ServerResponse {
     }
 
     public static class AccountProjectsResponse extends ServerResponse {
-        public AccountProjectsResponse(IHateMoneyClient.ResponseData response) {
+        public AccountProjectsResponse(VersatileProjectSyncClient.ResponseData response) {
             super(response);
         }
 
@@ -152,9 +152,9 @@ public class ServerResponse {
         }
     }
 
-    private final IHateMoneyClient.ResponseData response;
+    private final VersatileProjectSyncClient.ResponseData response;
 
-    public ServerResponse(IHateMoneyClient.ResponseData response) {
+    public ServerResponse(VersatileProjectSyncClient.ResponseData response) {
         this.response = response;
     }
 

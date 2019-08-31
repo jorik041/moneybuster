@@ -39,7 +39,7 @@ import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.util.CospendClient;
 import net.eneiluj.moneybuster.util.CospendClientUtil.LoginStatus;
 import net.eneiluj.moneybuster.util.ICallback;
-import net.eneiluj.moneybuster.util.IHateMoneyClient;
+import net.eneiluj.moneybuster.util.VersatileProjectSyncClient;
 import net.eneiluj.moneybuster.util.ServerResponse;
 import net.eneiluj.moneybuster.util.SupportUtil;
 
@@ -48,10 +48,8 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import at.bitfire.cert4android.CustomCertManager;
 import at.bitfire.cert4android.CustomCertService;
@@ -326,7 +324,7 @@ public class MoneyBusterServerSyncHelper {
         private final boolean onlyLocalChanges;
         private DBProject project;
         private final List<ICallback> callbacks = new ArrayList<>();
-        private IHateMoneyClient client;
+        private VersatileProjectSyncClient client;
         private List<Throwable> exceptions = new ArrayList<>();
 
         public SyncTask(boolean onlyLocalChanges, DBProject project) {
@@ -718,8 +716,8 @@ public class MoneyBusterServerSyncHelper {
         }
     }
 
-    private IHateMoneyClient createIHateMoneyClient() {
-        return new IHateMoneyClient();
+    private VersatileProjectSyncClient createIHateMoneyClient() {
+        return new VersatileProjectSyncClient();
     }
 
     public boolean editRemoteProject(long projId, String newName, String newEmail, String newPassword, ICallback callback) {
@@ -737,7 +735,7 @@ public class MoneyBusterServerSyncHelper {
      * or just get the share token if it already exists
      */
     private class EditRemoteProjectTask extends AsyncTask<Void, Void, LoginStatus> {
-        private IHateMoneyClient client;
+        private VersatileProjectSyncClient client;
         private String newName;
         private String newEmail;
         private String newPassword;
@@ -819,7 +817,7 @@ public class MoneyBusterServerSyncHelper {
      * or just get the share token if it already exists
      */
     private class DeleteRemoteProjectTask extends AsyncTask<Void, Void, LoginStatus> {
-        private IHateMoneyClient client;
+        private VersatileProjectSyncClient client;
         private DBProject project;
         private ICallback callback;
         private List<Throwable> exceptions = new ArrayList<>();
@@ -895,7 +893,7 @@ public class MoneyBusterServerSyncHelper {
      * or just get the share token if it already exists
      */
     private class CreateRemoteProjectTask extends AsyncTask<Void, Void, LoginStatus> {
-        private IHateMoneyClient client;
+        private VersatileProjectSyncClient client;
         private DBProject project;
         private ICallback callback;
         private List<Throwable> exceptions = new ArrayList<>();

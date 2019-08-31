@@ -11,10 +11,6 @@ import com.nextcloud.android.sso.api.NextcloudAPI;
 import com.nextcloud.android.sso.exceptions.TokenMismatchException;
 
 import net.eneiluj.moneybuster.BuildConfig;
-import net.eneiluj.moneybuster.model.DBBill;
-import net.eneiluj.moneybuster.model.DBMember;
-import net.eneiluj.moneybuster.model.DBProject;
-import net.eneiluj.moneybuster.model.ProjectType;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,9 +22,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import at.bitfire.cert4android.CustomCertManager;
@@ -71,7 +64,7 @@ public class CospendClient {
         }
     }
 
-    private IHateMoneyClient.ResponseData requestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, Map<String, String> params) throws TokenMismatchException{
+    private VersatileProjectSyncClient.ResponseData requestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, Map<String, String> params) throws TokenMismatchException{
         StringBuffer result = new StringBuffer();
 
         NextcloudRequest nextcloudRequest;
@@ -118,7 +111,7 @@ public class CospendClient {
             Log.d(getClass().getSimpleName(), "SSO server request error "+e.toString());
         }
 
-        return new IHateMoneyClient.ResponseData(result.toString(), "", 0);
+        return new VersatileProjectSyncClient.ResponseData(result.toString(), "", 0);
     }
     /**
      * Request-Method for POST, PUT with or without JSON-Object-Parameter
@@ -130,7 +123,7 @@ public class CospendClient {
      * @throws MalformedURLException
      * @throws IOException
      */
-    private IHateMoneyClient.ResponseData requestServer(CustomCertManager ccm, String target, String method, JSONObject params, String lastETag, boolean needLogin, boolean isOCSRequest)
+    private VersatileProjectSyncClient.ResponseData requestServer(CustomCertManager ccm, String target, String method, JSONObject params, String lastETag, boolean needLogin, boolean isOCSRequest)
             throws IOException {
         StringBuffer result = new StringBuffer();
         // setup connection
@@ -186,6 +179,6 @@ public class CospendClient {
         Log.i(getClass().getSimpleName(), "Result length:  " + result.length() + (paramData == null ? "" : "; Request length: " + paramData.length));
         Log.d(getClass().getSimpleName(), "ETag: " + etag + "; Last-Modified: " + lastModified + " (" + con.getHeaderField("Last-Modified") + ")");
         // return these header fields since they should only be saved after successful processing the result!
-        return new IHateMoneyClient.ResponseData(result.toString(), "", 0);
+        return new VersatileProjectSyncClient.ResponseData(result.toString(), "", 0);
     }
 }

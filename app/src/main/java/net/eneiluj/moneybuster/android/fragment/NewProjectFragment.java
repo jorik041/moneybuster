@@ -415,7 +415,8 @@ public class NewProjectFragment extends Fragment {
             newProjectUrl.setText(defaultNcUrl);
             newProjectUrlInputLayout.setHint(getString(R.string.setting_cospend_project_url));
             boolean isNCC = MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(getContext());
-            nextcloudButton.setVisibility((!todoCreate && isNCC) ? View.VISIBLE : View.GONE);
+            List<DBAccountProject> accProjs = db.getAccountProjects();
+            nextcloudButton.setVisibility((!todoCreate && isNCC && accProjs.size() > 0) ? View.VISIBLE : View.GONE);
         }
     }
 

@@ -1,6 +1,5 @@
 package net.eneiluj.moneybuster.android.activity;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
@@ -22,7 +21,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
 import android.text.InputType;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -49,7 +47,6 @@ import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.preference.PreferenceManager;
@@ -145,7 +142,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     com.github.clans.fab.FloatingActionButton fabRemoveProject;
     FloatingActionButton fabAddBill;
     FloatingActionButton fabAddMember;
-    FloatingActionButton fabMainAddProject;
+    FloatingActionButton fabSidebarAddProject;
+    FloatingActionButton fabBillListAddProject;
     FloatingActionButton fabAbout;
     FloatingActionButton fabStatistics;
     FloatingActionButton fabSettle;
@@ -215,7 +213,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabAddBill = findViewById(R.id.fab_add_bill);
         fabAddMember = findViewById(R.id.fab_add_member);
         fabAbout = findViewById(R.id.fab_about);
-        fabMainAddProject = findViewById(R.id.fab_add_project);
+        fabSidebarAddProject = findViewById(R.id.fab_add_project);
+        fabBillListAddProject = findViewById(R.id.fab_bill_list_add_project);
         fabSelectProject = findViewById(R.id.fab_select_project);
         listNavigationMembers = findViewById(R.id.navigationList);
         listNavigationMenu = findViewById(R.id.navigationMenu);
@@ -361,7 +360,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         });
 
-        fabMainAddProject.setOnClickListener(new View.OnClickListener() {
+        fabSidebarAddProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addProject();
+                drawerLayout.closeDrawers();
+            }
+        });
+
+        fabBillListAddProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addProject();
@@ -980,6 +987,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         // if dark theme and main color is black, make fab button lighter/gray
         if (darkTheme && ThemeUtils.primaryColor(this) == Color.BLACK) {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
+            fabBillListAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabStatistics.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabSettle.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabShareProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
@@ -987,26 +995,28 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             fabAbout.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabMenuDrawerEdit.setMenuButtonColorNormal(Color.DKGRAY);
             fabSelectProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
-            fabMainAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
+            fabSidebarAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
         }
         else {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
+            fabBillListAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabStatistics.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabSettle.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabShareProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabAddMember.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabAbout.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
-            fabMainAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryDarkColor(this)));
+            fabSidebarAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryDarkColor(this)));
             fabMenuDrawerEdit.setMenuButtonColorNormal(ThemeUtils.primaryColor(this));
             fabSelectProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryDarkColor(this)));
         }
         fabAddBill.setRippleColor(ThemeUtils.primaryDarkColor(this));
+        fabBillListAddProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabStatistics.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabSettle.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabShareProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabAbout.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabAddMember.setRippleColor(ThemeUtils.primaryDarkColor(this));
-        fabMainAddProject.setRippleColor(ThemeUtils.primaryColor(this));
+        fabSidebarAddProject.setRippleColor(ThemeUtils.primaryColor(this));
 
         fabSelectProject.setRippleColor(ThemeUtils.primaryColor(this));
 
@@ -1031,6 +1041,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             fabSettle.hide();
             fabShareProject.hide();
             fabMenuDrawerEdit.setVisibility(View.GONE);
+            fabBillListAddProject.setVisibility(View.VISIBLE);
         }
         else {
             fabAddBill.show();
@@ -1039,6 +1050,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             fabSettle.show();
             fabShareProject.show();
             fabMenuDrawerEdit.setVisibility(View.VISIBLE);
+            fabBillListAddProject.setVisibility(View.GONE);
         }
     }
 
@@ -1667,13 +1679,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 if (currentVisibility != oldVisibility) {
                     if (currentVisibility == View.VISIBLE) {
                         fabAddBill.setVisibility(View.INVISIBLE);
-                        fabMainAddProject.setVisibility(View.INVISIBLE);
+                        fabSidebarAddProject.setVisibility(View.INVISIBLE);
                     } else {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 fabAddBill.setVisibility(View.VISIBLE);
-                                fabMainAddProject.setVisibility(View.VISIBLE);
+                                fabSidebarAddProject.setVisibility(View.VISIBLE);
                             }
                         }, 150);
                     }

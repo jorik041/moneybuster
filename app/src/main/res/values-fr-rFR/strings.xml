@@ -92,6 +92,10 @@
     <string name="remote_project_operation_no_network">Les opérations sur un projet distant nécessitent une connexion réseau</string>
     <string name="member_edit_weight_error">Le poids du membre est incorrect</string>
     <string name="bill_info_dialog_title">À propos de %s</string>
+    <string name="welcome_dialog_title">Bienvenue dans MoneyBuster v%s</string>
+    <string name="welcome_dialog_content_v12">Quoi de neuf ?\n\n* Scan de QRCode\n* Meilleure interface\n* Import de projets d\'un compte Nextcloud\n* Statistiques améliorées\n* Et bien plus :-)</string>
+    <string name="first_welcome_dialog_content">Tout d\'abord, créez ou rejoignez un projet (IHateMoney ou Nextcloud Cospend), puis ajoutez des membres et/ou créez des factures!\n\n Autres actions principales:\n* Générer un plan de remboursement global\n* Afficher les statistiques d\'un projet\n* Partager: génère un QRCode pour que d\'autres puissent le scanner et rejoindre le projet\n\n Sur Android &gt;= 8.0 vous pouvez effectuer un appui long sur les boutons pour afficher de l\'aide.</string>
+    <string name="changelog">Journal des modifications</string>
     <!-- Settings -->
     <string name="settings_server_settings">Compte Nextcloud</string>
     <string name="settings_url">Adresse du serveur</string>

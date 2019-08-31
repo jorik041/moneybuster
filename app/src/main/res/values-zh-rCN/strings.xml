@@ -92,6 +92,10 @@
     <string name="remote_project_operation_no_network">远程项目操作需要网络连接</string>
     <string name="member_edit_weight_error">成员权重不正确</string>
     <string name="bill_info_dialog_title">关于 %s</string>
+    <string name="welcome_dialog_title">Welcome to MoneyBuster v%s</string>
+    <string name="welcome_dialog_content_v12">What\'s new?\n\n* QRCode scanning\n* Better interface\n* Nextcloud account project import\n* Improved statistics\n* And much more :-)</string>
+    <string name="first_welcome_dialog_content">First, create or join a project (IHateMoney or Nextcloud Cospend), then add some members and/or create some bills!\n\nOther main actions:\n* Settle the project to generate a global repayment plan\n* Show project statistics\n* Share: generate a QRCode that others can scan to join the project\n\nOn Android &gt;= 8.0 you can long press the action buttons to display help.</string>
+    <string name="changelog">Changelog</string>
     <!-- Settings -->
     <string name="settings_server_settings">Nextcloud account</string>
     <string name="settings_url">服务器地址</string>

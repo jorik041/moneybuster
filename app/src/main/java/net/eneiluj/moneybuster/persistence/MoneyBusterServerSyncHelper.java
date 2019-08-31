@@ -216,7 +216,9 @@ public class MoneyBusterServerSyncHelper {
     }
 
     public static boolean isNextcloudAccountConfigured(Context context) {
-        return !PreferenceManager.getDefaultSharedPreferences(context).getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS).isEmpty();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return !preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS).isEmpty() ||
+                preferences.getBoolean(SettingsActivity.SETTINGS_USE_SSO, false);
     }
 
     /**

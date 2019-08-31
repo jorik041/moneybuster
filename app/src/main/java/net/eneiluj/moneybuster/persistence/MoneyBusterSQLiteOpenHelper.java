@@ -16,6 +16,7 @@ import androidx.preference.PreferenceManager;
 
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.activity.BillsListViewActivity;
+import net.eneiluj.moneybuster.model.DBAccountProject;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBMember;
@@ -37,7 +38,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String TAG = MoneyBusterSQLiteOpenHelper.class.getSimpleName();
 
-    private static final int database_version = 4;
+    private static final int database_version = 5;
     private static final String database_name = "IHATEMONEY";
 
     private static final String table_members = "MEMBERS";
@@ -75,6 +76,14 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String key_billId = "BILLID";
     private static final String key_member_id = "MEMBERID";
 
+    // if Nextcloud account set
+    private static final String table_account_projects = "ACCOUNTPROJECTS";
+    //private static final String key_id = "ID";
+    //private static final String key_remoteId = "REMOTEID";
+    //private static final String key_name = "NAME";
+    //private static final String key_password = "PASSWORD";
+    private static final String key_ncUrl = "NCURL";
+
     private static final String[] columnsMembers = {
             key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight, key_state
     };
@@ -91,6 +100,10 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String[] columnsBillowers = {
             key_id, key_billId, key_member_id
+    };
+
+    private static final String[] columnsAccountProjects = {
+            key_id, key_remoteId, key_password,  key_name, key_ncUrl
     };
 
     private static final String default_order = key_id + " DESC";
@@ -129,6 +142,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         createTableBills(db, table_bills);
         createTableBillowers(db, table_billowers);
         createTableProjects(db, table_projects);
+        createTableAccountProjects(db, table_account_projects);
         createIndexes(db);
     }
 
@@ -178,6 +192,15 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 key_member_id + " INTEGER)");
     }
 
+    private void createTableAccountProjects(SQLiteDatabase db, String tableName) {
+        db.execSQL("CREATE TABLE " + tableName + " ( " +
+                key_id + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                key_remoteId + " TEXT, " +
+                key_name + " TEXT, " +
+                key_ncUrl + " TEXT, " +
+                key_password + " TEXT)");
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 2) {
@@ -205,6 +228,11 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 updateProject(project.getId(), project.getName(), project.getEmail(), project.getPassword(), project.getLastPayerId(), project.getType(), db);
             }
         }
+
+        if (oldVersion < 5) {
+            createTableAccountProjects(db, table_account_projects);
+            createIndex(db, table_account_projects, key_id);
+        }
     }
 
     @Override
@@ -217,6 +245,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         db.delete(table_projects, null, null);
         db.delete(table_bills, null, null);
         db.delete(table_billowers, null, null);
+        db.delete(table_account_projects, null, null);
     }
 
     private void recreateDatabase(SQLiteDatabase db) {
@@ -225,6 +254,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE " + table_projects);
         db.execSQL("DROP TABLE " + table_bills);
         db.execSQL("DROP TABLE " + table_billowers);
+        db.execSQL("DROP TABLE " + table_account_projects);
         onCreate(db);
     }
 
@@ -241,6 +271,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         createIndex(db, table_projects, key_id);
         createIndex(db, table_bills, key_id);
         createIndex(db, table_billowers, key_id);
+        createIndex(db, table_account_projects, key_id);
     }
 
     private void createIndex(SQLiteDatabase db, String table, String column) {
@@ -250,6 +281,69 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     public Context getContext() {
         return context;
+    }
+
+    public long addAccountProject(DBAccountProject accountProject) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(key_remoteId, accountProject.getRemoteId());
+        values.put(key_password, accountProject.getPassword());
+        values.put(key_ncUrl, accountProject.getncUrl());
+        values.put(key_name, accountProject.getName());
+        return db.insert(table_account_projects, null, values);
+    }
+
+    public DBAccountProject getAccountProject(long id) {
+        List<DBAccountProject> accountProjects = getAccountProjectsCustom(key_id + " = ?", new String[]{String.valueOf(id)}, null);
+        return accountProjects.isEmpty() ? null : accountProjects.get(0);
+    }
+
+    @NonNull
+    public List<DBAccountProject> getAccountProjects() {
+        return getAccountProjectsCustom("", new String[]{}, default_order);
+    }
+
+    @NonNull
+    @WorkerThread
+    private List<DBAccountProject> getAccountProjectsCustom(@NonNull String selection, @NonNull String[] selectionArgs, @Nullable String orderBy) {
+        return getAccountProjectsCustom(selection, selectionArgs, orderBy, getReadableDatabase());
+    }
+
+    @NonNull
+    @WorkerThread
+    private List<DBAccountProject> getAccountProjectsCustom(@NonNull String selection, @NonNull String[] selectionArgs, @Nullable String orderBy, SQLiteDatabase db) {
+        if (selectionArgs.length > 2) {
+            Log.v("AccountProject", selection + "   ----   " + selectionArgs[0] + " " + selectionArgs[1] + " " + selectionArgs[2]);
+        }
+        Cursor cursor = db.query(table_account_projects, columnsAccountProjects, selection, selectionArgs, null, null, orderBy);
+        List<DBAccountProject> accountProjects = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            accountProjects.add(getAccountProjectFromCursor(cursor));
+        }
+        cursor.close();
+        return accountProjects;
+    }
+
+    /**
+     * Creates a DBProject object from the current row of a Cursor.
+     *
+     * @param cursor database cursor
+     * @return DBProject
+     */
+    @NonNull
+    private DBAccountProject getAccountProjectFromCursor(@NonNull Cursor cursor) {
+        // key_id, key_remoteId, key_password,  key_name, key_ncUrl
+        return new DBAccountProject(cursor.getLong(0),
+                cursor.getString(1),
+                cursor.getString(2),
+                cursor.getString(3),
+                cursor.getString(4)
+        );
+    }
+
+    public void clearAccountProjects() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(table_account_projects, null, null);
     }
 
     public long addProject(DBProject project) {

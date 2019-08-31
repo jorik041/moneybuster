@@ -1080,9 +1080,9 @@ public class MoneyBusterServerSyncHelper {
                 ServerResponse.AccountProjectsResponse response = client.getAccountProjects(customCertManager);
                 List<DBAccountProject> remoteAccountProjects = response.getAccountProjects(url);
                 // we successfully got accounts (or zero), so we can clear local ones before adding new ones
-                //dbHelper.clearAccountProjects(remoteAccountProject);
+                dbHelper.clearAccountProjects();
                 for (DBAccountProject remoteAccountProject : remoteAccountProjects) {
-                    //dbHelper.addAccountProject(remoteAccountProject);
+                    dbHelper.addAccountProject(remoteAccountProject);
                     Log.v(getClass().getSimpleName(), "received account project "+remoteAccountProject);
                 }
                 status = LoginStatus.OK;

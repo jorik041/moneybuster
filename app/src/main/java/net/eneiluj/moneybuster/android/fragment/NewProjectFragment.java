@@ -1,6 +1,8 @@
 package net.eneiluj.moneybuster.android.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -25,6 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -32,6 +35,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
@@ -42,10 +46,12 @@ import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.activity.EditBillActivity;
 import net.eneiluj.moneybuster.android.activity.NewProjectActivity;
 import net.eneiluj.moneybuster.android.activity.QrCodeScanner;
+import net.eneiluj.moneybuster.model.DBAccountProject;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
+import net.eneiluj.moneybuster.persistence.MoneyBusterServerSyncHelper;
 import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.MoneyBuster;
 import net.eneiluj.moneybuster.util.SupportUtil;
@@ -100,6 +106,7 @@ public class NewProjectFragment extends Fragment {
     protected LinearLayout newProjectEmailLayout;
 
     protected ImageView scanButton;
+    protected ImageView nextcloudButton;
 
     protected FloatingActionButton fabOk;
 
@@ -148,6 +155,7 @@ public class NewProjectFragment extends Fragment {
         newProjectNameLayout = view.findViewById(R.id.editProjectNameLayout);
 
         scanButton = view.findViewById(R.id.scanButton);
+        nextcloudButton = view.findViewById(R.id.nextcloudButton);
 
         fabOk = view.findViewById(R.id.fab_new_ok);
 
@@ -173,6 +181,46 @@ public class NewProjectFragment extends Fragment {
                 Log.d(TAG, "Scan button pressed");
                 Intent createIntent = new Intent(getContext(), QrCodeScanner.class);
                 startActivityForResult(createIntent, scan_qrcode_import_cmd);
+            }
+        });
+
+        nextcloudButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<DBAccountProject> accountProjects = db.getAccountProjects();
+                List<String> acProjNameList = new ArrayList<>();
+                final List<Long> acProjIdList = new ArrayList<>();
+                for (DBAccountProject accountProject : accountProjects) {
+                    acProjNameList.add(accountProject.getName());
+                    acProjIdList.add(accountProject.getId());
+                }
+                // manage account projects list DIALOG
+                AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(view.getContext(), R.style.AppThemeDialog));
+                selectBuilder.setTitle(getString(R.string.choose_account_project_dialog_title));
+
+                if (acProjNameList.size() > 0) {
+
+                    CharSequence[] entcs = acProjNameList.toArray(new CharSequence[acProjNameList.size()]);
+
+                    selectBuilder.setSingleChoiceItems(entcs, -1, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            long pid = acProjIdList.get(which);
+                            DBAccountProject p = db.getAccountProject(pid);
+                            newProjectId.setText(p.getRemoteId());
+                            newProjectUrl.setText(p.getncUrl());
+                            dialog.dismiss();
+                            newProjectPassword.requestFocus();
+                        }
+                    });
+                    selectBuilder.setNegativeButton(getString(R.string.simple_cancel), null);
+
+                    AlertDialog selectDialog = selectBuilder.create();
+                    selectDialog.show();
+                }
+                else {
+                    showToast(getString(R.string.choose_account_project_dialog_impossible), Toast.LENGTH_LONG);
+                }
             }
         });
 
@@ -354,16 +402,20 @@ public class NewProjectFragment extends Fragment {
 
         if (type.equals(ProjectType.LOCAL)) {
             whereIcon.setImageResource(R.drawable.ic_cellphone_grey_24dp);
+            nextcloudButton.setVisibility(View.GONE);
         }
         else if (type.equals(ProjectType.IHATEMONEY)) {
             whereIcon.setImageResource(R.drawable.ic_ihm_grey_24dp);
             newProjectUrl.setText(defaultIhmUrl);
             newProjectUrlInputLayout.setHint(getString(R.string.setting_ihm_project_url));
+            nextcloudButton.setVisibility(View.GONE);
         }
         else if (type.equals(ProjectType.COSPEND)) {
             whereIcon.setImageResource(R.drawable.ic_cospend_grey_24dp);
             newProjectUrl.setText(defaultNcUrl);
             newProjectUrlInputLayout.setHint(getString(R.string.setting_cospend_project_url));
+            boolean isNCC = MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(getContext());
+            nextcloudButton.setVisibility((!todoCreate && isNCC) ? View.VISIBLE : View.GONE);
         }
     }
 

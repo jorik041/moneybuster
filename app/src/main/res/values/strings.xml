@@ -152,6 +152,8 @@
     <string name="choose_project_to_select">Select a project</string>
     <string name="edit_bill_impossible_no_member">At least two activated members are required to add a bill</string>
     <string name="edit_project_local_impossible">Impossible for local projects</string>
+    <string name="choose_account_project_dialog_title">Choose a project from your Nextcloud account</string>
+    <string name="choose_account_project_dialog_impossible">There is no Cospend project in your Nextcloud account</string>
 
 
     <!-- Certificates -->

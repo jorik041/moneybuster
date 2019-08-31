@@ -48,6 +48,7 @@
             android:src="@drawable/ic_library_add_white_24dp"
             android:tint="#ffffff"
             android:title="@string/action_add_project"
+            android:tooltipText="@string/action_add_project"
             app:backgroundTint="@color/primary"
             app:rippleColor="@color/primary_dark" />
 
@@ -56,7 +57,7 @@
         style="@style/fab"
         android:src="@drawable/ic_add_dollar_24dp"
         android:tint="#ffffff"
-        android:title="@string/action_create_bill"
+        android:tooltipText="@string/action_create_bill"
         app:backgroundTint="@color/primary"
         app:rippleColor="@color/primary_dark" />
 

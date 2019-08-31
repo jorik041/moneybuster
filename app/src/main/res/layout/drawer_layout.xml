@@ -79,7 +79,7 @@
                             android:padding="0dp"
                             android:src="@drawable/ic_add_white_24dp"
                             android:tint="#ffffff"
-                            android:title="@string/action_select_project"
+                            android:tooltipText="@string/action_add_project"
                             app:backgroundTint="@color/primary_dark"
                             app:fabCustomSize="40dp"
                             app:rippleColor="@color/bg_highlighted"
@@ -119,7 +119,7 @@
                             android:padding="0dp"
                             android:src="@drawable/ic_arrow_down_grey_24dp"
                             android:tint="#ffffff"
-                            android:title="@string/action_select_project"
+                            android:tooltipText="@string/action_select_project"
                             app:backgroundTint="@color/primary_dark"
                             app:fabCustomSize="40dp"
                             app:rippleColor="@color/bg_highlighted"
@@ -201,7 +201,7 @@
                     android:layout_gravity="top|start"
                     android:src="@drawable/ic_person_add_white_24dp"
                     android:tint="#ffffff"
-                    android:title="@string/fab_add_member"
+                    android:tooltipText="@string/fab_add_member"
                     app:backgroundTint="@color/primary"
                     app:rippleColor="@color/primary_dark" />
 
@@ -223,7 +223,7 @@
                     android:layout_gravity="top|start"
                     android:src="@drawable/ic_chart_white_24dp"
                     android:tint="#ffffff"
-                    android:title="@string/fab_statistics"
+                    android:tooltipText="@string/fab_statistics"
                     app:backgroundTint="@color/primary"
                     app:rippleColor="@color/primary_dark" />
 
@@ -245,7 +245,7 @@
                     android:layout_gravity="top|start"
                     android:src="@drawable/ic_compare_arrows_white_24dp"
                     android:tint="#ffffff"
-                    android:title="@string/fab_settle"
+                    android:tooltipText="@string/fab_settle"
                     app:backgroundTint="@color/primary"
                     app:rippleColor="@color/primary_dark" />
 
@@ -267,7 +267,7 @@
                     android:layout_gravity="top|start"
                     android:src="@drawable/ic_share_white_24dp"
                     android:tint="#ffffff"
-                    android:title="@string/action_share_project"
+                    android:tooltipText="@string/action_share_project"
                     app:backgroundTint="@color/primary"
                     app:rippleColor="@color/primary_dark" />
 
@@ -289,7 +289,7 @@
                     android:layout_gravity="top|end"
                     android:src="@drawable/ic_info_outline_grey600_24dp"
                     android:tint="#ffffff"
-                    android:title="@string/action_create_bill"
+                    android:tooltipText="@string/simple_about"
                     app:backgroundTint="@color/primary"
                     app:rippleColor="@color/primary_dark" />
 

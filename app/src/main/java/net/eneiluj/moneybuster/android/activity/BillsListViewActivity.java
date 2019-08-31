@@ -1041,7 +1041,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             fabSettle.hide();
             fabShareProject.hide();
             fabMenuDrawerEdit.setVisibility(View.GONE);
-            fabBillListAddProject.setVisibility(View.VISIBLE);
+            fabBillListAddProject.show();
         }
         else {
             fabAddBill.show();
@@ -1050,7 +1050,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             fabSettle.show();
             fabShareProject.show();
             fabMenuDrawerEdit.setVisibility(View.VISIBLE);
-            fabBillListAddProject.setVisibility(View.GONE);
+            fabBillListAddProject.hide();
         }
     }
 

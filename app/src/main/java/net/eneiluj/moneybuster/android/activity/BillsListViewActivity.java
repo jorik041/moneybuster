@@ -1984,6 +1984,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_SYNC_PROJECT);
         filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_NETWORK_AVAILABLE);
         filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_NETWORK_UNAVAILABLE);
+        filter.addAction(BROADCAST_ACCOUNT_PROJECTS_SYNC_FAILED);
+        filter.addAction(BROADCAST_ACCOUNT_PROJECTS_SYNCED);
         registerReceiver(mBroadcastReceiver, filter);
     }
 
@@ -2015,7 +2017,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     LinearLayout ll = layout.findViewById(R.id.custom_toast_container);
                     ll.setBackgroundColor(Color.TRANSPARENT);
                     TextView text = (TextView) layout.findViewById(R.id.text);
-                    text.setText(getString(R.string.project_sync_success, projName));
+                    //text.setText(getString(R.string.project_sync_success, projName));
                     text.setText("");
 
                     Toast toast = new Toast(getApplicationContext());
@@ -2037,6 +2039,25 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     break;
                 case MoneyBusterServerSyncHelper.BROADCAST_NETWORK_UNAVAILABLE:
                     swipeRefreshLayout.setEnabled(false);
+                    break;
+                case BROADCAST_ACCOUNT_PROJECTS_SYNCED:
+                    // show account projects sync success toast
+                    LayoutInflater inflater2 = getLayoutInflater();
+                    View layout2 = inflater2.inflate(R.layout.sync_success_toast,
+                            (ViewGroup) findViewById(R.id.custom_toast_container));
+
+                    LinearLayout ll2 = layout2.findViewById(R.id.custom_toast_container);
+                    ll2.setBackgroundColor(Color.TRANSPARENT);
+                    TextView text2 = (TextView) layout2.findViewById(R.id.text);
+                    text2.setText("");
+                    ImageView im = layout2.findViewById(R.id.toast_icon);
+                    im.setImageResource(R.drawable.ic_nextcloud_logo_white);
+
+                    Toast toast2 = new Toast(getApplicationContext());
+                    toast2.setGravity(Gravity.TOP | Gravity.LEFT, 75, 28);
+                    toast2.setDuration(Toast.LENGTH_SHORT);
+                    toast2.setView(layout2);
+                    toast2.show();
                     break;
             }
         }

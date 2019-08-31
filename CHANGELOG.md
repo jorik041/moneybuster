@@ -10,14 +10,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 [#20](https://gitlab.com/eneiluj/moneybuster/issues/20) @denics
 - web link in sharing dialog
 [cospend#42](https://gitlab.com/eneiluj/cospend-nc/issues/42) @jreybert
+- show total payed in stats dialog
+- able to catch BROWSE intent for ihatemoney.org URLs
+[#21](https://gitlab.com/eneiluj/moneybuster/issues/21) @eMerzh
+- offline mode to only sync when user asks
+[#21](https://gitlab.com/eneiluj/moneybuster/issues/21) @eMerzh
+- Nextcloud account settings to be able to import Cospend projects from there
+[#21](https://gitlab.com/eneiluj/moneybuster/issues/21) @eMerzh
+[#20](https://gitlab.com/eneiluj/moneybuster/issues/20) @denics
 
 ### Changed
 - settlement algorithm: use the same as Cospend and IHateMoney (from https://framagit.org/almet/debts)
 [#15](https://gitlab.com/eneiluj/moneybuster/issues/15) @nicocool84
 - improve CI script, now can sign release apk
+- tap on project name when there is none => create one
+[#21](https://gitlab.com/eneiluj/moneybuster/issues/21) @eMerzh
+- make sync success toast more discreet
+- "new project" screen is now a form
+[#21](https://gitlab.com/eneiluj/moneybuster/issues/21) @eMerzh
+- "new project" screen is now more intuitive
+[#21](https://gitlab.com/eneiluj/moneybuster/issues/21) @eMerzh
+- able to scan QRCode from "new project" screen
+[#21](https://gitlab.com/eneiluj/moneybuster/issues/21) @eMerzh
+- move many buttons, make add-project/share/settle/stats more visible
+[#21](https://gitlab.com/eneiluj/moneybuster/issues/21) @eMerzh
 
 ### Fixed
-- hide 'create on server' when importing a project from QR/url
+- hide useless buttons when there is no project
 
 ## 0.0.11 – 2019-07-12
 ### Added

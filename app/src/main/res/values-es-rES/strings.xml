@@ -94,7 +94,7 @@
     <string name="member_edit_weight_error">El peso del miembro es incorrecto</string>
     <string name="bill_info_dialog_title">Acerca de %s</string>
     <!-- Settings -->
-    <string name="settings_server_settings">Cuenta</string>
+    <string name="settings_server_settings">Nextcloud account</string>
     <string name="settings_url">Dirección del servidor</string>
     <string name="settings_url_warn_http">AVISO: \"http\" es inseguro. Por favor, utilice \"https\".</string>
     <string name="settings_username">Nombre de usuario</string>
@@ -151,6 +151,8 @@
     <string name="choose_project_to_select">Select a project</string>
     <string name="edit_bill_impossible_no_member">At least two activated members are required to add a bill</string>
     <string name="edit_project_local_impossible">Impossible for local projects</string>
+    <string name="choose_account_project_dialog_title">Choose a project from your Nextcloud account</string>
+    <string name="choose_account_project_dialog_impossible">There is no Cospend project in your Nextcloud account</string>
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Connection security</string>
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster has encountered an unknown certificate. Do you want to trust it?</string>
@@ -175,6 +177,7 @@
     <string name="error_invalid_bill_owers">Bill should have at least one ower</string>
     <string name="error_create_remote_project_helper">Error at remote project creation : %s</string>
     <string name="error_edit_remote_project_helper">Error at remote project edition : %s</string>
+    <string name="error_token_mismatch">Please reauthenticate your SSO account in settings</string>
     <!-- Snackbar Actions -->
     <!-- URLs -->
     <!-- About -->
@@ -205,6 +208,9 @@
     <string name="pref_value_theme_light">Claro</string>
     <string name="pref_value_theme_dark">Oscuro</string>
     <string name="avatar">Avatar</string>
+    <string name="fallback_weblogin_text">Revert to old login method</string>
+    <string name="fallback_weblogin_back">Back</string>
+    <string name="use_sso_toggle">Use account from Nextcloud Files app</string>
     <!-- Plurals -->
     <plurals name="ab_selected">
         <item quantity="one">%d seleccionado</item>

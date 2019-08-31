@@ -94,7 +94,7 @@
     <string name="member_edit_weight_error">成员权重不正确</string>
     <string name="bill_info_dialog_title">关于 %s</string>
     <!-- Settings -->
-    <string name="settings_server_settings">账户</string>
+    <string name="settings_server_settings">Nextcloud account</string>
     <string name="settings_url">服务器地址</string>
     <string name="settings_url_warn_http">警告：“http” 不安全。请使用 “https”。</string>
     <string name="settings_username">用户名</string>
@@ -151,6 +151,8 @@
     <string name="choose_project_to_select">选择项目</string>
     <string name="edit_bill_impossible_no_member">需要至少两名已激活成员以添加账单</string>
     <string name="edit_project_local_impossible">不可用于本地项目</string>
+    <string name="choose_account_project_dialog_title">Choose a project from your Nextcloud account</string>
+    <string name="choose_account_project_dialog_impossible">There is no Cospend project in your Nextcloud account</string>
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">钱多多 - 连接安全</string>
     <string name="trust_certificate_unknown_certificate_found">钱多多收到了未知证书。您是否想要信任此证书？</string>
@@ -175,6 +177,7 @@
     <string name="error_invalid_bill_owers">账单应至少包含一名欠款者</string>
     <string name="error_create_remote_project_helper">创建远程项目 %s 时出错</string>
     <string name="error_edit_remote_project_helper">编辑远程项目 %s 时出错</string>
+    <string name="error_token_mismatch">Please reauthenticate your SSO account in settings</string>
     <!-- Snackbar Actions -->
     <!-- URLs -->
     <!-- About -->
@@ -205,6 +208,9 @@
     <string name="pref_value_theme_light">亮色主题</string>
     <string name="pref_value_theme_dark">暗色主题</string>
     <string name="avatar">Avatar</string>
+    <string name="fallback_weblogin_text">Revert to old login method</string>
+    <string name="fallback_weblogin_back">Back</string>
+    <string name="use_sso_toggle">Use account from Nextcloud Files app</string>
     <!-- Plurals -->
     <plurals name="ab_selected">
         <item quantity="other">已选择 %d 个</item>

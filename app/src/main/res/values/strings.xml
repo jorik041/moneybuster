@@ -95,7 +95,7 @@
     <string name="bill_info_dialog_title">About %s</string>
 
     <!-- Settings -->
-    <string name="settings_server_settings">Account</string>
+    <string name="settings_server_settings">Nextcloud account</string>
     <string name="settings_url">Server address</string>
     <string name="settings_url_warn_http">WARNING: "http" is unsafe. Please use "https".</string>
     <string name="settings_username">Username</string>

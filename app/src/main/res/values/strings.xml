@@ -92,6 +92,12 @@
     <string name="remote_project_operation_no_network">Remote project operations require network connectivity</string>
     <string name="member_edit_weight_error">Member weight is incorrect</string>
     <string name="bill_info_dialog_title">About %s</string>
+    <string name="welcome_dialog_title">Welcome to MoneyBuster v%s</string>
+    <string name="welcome_dialog_content_v12">What\'s new\n\n* QRCode scanning\n* Better interface\n* Nextcloud account project import</string>
+    <string name="first_welcome_dialog_content">First, create or join a project, then enjoy!\n\nOn Android >= 8.0 you can long press the action buttons to display help.</string>
+    <string name="changelog">Changelog</string>
+    <string name="changelog_url" translatable="false">https://gitlab.com/eneiluj/moneybuster/blob/master/CHANGELOG.md#change-log</string>
+
 
     <!-- Settings -->
     <string name="settings_server_settings">Nextcloud account</string>

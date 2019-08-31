@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -238,6 +240,82 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         }
     }
 
+    private void displayWelcomeDialog() {
+        // WELCOME/NEWS dialog
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        //preferences.edit().putLong("last_welcome_dialog_displayed_at_version", -1).apply();
+        long lastV = preferences.getLong("last_welcome_dialog_displayed_at_version", -1);
+        String dialogContent = null;
+        if (lastV == -1) {
+            dialogContent = getString(R.string.first_welcome_dialog_content);
+            // save last version for which welcome dialog was shown
+            preferences.edit().putLong("last_welcome_dialog_displayed_at_version", 0).apply();
+        }
+        else {
+            int versionCode = getVersionCode();
+            if (lastV < versionCode) {
+                if (versionCode == 12) {
+                    dialogContent = getString(R.string.welcome_dialog_content_v12);
+                }
+                // save last version for which welcome dialog was shown
+                preferences.edit().putLong("last_welcome_dialog_displayed_at_version", getVersionCode()).apply();
+            }
+        }
+
+        if (dialogContent != null) {
+            // show the dialog
+            String dialogTitle = getString(R.string.welcome_dialog_title, getVersionName());
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(
+                    new ContextThemeWrapper(
+                            this,
+                            R.style.AppThemeDialog
+                    )
+            );
+            builder.setTitle(dialogTitle);
+            builder.setMessage(dialogContent);
+            // Set up the buttons
+            builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    displayWelcomeDialog();
+                }
+            });
+            builder.setNeutralButton(getString(R.string.changelog), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(getString(R.string.changelog_url)));
+                    startActivity(i);
+                }
+            });
+
+            builder.show();
+        }
+    }
+
+    private int getVersionCode() {
+        int versionCode = 9999;
+        try {
+            PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            versionCode = pinfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
+    }
+
+    private String getVersionName() {
+        String versionName = "0.0.0";
+        try {
+            PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            versionName = pinfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionName;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -265,6 +343,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         }
 
         registerBroadcastReceiver();
+
+        displayWelcomeDialog();
     }
 
     /**

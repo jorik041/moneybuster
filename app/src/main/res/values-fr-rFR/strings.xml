@@ -21,8 +21,7 @@
     <string name="setting_amount">Combien ?</string>
     <string name="setting_amount_long">Combien cela a-t-il couté ?</string>
     <string name="setting_owers">Pour qui ?</string>
-    <string name="setting_project_id_long">Identifiant du projet</string>
-    <string name="setting_project_id">ID du projet</string>
+    <string name="setting_project_id">Identifiant du projet</string>
     <string name="setting_project_type">Type de projet</string>
     <string name="setting_project_repetition">Répéter cette facture tous les</string>
     <string name="repeat_no">ne pas répéter</string>

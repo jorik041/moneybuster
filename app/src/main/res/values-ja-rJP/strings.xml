@@ -21,8 +21,7 @@
     <string name="setting_amount">How much?</string>
     <string name="setting_amount_long">How much did it cost?</string>
     <string name="setting_owers">For whom?</string>
-    <string name="setting_project_id_long">Project identifier</string>
-    <string name="setting_project_id">Project ID</string>
+    <string name="setting_project_id">Project identifier</string>
     <string name="setting_project_type">Project type</string>
     <string name="setting_project_repetition">Repeat this bill every</string>
     <string name="repeat_no">do not repeat</string>

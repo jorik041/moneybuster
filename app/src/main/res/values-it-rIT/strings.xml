@@ -21,8 +21,7 @@
     <string name="setting_amount">Quanto?</string>
     <string name="setting_amount_long">Quanto è costato?</string>
     <string name="setting_owers">Per chi?</string>
-    <string name="setting_project_id_long">Identificatore di progetto</string>
-    <string name="setting_project_id">ID Progetto</string>
+    <string name="setting_project_id">Project identifier</string>
     <string name="setting_project_type">Tipo di progetto</string>
     <string name="setting_project_repetition">Ripeti questa spesa ogni</string>
     <string name="repeat_no">Non ripetere</string>

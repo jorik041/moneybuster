@@ -21,8 +21,7 @@
     <string name="setting_amount">多少钱？</string>
     <string name="setting_amount_long">此物品多少钱？</string>
     <string name="setting_owers">为谁购买？</string>
-    <string name="setting_project_id_long">项目标识符</string>
-    <string name="setting_project_id">项目编号</string>
+    <string name="setting_project_id">Project identifier</string>
     <string name="setting_project_type">项目类型</string>
     <string name="setting_project_repetition">Repeat this bill every</string>
     <string name="repeat_no">do not repeat</string>

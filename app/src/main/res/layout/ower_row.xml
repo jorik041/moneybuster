@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingTop="10dp">
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp">
 
     <ImageView
         android:id="@+id/avatar"
@@ -16,14 +17,15 @@
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         android:contentDescription="@null"
-        tools:src="@drawable/ic_all" />
+        android:src="@drawable/ic_all"
+        />
 
     <CheckBox
         android:id="@+id/owerBox"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
         android:theme="@style/checkboxTheme"
-        android:text="dummyOwer" />
+        android:text="" />
 
 </LinearLayout>

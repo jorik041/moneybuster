@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Nextcloud account settings to be able to import Cospend projects from there
 [#21](https://gitlab.com/eneiluj/moneybuster/issues/21) @eMerzh
 [#20](https://gitlab.com/eneiluj/moneybuster/issues/20) @denics
+- tooltip for FAB
+[#21](https://gitlab.com/eneiluj/moneybuster/issues/21) @eMerzh
+- welcome dialogs (one first and one for each release)
+[#21](https://gitlab.com/eneiluj/moneybuster/issues/21) @eneiluj
 
 ### Changed
 - settlement algorithm: use the same as Cospend and IHateMoney (from https://framagit.org/almet/debts)
@@ -37,6 +41,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - hide useless buttons when there is no project
+- owner avatar display in bill edition for small screens
 
 ## 0.0.11 – 2019-07-12
 ### Added

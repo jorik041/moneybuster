@@ -14,6 +14,7 @@ import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -450,18 +451,42 @@ public class NewProjectFragment extends Fragment {
 
         scanButton.setVisibility(todoCreate ? View.GONE : View.VISIBLE);
 
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        //params.weight = 1.0f;
+        params.rightMargin = 65;
+
         if (type.equals(ProjectType.LOCAL)) {
             whereIcon.setImageResource(R.drawable.ic_cellphone_grey_24dp);
+            params.gravity = Gravity.TOP;
+            params.topMargin = 40;
+            whereIcon.setLayoutParams(params);
+
             nextcloudButton.setVisibility(View.GONE);
         }
         else if (type.equals(ProjectType.IHATEMONEY)) {
             whereIcon.setImageResource(R.drawable.ic_ihm_grey_24dp);
+            if (todoCreate) {
+                params.gravity = Gravity.CENTER_VERTICAL;
+                params.topMargin = 10;
+            }
+            else {
+                params.gravity = Gravity.TOP;
+                params.topMargin = 40;
+            }
+
+            whereIcon.setLayoutParams(params);
+
             newProjectUrl.setText(defaultIhmUrl);
             newProjectUrlInputLayout.setHint(getString(R.string.setting_ihm_project_url));
             nextcloudButton.setVisibility(View.GONE);
         }
         else if (type.equals(ProjectType.COSPEND)) {
             whereIcon.setImageResource(R.drawable.ic_cospend_grey_24dp);
+            params.gravity = Gravity.BOTTOM;
+            //params.topMargin = 20;
+            params.bottomMargin = 25;
+            whereIcon.setLayoutParams(params);
+
             newProjectUrl.setText(defaultNcUrl);
             newProjectUrlInputLayout.setHint(getString(R.string.setting_cospend_project_url));
             boolean isNCC = MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(getContext());

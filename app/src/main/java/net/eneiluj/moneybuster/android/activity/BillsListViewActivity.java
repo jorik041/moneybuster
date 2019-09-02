@@ -365,7 +365,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 // Do whatever you want here
-                fabMenuDrawerEdit.close(true);
+                fabMenuDrawerEdit.close(false);
             }
 
             /** Called when a drawer has settled in a completely open state. */

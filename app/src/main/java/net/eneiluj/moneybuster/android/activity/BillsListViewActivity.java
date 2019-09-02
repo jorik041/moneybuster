@@ -360,7 +360,20 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     private void setupActionBar() {
         setSupportActionBar(toolbar);
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.action_drawer_open, R.string.action_drawer_close);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.action_drawer_open, R.string.action_drawer_close) {
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                // Do whatever you want here
+                fabMenuDrawerEdit.close(true);
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                // Do whatever you want here
+            }
+        };
         drawerToggle.setDrawerIndicatorEnabled(true);
         drawerLayout.addDrawerListener(drawerToggle);
         drawerLayout.findViewById(R.id.drawer_top_layout).setBackgroundColor(ThemeUtils.primaryColor(this));

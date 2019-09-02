@@ -53,13 +53,37 @@
                         android:textColor="#9E9E9E"
                         android:textSize="12sp" />
 
-                    <Spinner
-                        android:id="@+id/whatTodoSpinner"
-                        style="@style/Widget.AppCompat.Spinner.Underlined"
-                        android:layout_width="match_parent"
+
+                    <RadioGroup android:id="@+id/whatTodoRadiogroup"
+                        android:layout_width="fill_parent"
                         android:layout_height="52dp"
                         android:layout_weight=".60"
-                        android:spinnerMode="dropdown" />
+                        android:layout_marginTop="0dp"
+                        android:orientation="horizontal"
+                        >
+                    <ToggleButton
+                        android:id="@+id/whatTodoJoin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/todo_join_label"
+                        android:textOff="@string/todo_join_label"
+                        android:textOn="@string/todo_join_label"
+                        android:checked="true"
+                        android:textSize="12sp"
+                        android:tooltipText="@string/todo_join"
+                        />
+
+                    <ToggleButton
+                        android:id="@+id/whatTodoCreate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/todo_create_label"
+                        android:textOff="@string/todo_create_label"
+                        android:textOn="@string/todo_create_label"
+                        android:textSize="12sp"
+                        android:tooltipText="@string/todo_create"
+                        />
+                    </RadioGroup>
                 </LinearLayout>
 
                 <ImageView
@@ -115,13 +139,49 @@
                         android:textColor="#9E9E9E"
                         android:textSize="12sp" />
 
-                    <Spinner
-                        android:id="@+id/whereSpinner"
-                        style="@style/Widget.AppCompat.Spinner.Underlined"
-                        android:layout_width="match_parent"
-                        android:layout_height="52dp"
+                    <RadioGroup android:id="@+id/whereRadiogroup"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight=".60"
-                        android:spinnerMode="dropdown" />
+                        android:layout_marginTop="0dp"
+                        android:orientation="vertical"
+                        >
+                        <ToggleButton
+                            android:id="@+id/whereLocal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/where_local"
+                            android:textOff="@string/where_local"
+                            android:textOn="@string/where_local"
+                            android:checked="true"
+                            android:textSize="12sp"
+                            android:tooltipText="@string/where_local"
+                            android:onClick="onToggle"
+                            />
+
+                        <ToggleButton
+                            android:id="@+id/whereIhm"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/where_ihm"
+                            android:textOff="@string/where_ihm"
+                            android:textOn="@string/where_ihm"
+                            android:textSize="12sp"
+                            android:tooltipText="@string/where_ihm"
+                            android:onClick="onToggle"
+                            />
+
+                        <ToggleButton
+                            android:id="@+id/whereCospend"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/where_cospend"
+                            android:textOff="@string/where_cospend"
+                            android:textOn="@string/where_cospend"
+                            android:textSize="12sp"
+                            android:tooltipText="@string/where_cospend"
+                            />
+                    </RadioGroup>
                 </LinearLayout>
 
                 <ImageView

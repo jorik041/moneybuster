@@ -28,10 +28,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -93,8 +95,11 @@ public class NewProjectFragment extends Fragment {
     protected EditText newProjectId;
     protected EditText newProjectUrl;
     protected EditText newProjectPassword;
-    protected Spinner whatTodoSpinner;
-    protected Spinner whereSpinner;
+    protected ToggleButton whatTodoJoin;
+    protected ToggleButton whatTodoCreate;
+    protected ToggleButton whereLocal;
+    protected ToggleButton whereIhm;
+    protected ToggleButton whereCospend;
     protected EditText newProjectEmail;
     protected EditText newProjectName;
 
@@ -135,12 +140,20 @@ public class NewProjectFragment extends Fragment {
         return f;
     }
 
+    public void onToggle(View view) {
+        ((RadioGroup)view.getParent()).check(view.getId());
+        // app specific stuff ..
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView");
         View view = inflater.inflate(R.layout.activity_new_project_form, container, false);
-        whatTodoSpinner = view.findViewById(R.id.whatTodoSpinner);
-        whereSpinner = view.findViewById(R.id.whereSpinner);
+        whatTodoJoin = view.findViewById(R.id.whatTodoJoin);
+        whatTodoCreate = view.findViewById(R.id.whatTodoCreate);
+        whereLocal = view.findViewById(R.id.whereLocal);
+        whereIhm = view.findViewById(R.id.whereIhm);
+        whereCospend = view.findViewById(R.id.whereCospend);
         whereIcon = view.findViewById(R.id.whereIcon);
 
         newProjectId = view.findViewById(R.id.editProjectId);
@@ -160,6 +173,81 @@ public class NewProjectFragment extends Fragment {
         nextcloudButton = view.findViewById(R.id.nextcloudButton);
 
         fabOk = view.findViewById(R.id.fab_new_ok);
+
+        whatTodoJoin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean isChecked = ((ToggleButton)view).isChecked();
+                if (isChecked) {
+                    whatTodoCreate.setChecked(false);
+                    showHideInputFields();
+                    showHideValidationButtons();
+                }
+                else {
+                    whatTodoJoin.setChecked(true);
+                }
+            }
+        });
+        whatTodoCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean isChecked = ((ToggleButton)view).isChecked();
+                if (isChecked) {
+                    whatTodoJoin.setChecked(false);
+                    showHideInputFields();
+                    showHideValidationButtons();
+                }
+                else {
+                    whatTodoCreate.setChecked(true);
+                }
+            }
+        });
+
+        whereLocal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean isChecked = ((ToggleButton)view).isChecked();
+                if (isChecked) {
+                    whereCospend.setChecked(false);
+                    whereIhm.setChecked(false);
+                    showHideInputFields();
+                    showHideValidationButtons();
+                }
+                else {
+                    whereLocal.setChecked(true);
+                }
+            }
+        });
+        whereIhm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean isChecked = ((ToggleButton)view).isChecked();
+                if (isChecked) {
+                    whereCospend.setChecked(false);
+                    whereLocal.setChecked(false);
+                    showHideInputFields();
+                    showHideValidationButtons();
+                }
+                else {
+                    whereIhm.setChecked(true);
+                }
+            }
+        });
+        whereCospend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean isChecked = ((ToggleButton)view).isChecked();
+                if (isChecked) {
+                    whereLocal.setChecked(false);
+                    whereIhm.setChecked(false);
+                    showHideInputFields();
+                    showHideValidationButtons();
+                }
+                else {
+                    whereCospend.setChecked(true);
+                }
+            }
+        });
 
         fabOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,48 +312,6 @@ public class NewProjectFragment extends Fragment {
                     showToast(getString(R.string.choose_account_project_dialog_impossible), Toast.LENGTH_LONG);
                 }
             }
-        });
-
-        whatTodoSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                Log.d(TAG, "WHAT TODO spinner");
-                Log.d(TAG, position + " ----> " + id);
-                if (isSpinnerWhatTodoAction) {
-                    showHideInputFields();
-                    showHideValidationButtons();
-                }
-
-                isSpinnerWhatTodoAction = true;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                Log.d(TAG, "WHAT TODO spinner NOTHING");
-                showHideValidationButtons();
-            }
-
-        });
-
-        whereSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                Log.d(TAG, "WHERE spinner");
-                Log.d(TAG, position + " ----> " + id);
-                if (isSpinnerWhereAction) {
-                    showHideInputFields();
-                    showHideValidationButtons();
-                }
-
-                isSpinnerWhereAction = true;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                Log.d(TAG, "where spinner NOTHING");
-                showHideValidationButtons();
-            }
-
         });
 
         newProjectId.addTextChangedListener(new TextWatcher() {
@@ -389,9 +435,11 @@ public class NewProjectFragment extends Fragment {
 
         // change 'where' selection if we want to join a project and 'where' is local
         if (!todoCreate && type.equals(ProjectType.LOCAL)) {
-            whereSpinner.setSelection(1);
+            whereLocal.setChecked(false);
+            whereIhm.setChecked(true);
             type = getProjectType();
         }
+        whereLocal.setVisibility(todoCreate ? View.VISIBLE : View.GONE);
 
         newProjectUrlLayout.setVisibility(!type.equals(ProjectType.LOCAL) ? View.VISIBLE : View.GONE);
         newProjectPasswordLayout.setVisibility(!type.equals(ProjectType.LOCAL) ? View.VISIBLE : View.GONE);
@@ -553,7 +601,9 @@ public class NewProjectFragment extends Fragment {
             newProjectPassword.setText(password);
             newProjectId.setText(pid);
             newProjectUrl.setText(url);
-            whereSpinner.setSelection(2);
+            whereLocal.setChecked(false);
+            whereIhm.setChecked(false);
+            whereCospend.setChecked(true);
             showHideInputFields();
             showHideValidationButtons();
         }
@@ -571,7 +621,9 @@ public class NewProjectFragment extends Fragment {
             newProjectPassword.setText(password);
             newProjectId.setText(pid);
             newProjectUrl.setText(url);
-            whereSpinner.setSelection(1);
+            whereLocal.setChecked(false);
+            whereIhm.setChecked(true);
+            whereCospend.setChecked(false);
             showHideInputFields();
             showHideValidationButtons();
         }
@@ -582,7 +634,9 @@ public class NewProjectFragment extends Fragment {
             newProjectPassword.setText(password);
             newProjectId.setText(pid);
             newProjectUrl.setText(url);
-            whereSpinner.setSelection(1);
+            whereLocal.setChecked(false);
+            whereIhm.setChecked(true);
+            whereCospend.setChecked(false);
             showHideInputFields();
             showHideValidationButtons();
         }
@@ -727,96 +781,6 @@ public class NewProjectFragment extends Fragment {
         // hide the keyboard when this window gets the focus
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        // what to do spinner
-        List<String> whatTodoNameList = new ArrayList<>();
-        whatTodoNameList.add(getString(R.string.todo_join));
-        whatTodoNameList.add(getString(R.string.todo_create));
-
-        String[] whatTodoNames = whatTodoNameList.toArray(new String[whatTodoNameList.size()]);
-
-        String[] whatTodoIds = getResources().getStringArray(R.array.whatTodoValues);
-        //int index = Arrays.asList(whatTodoIds).indexOf(bill.getRepeat());
-
-        ArrayList<Map<String, String>> data = new ArrayList<>();
-        for (int i = 0; i < whatTodoNames.length; i++) {
-            HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("name", whatTodoNames[i]);
-            hashMap.put("id", whatTodoIds[i]);
-            Log.d(TAG, "TODO add "+whatTodoIds[i]);
-            data.add(hashMap);
-        }
-        String[] from = {"name", "id"};
-        int[] to = new int[]{android.R.id.text1};
-        SimpleAdapter simpleAdapter = new SimpleAdapter(this.getContext(), data, android.R.layout.simple_spinner_item, from, to);
-        simpleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        whatTodoSpinner.setAdapter(simpleAdapter);
-
-        whatTodoSpinner.setSelection(0);
-
-        // where spinner
-        List<String> whereNameList = new ArrayList<>();
-        whereNameList.add(getString(R.string.where_local));
-        whereNameList.add(getString(R.string.where_ihm));
-        whereNameList.add(getString(R.string.where_cospend));
-
-        String[] whereNames = whereNameList.toArray(new String[whereNameList.size()]);
-
-        List<String> whereIdsList = new ArrayList<>();
-        whereIdsList.add(ProjectType.LOCAL.getId());
-        whereIdsList.add(ProjectType.IHATEMONEY.getId());
-        whereIdsList.add(ProjectType.COSPEND.getId());
-        String[] whereIds = whereIdsList.toArray(new String[whereIdsList.size()]);
-        //String[] whereIds = getResources().getStringArray(R.array.whereValues);
-        //int index = Arrays.asList(whereIds).indexOf(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE));
-        int index = whereIdsList.indexOf(getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE));
-
-        ArrayList<Map<String, String>> dataWhere = new ArrayList<>();
-        for (int i = 0; i < whereNames.length; i++) {
-            HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("name", whereNames[i]);
-            hashMap.put("id", whereIds[i]);
-            Log.d(TAG, "WHERE add "+whereIds[i]);
-            dataWhere.add(hashMap);
-        }
-        String[] fromWhere = {"name", "id"};
-        int[] toWhere = new int[]{android.R.id.text1};
-        SimpleAdapter simpleAdapterWhere = new SimpleAdapter(this.getContext(), dataWhere, android.R.layout.simple_spinner_item, fromWhere, toWhere) {
-            // Disable click item < month current
-            @Override
-            public boolean isEnabled(int position) {
-                boolean todoCreate = getTodoCreate();
-                if (!todoCreate && position == 0) {
-                    return false;
-                }
-                return true;
-            }
-            // Change item appearance
-            @Override
-            public View getDropDownView(int position, View convertView,
-                                        ViewGroup parent) {
-                View v = null;
-                boolean todoCreate = getTodoCreate();
-                if (!todoCreate && position == 0) {
-                    TextView tv = new TextView(getContext());
-                    tv.setVisibility(View.GONE);
-                    tv.setHeight(0);
-                    v = tv;
-                } else {
-                    v = super.getDropDownView(position, null, parent);
-                }
-                return v;
-            }
-        };
-        simpleAdapterWhere.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        whereSpinner.setAdapter(simpleAdapterWhere);
-
-        if (index == -1) {
-            whereSpinner.setSelection(0);
-        }
-        else {
-            whereSpinner.setSelection(index);
-        }
-
         defaultIhmUrl = getArguments().getString(PARAM_DEFAULT_IHM_URL);
         defaultNcUrl = getArguments().getString(PARAM_DEFAULT_NC_URL);
 
@@ -831,10 +795,15 @@ public class NewProjectFragment extends Fragment {
     }
 
     protected ProjectType getProjectType() {
-        Map<String, String> item = (Map<String, String>) whereSpinner.getSelectedItem();
-        Log.d(TAG, "project type item id "+item.get("id"));
-        Log.d(TAG, "project type item name "+item.get("name"));
-        return ProjectType.getTypeById(item.get("id"));
+        if (whereLocal.isChecked()) {
+            return ProjectType.LOCAL;
+        }
+        else if (whereIhm.isChecked()) {
+            return ProjectType.IHATEMONEY;
+        }
+        else {
+            return ProjectType.COSPEND;
+        }
     }
     protected String getRemoteId() {
         return newProjectId.getText().toString();
@@ -851,8 +820,7 @@ public class NewProjectFragment extends Fragment {
         return newProjectPassword.getText().toString();
     }
     protected boolean getTodoCreate() {
-        Map<String, String> item = (Map<String, String>) whatTodoSpinner.getSelectedItem();
-        return (item.get("id").equals("c"));
+        return whatTodoCreate.isChecked();
     }
     protected String getName() {
         return newProjectName.getText().toString();
@@ -873,7 +841,6 @@ public class NewProjectFragment extends Fragment {
             }
             else {
                 showToast(getString(R.string.error_create_remote_project_helper, message), Toast.LENGTH_LONG);
-                // TODO stop animation
             }
         }
 

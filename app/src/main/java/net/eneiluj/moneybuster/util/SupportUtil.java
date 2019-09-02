@@ -2,6 +2,8 @@ package net.eneiluj.moneybuster.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
@@ -322,4 +324,28 @@ public class SupportUtil {
 
         return reduceBalance(crediters, debiters, results);
     }
+
+    public static int getVersionCode(Context context) {
+        int versionCode = 9999;
+        try {
+            PackageInfo pinfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            versionCode = pinfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
+    }
+
+    public static String getVersionName(Context context) {
+        String versionName = "0.0.0";
+        try {
+            PackageInfo pinfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            versionName = pinfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionName;
+    }
+
+
 }

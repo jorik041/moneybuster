@@ -90,6 +90,8 @@ import java.util.List;
 import java.util.Map;
 
 import static net.eneiluj.moneybuster.android.activity.EditProjectActivity.PARAM_PROJECT_ID;
+import static net.eneiluj.moneybuster.util.SupportUtil.getVersionCode;
+import static net.eneiluj.moneybuster.util.SupportUtil.getVersionName;
 import static net.eneiluj.moneybuster.util.SupportUtil.settleBills;
 
 //import android.support.v4.widget.DrawerLayout;
@@ -246,25 +248,20 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         //preferences.edit().putLong("last_welcome_dialog_displayed_at_version", -1).apply();
         long lastV = preferences.getLong("last_welcome_dialog_displayed_at_version", -1);
         String dialogContent = null;
-        if (lastV == -1) {
-            dialogContent = getString(R.string.first_welcome_dialog_content);
-            // save last version for which welcome dialog was shown
-            preferences.edit().putLong("last_welcome_dialog_displayed_at_version", 0).apply();
-        }
-        else {
-            int versionCode = getVersionCode();
+        if (lastV != -1) {
+            int versionCode = getVersionCode(this);
             if (lastV < versionCode) {
                 if (versionCode == 12) {
                     dialogContent = getString(R.string.welcome_dialog_content_v12);
                 }
                 // save last version for which welcome dialog was shown
-                preferences.edit().putLong("last_welcome_dialog_displayed_at_version", getVersionCode()).apply();
+                preferences.edit().putLong("last_welcome_dialog_displayed_at_version", getVersionCode(this)).apply();
             }
         }
 
         if (dialogContent != null) {
             // show the dialog
-            String dialogTitle = getString(R.string.welcome_dialog_title, getVersionName());
+            String dialogTitle = getString(R.string.welcome_dialog_title, getVersionName(this));
 
             AlertDialog.Builder builder = new AlertDialog.Builder(
                     new ContextThemeWrapper(
@@ -292,28 +289,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
             builder.show();
         }
-    }
-
-    private int getVersionCode() {
-        int versionCode = 9999;
-        try {
-            PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            versionCode = pinfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return versionCode;
-    }
-
-    private String getVersionName() {
-        String versionName = "0.0.0";
-        try {
-            PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            versionName = pinfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return versionName;
     }
 
     @Override

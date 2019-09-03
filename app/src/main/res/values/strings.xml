@@ -56,6 +56,9 @@
     <string name="setting_email">E-mail</string>
     <string name="project_added_success">Project successfully added to MoneyBuster</string>
     <string name="action_search">Search</string>
+    <string name="simple_error">Error</string>
+    <string name="simple_loading">Loading</string>
+    <string name="creating_remote_project">Creating remote project</string>
     <string name="simple_cancel">Cancel</string>
     <string name="simple_ok">Ok</string>
     <string name="simple_yes">Yes</string>

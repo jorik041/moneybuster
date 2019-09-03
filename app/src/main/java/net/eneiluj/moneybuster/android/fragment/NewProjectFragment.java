@@ -1,6 +1,7 @@
 package net.eneiluj.moneybuster.android.fragment;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -39,6 +41,7 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
@@ -123,6 +126,8 @@ public class NewProjectFragment extends Fragment {
 
     private boolean isSpinnerWhereAction = false;
     private boolean isSpinnerWhatTodoAction = false;
+
+    private ProgressDialog progress = null;
 
     public static NewProjectFragment newInstance(String defaultIhmUrl, String defaultNCUrl,
                                                  @Nullable String defaultProjectId,
@@ -711,8 +716,14 @@ public class NewProjectFragment extends Fragment {
                 //showToast(getString(R.string.error_invalid_email), Toast.LENGTH_LONG);
                 return;
             }
+            progress = new ProgressDialog(getContext());
+            progress.setTitle(getString(R.string.simple_loading));
+            progress.setMessage(getString(R.string.creating_remote_project));
+            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+            progress.show();
             if (!db.getMoneyBusterServerSyncHelper().createRemoteProject(getRemoteId(), getName(), getEmail(), getPassword(), getUrl(), getProjectType(), createRemoteCallBack)) {
                 //showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
+                progress.dismiss();
             }
         }
     }
@@ -865,7 +876,25 @@ public class NewProjectFragment extends Fragment {
                 listener.close(pid);
             }
             else {
-                showToast(getString(R.string.error_create_remote_project_helper, message), Toast.LENGTH_LONG);
+                //showToast(getString(R.string.error_create_remote_project_helper, message), Toast.LENGTH_LONG);
+                androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(
+                        new ContextThemeWrapper(
+                                getContext(),
+                                R.style.AppThemeDialog
+                        )
+                );
+                builder.setTitle(getString(R.string.simple_error));
+                builder.setMessage(getString(R.string.error_create_remote_project_helper, message));
+                // Set up the buttons
+                builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.show();
+
+                progress.dismiss();
             }
         }
 

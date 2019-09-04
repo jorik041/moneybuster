@@ -37,6 +37,9 @@
     <string name="where_local">Just my phone (local)</string>
     <string name="where_ihm">IHateMoney server</string>
     <string name="where_cospend">Cospend Nextcloud app</string>
+    <string name="where_local_short">Local</string>
+    <string name="where_ihm_short">IHateMoney</string>
+    <string name="where_cospend_short">Cospend</string>
     <string name="new_project_scan">Scan a MoneyBuster QRCode</string>
     <string name="todo_join">Join an existing project</string>
     <string name="todo_join_label">Join</string>

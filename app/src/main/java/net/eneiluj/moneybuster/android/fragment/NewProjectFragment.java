@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -456,11 +457,31 @@ public class NewProjectFragment extends Fragment {
 
         scanButton.setVisibility(todoCreate ? View.GONE : View.VISIBLE);
 
+        if (todoCreate) {
+            whatTodoCreate.setTypeface(Typeface.DEFAULT_BOLD);
+            whatTodoJoin.setTypeface(Typeface.DEFAULT);
+            whatTodoCreate.setTextSize(12);
+            whatTodoJoin.setTextSize(10);
+        }
+        else {
+            whatTodoCreate.setTypeface(Typeface.DEFAULT);
+            whatTodoJoin.setTypeface(Typeface.DEFAULT_BOLD);
+            whatTodoCreate.setTextSize(10);
+            whatTodoJoin.setTextSize(12);
+        }
+
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         //params.weight = 1.0f;
         params.rightMargin = 65;
 
         if (type.equals(ProjectType.LOCAL)) {
+            whereLocal.setTextSize(12);
+            whereIhm.setTextSize(10);
+            whereCospend.setTextSize(10);
+            whereLocal.setTypeface(Typeface.DEFAULT_BOLD);
+            whereIhm.setTypeface(Typeface.DEFAULT);
+            whereCospend.setTypeface(Typeface.DEFAULT);
+
             whereIcon.setImageResource(R.drawable.ic_cellphone_grey_24dp);
             params.gravity = Gravity.TOP;
             params.topMargin = 40;
@@ -469,6 +490,13 @@ public class NewProjectFragment extends Fragment {
             nextcloudButton.setVisibility(View.GONE);
         }
         else if (type.equals(ProjectType.IHATEMONEY)) {
+            whereLocal.setTextSize(10);
+            whereIhm.setTextSize(12);
+            whereCospend.setTextSize(10);
+            whereLocal.setTypeface(Typeface.DEFAULT);
+            whereIhm.setTypeface(Typeface.DEFAULT_BOLD);
+            whereCospend.setTypeface(Typeface.DEFAULT);
+
             whereIcon.setImageResource(R.drawable.ic_ihm_grey_24dp);
             if (todoCreate) {
                 params.gravity = Gravity.CENTER_VERTICAL;
@@ -486,6 +514,13 @@ public class NewProjectFragment extends Fragment {
             nextcloudButton.setVisibility(View.GONE);
         }
         else if (type.equals(ProjectType.COSPEND)) {
+            whereLocal.setTextSize(10);
+            whereIhm.setTextSize(10);
+            whereCospend.setTextSize(12);
+            whereLocal.setTypeface(Typeface.DEFAULT);
+            whereIhm.setTypeface(Typeface.DEFAULT);
+            whereCospend.setTypeface(Typeface.DEFAULT_BOLD);
+
             whereIcon.setImageResource(R.drawable.ic_cospend_grey_24dp);
             params.gravity = Gravity.BOTTOM;
             //params.topMargin = 20;

@@ -37,8 +37,13 @@
     <string name="where_local">Juste mon appareil (localement)</string>
     <string name="where_ihm">Serveur IHateMoney</string>
     <string name="where_cospend">Appli Nextcloud Cospend</string>
+    <string name="where_local_short">Local</string>
+    <string name="where_ihm_short">IHateMoney</string>
+    <string name="where_cospend_short">Cospend</string>
     <string name="new_project_scan">Scanner un QRCode MoneyBuster</string>
     <string name="todo_join">Rejoindre un projet existant</string>
+    <string name="todo_join_label">Rejoindre</string>
+    <string name="todo_create_label">Créer</string>
     <string name="todo_create">Créer un projet</string>
     <string name="setting_ihm_project_url_long">Adresse de l\'instance IHateMoney hébergeant le projet</string>
     <string name="setting_ihm_project_url">Adresse du IHateMoney</string>
@@ -54,6 +59,9 @@
     <string name="setting_email">E-mail</string>
     <string name="project_added_success">Projet ajouté avec succès dans MoneyBuster</string>
     <string name="action_search">Chercher</string>
+    <string name="simple_error">Erreur</string>
+    <string name="simple_loading">Chargement</string>
+    <string name="creating_remote_project">Création du projet distant</string>
     <string name="simple_cancel">Annuler</string>
     <string name="simple_ok">Ok</string>
     <string name="simple_yes">Oui</string>

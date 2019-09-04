@@ -37,8 +37,13 @@
     <string name="where_local">Just my phone (local)</string>
     <string name="where_ihm">IHateMoney server</string>
     <string name="where_cospend">Cospend Nextcloud app</string>
+    <string name="where_local_short">Local</string>
+    <string name="where_ihm_short">IHateMoney</string>
+    <string name="where_cospend_short">Cospend</string>
     <string name="new_project_scan">Scan a MoneyBuster QRCode</string>
     <string name="todo_join">Join an existing project</string>
+    <string name="todo_join_label">Join</string>
+    <string name="todo_create_label">Create</string>
     <string name="todo_create">Create a project</string>
     <string name="setting_ihm_project_url_long">托管项目的 IHateMoney 实例地址</string>
     <string name="setting_ihm_project_url">IHateMoney 地址</string>
@@ -54,6 +59,9 @@
     <string name="setting_email">电子邮件地址</string>
     <string name="project_added_success">Project successfully added to MoneyBuster</string>
     <string name="action_search">搜索</string>
+    <string name="simple_error">Error</string>
+    <string name="simple_loading">Loading</string>
+    <string name="creating_remote_project">Creating remote project</string>
     <string name="simple_cancel">取消</string>
     <string name="simple_ok">好</string>
     <string name="simple_yes">是</string>

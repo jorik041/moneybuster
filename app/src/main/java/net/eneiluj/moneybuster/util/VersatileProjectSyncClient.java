@@ -174,9 +174,12 @@ public class VersatileProjectSyncClient {
             payedFor = payedFor.replaceAll(",$", "");
             paramValues.add(payedFor);
 
-            // TODO add repeat info here
             paramKeys.add("repeat");
             paramValues.add(bill.getRepeat());
+            paramKeys.add("paymentmode");
+            paramValues.add(bill.getPaymentMode());
+            paramKeys.add("categoryid");
+            paramValues.add(String.valueOf(bill.getCategoryId()));
         }
         else {
             target = project.getIhmUrl().replaceAll("/+$", "")

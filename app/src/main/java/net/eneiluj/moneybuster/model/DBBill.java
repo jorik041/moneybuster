@@ -18,6 +18,18 @@ public class DBBill implements Item, Serializable {
     private int state;
 
     private String repeat;
+    private String paymentMode;
+    public static final String PAYMODE_NONE = "n";
+    public static final String PAYMODE_CARD = "c";
+    public static final String PAYMODE_CASH = "b";
+    public static final String PAYMODE_CHECK = "f";
+
+    private int categoryId;
+    public static final int CATEGORY_NONE = 0;
+    public static final int CATEGORY_FOOD = -1;
+    public static final int CATEGORY_FURNITURE = -2;
+    public static final int CATEGORY_RENT= -3;
+    public static final int CATEGORY_BILLS = -4;
 
     private List<DBBillOwer> billOwers;
 
@@ -28,7 +40,8 @@ public class DBBill implements Item, Serializable {
 
     public static final String NON_REPEATED = "n";
 
-    public DBBill(long id, long remoteId, long projectId, long payerId, double amount, String date, String what, int state, String repeat) {
+    public DBBill(long id, long remoteId, long projectId, long payerId, double amount,
+                  String date, String what, int state, String repeat, String paymentMode, int categoryId) {
         this.id = id;
         this.remoteId = remoteId;
         this.projectId = projectId;
@@ -37,6 +50,8 @@ public class DBBill implements Item, Serializable {
         this.date = date;
         this.what = what;
         this.repeat = repeat;
+        this.paymentMode = paymentMode;
+        this.categoryId = categoryId;
 
         this.billOwers = new ArrayList<>();
 
@@ -131,12 +146,28 @@ public class DBBill implements Item, Serializable {
         this.repeat = repeat;
     }
 
+    public String getPaymentMode() {
+        return paymentMode;
+    }
+
+    public void setPaymentMode(String paymentMode) {
+        this.paymentMode = paymentMode;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
     @Override
     public String toString() {
         // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what, key_repeat
         return "#DBBill" + getId() + "/" + this.remoteId + "," + this.projectId
                 + ", " + this.payerId + ", " + this.amount + ", " + this.date + ", "
-                + this.what + ", " + this.state + ", " + this.repeat;
+                + this.what + ", " + this.state + ", " + this.repeat + ", " + this.paymentMode + ", " + this.categoryId;
     }
 
     @Override

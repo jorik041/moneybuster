@@ -98,11 +98,15 @@ public class EditBillFragment extends Fragment {
     private Spinner editPayer;
     private EditText editAmount;
     private Spinner editRepeat;
+    private Spinner editPaymentMode;
+    private Spinner editCategory;
     private LinearLayout owersLayout;
     private FloatingActionButton fabSaveBill;
     private Button bAll;
     private Button bNone;
     private LinearLayout editRepeatLayout;
+    private LinearLayout editPaymentModeLayout;
+    private LinearLayout editCategoryLayout;
 
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
@@ -116,6 +120,8 @@ public class EditBillFragment extends Fragment {
 
     private boolean isSpinnerUserAction = false;
     private boolean isSpinnerRepeatAction = false;
+    private boolean isSpinnerPaymentModeAction = false;
+    private boolean isSpinnerCategoryAction = false;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -127,7 +133,11 @@ public class EditBillFragment extends Fragment {
         editPayer = view.findViewById(R.id.editPayerSpinner);
         owersLayout = view.findViewById(R.id.owerListLayout);
         editRepeat = view.findViewById(R.id.editRepeatSpinner);
+        editPaymentMode = view.findViewById(R.id.editPaymentModeSpinner);
+        editCategory = view.findViewById(R.id.editCategorySpinner);
         editRepeatLayout = view.findViewById(R.id.editRepeatLayout);
+        editPaymentModeLayout = view.findViewById(R.id.editPaymentModeLayout);
+        editCategoryLayout = view.findViewById(R.id.editCategoryLayout);
         fabSaveBill = view.findViewById(R.id.fab_edit_ok);
 
         // color
@@ -271,6 +281,44 @@ public class EditBillFragment extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 Log.d(TAG, "REPEAT NOTHING");
+                showHideValidationButtons();
+            }
+
+        });
+
+        editPaymentMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                Log.d(TAG, "PAYMENT MODE");
+                if (isSpinnerPaymentModeAction) {
+                    showHideValidationButtons();
+                }
+
+                isSpinnerPaymentModeAction = true;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                Log.d(TAG, "PAYMENT MODE NOTHING");
+                showHideValidationButtons();
+            }
+
+        });
+
+        editCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                Log.d(TAG, "CATEGORY");
+                if (isSpinnerCategoryAction) {
+                    showHideValidationButtons();
+                }
+
+                isSpinnerCategoryAction = true;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                Log.d(TAG, "CATEGORY NOTHING");
                 showHideValidationButtons();
             }
 
@@ -477,9 +525,13 @@ public class EditBillFragment extends Fragment {
         double newAmount = getAmount();
         long newPayerId = getPayerId();
         String newRepeat = DBBill.NON_REPEATED;
+        String newPaymentMode = DBBill.PAYMODE_NONE;
+        int newCategoryId = DBBill.CATEGORY_NONE;
 
         if (ProjectType.COSPEND.equals(projectType)) {
             newRepeat = getRepeat();
+            newPaymentMode = getPaymentMode();
+            newCategoryId = getCategoryId();
         }
 
         List<Long> newOwersIds = getOwersIds();
@@ -505,12 +557,15 @@ public class EditBillFragment extends Fragment {
                     bill.getAmount() == newAmount &&
                     bill.getPayerId() == newPayerId &&
                     newRepeat.equals(bill.getRepeat()) &&
+                    newPaymentMode.equals(bill.getPaymentMode()) &&
+                    newCategoryId == bill.getCategoryId() &&
                     !owersChanged
             ) {
                 Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed " + bill.getWhat() + " " + newWhat);
             } else {
                 Log.d(TAG, "====== update bill");
-                db.updateBillAndSync(bill, newPayerId, newAmount, newDate, newWhat, newOwersIds, newRepeat);
+                db.updateBillAndSync(bill, newPayerId, newAmount, newDate, newWhat, newOwersIds,
+                                     newRepeat, newPaymentMode, newCategoryId);
                 //listener.onBillUpdated(bill);
                 //listener.close();
             }
@@ -518,7 +573,8 @@ public class EditBillFragment extends Fragment {
         // this is a new bill
         else {
             // add the bill
-            DBBill newBill = new DBBill(0, 0, bill.getProjectId(), newPayerId, newAmount, newDate, newWhat, DBBill.STATE_ADDED, newRepeat);
+            DBBill newBill = new DBBill(0, 0, bill.getProjectId(), newPayerId, newAmount,
+                    newDate, newWhat, DBBill.STATE_ADDED, newRepeat, DBBill.PAYMODE_NONE, DBBill.CATEGORY_NONE);
             for (long newOwerId : newOwersIds) {
                 newBill.getBillOwers().add(new DBBillOwer(0, 0, newOwerId));
             }
@@ -713,8 +769,75 @@ public class EditBillFragment extends Fragment {
                 editRepeat.setSelection(0);
             }
 
+            // PAYMENT MODE
+            List<String> paymentModeNameList = new ArrayList<>();
+            paymentModeNameList.add(getString(R.string.payment_mode_none));
+            paymentModeNameList.add(getString(R.string.payment_mode_credit_card));
+            paymentModeNameList.add(getString(R.string.payment_mode_cash));
+            paymentModeNameList.add(getString(R.string.payment_mode_check));
+
+            String[] paymentModeNames = paymentModeNameList.toArray(new String[paymentModeNameList.size()]);
+            //String[] repeatNames = getResources().getStringArray(R.array.repeatBillEntries);
+
+            String[] paymentModeIds = getResources().getStringArray(R.array.paymentModeValues);
+            int indexP = Arrays.asList(paymentModeIds).indexOf(bill.getPaymentMode());
+
+            ArrayList<Map<String, String>> dataP = new ArrayList<>();
+            for (int i = 0; i < paymentModeNames.length; i++) {
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("name", paymentModeNames[i]);
+                hashMap.put("id", paymentModeIds[i]);
+                dataP.add(hashMap);
+            }
+            String[] fromP = {"name", "id"};
+            int[] toP = new int[]{android.R.id.text1};
+            SimpleAdapter simpleAdapterP = new SimpleAdapter(this.getContext(), dataP, android.R.layout.simple_spinner_item, fromP, toP);
+            simpleAdapterP.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            editPaymentMode.setAdapter(simpleAdapterP);
+
+            if (indexP > -1) {
+                editPaymentMode.setSelection(indexP);
+            } else {
+                editPaymentMode.setSelection(0);
+            }
+
+            // CATEGORY
+            List<String> categoryNameList = new ArrayList<>();
+            categoryNameList.add(getString(R.string.category_none));
+            categoryNameList.add(getString(R.string.category_food));
+            categoryNameList.add(getString(R.string.category_furniture));
+            categoryNameList.add(getString(R.string.category_rent));
+            categoryNameList.add(getString(R.string.category_bills));
+
+            String[] categoryNames = categoryNameList.toArray(new String[categoryNameList.size()]);
+
+            String[] categoryIds = getResources().getStringArray(R.array.categoryValues);
+            int indexC = Arrays.asList(categoryIds).indexOf(String.valueOf(bill.getCategoryId()));
+            Log.d(TAG, "CATTTT of loaded bill "+bill.getCategoryId());
+
+            ArrayList<Map<String, String>> dataC = new ArrayList<>();
+            for (int i = 0; i < categoryNames.length; i++) {
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("name", categoryNames[i]);
+                hashMap.put("id", categoryIds[i]);
+                dataC.add(hashMap);
+            }
+            String[] fromC = {"name", "id"};
+            int[] toC = new int[]{android.R.id.text1};
+            SimpleAdapter simpleAdapterC = new SimpleAdapter(this.getContext(), dataC, android.R.layout.simple_spinner_item, fromC, toC);
+            simpleAdapterC.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            editCategory.setAdapter(simpleAdapterC);
+
+            if (indexC > -1) {
+                editCategory.setSelection(indexC);
+            } else {
+                editCategory.setSelection(0);
+            }
+
         } else {
             editRepeatLayout.setVisibility(View.GONE);
+            editPaymentModeLayout.setVisibility(View.GONE);
+            editCategoryLayout.setVisibility(View.GONE);
         }
     }
 
@@ -777,6 +900,26 @@ public class EditBillFragment extends Fragment {
         } else {
             Map<String, String> item = (Map<String, String>) editRepeat.getSelectedItem();
             return item.get("id");
+        }
+    }
+
+    private String getPaymentMode() {
+        int i = editPaymentMode.getSelectedItemPosition();
+        if (i < 0) {
+            return DBBill.PAYMODE_NONE;
+        } else {
+            Map<String, String> item = (Map<String, String>) editPaymentMode.getSelectedItem();
+            return item.get("id");
+        }
+    }
+
+    private int getCategoryId() {
+        int i = editCategory.getSelectedItemPosition();
+        if (i < 0) {
+            return DBBill.CATEGORY_NONE;
+        } else {
+            Map<String, String> item = (Map<String, String>) editCategory.getSelectedItem();
+            return Integer.valueOf(item.get("id"));
         }
     }
 

@@ -2,6 +2,8 @@ package net.eneiluj.moneybuster.util;
 
 //import android.preference.PreferenceManager;
 
+import android.util.Log;
+
 import net.eneiluj.moneybuster.model.DBAccountProject;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
@@ -259,6 +261,8 @@ public class ServerResponse {
         String date = "";
         String what = "";
         String repeat = DBBill.NON_REPEATED;
+        String paymentMode = DBBill.PAYMODE_NONE;
+        int categoryId = DBBill.CATEGORY_NONE;
         if (!json.isNull("id")) {
             remoteId = json.getLong("id");
         }
@@ -279,7 +283,15 @@ public class ServerResponse {
         if (json.has("repeat") && !json.isNull("repeat")) {
             repeat = json.getString("repeat");
         }
-        DBBill bill = new DBBill(0, remoteId, projId, payerId, amount, date, what, DBBill.STATE_OK, repeat);
+        if (json.has("paymentmode") && !json.isNull("paymentmode")) {
+            paymentMode = json.getString("paymentmode");
+        }
+        if (json.has("categoryid") && !json.isNull("categoryid")) {
+            categoryId = json.getInt("categoryid");
+            Log.d("PLOP", "LOADED CATTTTTTTTTTTT " + categoryId);
+        }
+        DBBill bill = new DBBill(0, remoteId, projId, payerId, amount, date, what,
+                DBBill.STATE_OK, repeat, paymentMode, categoryId);
         bill.setBillOwers(getBillOwersFromJson(json, memberRemoteIdToId));
         return bill;
     }

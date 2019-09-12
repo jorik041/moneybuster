@@ -350,7 +350,7 @@ public class MoneyBusterServerSyncHelper {
 
         @Override
         protected LoginStatus doInBackground(Void... voids) {
-            client = createIHateMoneyClient();
+            client = createVersatileProjectSyncClient();
             Log.i(getClass().getSimpleName(), "STARTING SYNCHRONIZATION");
             //dbHelper.debugPrintFullDB();
             LoginStatus status = LoginStatus.OK;
@@ -489,7 +489,7 @@ public class MoneyBusterServerSyncHelper {
                         dbHelper.updateBill(
                                 bToAdd.getId(), newRemoteId, null,
                                 null, null, null,
-                                DBBill.STATE_OK, null
+                                DBBill.STATE_OK, null, null, null
                         );
                     }
                 }
@@ -607,12 +607,14 @@ public class MoneyBusterServerSyncHelper {
                             dbHelper.updateBill(
                                     localBill.getId(), null, remoteBill.getPayerId(),
                                     remoteBill.getAmount(), remoteBill.getDate(),
-                                    remoteBill.getWhat(), DBBill.STATE_OK, remoteBill.getRepeat()
+                                    remoteBill.getWhat(), DBBill.STATE_OK, remoteBill.getRepeat(),
+                                    remoteBill.getPaymentMode(), remoteBill.getCategoryId()
                             );
                             Log.d(TAG, "Update local bill : " + remoteBill);
                         } else {
                             // fine
                             Log.d(TAG, "Nothing to do for bill : " + localBill);
+                            Log.d(TAG, "remote bill : " + remoteBill);
                         }
                         //////// billowers
                         Map<Long, DBBillOwer> localBillOwersByIds = new HashMap<>();
@@ -718,7 +720,7 @@ public class MoneyBusterServerSyncHelper {
         }
     }
 
-    private VersatileProjectSyncClient createIHateMoneyClient() {
+    private VersatileProjectSyncClient createVersatileProjectSyncClient() {
         return new VersatileProjectSyncClient();
     }
 
@@ -760,7 +762,7 @@ public class MoneyBusterServerSyncHelper {
 
         @Override
         protected LoginStatus doInBackground(Void... voids) {
-            client = createIHateMoneyClient();
+            client = createVersatileProjectSyncClient();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "STARTING edit remote project");
@@ -836,7 +838,7 @@ public class MoneyBusterServerSyncHelper {
 
         @Override
         protected LoginStatus doInBackground(Void... voids) {
-            client = createIHateMoneyClient();
+            client = createVersatileProjectSyncClient();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "STARTING delete remote project");
@@ -912,7 +914,7 @@ public class MoneyBusterServerSyncHelper {
 
         @Override
         protected LoginStatus doInBackground(Void... voids) {
-            client = createIHateMoneyClient();
+            client = createVersatileProjectSyncClient();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "STARTING create remote project");
@@ -961,7 +963,9 @@ public class MoneyBusterServerSyncHelper {
                 localBill.getPayerId() == remoteBill.getPayerId() &&
                         localBill.getAmount() == remoteBill.getAmount() &&
                         localBill.getDate().equals(remoteBill.getDate()) &&
-                        localBill.getWhat().equals(remoteBill.getWhat())
+                        localBill.getWhat().equals(remoteBill.getWhat()) &&
+                        localBill.getPaymentMode().equals(remoteBill.getPaymentMode()) &&
+                        localBill.getCategoryId() == remoteBill.getCategoryId()
         ) {
             String localRepeat = localBill.getRepeat() == null ? DBBill.NON_REPEATED : localBill.getRepeat();
             String remoteRepeat = remoteBill.getRepeat() == null ? DBBill.NON_REPEATED : remoteBill.getRepeat();

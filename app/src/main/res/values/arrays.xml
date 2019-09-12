@@ -26,4 +26,19 @@
         <item>i</item>
         <item>c</item>
     </string-array>
+
+    <string-array name="paymentModeValues" translatable="false">
+        <item>n</item>
+        <item>c</item>
+        <item>b</item>
+        <item>f</item>
+    </string-array>
+
+    <string-array name="categoryValues" translatable="false">
+        <item>0</item>
+        <item>-1</item>
+        <item>-2</item>
+        <item>-3</item>
+        <item>-4</item>
+    </string-array>
 </resources>

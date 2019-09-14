@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 [#21](https://gitlab.com/eneiluj/moneybuster/issues/21) @eMerzh
 - welcome dialogs (one first and one for each release)
 [#21](https://gitlab.com/eneiluj/moneybuster/issues/21) @eneiluj
+- show bill payment mode and category for cospend projects
 
 ### Changed
 - settlement algorithm: use the same as Cospend and IHateMoney (from https://framagit.org/almet/debts)

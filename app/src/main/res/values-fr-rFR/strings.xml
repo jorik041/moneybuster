@@ -36,8 +36,8 @@
     <string name="payment_mode_cash">Liquide</string>
     <string name="payment_mode_check">Chèque</string>
     <string name="category_none">Pas de catégorie</string>
-    <string name="category_food">Nourriture</string>
-    <string name="category_furniture">Accessoires</string>
+    <string name="category_groceries">Courses</string>
+    <string name="category_leisure">Loisirs</string>
     <string name="category_rent">Loyer</string>
     <string name="category_bills">Factures</string>
     <string name="project_type_local">Projet local</string>

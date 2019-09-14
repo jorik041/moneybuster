@@ -36,8 +36,8 @@
     <string name="payment_mode_cash">Cash</string>
     <string name="payment_mode_check">Check</string>
     <string name="category_none">No category</string>
-    <string name="category_food">Food</string>
-    <string name="category_furniture">Furniture</string>
+    <string name="category_groceries">Groceries</string>
+    <string name="category_leisure">Leisure</string>
     <string name="category_rent">Rent</string>
     <string name="category_bills">Bills</string>
     <string name="project_type_local">Proyecto local</string>

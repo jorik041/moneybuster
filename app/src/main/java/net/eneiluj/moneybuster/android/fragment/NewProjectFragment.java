@@ -498,14 +498,8 @@ public class NewProjectFragment extends Fragment {
             whereCospend.setTypeface(Typeface.DEFAULT);
 
             whereIcon.setImageResource(R.drawable.ic_ihm_grey_24dp);
-            if (todoCreate) {
-                params.gravity = Gravity.CENTER_VERTICAL;
-                params.topMargin = 10;
-            }
-            else {
-                params.gravity = Gravity.TOP;
-                params.topMargin = 40;
-            }
+            params.gravity = Gravity.BOTTOM;
+            params.bottomMargin = 25;
 
             whereIcon.setLayoutParams(params);
 
@@ -523,7 +517,6 @@ public class NewProjectFragment extends Fragment {
 
             whereIcon.setImageResource(R.drawable.ic_cospend_grey_24dp);
             params.gravity = Gravity.BOTTOM;
-            //params.topMargin = 20;
             params.bottomMargin = 25;
             whereIcon.setLayoutParams(params);
 

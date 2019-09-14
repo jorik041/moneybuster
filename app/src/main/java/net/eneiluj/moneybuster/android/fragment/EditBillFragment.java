@@ -804,8 +804,8 @@ public class EditBillFragment extends Fragment {
             // CATEGORY
             List<String> categoryNameList = new ArrayList<>();
             categoryNameList.add(getString(R.string.category_none));
-            categoryNameList.add(getString(R.string.category_food));
-            categoryNameList.add(getString(R.string.category_furniture));
+            categoryNameList.add(getString(R.string.category_groceries));
+            categoryNameList.add(getString(R.string.category_leisure));
             categoryNameList.add(getString(R.string.category_rent));
             categoryNameList.add(getString(R.string.category_bills));
 

@@ -1702,7 +1702,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             @Override
             public void onBillsLoaded(List<Item> billItems, boolean showCategory) {
                 adapter.setProjectLocal(isProjectLocal);
-                adapter.setShowCategory(showCategory);
                 adapter.setItemList(billItems);
                 if(scrollToTop) {
                     listView.scrollToPosition(0);

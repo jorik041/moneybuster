@@ -26,8 +26,8 @@ public class DBBill implements Item, Serializable {
 
     private int categoryId;
     public static final int CATEGORY_NONE = 0;
-    public static final int CATEGORY_FOOD = -1;
-    public static final int CATEGORY_FURNITURE = -2;
+    public static final int CATEGORY_GROCERIES = -1;
+    public static final int CATEGORY_LEISURE = -2;
     public static final int CATEGORY_RENT= -3;
     public static final int CATEGORY_BILLS = -4;
 

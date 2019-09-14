@@ -40,7 +40,6 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final BillClickListener billClickListener;
     private List<Item> itemList;
-    private boolean showCategory = true;
     private List<Integer> selected;
     private MoneyBusterSQLiteOpenHelper db;
     private float avatarRadius;
@@ -127,7 +126,29 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final DBBill bill = (DBBill) item;
             final BillViewHolder nvHolder = ((BillViewHolder) holder);
             nvHolder.billSwipeable.setAlpha(1.0f);
-            nvHolder.billTitle.setText(Html.fromHtml(bill.getWhat()));
+            String whatPrefix = "";
+            if ("c".equals(bill.getPaymentMode())) {
+                whatPrefix += "\uD83D\uDCB3 ";
+            }
+            else if ("b".equals(bill.getPaymentMode())) {
+                whatPrefix += "💵 ";
+            }
+            else if ("f".equals(bill.getPaymentMode())) {
+                whatPrefix += "🎫 ";
+            }
+            if (bill.getCategoryId() == -1) {
+                whatPrefix += "\uD83D\uDED2 ";
+            }
+            else if (bill.getCategoryId() == -2) {
+                whatPrefix += "\uD83C\uDF89 ";
+            }
+            else if (bill.getCategoryId() == -3) {
+                whatPrefix += "🏠 ";
+            }
+            else if (bill.getCategoryId() == -4) {
+                whatPrefix += "\uD83D\uDCF0 ";
+            }
+            nvHolder.billTitle.setText(Html.fromHtml(whatPrefix + bill.getWhat()));
             try {
                 nvHolder.avatar.setImageDrawable(TextDrawable.createNamedAvatar(db.getMember(bill.getPayerId()).getName(),avatarRadius));
             } catch (NoSuchAlgorithmException e) {
@@ -204,10 +225,6 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void remove(@NonNull Item item) {
         itemList.remove(item);
         notifyDataSetChanged();
-    }
-
-    public void setShowCategory(boolean showCategory) {
-        this.showCategory = showCategory;
     }
 
     @Override

@@ -31,9 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - tap on project name when there is none => create one
 [#21](https://gitlab.com/eneiluj/moneybuster/issues/21) @eMerzh
 - make sync success toast more discreet
-- "new project" screen is now a form
-[#21](https://gitlab.com/eneiluj/moneybuster/issues/21) @eMerzh
-- "new project" screen is now more intuitive
+- "new project" screen is now a more intuitive form
 [#21](https://gitlab.com/eneiluj/moneybuster/issues/21) @eMerzh
 - able to scan QRCode from "new project" screen
 [#21](https://gitlab.com/eneiluj/moneybuster/issues/21) @eMerzh

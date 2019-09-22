@@ -695,7 +695,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                     final DBProject proj = db.getProject(selectedProjectId);
                     List<DBMember> membersSortedByName = db.getMembersOfProject(selectedProjectId, null);
-                    String statsText = getString(R.string.share_stats_intro, proj.getName()) + "\n\n";
+                    String projectName;
+                    if (proj.getName() == null) {
+                        projectName = proj.getRemoteId();
+                    }
+                    else {
+                        projectName = proj.getName();
+                    }
+                    String statsText = getString(R.string.share_stats_intro, projectName) + "\n\n";
                     statsText += getString(R.string.share_stats_header) + "\n";
 
                     // generate the dialog
@@ -794,9 +801,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             Intent shareIntent = new Intent();
                             shareIntent.setAction(Intent.ACTION_SEND);
                             shareIntent.setType("text/plain");
-                            shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_stats_title, proj.getName()));
+                            shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_stats_title, projectName));
                             shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, statsTextToShare);
-                            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_stats_title, proj.getName())));
+                            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_stats_title, projectName)));
                         }
                     });
                     builder.show();
@@ -813,6 +820,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                 if (selectedProjectId != 0) {
                     final DBProject proj = db.getProject(selectedProjectId);
+                    String projectName;
+                    if (proj.getName() == null) {
+                        projectName = proj.getRemoteId();
+                    }
+                    else {
+                        projectName = proj.getName();
+                    }
                     // get stats
                     Map<Long, Integer> membersNbBills = new HashMap<>();
                     HashMap<Long, Double> membersBalance = new HashMap<>();
@@ -886,7 +900,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     builder.setNeutralButton(getString(R.string.simple_settle_share), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            String text = getString(R.string.share_settle_intro, proj.getName()) + "\n";
+                            String text = getString(R.string.share_settle_intro, projectName) + "\n";
                             // generate text to share
                             for (Transaction t : transactions) {
                                 double amount = Math.round(t.getAmount() * 100.0) / 100.0;
@@ -905,9 +919,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             Intent shareIntent = new Intent();
                             shareIntent.setAction(Intent.ACTION_SEND);
                             shareIntent.setType("text/plain");
-                            shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_settle_title, proj.getName()));
+                            shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_settle_title, projectName));
                             shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
-                            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_settle_title, proj.getName())));
+                            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_settle_title, projectName)));
                         }
                     });
                     builder.show();

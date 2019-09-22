@@ -37,7 +37,7 @@
                 android:layout_weight="1"
                 android:layout_marginLeft="15dp"
                 android:layout_marginStart="15dp"
-                android:theme="@style/AppTheme"
+                android:theme="@style/AppThemeDialog"
                 android:hint="@string/stats_date_min">
                 <EditText
                     android:id="@+id/statsDateMin"
@@ -75,7 +75,7 @@
                 android:layout_weight="1"
                 android:layout_marginLeft="15dp"
                 android:layout_marginStart="15dp"
-                android:theme="@style/AppTheme"
+                android:theme="@style/AppThemeDialog"
                 android:hint="@string/stats_date_max">
 
                 <EditText

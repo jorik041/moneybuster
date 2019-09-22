@@ -719,10 +719,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
 
-                    final View tView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.statistic_table, null);
+                    final View tView = LayoutInflater.from(view.getContext()).inflate(R.layout.statistic_table, null);
 
                     EditText editDateMin = tView.findViewById(R.id.statsDateMin);
                     EditText editDateMax = tView.findViewById(R.id.statsDateMax);
+                    TextView totPayedText = tView.findViewById(R.id.totalPayedText);
+                    TextView tableTitle = tView.findViewById(R.id.tableTitle);
 
                     // CATEGORY
                     if (proj.getType().equals(ProjectType.COSPEND)) {
@@ -769,7 +771,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                 if (editDateMax.getText() != null && !editDateMax.getText().toString().equals("")) {
                                     isoDateMax = sdf.format(calendarMax.getTime());
                                 }
-                                updateStatsView(tView, selectedProjectId, isoDateMin, isoDateMax);
+                                updateStatsView(tView, view, selectedProjectId, isoDateMin, isoDateMax);
                             }
 
                             @Override
@@ -818,7 +820,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                 if (editDateMax.getText() != null && !editDateMax.getText().toString().equals("")) {
                                     isoDateMax = sdf.format(calendarMax.getTime());
                                 }
-                                updateStatsView(tView, selectedProjectId, isoDateMin, isoDateMax);
+                                updateStatsView(tView, view, selectedProjectId, isoDateMin, isoDateMax);
                             }
 
                             @Override
@@ -879,7 +881,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             if (editDateMax.getText() != null && !editDateMax.getText().toString().equals("")) {
                                 isoDateMax = sdf.format(calendarMax.getTime());
                             }
-                            updateStatsView(tView, selectedProjectId, isoDateMin, isoDateMax);
+                            updateStatsView(tView, view, selectedProjectId, isoDateMin, isoDateMax);
                             this.dismiss();
                         }
                     };
@@ -946,7 +948,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             if (editDateMax.getText() != null && !editDateMax.getText().toString().equals("")) {
                                 isoDateMax = sdf.format(calendarMax.getTime());
                             }
-                            updateStatsView(tView, selectedProjectId, isoDateMin, isoDateMax);
+                            updateStatsView(tView, view, selectedProjectId, isoDateMin, isoDateMax);
                             this.dismiss();
                         }
                     };
@@ -986,7 +988,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     });
                     builder.show();
 
-                    updateStatsView(tView, selectedProjectId, null, null);
+                    updateStatsView(tView, view, selectedProjectId, null, null);
 
                     fabMenuDrawerEdit.close(false);
                 }
@@ -1325,7 +1327,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     // TODO find a way to avoid date if not already set but initialize picker to today
     // and add max date
-    private void updateStatsView(View tView, long selectedProjectId, String dateMin, String dateMax) {
+    private void updateStatsView(View tView, View view, long selectedProjectId, String dateMin, String dateMax) {
         final DBProject proj = db.getProject(selectedProjectId);
         // get filter values
         int categoryId;
@@ -1376,13 +1378,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         statsText += getString(R.string.share_stats_header) + "\n";
 
         TextView hwho = tView.findViewById(R.id.header_who);
-        hwho.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default_low));
+        hwho.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
         TextView hpaid = tView.findViewById(R.id.header_paid);
-        hpaid.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default_low));
+        hpaid.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
         TextView hspent = tView.findViewById(R.id.header_spent);
-        hspent.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default_low));
+        hspent.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
         TextView hbalance = tView.findViewById(R.id.header_balance);
-        hbalance.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default_low));
+        hbalance.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
         final TableLayout tl = tView.findViewById(R.id.statTable);
         // clear table
         int i;
@@ -1398,11 +1400,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
             View row = LayoutInflater.from(getApplicationContext()).inflate(R.layout.statistic_row, null);
             TextView wv = row.findViewById(R.id.stat_who);
-            wv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
+            wv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
             wv.setText(m.getName());
 
             TextView pv = row.findViewById(R.id.stat_paid);
-            pv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
+            pv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
             double rpaid = Math.round( (membersPaid.get(m.getId())) * 100.0 ) / 100.0;
             if (rpaid == 0.0) {
                 pv.setText("--");
@@ -1414,7 +1416,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
 
             TextView sv = row.findViewById(R.id.stat_spent);
-            sv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
+            sv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
             double rspent = Math.round( (membersSpent.get(m.getId())) * 100.0 ) / 100.0;
             if (rspent == 0.0) {
                 sv.setText("--");
@@ -1431,15 +1433,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             double rbalance = Math.round( Math.abs(balance) * 100.0 ) / 100.0;
             String sign = "";
             if (balance > 0) {
-                bv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.green));
+                bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.green));
                 sign = "+";
             }
             else if (balance < 0) {
-                bv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.red));
+                bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.red));
                 sign = "-";
             }
             else {
-                bv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
+                bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
             }
             bv.setText(sign + numberFormatter.format(rbalance));
             statsText += sign  + numberFormatter.format(rbalance) + ")";
@@ -1450,7 +1452,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         TextView totalPayedTV = tView.findViewById(R.id.totalPayedText);
         totalPayedTV.setText(getString(R.string.total_payed, totalPayed));
-        totalPayedTV.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default_low));
     }
 
     private void addProject() {

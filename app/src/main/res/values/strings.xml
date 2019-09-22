@@ -155,6 +155,8 @@
     <string name="settle_to_whom">To whom?</string>
     <string name="settle_how_much">How much?</string>
     <string name="total_payed">Total payed by all the members: %.2f</string>
+    <string name="stats_date_min">Minimum date</string>
+    <string name="stats_date_max">Maximum date</string>
     <string name="stats_who">Who</string>
     <string name="stats_paid">Paid</string>
     <string name="stats_spent">Spent</string>

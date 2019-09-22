@@ -157,6 +157,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     RecyclerView listNavigationMenu;
     RecyclerView listView;
 
+    private String statsTextToShare;
+
     private ActionBarDrawerToggle drawerToggle;
     private ItemAdapter adapter = null;
     private NavigationAdapter adapterMembers;
@@ -680,21 +682,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 long selectedProjectId = preferences.getLong("selected_project", 0);
 
                 if (selectedProjectId != 0) {
-                    // get stats
-                    Map<Long, Integer> membersNbBills = new HashMap<>();
-                    HashMap<Long, Double> membersBalance = new HashMap<>();
-                    HashMap<Long, Double> membersPaid = new HashMap<>();
-                    HashMap<Long, Double> membersSpent = new HashMap<>();
-
-                    NumberFormat numberFormatter = new DecimalFormat("#0.00");
-
-                    int nbBills = SupportUtil.getStatsOfProject(
-                            selectedProjectId, db,
-                            membersNbBills, membersBalance, membersPaid, membersSpent
-                    );
 
                     final DBProject proj = db.getProject(selectedProjectId);
-                    List<DBMember> membersSortedByName = db.getMembersOfProject(selectedProjectId, null);
                     String projectName;
                     if (proj.getName() == null) {
                         projectName = proj.getRemoteId();
@@ -702,8 +691,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     else {
                         projectName = proj.getName();
                     }
-                    String statsText = getString(R.string.share_stats_intro, projectName) + "\n\n";
-                    statsText += getString(R.string.share_stats_header) + "\n";
 
                     // generate the dialog
                     AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -716,76 +703,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
 
                     final View tView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.statistic_table, null);
-                    TextView hwho = tView.findViewById(R.id.header_who);
-                    hwho.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
-                    TextView hpaid = tView.findViewById(R.id.header_paid);
-                    hpaid.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
-                    TextView hspent = tView.findViewById(R.id.header_spent);
-                    hspent.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
-                    TextView hbalance = tView.findViewById(R.id.header_balance);
-                    hbalance.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
-                    final TableLayout tl = tView.findViewById(R.id.statTable);
+                    updateStatsView(tView, selectedProjectId);
 
-                    double totalPayed = 0.0;
-
-                    for (DBMember m : membersSortedByName) {
-                        totalPayed += membersPaid.get(m.getId());
-                        statsText += "\n" + m.getName() + " (";
-
-                        View row = LayoutInflater.from(getApplicationContext()).inflate(R.layout.statistic_row, null);
-                        TextView wv = row.findViewById(R.id.stat_who);
-                        wv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
-                        wv.setText(m.getName());
-
-                        TextView pv = row.findViewById(R.id.stat_paid);
-                        pv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
-                        double rpaid = Math.round( (membersPaid.get(m.getId())) * 100.0 ) / 100.0;
-                        if (rpaid == 0.0) {
-                            pv.setText("--");
-                            statsText += "-- | ";
-                        }
-                        else {
-                            pv.setText(numberFormatter.format(rpaid));
-                            statsText += numberFormatter.format(rpaid) + " | ";
-                        }
-
-                        TextView sv = row.findViewById(R.id.stat_spent);
-                        sv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
-                        double rspent = Math.round( (membersSpent.get(m.getId())) * 100.0 ) / 100.0;
-                        if (rspent == 0.0) {
-                            sv.setText("--");
-                            statsText += "-- | ";
-                        }
-                        else {
-                            sv.setText(numberFormatter.format(rspent));
-                            statsText += numberFormatter.format(rspent) + " | ";
-                        }
-
-
-                        TextView bv = row.findViewById(R.id.stat_balance);
-                        double balance = membersBalance.get(m.getId());
-                        double rbalance = Math.round( Math.abs(balance) * 100.0 ) / 100.0;
-                        String sign = "-";
-                        if (balance > 0) {
-                            bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.green));
-                            sign = "+";
-                        }
-                        else if (balance < 0) {
-                            bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.red));
-                        }
-                        else {
-                            bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
-                        }
-                        bv.setText(sign + numberFormatter.format(rbalance));
-                        statsText += sign  + numberFormatter.format(rbalance) + ")";
-
-                        tl.addView(row);
-                    }
-                    final String statsTextToShare = statsText;
-
-                    TextView totalPayedTV = tView.findViewById(R.id.totalPayedText);
-                    totalPayedTV.setText(getString(R.string.total_payed, totalPayed));
-                    totalPayedTV.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
 
                     builder.setView(tView).setIcon(R.drawable.ic_chart_grey_24dp);
                     builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
@@ -1139,6 +1058,104 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             fabMenuDrawerEdit.setVisibility(View.VISIBLE);
             fabBillListAddProject.hide();
         }
+    }
+
+    private void updateStatsView(View tView, long selectedProjectId) {
+        // get stats
+        Map<Long, Integer> membersNbBills = new HashMap<>();
+        HashMap<Long, Double> membersBalance = new HashMap<>();
+        HashMap<Long, Double> membersPaid = new HashMap<>();
+        HashMap<Long, Double> membersSpent = new HashMap<>();
+
+        NumberFormat numberFormatter = new DecimalFormat("#0.00");
+
+        int nbBills = SupportUtil.getStatsOfProject(
+                selectedProjectId, db,
+                membersNbBills, membersBalance, membersPaid, membersSpent
+        );
+
+        final DBProject proj = db.getProject(selectedProjectId);
+        List<DBMember> membersSortedByName = db.getMembersOfProject(selectedProjectId, null);
+        String projectName;
+        if (proj.getName() == null) {
+            projectName = proj.getRemoteId();
+        }
+        else {
+            projectName = proj.getName();
+        }
+        String statsText = getString(R.string.share_stats_intro, projectName) + "\n\n";
+        statsText += getString(R.string.share_stats_header) + "\n";
+
+        TextView hwho = tView.findViewById(R.id.header_who);
+        hwho.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default_low));
+        TextView hpaid = tView.findViewById(R.id.header_paid);
+        hpaid.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default_low));
+        TextView hspent = tView.findViewById(R.id.header_spent);
+        hspent.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default_low));
+        TextView hbalance = tView.findViewById(R.id.header_balance);
+        hbalance.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default_low));
+        final TableLayout tl = tView.findViewById(R.id.statTable);
+
+        double totalPayed = 0.0;
+
+        for (DBMember m : membersSortedByName) {
+            totalPayed += membersPaid.get(m.getId());
+            statsText += "\n" + m.getName() + " (";
+
+            View row = LayoutInflater.from(getApplicationContext()).inflate(R.layout.statistic_row, null);
+            TextView wv = row.findViewById(R.id.stat_who);
+            wv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
+            wv.setText(m.getName());
+
+            TextView pv = row.findViewById(R.id.stat_paid);
+            pv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
+            double rpaid = Math.round( (membersPaid.get(m.getId())) * 100.0 ) / 100.0;
+            if (rpaid == 0.0) {
+                pv.setText("--");
+                statsText += "-- | ";
+            }
+            else {
+                pv.setText(numberFormatter.format(rpaid));
+                statsText += numberFormatter.format(rpaid) + " | ";
+            }
+
+            TextView sv = row.findViewById(R.id.stat_spent);
+            sv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
+            double rspent = Math.round( (membersSpent.get(m.getId())) * 100.0 ) / 100.0;
+            if (rspent == 0.0) {
+                sv.setText("--");
+                statsText += "-- | ";
+            }
+            else {
+                sv.setText(numberFormatter.format(rspent));
+                statsText += numberFormatter.format(rspent) + " | ";
+            }
+
+
+            TextView bv = row.findViewById(R.id.stat_balance);
+            double balance = membersBalance.get(m.getId());
+            double rbalance = Math.round( Math.abs(balance) * 100.0 ) / 100.0;
+            String sign = "-";
+            if (balance > 0) {
+                bv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.green));
+                sign = "+";
+            }
+            else if (balance < 0) {
+                bv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.red));
+            }
+            else {
+                bv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
+            }
+            bv.setText(sign + numberFormatter.format(rbalance));
+            statsText += sign  + numberFormatter.format(rbalance) + ")";
+
+            tl.addView(row);
+        }
+        statsTextToShare = statsText;
+
+        TextView totalPayedTV = tView.findViewById(R.id.totalPayedText);
+        totalPayedTV.setText(getString(R.string.total_payed, totalPayed));
+        totalPayedTV.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default_low));
     }
 
     private void addProject() {

@@ -33,10 +33,13 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,6 +75,7 @@ import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.Item;
 import net.eneiluj.moneybuster.model.ItemAdapter;
 import net.eneiluj.moneybuster.model.NavigationAdapter;
+import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.model.Transaction;
 import net.eneiluj.moneybuster.persistence.LoadBillsListTask;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
@@ -85,6 +89,7 @@ import net.eneiluj.moneybuster.util.ThemeUtils;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -703,7 +708,59 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
 
                     final View tView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.statistic_table, null);
-                    updateStatsView(tView, selectedProjectId);
+
+                    // CATEGORY
+                    if (proj.getType().equals(ProjectType.COSPEND)) {
+                        List<String> categoryNameList = new ArrayList<>();
+                        categoryNameList.add(getString(R.string.category_none));
+                        categoryNameList.add(getString(R.string.category_groceries));
+                        categoryNameList.add(getString(R.string.category_leisure));
+                        categoryNameList.add(getString(R.string.category_rent));
+                        categoryNameList.add(getString(R.string.category_bills));
+                        categoryNameList.add(getString(R.string.category_culture));
+                        categoryNameList.add(getString(R.string.category_health));
+                        categoryNameList.add(getString(R.string.category_tools));
+                        categoryNameList.add(getString(R.string.category_multimedia));
+                        categoryNameList.add(getString(R.string.category_clothes));
+
+                        String[] categoryNames = categoryNameList.toArray(new String[categoryNameList.size()]);
+
+                        String[] categoryIds = getResources().getStringArray(R.array.categoryValues);
+
+                        ArrayList<Map<String, String>> dataC = new ArrayList<>();
+                        for (int i = 0; i < categoryNames.length; i++) {
+                            HashMap<String, String> hashMap = new HashMap<>();
+                            hashMap.put("name", categoryNames[i]);
+                            hashMap.put("id", categoryIds[i]);
+                            dataC.add(hashMap);
+                        }
+                        String[] fromC = {"name", "id"};
+                        int[] toC = new int[]{android.R.id.text1};
+                        SimpleAdapter simpleAdapterC = new SimpleAdapter(tView.getContext(), dataC, android.R.layout.simple_spinner_item, fromC, toC);
+                        simpleAdapterC.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        Spinner statsCategorySpinner = tView.findViewById(R.id.statsCategorySpinner);
+                        statsCategorySpinner.setAdapter(simpleAdapterC);
+                        //statsCategorySpinner.setSelection(0);
+
+                        statsCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                                Log.d(TAG, "CATEGORY");
+                                updateStatsView(tView, selectedProjectId);
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parentView) {
+                                Log.d(TAG, "CATEGORY NOTHING");
+                            }
+
+                        });
+                    }
+                    else {
+                        LinearLayout statsCategoryLayout = tView.findViewById(R.id.statsCategoryLayout);
+                        statsCategoryLayout.setVisibility(View.GONE);
+                    }
+
 
 
                     builder.setView(tView).setIcon(R.drawable.ic_chart_grey_24dp);
@@ -726,6 +783,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         }
                     });
                     builder.show();
+
+                    updateStatsView(tView, selectedProjectId);
+
                     fabMenuDrawerEdit.close(false);
                 }
             }
@@ -756,7 +816,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                     int nbBills = SupportUtil.getStatsOfProject(
                             proj.getId(), db,
-                            membersNbBills, membersBalance, membersPaid, membersSpent
+                            membersNbBills, membersBalance, membersPaid, membersSpent,
+                            0
                     );
 
                     List<DBMember> membersSortedByName = db.getMembersOfProject(proj.getId(), MoneyBusterSQLiteOpenHelper.key_name);
@@ -1061,6 +1122,18 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     }
 
     private void updateStatsView(View tView, long selectedProjectId) {
+        final DBProject proj = db.getProject(selectedProjectId);
+        // get filter values
+        int categoryId;
+        if (proj.getType().equals(ProjectType.COSPEND)) {
+            Spinner statsCategorySpinner = tView.findViewById(R.id.statsCategorySpinner);
+            Map<String, String> item = (Map<String, String>) statsCategorySpinner.getSelectedItem();
+            categoryId = Integer.valueOf(item.get("id"));
+        }
+        else {
+            categoryId = 0;
+        }
+
         // get stats
         Map<Long, Integer> membersNbBills = new HashMap<>();
         HashMap<Long, Double> membersBalance = new HashMap<>();
@@ -1071,10 +1144,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         int nbBills = SupportUtil.getStatsOfProject(
                 selectedProjectId, db,
-                membersNbBills, membersBalance, membersPaid, membersSpent
+                membersNbBills, membersBalance, membersPaid, membersSpent,
+                categoryId
         );
 
-        final DBProject proj = db.getProject(selectedProjectId);
         List<DBMember> membersSortedByName = db.getMembersOfProject(selectedProjectId, null);
         String projectName;
         if (proj.getName() == null) {
@@ -1095,6 +1168,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         TextView hbalance = tView.findViewById(R.id.header_balance);
         hbalance.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default_low));
         final TableLayout tl = tView.findViewById(R.id.statTable);
+        // clear table
+        int i;
+        for (i = tl.getChildCount()-1; i > 0; i--) {
+            tl.removeViewAt(i);
+        }
 
         double totalPayed = 0.0;
 
@@ -1135,13 +1213,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             TextView bv = row.findViewById(R.id.stat_balance);
             double balance = membersBalance.get(m.getId());
             double rbalance = Math.round( Math.abs(balance) * 100.0 ) / 100.0;
-            String sign = "-";
+            String sign = "";
             if (balance > 0) {
                 bv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.green));
                 sign = "+";
             }
             else if (balance < 0) {
                 bv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.red));
+                sign = "-";
             }
             else {
                 bv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
@@ -1468,7 +1547,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
             int nbBills = SupportUtil.getStatsOfProject(
                     selectedProjectId, db,
-                    membersNbBills, membersBalance, membersPaid, membersSpent
+                    membersNbBills, membersBalance, membersPaid, membersSpent,
+                    0
             );
 
             itemAll.count = nbBills;

@@ -153,7 +153,8 @@ public class SupportUtil {
                                   Map<Long, Integer> membersNbBills,
                                   Map<Long, Double> membersBalance,
                                   Map<Long, Double> membersPaid,
-                                  Map<Long, Double> membersSpent) {
+                                  Map<Long, Double> membersSpent,
+                                  int catId) {
         int nbBills = 0;
         Map<Long, Double> membersWeight = new HashMap<>();
 
@@ -170,7 +171,8 @@ public class SupportUtil {
         }
 
         for (DBBill b : dbBills) {
-            if (b.getState() != DBBill.STATE_DELETED) {
+            // don't take deleted bills and respect category filter
+            if (b.getState() != DBBill.STATE_DELETED && (catId == 0 || b.getCategoryId() == catId)) {
                 nbBills++;
                 membersNbBills.put(
                         b.getPayerId(),

@@ -136,17 +136,32 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             else if ("f".equals(bill.getPaymentMode())) {
                 whatPrefix += "🎫 ";
             }
-            if (bill.getCategoryId() == -1) {
+            if (bill.getCategoryId() == DBBill.CATEGORY_GROCERIES) {
                 whatPrefix += "\uD83D\uDED2 ";
             }
-            else if (bill.getCategoryId() == -2) {
+            else if (bill.getCategoryId() == DBBill.CATEGORY_LEISURE) {
                 whatPrefix += "\uD83C\uDF89 ";
             }
-            else if (bill.getCategoryId() == -3) {
+            else if (bill.getCategoryId() == DBBill.CATEGORY_RENT) {
                 whatPrefix += "🏠 ";
             }
-            else if (bill.getCategoryId() == -4) {
-                whatPrefix += "\uD83D\uDCF0 ";
+            else if (bill.getCategoryId() == DBBill.CATEGORY_BILLS) {
+                whatPrefix += "\uD83C\uDF29 ";
+            }
+            else if (bill.getCategoryId() == DBBill.CATEGORY_CULTURE) {
+                whatPrefix += "\uD83D\uDDFD ";
+            }
+            else if (bill.getCategoryId() == DBBill.CATEGORY_HEALTH) {
+                whatPrefix += "\uD83D\uDC9A ";
+            }
+            else if (bill.getCategoryId() == DBBill.CATEGORY_TOOLS) {
+                whatPrefix += "\uD83D\uDD28 ";
+            }
+            else if (bill.getCategoryId() == DBBill.CATEGORY_MULTIMEDIA) {
+                whatPrefix += "\uD83D\uDCBB ";
+            }
+            else if (bill.getCategoryId() == DBBill.CATEGORY_CLOTHES) {
+                whatPrefix += "\uD83D\uDC5A ";
             }
             nvHolder.billTitle.setText(Html.fromHtml(whatPrefix + bill.getWhat()));
             try {

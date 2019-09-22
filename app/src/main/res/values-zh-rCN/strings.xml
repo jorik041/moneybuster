@@ -40,6 +40,11 @@
     <string name="category_leisure">Leisure</string>
     <string name="category_rent">Rent</string>
     <string name="category_bills">Bills</string>
+    <string name="category_culture">Culture</string>
+    <string name="category_health">Health</string>
+    <string name="category_tools">Tools</string>
+    <string name="category_multimedia">Multimedia</string>
+    <string name="category_clothes">Clothes</string>
     <string name="project_type_local">本地项目</string>
     <string name="project_type_ihatemoney">IHateMoney 项目</string>
     <string name="project_type_nextcloud_cospend">Nextcloud Cospend 项目</string>

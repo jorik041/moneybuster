@@ -40,6 +40,11 @@
     <string name="category_leisure">Αναψυχή</string>
     <string name="category_rent">Ενοίκιο</string>
     <string name="category_bills">Λογαριασμοί</string>
+    <string name="category_culture">Culture</string>
+    <string name="category_health">Health</string>
+    <string name="category_tools">Tools</string>
+    <string name="category_multimedia">Multimedia</string>
+    <string name="category_clothes">Clothes</string>
     <string name="project_type_local">Τοπικό έργο</string>
     <string name="project_type_ihatemoney">Έργο IHateMoney</string>
     <string name="project_type_nextcloud_cospend">Έργο Nextcloud Cospend</string>

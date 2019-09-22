@@ -1130,7 +1130,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             fabAddMember.show();
             fabStatistics.show();
             fabSettle.show();
-            fabShareProject.show();
+            if (db.getProject(selectedProjectId).isLocal()) {
+                fabShareProject.hide();
+            }
+            else {
+                fabShareProject.show();
+            }
             fabMenuDrawerEdit.setVisibility(View.VISIBLE);
             fabBillListAddProject.hide();
         }

@@ -32,10 +32,12 @@
     <string name="repeat_month">μήνας</string>
     <string name="repeat_year">έτος</string>
     <string name="payment_mode_none">Κανένας τρόπος πληρωμής</string>
+    <string name="payment_mode_all">All payment modes</string>
     <string name="payment_mode_credit_card">Πιστωτική κάρτα</string>
     <string name="payment_mode_cash">Μετρητά</string>
     <string name="payment_mode_check">Έλεγχος</string>
     <string name="category_none">Χωρίς κατηγορία</string>
+    <string name="category_all">All categories</string>
     <string name="category_groceries">Μπακαλική</string>
     <string name="category_leisure">Αναψυχή</string>
     <string name="category_rent">Ενοίκιο</string>
@@ -150,6 +152,9 @@
     <string name="settle_to_whom">Προς ποιον;</string>
     <string name="settle_how_much">Πόσο;</string>
     <string name="total_payed">Συνολικό ποσό που καταβλήθηκε από όλα τα μέλη: %.2f</string>
+    <string name="stats_table_title">Statistics table</string>
+    <string name="stats_date_min">Minimum date</string>
+    <string name="stats_date_max">Maximum date</string>
     <string name="stats_who">Ποιος</string>
     <string name="stats_paid">Πληρώθηκε</string>
     <string name="stats_spent">Ξοδεύτηκαν</string>

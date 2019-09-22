@@ -32,10 +32,12 @@
     <string name="repeat_month">mois</string>
     <string name="repeat_year">ans</string>
     <string name="payment_mode_none">Pas de mode de paiement</string>
+    <string name="payment_mode_all">Tous les modes de paiement</string>
     <string name="payment_mode_credit_card">Carte de crédit</string>
     <string name="payment_mode_cash">Liquide</string>
     <string name="payment_mode_check">Chèque</string>
     <string name="category_none">Pas de catégorie</string>
+    <string name="category_all">Toutes les catégories</string>
     <string name="category_groceries">Courses</string>
     <string name="category_leisure">Loisirs</string>
     <string name="category_rent">Loyer</string>
@@ -150,6 +152,9 @@
     <string name="settle_to_whom">À qui ?</string>
     <string name="settle_how_much">Combien ?</string>
     <string name="total_payed">Total payé par tous les membres : %.2f</string>
+    <string name="stats_table_title">Tableau des statistiques</string>
+    <string name="stats_date_min">Date minimum</string>
+    <string name="stats_date_max">Date maximum</string>
     <string name="stats_who">Qui</string>
     <string name="stats_paid">A payé</string>
     <string name="stats_spent">A dépensé</string>

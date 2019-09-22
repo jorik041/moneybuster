@@ -32,10 +32,12 @@
     <string name="repeat_month">month</string>
     <string name="repeat_year">year</string>
     <string name="payment_mode_none">No payment mode</string>
+    <string name="payment_mode_all">All payment modes</string>
     <string name="payment_mode_credit_card">Credit card</string>
     <string name="payment_mode_cash">Cash</string>
     <string name="payment_mode_check">Check</string>
     <string name="category_none">No category</string>
+    <string name="category_all">All categories</string>
     <string name="category_groceries">Groceries</string>
     <string name="category_leisure">Leisure</string>
     <string name="category_rent">Rent</string>

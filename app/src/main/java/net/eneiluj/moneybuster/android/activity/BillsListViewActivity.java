@@ -712,7 +712,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     // CATEGORY
                     if (proj.getType().equals(ProjectType.COSPEND)) {
                         List<String> categoryNameList = new ArrayList<>();
-                        categoryNameList.add(getString(R.string.category_none));
+                        categoryNameList.add(getString(R.string.category_all));
                         categoryNameList.add(getString(R.string.category_groceries));
                         categoryNameList.add(getString(R.string.category_leisure));
                         categoryNameList.add(getString(R.string.category_rent));
@@ -755,10 +755,53 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             }
 
                         });
+
+                        // PAYMENT MODE
+                        List<String> paymentModeNameList = new ArrayList<>();
+                        paymentModeNameList.add(getString(R.string.payment_mode_all));
+                        paymentModeNameList.add(getString(R.string.payment_mode_credit_card));
+                        paymentModeNameList.add(getString(R.string.payment_mode_cash));
+                        paymentModeNameList.add(getString(R.string.payment_mode_check));
+
+                        String[] paymentModeNames = paymentModeNameList.toArray(new String[paymentModeNameList.size()]);
+                        //String[] repeatNames = getResources().getStringArray(R.array.repeatBillEntries);
+
+                        String[] paymentModeIds = getResources().getStringArray(R.array.paymentModeValues);
+
+                        ArrayList<Map<String, String>> dataP = new ArrayList<>();
+                        for (int i = 0; i < paymentModeNames.length; i++) {
+                            HashMap<String, String> hashMap = new HashMap<>();
+                            hashMap.put("name", paymentModeNames[i]);
+                            hashMap.put("id", paymentModeIds[i]);
+                            dataP.add(hashMap);
+                        }
+                        String[] fromP = {"name", "id"};
+                        int[] toP = new int[]{android.R.id.text1};
+                        SimpleAdapter simpleAdapterP = new SimpleAdapter(tView.getContext(), dataP, android.R.layout.simple_spinner_item, fromP, toP);
+                        simpleAdapterP.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        Spinner statsPaymentModeSpinner = tView.findViewById(R.id.statsPaymentModeSpinner);
+                        statsPaymentModeSpinner.setAdapter(simpleAdapterP);
+                        //statsPaymentModeSpinner.setSelection(0);
+
+                        statsPaymentModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                                Log.d(TAG, "PAYMODE");
+                                updateStatsView(tView, selectedProjectId);
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parentView) {
+                                Log.d(TAG, "PAYMODE");
+                            }
+
+                        });
                     }
                     else {
                         LinearLayout statsCategoryLayout = tView.findViewById(R.id.statsCategoryLayout);
                         statsCategoryLayout.setVisibility(View.GONE);
+                        LinearLayout statsPaymentModeLayout = tView.findViewById(R.id.statsPaymentModeLayout);
+                        statsPaymentModeLayout.setVisibility(View.GONE);
                     }
 
 
@@ -817,7 +860,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     int nbBills = SupportUtil.getStatsOfProject(
                             proj.getId(), db,
                             membersNbBills, membersBalance, membersPaid, membersSpent,
-                            0
+                            0, null
                     );
 
                     List<DBMember> membersSortedByName = db.getMembersOfProject(proj.getId(), MoneyBusterSQLiteOpenHelper.key_name);
@@ -1125,13 +1168,19 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         final DBProject proj = db.getProject(selectedProjectId);
         // get filter values
         int categoryId;
+        String paymentMode;
         if (proj.getType().equals(ProjectType.COSPEND)) {
             Spinner statsCategorySpinner = tView.findViewById(R.id.statsCategorySpinner);
             Map<String, String> item = (Map<String, String>) statsCategorySpinner.getSelectedItem();
             categoryId = Integer.valueOf(item.get("id"));
+
+            Spinner statsPaymentModeSpinner = tView.findViewById(R.id.statsPaymentModeSpinner);
+            Map<String, String> itemP = (Map<String, String>) statsPaymentModeSpinner.getSelectedItem();
+            paymentMode = itemP.get("id");
         }
         else {
             categoryId = 0;
+            paymentMode = null;
         }
 
         // get stats
@@ -1145,7 +1194,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         int nbBills = SupportUtil.getStatsOfProject(
                 selectedProjectId, db,
                 membersNbBills, membersBalance, membersPaid, membersSpent,
-                categoryId
+                categoryId, paymentMode
         );
 
         List<DBMember> membersSortedByName = db.getMembersOfProject(selectedProjectId, null);
@@ -1548,7 +1597,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             int nbBills = SupportUtil.getStatsOfProject(
                     selectedProjectId, db,
                     membersNbBills, membersBalance, membersPaid, membersSpent,
-                    0
+                    0, null
             );
 
             itemAll.count = nbBills;

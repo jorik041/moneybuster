@@ -716,11 +716,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                     Calendar calendarMin = Calendar.getInstance();
                     Calendar calendarMax = Calendar.getInstance();
-                    calendarMin.setTimeInMillis(0);
-                    calendarMax.setTimeInMillis(0);
+
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
 
                     final View tView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.statistic_table, null);
+
+                    EditText editDateMin = tView.findViewById(R.id.statsDateMin);
+                    EditText editDateMax = tView.findViewById(R.id.statsDateMax);
 
                     // CATEGORY
                     if (proj.getType().equals(ProjectType.COSPEND)) {
@@ -759,7 +761,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             @Override
                             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                                 Log.d(TAG, "CATEGORY");
-                                updateStatsView(tView, selectedProjectId, calendarMin, calendarMax);
+                                String isoDateMin = null;
+                                if (editDateMin.getText() != null && !editDateMin.getText().toString().equals("")) {
+                                    isoDateMin = sdf.format(calendarMin.getTime());
+                                }
+                                String isoDateMax = null;
+                                if (editDateMax.getText() != null && !editDateMax.getText().toString().equals("")) {
+                                    isoDateMax = sdf.format(calendarMax.getTime());
+                                }
+                                updateStatsView(tView, selectedProjectId, isoDateMin, isoDateMax);
                             }
 
                             @Override
@@ -800,7 +810,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             @Override
                             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                                 Log.d(TAG, "PAYMODE");
-                                updateStatsView(tView, selectedProjectId, calendarMin, calendarMax);
+                                String isoDateMin = null;
+                                if (editDateMin.getText() != null && !editDateMin.getText().toString().equals("")) {
+                                    isoDateMin = sdf.format(calendarMin.getTime());
+                                }
+                                String isoDateMax = null;
+                                if (editDateMax.getText() != null && !editDateMax.getText().toString().equals("")) {
+                                    isoDateMax = sdf.format(calendarMax.getTime());
+                                }
+                                updateStatsView(tView, selectedProjectId, isoDateMin, isoDateMax);
                             }
 
                             @Override
@@ -818,9 +836,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     }
 
                     // DATE MIN and MAX
-
-                    EditText editDateMin = tView.findViewById(R.id.statsDateMin);
-
                     final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
                         @Override
@@ -834,7 +849,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                     };
 
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(), date, calendarMin
+                    DatePickerDialog dateMinPickerDialog = new DatePickerDialog(view.getContext(), date, calendarMin
                             .get(Calendar.YEAR), calendarMin.get(Calendar.MONTH),
                             calendarMin.get(Calendar.DAY_OF_MONTH)) {
 
@@ -856,7 +871,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                 editDateMin.setText(isoDate);
                             }
 
-                            updateStatsView(tView, selectedProjectId, calendarMin, calendarMax);
+                            String isoDateMin = null;
+                            if (editDateMin.getText() != null && !editDateMin.getText().toString().equals("")) {
+                                isoDateMin = sdf.format(calendarMin.getTime());
+                            }
+                            String isoDateMax = null;
+                            if (editDateMax.getText() != null && !editDateMax.getText().toString().equals("")) {
+                                isoDateMax = sdf.format(calendarMax.getTime());
+                            }
+                            updateStatsView(tView, selectedProjectId, isoDateMin, isoDateMax);
                             this.dismiss();
                         }
                     };
@@ -866,7 +889,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         @Override
                         public boolean onTouch(View v, MotionEvent event) {
                             if(event.getAction() == MotionEvent.ACTION_UP){
-                                datePickerDialog.show();
+                                dateMinPickerDialog.show();
                                 // Do what you want
                                 return true;
                             }
@@ -880,6 +903,66 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             datePickerDialog.show();
                         }
                     });*/
+
+                    final DatePickerDialog.OnDateSetListener dateMaxSetListener = new DatePickerDialog.OnDateSetListener() {
+
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                              int dayOfMonth) {
+                            calendarMax.set(Calendar.YEAR, year);
+                            calendarMax.set(Calendar.MONTH, monthOfYear);
+                            calendarMax.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        }
+
+                    };
+
+                    DatePickerDialog dateMaxPickerDialog = new DatePickerDialog(view.getContext(), dateMaxSetListener, calendarMax
+                            .get(Calendar.YEAR), calendarMax.get(Calendar.MONTH),
+                            calendarMax.get(Calendar.DAY_OF_MONTH)) {
+
+                        @Override
+                        public void onDateChanged(DatePicker view,
+                                                  int year,
+                                                  int month,
+                                                  int dayOfMonth) {
+                            calendarMax.set(Calendar.YEAR, year);
+                            calendarMax.set(Calendar.MONTH, month);
+                            calendarMax.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                            String isoDate = sdf.format(calendarMax.getTime());
+                            try {
+                                Date date = sdf.parse(isoDate);
+                                java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(tView.getContext());
+                                editDateMax.setText(dateFormat.format(date));
+                            } catch (Exception e) {
+                                editDateMax.setText(isoDate);
+                            }
+
+                            String isoDateMin = null;
+                            if (editDateMin.getText() != null && !editDateMin.getText().toString().equals("")) {
+                                isoDateMin = sdf.format(calendarMin.getTime());
+                            }
+                            String isoDateMax = null;
+                            if (editDateMax.getText() != null && !editDateMax.getText().toString().equals("")) {
+                                isoDateMax = sdf.format(calendarMax.getTime());
+                            }
+                            updateStatsView(tView, selectedProjectId, isoDateMin, isoDateMax);
+                            this.dismiss();
+                        }
+                    };
+
+
+                    editDateMax.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            if(event.getAction() == MotionEvent.ACTION_UP){
+                                dateMaxPickerDialog.show();
+                                // Do what you want
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
 
 
                     builder.setView(tView).setIcon(R.drawable.ic_chart_grey_24dp);
@@ -903,7 +986,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     });
                     builder.show();
 
-                    updateStatsView(tView, selectedProjectId, calendarMin, calendarMax);
+                    updateStatsView(tView, selectedProjectId, null, null);
 
                     fabMenuDrawerEdit.close(false);
                 }
@@ -1245,7 +1328,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private void updateStatsView(View tView, long selectedProjectId, String dateMin, String dateMax) {
         final DBProject proj = db.getProject(selectedProjectId);
         // get filter values
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
         int categoryId;
         String paymentMode;
         if (proj.getType().equals(ProjectType.COSPEND)) {
@@ -1256,6 +1338,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             Spinner statsPaymentModeSpinner = tView.findViewById(R.id.statsPaymentModeSpinner);
             Map<String, String> itemP = (Map<String, String>) statsPaymentModeSpinner.getSelectedItem();
             paymentMode = itemP.get("id");
+            if (paymentMode.equals(DBBill.PAYMODE_NONE)) {
+                paymentMode = null;
+            }
         }
         else {
             categoryId = 0;
@@ -1263,6 +1348,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         }
 
         Log.v(TAG, "DATESSSS "+ dateMin + " and "+dateMax);
+        Log.v(TAG, "CATGFIL "+ categoryId + " and PAYMODEFIL "+paymentMode);
 
         // get stats
         Map<Long, Integer> membersNbBills = new HashMap<>();

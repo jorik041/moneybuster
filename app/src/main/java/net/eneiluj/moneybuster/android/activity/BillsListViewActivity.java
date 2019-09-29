@@ -2227,6 +2227,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 // there no selected items, finish the actionMode
                 mActionMode.finish();
             }
+            adapter.notifyDataSetChanged();
         } else {
             DBBill bill = (DBBill) adapter.getItem(position);
             Intent intent;
@@ -2237,7 +2238,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             intent.putExtra(EditBillActivity.PARAM_PROJECT_TYPE, db.getProject(selectedProjectId).getType().getId());
             //intent.putExtra(EditBillActivity.PARAM_MEMBERS_BALANCE, membersBalance);
             startActivityForResult(intent, show_single_bill_cmd);
-
         }
     }
 
@@ -2250,6 +2250,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             int checkedItemCount = adapter.getSelected().size();
             mActionMode.setTitle(getResources().getQuantityString(R.plurals.ab_selected, checkedItemCount, checkedItemCount));
         }
+        adapter.notifyDataSetChanged();
         return selected;
     }
 
@@ -2339,6 +2340,17 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     // delete selection has to be cleared
                     searchView.setIconified(true);
                     refreshLists();
+                    return true;
+                case R.id.menu_select_all:
+                    adapter.clearSelection();
+                    for (int i=0; i < adapter.getItemCount(); i++) {
+                        adapter.select(i);
+                    }
+                    adapter.notifyDataSetChanged();
+
+                    int checkedItemCount = adapter.getSelected().size();
+                    mActionMode.setTitle(getResources().getQuantityString(R.plurals.ab_selected, checkedItemCount, checkedItemCount));
+
                     return true;
                 default:
                     return false;

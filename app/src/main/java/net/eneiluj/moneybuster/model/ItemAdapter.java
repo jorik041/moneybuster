@@ -1,6 +1,7 @@
 package net.eneiluj.moneybuster.model;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -189,6 +191,13 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             String repeat = bill.getRepeat() == null ? DBBill.NON_REPEATED : bill.getRepeat();
             nvHolder.repeatIcon.setVisibility(DBBill.NON_REPEATED.equals(repeat) ? View.GONE : View.VISIBLE);
+
+            if (selected.contains(position)) {
+                nvHolder.billSwipeable.setBackgroundResource(R.color.bg_highlighted);
+            }
+            else {
+                nvHolder.billSwipeable.setBackgroundResource(R.color.bg_normal);
+            }
         }
     }
 

@@ -6,7 +6,7 @@
 
     <color name="separator">#444</color>
 
-    <color name="bg_highlighted">#111</color>
+    <color name="bg_highlighted">#222</color>
     <color name="bg_normal">#000000</color>
     <color name="bg_normal_transparent">#bb000000</color>
     <color name="bg_fab_transparent">#dd222222</color>

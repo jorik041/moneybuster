@@ -880,6 +880,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 args.add(query.toString());
                 args.add(query.toString());
             }
+            // close the big OR
             whereStr += ")";
             where.add(whereStr);
         }

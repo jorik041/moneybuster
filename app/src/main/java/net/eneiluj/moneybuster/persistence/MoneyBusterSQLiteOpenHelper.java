@@ -880,6 +880,27 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 args.add(query.toString());
                 args.add(query.toString());
             }
+
+            // search BY OWER NAME
+            List<DBMember> members = getMembersOfProject(projectId, null);
+            List<String> memberNames = new ArrayList<>();
+            List<Long> memberIds = new ArrayList<>();
+            for (DBMember m : members) {
+                memberNames.add(m.getName().toLowerCase());
+                memberIds.add(m.getId());
+            }
+            int owerIndex = memberNames.indexOf(query.toString().toLowerCase());
+            if (owerIndex != -1) {
+                Log.v(TAG, "found a member with same name as query: "+query);
+                long owerMemberId = memberIds.get(owerIndex);
+                // build a sub query with inner join
+                String joinOwer = "select "+table_bills+"."+key_id+" from "+table_bills+" inner join "+table_billowers+
+                        " where "+key_member_id+"=? and "+
+                        table_bills+"."+key_id+"="+table_billowers+"."+key_billId;
+                whereStr += " OR ("+key_id+" IN ("+joinOwer+"))";
+                args.add(String.valueOf(owerMemberId));
+            }
+
             // close the big OR
             whereStr += ")";
             where.add(whereStr);

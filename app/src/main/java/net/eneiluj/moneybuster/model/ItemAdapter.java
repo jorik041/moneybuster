@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -166,10 +167,16 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 whatPrefix += "\uD83D\uDC5A ";
             }
             nvHolder.billTitle.setText(Html.fromHtml(whatPrefix + bill.getWhat()));
-            try {
-                nvHolder.avatar.setImageDrawable(TextDrawable.createNamedAvatar(db.getMember(bill.getPayerId()).getName(),avatarRadius));
-            } catch (NoSuchAlgorithmException e) {
-                nvHolder.avatar.setImageDrawable(null);
+
+            if (selected.contains(position)) {
+                nvHolder.avatar.setImageDrawable(ContextCompat.getDrawable(db.getContext(), R.drawable.ic_check_circle_gray_24dp));
+            }
+            else {
+                try {
+                    nvHolder.avatar.setImageDrawable(TextDrawable.createNamedAvatar(db.getMember(bill.getPayerId()).getName(), avatarRadius));
+                } catch (NoSuchAlgorithmException e) {
+                    nvHolder.avatar.setImageDrawable(null);
+                }
             }
 
             setFormattedDate(nvHolder.billDate, bill.getDate());

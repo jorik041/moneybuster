@@ -98,6 +98,7 @@
     <string name="action_drawer_open">open side menu</string>
     <string name="action_drawer_close">close side menu</string>
     <string name="action_select_project">select current project</string>
+    <string name="menu_select_all">Select all</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_delete_project_remote">Delete project on server</string>
     <string name="menu_save_project">Save project</string>

@@ -4,9 +4,9 @@
 
     <item
         android:id="@+id/menu_select_all"
-        android:icon="@drawable/ic_check_box_grey_24dp"
+        android:icon="@drawable/ic_playlist_add_check_black_24dp"
         android:orderInCategory="99"
-        android:title="@string/menu_delete"
+        android:title="@string/menu_select_all"
         app:showAsAction="ifRoom" />
 
     <item

@@ -574,7 +574,7 @@ public class EditBillFragment extends Fragment {
         else {
             // add the bill
             DBBill newBill = new DBBill(0, 0, bill.getProjectId(), newPayerId, newAmount,
-                    newDate, newWhat, DBBill.STATE_ADDED, newRepeat, DBBill.PAYMODE_NONE, DBBill.CATEGORY_NONE);
+                    newDate, newWhat, DBBill.STATE_ADDED, newRepeat, newPaymentMode, newCategoryId);
             for (long newOwerId : newOwersIds) {
                 newBill.getBillOwers().add(new DBBillOwer(0, 0, newOwerId));
             }

@@ -123,6 +123,15 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
                         ),
                         matcher.start(), matcher.end(), 0);
             }
+            matcher = Pattern.compile("(0\\.00)", Pattern.CASE_INSENSITIVE).matcher(spannableString);
+            while (matcher.find()) {
+                spannableString.setSpan(
+                        new ForegroundColorSpan(
+                                //context.getResources().getColor(R.color.primary_dark)
+                                ContextCompat.getColor(view.getContext(), R.color.light_blue)
+                        ),
+                        matcher.start(), matcher.end(), 0);
+            }
             name.setText(spannableString, TextView.BufferType.SPANNABLE);
 
             int textColor = ContextCompat.getColor(view.getContext(), R.color.fg_default);

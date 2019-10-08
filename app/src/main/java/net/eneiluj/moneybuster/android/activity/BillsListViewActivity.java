@@ -1339,7 +1339,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         for (Transaction t : transactions) {
             long owerId = t.getOwerMemberId();
             long receiverId = t.getReceiverMemberId();
-            double amount = Math.round(t.getAmount() * 100.0) / 100.0;
+            //double amount = Math.round(t.getAmount() * 100.0) / 100.0;
+            double amount = t.getAmount();
             DBBill bill = new DBBill(
                     0, 0, projectId, owerId, amount,
                     dateNowStr, getString(R.string.settle_bill_what),
@@ -1801,15 +1802,22 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
             for (DBMember m : dbMembers) {
                 double balance = membersBalance.get(m.getId());
-                double rbalance = Math.round( Math.abs(balance) * 100.0 ) / 100.0;
-                String balanceStr = balanceFormatter.format(rbalance).replace(",", ".");
+                double rBalance = Math.round( balance * 100.0 ) / 100.0;
+                double rAbsBalance = Math.round( Math.abs(balance) * 100.0 ) / 100.0;
+                String balanceStr = balanceFormatter.format(rAbsBalance).replace(",", ".");
 
                 if (m.isActivated() || balance != 0.0) {
                     String weightStr = "";
                     if (m.getWeight() != 1) {
                         weightStr = " x" + weightFormatter.format(m.getWeight()).replace(",", ".");
                     }
-                    String sign = balance > 0.0 ? "+" : "-";
+                    String sign = "";
+                    if (rBalance > 0.0) {
+                        sign = "+";
+                    }
+                    else if (rBalance < 0.0) {
+                         sign = "-";
+                    }
                     NavigationAdapter.NavigationItem it = new NavigationAdapter.NavigationItem(
                             String.valueOf(m.getId()),
                             m.getName()+" ("+sign+balanceStr+")"+weightStr,

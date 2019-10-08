@@ -182,7 +182,8 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             setFormattedDate(nvHolder.billDate, bill.getDate());
 
             Log.d(TAG, "[get member of project " + bill.getProjectId() + " with remoteid : "+bill.getPayerId()+"]");
-            String subtitle = String.valueOf(bill.getAmount());
+            double rAmount = Math.round(bill.getAmount() * 100.0 ) / 100.0;
+            String subtitle = String.valueOf(rAmount);
             subtitle += " (" + db.getMember(bill.getPayerId()).getName();
             subtitle += " → ";
             for (long boRId : bill.getBillOwersIds()) {

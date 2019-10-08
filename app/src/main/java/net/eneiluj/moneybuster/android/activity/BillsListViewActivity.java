@@ -74,6 +74,7 @@ import net.eneiluj.moneybuster.android.fragment.EditBillFragment;
 import net.eneiluj.moneybuster.android.fragment.NewProjectFragment;
 import net.eneiluj.moneybuster.model.Category;
 import net.eneiluj.moneybuster.model.DBBill;
+import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.Item;
@@ -1081,6 +1082,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                         }
                     });
+                    builder.setNegativeButton(getString(R.string.simple_create_bills), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            createBillsFromTransactions(selectedProjectId, transactions);
+                        }
+                    });
                     builder.setNeutralButton(getString(R.string.simple_settle_share), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -1323,6 +1330,24 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             fabMenuDrawerEdit.setVisibility(View.VISIBLE);
             fabBillListAddProject.hide();
         }
+    }
+
+    private void createBillsFromTransactions(long projectId, List<Transaction> transactions) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateNowStr = sdf.format(new Date());
+
+        for (Transaction t : transactions) {
+            long owerId = t.getOwerMemberId();
+            long receiverId = t.getReceiverMemberId();
+            double amount = Math.round(t.getAmount() * 100.0) / 100.0;
+            DBBill bill = new DBBill(
+                    0, 0, projectId, owerId, amount,
+                    dateNowStr, getString(R.string.settle_bill_what),
+                    DBBill.STATE_ADDED, DBBill.NON_REPEATED, DBBill.PAYMODE_NONE, DBBill.CATEGORY_NONE);
+            bill.getBillOwers().add(new DBBillOwer(0, 0, receiverId));
+            db.addBill(bill);
+        }
+        refreshLists(true);
     }
 
     // TODO find a way to avoid date if not already set but initialize picker to today

@@ -61,7 +61,7 @@ dependencies {
     implementation 'com.google.zxing:core:3.4.0'
     implementation 'me.dm7.barcodescanner:zxing:1.9.13'
     implementation 'commons-codec:commons-codec:1.12'
-    implementation 'com.github.nextcloud:Android-SingleSignOn:0.3.1'
+    implementation 'com.github.nextcloud:Android-SingleSignOn:0.4.1'
     implementation 'com.google.code.gson:gson:2.8.5'
 }
 

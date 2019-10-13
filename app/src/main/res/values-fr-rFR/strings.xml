@@ -90,6 +90,8 @@
     <string name="simple_edit_project">Éditer le projet distant</string>
     <string name="simple_about">À propos</string>
     <string name="simple_settle_share">Partager les remboursements</string>
+    <string name="simple_create_bills">Créer les factures</string>
+    <string name="settle_bill_what">Facture de remboursement</string>
     <string name="simple_stats_share">Partager les statistiques</string>
     <string name="simple_share_share">Partager le lien MoneyBuster</string>
     <string name="action_bill_deleted">Facture supprimée</string>
@@ -98,6 +100,7 @@
     <string name="action_drawer_open">ouvrir le menu latéral</string>
     <string name="action_drawer_close">fermer le menu latéral</string>
     <string name="action_select_project">sélectionner le projet courant</string>
+    <string name="menu_select_all">Tout sélectionner</string>
     <string name="menu_delete">Supprimer</string>
     <string name="menu_delete_project_remote">Supprimer le projet sur le serveur</string>
     <string name="menu_save_project">Sauvegarder le projet</string>

@@ -90,6 +90,8 @@
     <string name="simple_edit_project">Extern project bewerken</string>
     <string name="simple_about">Over</string>
     <string name="simple_settle_share">Schikking delen</string>
+    <string name="simple_create_bills">Create bills</string>
+    <string name="settle_bill_what">Settlement bill</string>
     <string name="simple_stats_share">Statistieken delen</string>
     <string name="simple_share_share">Share MoneyBuster link</string>
     <string name="action_bill_deleted">Rekening is verwijderd</string>
@@ -98,6 +100,7 @@
     <string name="action_drawer_open">Navigatiemenu openen</string>
     <string name="action_drawer_close">Navigatiemenu sluiten</string>
     <string name="action_select_project">Huidige project selecteren</string>
+    <string name="menu_select_all">Select all</string>
     <string name="menu_delete">Verwijderen</string>
     <string name="menu_delete_project_remote">Project verwijderen op server</string>
     <string name="menu_save_project">Project opslaan</string>

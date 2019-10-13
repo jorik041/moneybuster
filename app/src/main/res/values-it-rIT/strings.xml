@@ -90,6 +90,8 @@
     <string name="simple_edit_project">Modifica il progetto remoto</string>
     <string name="simple_about">Info su</string>
     <string name="simple_settle_share">Condividi liquidazione</string>
+    <string name="simple_create_bills">Create bills</string>
+    <string name="settle_bill_what">Settlement bill</string>
     <string name="simple_stats_share">Condividi statistiche</string>
     <string name="simple_share_share">Share MoneyBuster link</string>
     <string name="action_bill_deleted">Spesa modificata</string>
@@ -98,6 +100,7 @@
     <string name="action_drawer_open">apri menu laterale</string>
     <string name="action_drawer_close">chiudi menu laterale</string>
     <string name="action_select_project">seleziona progetto corrente</string>
+    <string name="menu_select_all">Select all</string>
     <string name="menu_delete">Elimina</string>
     <string name="menu_delete_project_remote">Elimina progetto sul server</string>
     <string name="menu_save_project">Salva progetto</string>

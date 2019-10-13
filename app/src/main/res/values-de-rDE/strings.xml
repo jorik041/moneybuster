@@ -90,6 +90,8 @@
     <string name="simple_edit_project">Projekt bearbeiten</string>
     <string name="simple_about">Über</string>
     <string name="simple_settle_share">Abrechnung teilen</string>
+    <string name="simple_create_bills">Create bills</string>
+    <string name="settle_bill_what">Settlement bill</string>
     <string name="simple_stats_share">Statistik teilen</string>
     <string name="simple_share_share">Share MoneyBuster link</string>
     <string name="action_bill_deleted">Ausgabe gelöscht</string>
@@ -98,6 +100,7 @@
     <string name="action_drawer_open">Menü öffnen</string>
     <string name="action_drawer_close">Menü schließen</string>
     <string name="action_select_project">Aktuelles Projekt auswählen</string>
+    <string name="menu_select_all">Select all</string>
     <string name="menu_delete">Löschen</string>
     <string name="menu_delete_project_remote">Projekt auf Sever löschen</string>
     <string name="menu_save_project">Projekt speichern</string>

@@ -90,6 +90,8 @@
     <string name="simple_edit_project">编辑远程项目</string>
     <string name="simple_about">关于</string>
     <string name="simple_settle_share">分享结算</string>
+    <string name="simple_create_bills">Create bills</string>
+    <string name="settle_bill_what">Settlement bill</string>
     <string name="simple_stats_share">分享统计</string>
     <string name="simple_share_share">Share MoneyBuster link</string>
     <string name="action_bill_deleted">已删除账单</string>
@@ -98,6 +100,7 @@
     <string name="action_drawer_open">打开侧边菜单</string>
     <string name="action_drawer_close">关闭侧边菜单</string>
     <string name="action_select_project">选择当前项目</string>
+    <string name="menu_select_all">Select all</string>
     <string name="menu_delete">删除</string>
     <string name="menu_delete_project_remote">删除服务器上的项目</string>
     <string name="menu_save_project">保存项目</string>

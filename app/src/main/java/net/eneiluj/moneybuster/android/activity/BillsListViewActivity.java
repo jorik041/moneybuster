@@ -270,6 +270,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 if (versionCode == 12) {
                     dialogContent = getString(R.string.welcome_dialog_content_v12);
                 }
+                else if (versionCode == 13) {
+                    dialogContent = getString(R.string.welcome_dialog_content_v13);
+                }
                 // save last version for which welcome dialog was shown
                 preferences.edit().putLong("last_welcome_dialog_displayed_at_version", getVersionCode(this)).apply();
             }

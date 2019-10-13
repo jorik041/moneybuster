@@ -5,6 +5,29 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## 0.0.13 – 2019-10-13
+### Added
+- new categories
+- filters in project statistics
+- button to select all bills in selection mode
+[#24](https://gitlab.com/eneiluj/moneybuster/issues/24) @patxiku
+[#23](https://gitlab.com/eneiluj/moneybuster/issues/23) @patxiku
+- now search by ower name
+[#22](https://gitlab.com/eneiluj/moneybuster/issues/22) @patxiku
+- privacy policy
+- automatic settlement bills creation
+[#27](https://gitlab.com/eneiluj/moneybuster/issues/27) @leoossa
+
+### Fixed
+- project name when sharing stats and settlement for local project
+- hide 'share project' button for local projects
+[#25](https://gitlab.com/eneiluj/moneybuster/issues/25) @PEPERSO
+- bill selection
+- category and payment mode were not set for new bills
+- bump SSO lib to 0.4.1, now working with Nextcloud dev accounts
+
+## 0.0.12 – 2019-09-14
 ### Added
 - qr scanner to import projects
 [#20](https://gitlab.com/eneiluj/moneybuster/issues/20) @denics

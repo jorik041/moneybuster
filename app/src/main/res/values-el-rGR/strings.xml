@@ -123,6 +123,7 @@
     <string name="bill_info_dialog_title">Σχετικά με %s</string>
     <string name="welcome_dialog_title">Καλωσήρθατε στο MoneyBuster v%s</string>
     <string name="welcome_dialog_content_v12">Τι νέο υπάρχει;\n\n* Σάρωση QRCode\n* Καλύτερη διεπαφή\n* Εισαγωγή έργου Nextcloud λογαριασμού\n* Βελτιωμένα στατιστικά στοιχεία\n* Και πολλά άλλα :-)</string>
+    <string name="welcome_dialog_content_v13">What\'s new?\n\n* Filters in statistics\n* Automatic settlement bills creation\n* Search by ower name\n* And much more :-)</string>
     <string name="first_welcome_dialog_content">Πρώτα δημιουργήσετε ή συνδεθείτε σε ένα έργο (IHateMoney ή Nextcloud Cospend), προσθέστε μερικά μέλη και/ή δημιουργήστε μερικούς λογαριασμούς!\n\nΆλλες κύριες δράσεις:\n* Εξοφλήστε το έργο για να δημιουργήσετε ένα συνολικό σχέδιο αποπληρωμής\n* Εμφάνιση στατιστικών έργων\n* Κοινοποίηση: δημιουργήστε ένα QRCode που μπορούν να σαρώσουν άλλοι για να συμμετάσχουν στο έργο\n\nΣτο Android &gt;= 8.0 μπορείτε να πατήσετε πατημένα τα κουμπιά δράσης για να εμφανιστεί η βοήθεια.</string>
     <string name="changelog">Αρχείο αλλαγών</string>
     <!-- Settings -->

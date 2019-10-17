@@ -866,11 +866,11 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     @NonNull
     @WorkerThread
     public List<DBBill> searchBills(@Nullable CharSequence query, long projectId) {
-        List<String> where = new ArrayList<>();
+        List<String> andWhere = new ArrayList<>();
         List<String> args = new ArrayList<>();
 
-        where.add("(" + key_projectid + " = " + projectId + ")");
-        where.add("(" + key_state + " != " + DBBill.STATE_DELETED + ")");
+        andWhere.add("(" + key_projectid + " = " + projectId + ")");
+        andWhere.add("(" + key_state + " != " + DBBill.STATE_DELETED + ")");
         if (query != null) {
             args.add("%" + query + "%");
             args.add("%" + query + "%");
@@ -881,7 +881,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 args.add(query.toString());
             }
 
-            // search BY OWER NAME
+            // get member names
             List<DBMember> members = getMembersOfProject(projectId, null);
             List<String> memberNames = new ArrayList<>();
             List<Long> memberIds = new ArrayList<>();
@@ -889,25 +889,30 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 memberNames.add(m.getName().toLowerCase());
                 memberIds.add(m.getId());
             }
-            int owerIndex = memberNames.indexOf(query.toString().toLowerCase());
-            if (owerIndex != -1) {
+
+            int memberIndex = memberNames.indexOf(query.toString().toLowerCase());
+            if (memberIndex != -1) {
                 Log.v(TAG, "found a member with same name as query: "+query);
-                long owerMemberId = memberIds.get(owerIndex);
+                long searchMemberId = memberIds.get(memberIndex);
+                // search BY PAYER NAME
+                whereStr += " OR ("+key_payer_id+"=?)";
+                args.add(String.valueOf(searchMemberId));
+                // search BY OWER NAME
                 // build a sub query with inner join
                 String joinOwer = "select "+table_bills+"."+key_id+" from "+table_bills+" inner join "+table_billowers+
                         " where "+key_member_id+"=? and "+
                         table_bills+"."+key_id+"="+table_billowers+"."+key_billId;
                 whereStr += " OR ("+key_id+" IN ("+joinOwer+"))";
-                args.add(String.valueOf(owerMemberId));
+                args.add(String.valueOf(searchMemberId));
             }
 
             // close the big OR
             whereStr += ")";
-            where.add(whereStr);
+            andWhere.add(whereStr);
         }
 
         String order = key_date + " DESC";
-        return getBillsCustom(TextUtils.join(" AND ", where), args.toArray(new String[]{}), order);
+        return getBillsCustom(TextUtils.join(" AND ", andWhere), args.toArray(new String[]{}), order);
     }
 
     /**

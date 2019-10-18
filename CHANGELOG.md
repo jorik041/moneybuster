@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## 0.0.14 – 2019-10-19
+### Added
+- search by payer name
+[#22](https://gitlab.com/eneiluj/moneybuster/issues/22) @patxiku
+- lots of german and italian translations
+
+### Fixed
+- sync new cospend bill, forgot to put paymentmode and category parameters
 
 ## 0.0.13 – 2019-10-13
 ### Added

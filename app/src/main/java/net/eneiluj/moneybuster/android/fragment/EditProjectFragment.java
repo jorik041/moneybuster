@@ -62,7 +62,10 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
 
     protected EditTextPreference editProjectName;
     protected EditTextPreference editProjectPassword;
+    protected EditTextPreference editProjectNewPassword;
     protected EditTextPreference editProjectEmail;
+
+    ImageView saveButton;
 
     private DialogInterface.OnClickListener deleteDialogClickListener;
     private AlertDialog.Builder confirmDeleteAlertBuilder;
@@ -134,6 +137,25 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
             public boolean onPreferenceChange(Preference preference,
                                               Object newValue) {
                 EditTextPreference pref = (EditTextPreference) findPreference("password");
+                int nbChars = ((CharSequence)newValue).length();
+                String sum = "";
+                for (int i=0; i < nbChars; i++) {
+                    sum += "*";
+                }
+                pref.setSummary(sum);
+                hideKeyboard(preference.getContext());
+                return true;
+            }
+
+        });
+        Preference newPasswordPref = findPreference("newpassword");
+        newPasswordPref.setOnPreferenceClickListener(clickListener);
+        newPasswordPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+
+            @Override
+            public boolean onPreferenceChange(Preference preference,
+                                              Object newValue) {
+                EditTextPreference pref = (EditTextPreference) findPreference("newpassword");
                 int nbChars = ((CharSequence)newValue).length();
                 String sum = "";
                 for (int i=0; i < nbChars; i++) {
@@ -247,7 +269,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_edit_project_fragment, menu);
         myMenu = menu;
-        final ImageView saveButton = (ImageView) menu.findItem(R.id.menu_save).getActionView();
+        saveButton = (ImageView) menu.findItem(R.id.menu_save).getActionView();
         saveButton.setImageResource(R.drawable.ic_check_white_24dp);
         saveButton.setPadding(20,0,20,0);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -261,29 +283,53 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                 saveButton.startAnimation(animation1);
 
                 String pwd = getPassword();
-                if (pwd == null || pwd.equals("")) {
+                // do we set the local password?
+                if (pwd != null && !pwd.equals(project.getPassword())) {
+                    if (pwd.equals("")) {
+                        showToast(getString(R.string.error_invalid_project_password), Toast.LENGTH_LONG);
+                        saveButton.clearAnimation();
+                        return;
+                    }
+                    db.updateProject(project.getId(), null, null, pwd, null, project.getType());
+                }
+
+                // edit remote project if necessary
+                String newPwd = getNewPassword();
+                if (newPwd == null || newPwd.equals("")) {
                     showToast(getString(R.string.error_invalid_project_password), Toast.LENGTH_LONG);
                     saveButton.clearAnimation();
                     return;
                 }
-                String name = getName();
-                if (name == null || name.equals("")) {
+                String newName = getName();
+                if (newName == null || newName.equals("")) {
                     showToast(getString(R.string.error_invalid_project_name), Toast.LENGTH_LONG);
                     saveButton.clearAnimation();
                     return;
                 }
-                if (!SupportUtil.isValidEmail(getEmail())) {
+                String newEmail = getEmail();
+                if (newEmail == null || newEmail.equals("") || !SupportUtil.isValidEmail(newEmail)) {
                     showToast(getString(R.string.error_invalid_email), Toast.LENGTH_LONG);
                     saveButton.clearAnimation();
                     return;
                 }
 
-                if (!db.getMoneyBusterServerSyncHelper().editRemoteProject(project.getId(), getName(), getEmail(), getPassword(), editCallBack)) {
-                    showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
-                    saveButton.clearAnimation();
+                if (!newPwd.equals(project.getPassword()) || !newName.equals(project.getName()) || !newEmail.equals(project.getEmail())) {
+                    if (!db.getMoneyBusterServerSyncHelper().editRemoteProject(project.getId(), newName, newEmail, newPwd, editCallBack)) {
+                        showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
+                        saveButton.clearAnimation();
+                    }
                 }
-
-
+                else {
+                    // no remote edition
+                    // tell if nothing was changed
+                    if (pwd != null && !pwd.equals("") && pwd.equals(project.getPassword())) {
+                        showToast(getString(R.string.project_edition_no_change), Toast.LENGTH_LONG);
+                        saveButton.clearAnimation();
+                    }
+                    else {
+                        listener.closeOnEdit(project.getId());
+                    }
+                }
 
             }
         });
@@ -303,7 +349,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
             case R.id.menu_delete_remote:
                 confirmDeleteAlertBuilder.show();
                 return true;
-            case R.id.menu_save:
+            /*case R.id.menu_save:
                 if (!SupportUtil.isValidEmail(getEmail())) {
                     showToast(getString(R.string.error_invalid_email), Toast.LENGTH_LONG);
                 }
@@ -311,7 +357,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                     //saveProject(null);
                     db.getMoneyBusterServerSyncHelper().editRemoteProject(project.getId(), getName(), getEmail(), getPassword(), editCallBack);
                 }
-                return true;
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -351,6 +397,15 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
         }
         editProjectPassword.setSummary(sum);
 
+        editProjectNewPassword = (EditTextPreference) this.findPreference("newpassword");
+        editProjectNewPassword.setText(project.getPassword());
+        nbChars = project.getPassword().length();
+        sum = "";
+        for (int i=0; i < nbChars; i++) {
+            sum += "*";
+        }
+        editProjectNewPassword.setSummary(sum);
+
         editProjectEmail = (EditTextPreference) this.findPreference("email");
         editProjectEmail.setText(String.valueOf(project.getEmail()));
         editProjectEmail.setSummary(String.valueOf(project.getEmail()));
@@ -361,6 +416,9 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     }
     protected String getPassword() {
         return editProjectPassword.getText();
+    }
+    protected String getNewPassword() {
+        return editProjectNewPassword.getText();
     }
     protected String getEmail() {
         return editProjectEmail.getText();
@@ -377,6 +435,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
             }
             else {
                 showToast(getString(R.string.error_edit_remote_project_helper, message), Toast.LENGTH_LONG);
+                saveButton.clearAnimation();
             }
         }
 
@@ -396,6 +455,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
             }
             else {
                 showToast(getString(R.string.error_edit_remote_project_helper, message), Toast.LENGTH_LONG);
+                saveButton.clearAnimation();
             }
         }
 

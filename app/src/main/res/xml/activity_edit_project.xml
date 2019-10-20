@@ -28,6 +28,19 @@
         android:title="@string/setting_password" />
 
     <com.takisoft.fix.support.v7.preference.EditTextPreference
+        android:id="@+id/editProjectNewPassword"
+        android:icon="@drawable/ic_lock_grey_24dp"
+        android:dialogMessage="@string/setting_new_password_long"
+        android:dialogTitle="@string/setting_new_password"
+        android:key="newpassword"
+        android:singleLine="true"
+        android:selectAllOnFocus="true"
+        android:persistent="false"
+        android:summary=""
+        android:inputType="textPassword"
+        android:title="@string/setting_new_password" />
+
+    <com.takisoft.fix.support.v7.preference.EditTextPreference
         android:id="@+id/editProjectEmail"
         android:icon="@drawable/ic_email_grey_24dp"
         android:dialogMessage="@string/setting_email_long"

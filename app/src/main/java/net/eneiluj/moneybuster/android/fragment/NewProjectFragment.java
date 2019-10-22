@@ -187,7 +187,7 @@ public class NewProjectFragment extends Fragment {
                 boolean isChecked = ((ToggleButton)view).isChecked();
                 if (isChecked) {
                     whatTodoCreate.setChecked(false);
-                    showHideInputFields();
+                    showHideInputFields(true);
                     showHideValidationButtons();
                 }
                 else {
@@ -201,7 +201,7 @@ public class NewProjectFragment extends Fragment {
                 boolean isChecked = ((ToggleButton)view).isChecked();
                 if (isChecked) {
                     whatTodoJoin.setChecked(false);
-                    showHideInputFields();
+                    showHideInputFields(true);
                     showHideValidationButtons();
                 }
                 else {
@@ -217,7 +217,7 @@ public class NewProjectFragment extends Fragment {
                 if (isChecked) {
                     whereCospend.setChecked(false);
                     whereIhm.setChecked(false);
-                    showHideInputFields();
+                    showHideInputFields(true);
                     showHideValidationButtons();
                 }
                 else {
@@ -232,7 +232,7 @@ public class NewProjectFragment extends Fragment {
                 if (isChecked) {
                     whereCospend.setChecked(false);
                     whereLocal.setChecked(false);
-                    showHideInputFields();
+                    showHideInputFields(true);
                     showHideValidationButtons();
                 }
                 else {
@@ -247,7 +247,7 @@ public class NewProjectFragment extends Fragment {
                 if (isChecked) {
                     whereLocal.setChecked(false);
                     whereIhm.setChecked(false);
-                    showHideInputFields();
+                    showHideInputFields(true);
                     showHideValidationButtons();
                 }
                 else {
@@ -436,7 +436,7 @@ public class NewProjectFragment extends Fragment {
         return true;
     }
 
-    private void showHideInputFields() {
+    private void showHideInputFields(boolean setDefaultUrl) {
         boolean todoCreate = getTodoCreate();
         ProjectType type = getProjectType();
 
@@ -503,7 +503,9 @@ public class NewProjectFragment extends Fragment {
 
             whereIcon.setLayoutParams(params);
 
-            newProjectUrl.setText(defaultIhmUrl);
+            if (setDefaultUrl) {
+                newProjectUrl.setText(defaultIhmUrl);
+            }
             newProjectUrlInputLayout.setHint(getString(R.string.setting_ihm_project_url));
             nextcloudButton.setVisibility(View.GONE);
         }
@@ -520,7 +522,9 @@ public class NewProjectFragment extends Fragment {
             params.bottomMargin = 25;
             whereIcon.setLayoutParams(params);
 
-            newProjectUrl.setText(defaultNcUrl);
+            if (setDefaultUrl) {
+                newProjectUrl.setText(defaultNcUrl);
+            }
             newProjectUrlInputLayout.setHint(getString(R.string.setting_cospend_project_url));
             boolean isNCC = MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(getContext());
             List<DBAccountProject> accProjs = db.getAccountProjects();
@@ -662,7 +666,7 @@ public class NewProjectFragment extends Fragment {
             whereLocal.setChecked(false);
             whereIhm.setChecked(false);
             whereCospend.setChecked(true);
-            showHideInputFields();
+            showHideInputFields(false);
             showHideValidationButtons();
         }
         else if (data.getHost().equals("net.eneiluj.moneybuster.ihatemoney") && data.getPathSegments().size() >= 2) {
@@ -682,7 +686,7 @@ public class NewProjectFragment extends Fragment {
             whereLocal.setChecked(false);
             whereIhm.setChecked(true);
             whereCospend.setChecked(false);
-            showHideInputFields();
+            showHideInputFields(false);
             showHideValidationButtons();
         }
         else if (data.getHost().equals("ihatemoney.org") && data.getPathSegments().size() == 1) {
@@ -695,7 +699,7 @@ public class NewProjectFragment extends Fragment {
             whereLocal.setChecked(false);
             whereIhm.setChecked(true);
             whereCospend.setChecked(false);
-            showHideInputFields();
+            showHideInputFields(false);
             showHideValidationButtons();
         }
         else {
@@ -848,7 +852,7 @@ public class NewProjectFragment extends Fragment {
         defaultIhmUrl = getArguments().getString(PARAM_DEFAULT_IHM_URL);
         defaultNcUrl = getArguments().getString(PARAM_DEFAULT_NC_URL);
 
-        showHideInputFields();
+        showHideInputFields(true);
 
         newProjectId.setText(getArguments().getString(PARAM_DEFAULT_PROJECT_ID));
 

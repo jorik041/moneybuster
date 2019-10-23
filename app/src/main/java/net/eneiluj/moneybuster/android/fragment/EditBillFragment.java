@@ -643,7 +643,12 @@ public class EditBillFragment extends Fragment {
                 // avatar
                 ImageView avatar = row.findViewById(R.id.avatar);
                 try {
-                    avatar.setImageDrawable(TextDrawable.createNamedAvatar(member.getName(), 30));
+                    avatar.setImageDrawable(
+                            TextDrawable.createNamedAvatar(
+                                    member.getName(), 30,
+                                    member.getR(), member.getG(), member.getB()
+                            )
+                    );
                     avatar.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 } catch (NoSuchAlgorithmException e) {
                     Log.e(TAG, "error creating avatar", e);

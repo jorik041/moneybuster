@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import net.eneiluj.moneybuster.R;
+import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -55,7 +57,13 @@ public class UserAdapter extends ArrayAdapter<UserItem> {
         if (user != null) {
             viewHolder.name.setText(user.getName());
             try {
-                viewHolder.avatar.setImageDrawable(TextDrawable.createNamedAvatar(user.getName(), mAccountAvatarRadiusDimension));
+                DBMember m = MoneyBusterSQLiteOpenHelper.getInstance(mContext).getMember(user.getId());
+                viewHolder.avatar.setImageDrawable(
+                        TextDrawable.createNamedAvatar(
+                                user.getName(), mAccountAvatarRadiusDimension,
+                                m.getR(), m.getG(), m.getB()
+                        )
+                );
             } catch (NoSuchAlgorithmException e) {
                 Log.e(TAG, "error creating avatar", e);
                 viewHolder.avatar.setImageDrawable(null);
@@ -88,7 +96,13 @@ public class UserAdapter extends ArrayAdapter<UserItem> {
         if (user != null) {
             viewHolder.name.setText(user.getName());
             try {
-                viewHolder.avatar.setImageDrawable(TextDrawable.createNamedAvatar(user.getName(), mAccountAvatarRadiusDimension));
+                DBMember m = MoneyBusterSQLiteOpenHelper.getInstance(mContext).getMember(user.getId());
+                viewHolder.avatar.setImageDrawable(
+                        TextDrawable.createNamedAvatar(
+                                user.getName(), mAccountAvatarRadiusDimension,
+                                m.getR(), m.getG(), m.getB()
+                        )
+                );
             } catch (NoSuchAlgorithmException e) {
                 Log.e(TAG, "error creating avatar", e);
                 viewHolder.avatar.setImageDrawable(null);

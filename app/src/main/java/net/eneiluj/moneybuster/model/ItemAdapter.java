@@ -173,7 +173,13 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
             else {
                 try {
-                    nvHolder.avatar.setImageDrawable(TextDrawable.createNamedAvatar(db.getMember(bill.getPayerId()).getName(), avatarRadius));
+                    DBMember m = db.getMember(bill.getPayerId());
+                    nvHolder.avatar.setImageDrawable(
+                            TextDrawable.createNamedAvatar(
+                                    m.getName(), avatarRadius,
+                                    m.getR(), m.getG(), m.getB()
+                            )
+                    );
                 } catch (NoSuchAlgorithmException e) {
                     nvHolder.avatar.setImageDrawable(null);
                 }

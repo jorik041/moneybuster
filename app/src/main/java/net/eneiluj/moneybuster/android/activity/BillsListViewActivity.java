@@ -502,7 +502,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                 if (!memberNames.contains(memberName)) {
                                     db.addMemberAndSync(
                                             new DBMember(0, 0, selectedProjectId, memberName,
-                                                    true, 1, DBBill.STATE_ADDED)
+                                                    true, 1, DBBill.STATE_ADDED,
+                                                    null, null, null)
                                     );
                                     refreshLists();
                                 } else {
@@ -1680,7 +1681,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                 if (selectedProjectId != 0) {
                     if (!newMemberName.isEmpty() && !newMemberName.equals("")) {
-                        db.updateMemberAndSync(memberToEdit, newMemberName, newMemberWeight, newActivated);
+                        db.updateMemberAndSync(memberToEdit, newMemberName, newMemberWeight, newActivated, null, null, null);
                         refreshLists();
                         // this was used to programmatically select member
                         //navigationSelection = new Category(newMemberName, memberToEdit.getId());

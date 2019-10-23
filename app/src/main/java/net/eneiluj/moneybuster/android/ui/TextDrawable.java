@@ -29,14 +29,18 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.apache.commons.codec.binary.Hex;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * A Drawable object that draws text (1 character) on top of a circular/filled background.
@@ -104,12 +108,19 @@ public class TextDrawable extends Drawable {
      * @throws NoSuchAlgorithmException     if the specified algorithm is not available when calculating the color values
      */
     @NonNull
-    public static TextDrawable createNamedAvatar(String name, float radiusInDp) throws NoSuchAlgorithmException {
-        int[] hsl = calculateHSL(name);
-        int[] rgb = HSLtoRGB(hsl[0], hsl[1], hsl[2], 1);
+    public static TextDrawable createNamedAvatar(String name, float radiusInDp, @Nullable Integer r, @Nullable Integer g, @Nullable Integer b) throws NoSuchAlgorithmException {
+        Log.v(TAG, "AVATAAAAR "+r+" "+g+" "+b);
+        if (r != null && g != null && b != null) {
+            return new TextDrawable(name.substring(0, 1).toUpperCase(Locale.getDefault()), r, g, b,
+                    radiusInDp);
+        }
+        else {
+            int[] hsl = calculateHSL(name);
+            int[] rgb = HSLtoRGB(hsl[0], hsl[1], hsl[2], 1);
 
-        return new TextDrawable(name.substring(0, 1).toUpperCase(Locale.getDefault()), rgb[0], rgb[1], rgb[2],
-                radiusInDp);
+            return new TextDrawable(name.substring(0, 1).toUpperCase(Locale.getDefault()), rgb[0], rgb[1], rgb[2],
+                    radiusInDp);
+        }
     }
 
     /**

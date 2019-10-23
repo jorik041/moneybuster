@@ -229,6 +229,9 @@ public class ServerResponse {
         double weight = 1;
         long remoteId = 0;
         String name = "";
+        Integer r = null;
+        Integer g = null;
+        Integer b = null;
         if (!json.isNull("id")) {
             remoteId = json.getLong("id");
         }
@@ -241,7 +244,19 @@ public class ServerResponse {
         if (!json.isNull("name")) {
             name = json.getString("name");
         }
-        return new DBMember(0, remoteId, projId, name, activated, weight, DBBill.STATE_OK);
+        if (json.has("color") && !json.isNull("color")) {
+            JSONObject color = json.getJSONObject("color");
+            if (color.has("r") && !color.isNull("r")) {
+                r = color.getInt("r");
+            }
+            if (color.has("g") && !color.isNull("g")) {
+                g = color.getInt("g");
+            }
+            if (color.has("b") && !color.isNull("b")) {
+                b = color.getInt("b");
+            }
+        }
+        return new DBMember(0, remoteId, projId, name, activated, weight, DBBill.STATE_OK, r, g, b);
     }
 
     protected List<DBBill> getBillsFromJSON(JSONArray json, long projId, Map<Long, Long> memberRemoteIdToId) throws JSONException {

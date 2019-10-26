@@ -259,6 +259,7 @@
                     android:src="@drawable/ic_library_books_white_24dp" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/editProjectIdInputLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -295,6 +296,7 @@
                     android:src="@drawable/ic_lock_grey_24dp" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/editProjectPasswordInputLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -331,6 +333,7 @@
                     android:src="@drawable/ic_title_grey_24dp" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/editProjectNameInputLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -366,6 +369,7 @@
                     android:src="@drawable/ic_email_grey_24dp" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/editProjectEmailInputLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

@@ -111,7 +111,11 @@ public class NewProjectFragment extends Fragment {
 
     protected LinearLayout newProjectIdLayout;
     protected LinearLayout newProjectUrlLayout;
+    protected TextInputLayout newProjectIdInputLayout;
     protected TextInputLayout newProjectUrlInputLayout;
+    protected TextInputLayout newProjectPasswordInputLayout;
+    protected TextInputLayout newProjectNameInputLayout;
+    protected TextInputLayout newProjectEmailInputLayout;
     protected LinearLayout newProjectPasswordLayout;
     protected LinearLayout newProjectNameLayout;
     protected LinearLayout newProjectEmailLayout;
@@ -170,7 +174,11 @@ public class NewProjectFragment extends Fragment {
 
         newProjectIdLayout = view.findViewById(R.id.editProjectIdLayout);
         newProjectUrlLayout = view.findViewById(R.id.editProjectUrlLayout);
+        newProjectIdInputLayout = view.findViewById(R.id.editProjectIdInputLayout);
         newProjectUrlInputLayout = view.findViewById(R.id.editProjectUrlInputLayout);
+        newProjectPasswordInputLayout = view.findViewById(R.id.editProjectPasswordInputLayout);
+        newProjectNameInputLayout = view.findViewById(R.id.editProjectNameInputLayout);
+        newProjectEmailInputLayout = view.findViewById(R.id.editProjectEmailInputLayout);
         newProjectPasswordLayout = view.findViewById(R.id.editProjectPasswordLayout);
         newProjectEmailLayout = view.findViewById(R.id.editProjectEmailLayout);
         newProjectNameLayout = view.findViewById(R.id.editProjectNameLayout);
@@ -396,6 +404,7 @@ public class NewProjectFragment extends Fragment {
     }
 
     private boolean isFormValid() {
+        boolean valid = true;
         boolean todoCreate = getTodoCreate();
         ProjectType type = getProjectType();
 
@@ -407,32 +416,58 @@ public class NewProjectFragment extends Fragment {
 
         // always check project ID
         if (projectId.equals("")) {
-            return false;
+            newProjectIdInputLayout.setBackgroundColor(0x55FF0000);
+            valid = false;
+        }
+        else {
+            newProjectIdInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
         }
 
         // first, what is independent from creation/join
         if (!type.equals(ProjectType.LOCAL)) {
-            if (projectUrl.equals("") || !isValidUrl(projectUrl) || projectPassword.equals("")) {
-                return false;
+            if (projectUrl.equals("") || !isValidUrl(projectUrl)) {
+                newProjectUrlInputLayout.setBackgroundColor(0x55FF0000);
+                valid = false;
+            }
+            else {
+                newProjectUrlInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
+            }
+            if (projectPassword.equals("")) {
+                newProjectPasswordInputLayout.setBackgroundColor(0x55FF0000);
+                valid = false;
+            }
+            else {
+                newProjectPasswordInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
             }
         }
 
         // create
         if (todoCreate) {
             if (!type.equals(ProjectType.LOCAL)) {
-                if (projectName.equals("") || !SupportUtil.isValidEmail(projectEmail)) {
-                    return false;
+                if (projectName.equals("")) {
+                    newProjectNameInputLayout.setBackgroundColor(0x55FF0000);
+                    valid = false;
+                }
+                else {
+                    newProjectNameInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
+                }
+                if (!SupportUtil.isValidEmail(projectEmail)) {
+                    newProjectEmailInputLayout.setBackgroundColor(0x55FF0000);
+                    valid = false;
+                }
+                else {
+                    newProjectEmailInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
                 }
             }
         }
         // join
         else {
             if (type.equals(ProjectType.LOCAL)) {
-                return false;
+                valid = false;
             }
         }
 
-        return true;
+        return valid;
     }
 
     private void showHideInputFields(boolean setDefaultUrl) {

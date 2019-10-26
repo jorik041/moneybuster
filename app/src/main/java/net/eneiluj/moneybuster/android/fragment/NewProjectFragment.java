@@ -16,6 +16,7 @@ import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -70,8 +71,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static android.webkit.URLUtil.isValidUrl;
-import static net.eneiluj.moneybuster.util.SupportUtil.getVersionCode;
 import static net.eneiluj.moneybuster.util.SupportUtil.getVersionName;
 
 public class NewProjectFragment extends Fragment {
@@ -882,7 +881,15 @@ public class NewProjectFragment extends Fragment {
         if (ProjectType.COSPEND.equals(type)) {
             url = url.replaceAll("/+$", "") + "/index.php/apps/cospend";
         }
+        if (!url.startsWith("http://") && !url.startsWith("https://") && isValidUrl("https://"+url)) {
+            url = "https://" + url;
+        }
+        Log.v(TAG, "URL : "+url);
         return url;
+    }
+    protected boolean isValidUrl(String url) {
+        return Patterns.WEB_URL.matcher(url).matches();
+        //return (isHttpsUrl(url) || isHttpUrl(url));
     }
     protected String getPassword() {
         return newProjectPassword.getText().toString();

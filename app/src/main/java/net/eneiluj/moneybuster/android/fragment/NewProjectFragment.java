@@ -893,6 +893,25 @@ public class NewProjectFragment extends Fragment {
         // hide the keyboard when this window gets the focus
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        String defaultTypeId = getArguments().getString(PARAM_DEFAULT_PROJECT_TYPE);
+        if (defaultTypeId != null) {
+            if (defaultTypeId.equals(ProjectType.COSPEND.getId())) {
+                whereLocal.setChecked(false);
+                whereIhm.setChecked(false);
+                whereCospend.setChecked(true);
+            }
+            else if (defaultTypeId.equals(ProjectType.IHATEMONEY.getId())) {
+                whereLocal.setChecked(false);
+                whereIhm.setChecked(true);
+                whereCospend.setChecked(false);
+            }
+            else if (defaultTypeId.equals(ProjectType.LOCAL.getId())) {
+                whereLocal.setChecked(true);
+                whereIhm.setChecked(false);
+                whereCospend.setChecked(false);
+            }
+        }
+
         defaultIhmUrl = getArguments().getString(PARAM_DEFAULT_IHM_URL);
         defaultNcUrl = getArguments().getString(PARAM_DEFAULT_NC_URL);
 
@@ -903,7 +922,13 @@ public class NewProjectFragment extends Fragment {
         String defaultPassword = getArguments().getString(PARAM_DEFAULT_PROJECT_PASSWORD);
         if (defaultPassword != null) {
             newProjectPassword.setText(getArguments().getString(PARAM_DEFAULT_PROJECT_PASSWORD));
+            if (isFormValid()) {
+                onPressOk();
+            }
         }
+
+        //showHideInputFields(false);
+        //showHideValidationButtons();
     }
 
     protected ProjectType getProjectType() {

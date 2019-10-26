@@ -744,6 +744,11 @@ public class NewProjectFragment extends Fragment {
         if (isFormValid()) {
             onPressOk();
         }
+        else {
+            if (getPassword().equals("")) {
+                newProjectPassword.requestFocus();
+            }
+        }
     }
 
     private void onPressOk() {

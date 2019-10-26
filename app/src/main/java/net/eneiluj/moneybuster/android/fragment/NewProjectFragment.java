@@ -738,6 +738,11 @@ public class NewProjectFragment extends Fragment {
         }
         else {
             showToast(getString(R.string.import_bad_url), Toast.LENGTH_LONG);
+            return;
+        }
+
+        if (isFormValid()) {
+            onPressOk();
         }
     }
 

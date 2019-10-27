@@ -62,7 +62,9 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
     }
 
     private DBBill colorTheBill(DBBill dbBill) {
-        if (!TextUtils.isEmpty(searchQuery)) {
+        if (!TextUtils.isEmpty(searchQuery) && !searchQuery.toString().startsWith("+")
+            &&  !searchQuery.toString().startsWith("-") && !searchQuery.toString().startsWith("@")
+        ) {
             SpannableString spannableString = new SpannableString(dbBill.getWhat());
             Matcher matcher = Pattern.compile("(" + searchQuery + ")", Pattern.CASE_INSENSITIVE).matcher(spannableString);
             while (matcher.find()) {

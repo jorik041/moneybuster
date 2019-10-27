@@ -922,20 +922,59 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 memberIds.add(m.getId());
             }
 
-            int memberIndex = memberNames.indexOf(query.toString().toLowerCase());
-            if (memberIndex != -1) {
-                Log.v(TAG, "found a member with same name as query: "+query);
-                long searchMemberId = memberIds.get(memberIndex);
-                // search BY PAYER NAME
-                whereStr += " OR ("+key_payer_id+"=?)";
-                args.add(String.valueOf(searchMemberId));
-                // search BY OWER NAME
-                // build a sub query with inner join
-                String joinOwer = "select "+table_bills+"."+key_id+" from "+table_bills+" inner join "+table_billowers+
-                        " where "+key_member_id+"=? and "+
-                        table_bills+"."+key_id+"="+table_billowers+"."+key_billId;
-                whereStr += " OR ("+key_id+" IN ("+joinOwer+"))";
-                args.add(String.valueOf(searchMemberId));
+            String queryStr = query.toString();
+            String[] words = queryStr.split("\\s+");
+            String word;
+            String nameQuery;
+            String nameSql = "";
+            for (int i=0; i < words.length; i++) {
+                word = words[i];
+                // begins with +, search payer
+                if (word.startsWith("+")) {
+                    nameQuery = word.replaceAll("^\\+", "");
+                    int memberIndex = memberNames.indexOf(nameQuery.toLowerCase());
+                    if (memberIndex != -1) {
+                        long searchMemberId = memberIds.get(memberIndex);
+                        nameSql += "("+key_payer_id+"=?) AND ";
+                        args.add(String.valueOf(searchMemberId));
+                    }
+                }
+                // begins with -, search ower
+                if (word.startsWith("-")) {
+                    nameQuery = word.replaceAll("^-", "");
+                    int memberIndex = memberNames.indexOf(nameQuery.toLowerCase());
+                    if (memberIndex != -1) {
+                        long searchMemberId = memberIds.get(memberIndex);
+                        String joinOwer = "select "+table_bills+"."+key_id+" from "+table_bills+" inner join "+table_billowers+
+                                " where "+key_member_id+"=? and "+
+                                table_bills+"."+key_id+"="+table_billowers+"."+key_billId;
+                        nameSql += "("+key_id+" IN ("+joinOwer+")) AND ";
+                        args.add(String.valueOf(searchMemberId));
+                    }
+                }
+                // begins with @, search both
+                if (word.startsWith("@")) {
+                    nameQuery = word.replaceAll("^@", "");
+                    int memberIndex = memberNames.indexOf(nameQuery.toLowerCase());
+                    if (memberIndex != -1) {
+                        long searchMemberId = memberIds.get(memberIndex);
+                        // payer
+                        nameSql += "("+key_payer_id+"=?) AND ";
+                        args.add(String.valueOf(searchMemberId));
+                        // ower
+                        String joinOwer = "select "+table_bills+"."+key_id+" from "+table_bills+" inner join "+table_billowers+
+                                " where "+key_member_id+"=? and "+
+                                table_bills+"."+key_id+"="+table_billowers+"."+key_billId;
+                        nameSql += "("+key_id+" IN ("+joinOwer+")) AND ";
+                        args.add(String.valueOf(searchMemberId));
+                    }
+                }
+            }
+
+            // there is a name search
+            if (!nameSql.equals("")) {
+                nameSql = nameSql.replaceAll(" AND $", "");
+                whereStr += " OR (" + nameSql + ")";
             }
 
             // close the big OR

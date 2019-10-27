@@ -5,6 +5,27 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## 0.0.15 – 2019-10-27
+### Added
+- now able to change local password
+- use member colors from Cospend if possible
+- search by name with prefixes (+payer -ower @both)
+[#22](https://gitlab.com/eneiluj/moneybuster/issues/22) @patxiku
+
+### Changed
+- improve new project URL check, add https:// prefix if absent
+[#51](https://gitlab.com/eneiluj/cospend-nc/issues/51) @doronbehar
+- red background for invalid fields in new project form
+[#51](https://gitlab.com/eneiluj/cospend-nc/issues/51) @eneiluj
+- instantly add project after scanning/browsing valid link
+[#51](https://gitlab.com/eneiluj/cospend-nc/issues/51) @eneiluj
+- give focus to password field when scanning/browsing link with no password
+[#51](https://gitlab.com/eneiluj/cospend-nc/issues/51) @eneiluj
+
+### Fixed
+- avoid having server URL overriden by default URL after scanning a QRCode
+- fix link browsing project type choice
+
 ## 0.0.14 – 2019-10-19
 ### Added
 - search by payer name

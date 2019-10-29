@@ -105,32 +105,32 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
             //int textColor = ContextCompat.getColor(view.getContext(), isSelected ? R.color.primary : R.color.fg_default);
 
             SpannableString spannableString = new SpannableString(item.label);
-            Matcher matcher = Pattern.compile("(0\\.00)", Pattern.CASE_INSENSITIVE).matcher(spannableString);
-            while (matcher.find()) {
-                spannableString.setSpan(
-                        new ForegroundColorSpan(
-                                //context.getResources().getColor(R.color.primary_dark)
-                                ContextCompat.getColor(view.getContext(), R.color.light_blue)
-                        ),
-                        matcher.start(), matcher.end(), 0);
-            }
-            matcher = Pattern.compile("(\\+\\d*\\.?\\d*)", Pattern.CASE_INSENSITIVE).matcher(spannableString);
+            Matcher matcher = Pattern.compile("\\((\\+\\d*\\.?\\d*)\\)", Pattern.CASE_INSENSITIVE).matcher(spannableString);
             while (matcher.find()) {
                 spannableString.setSpan(
                         new ForegroundColorSpan(
                                 //context.getResources().getColor(R.color.primary_dark)
                                 ContextCompat.getColor(view.getContext(), R.color.green)
                         ),
-                        matcher.start(), matcher.end(), 0);
+                        matcher.start()+1, matcher.end()-1, 0);
             }
-            matcher = Pattern.compile("(-\\d*\\.?\\d*)", Pattern.CASE_INSENSITIVE).matcher(spannableString);
+            matcher = Pattern.compile("\\((-\\d*\\.?\\d*)\\)", Pattern.CASE_INSENSITIVE).matcher(spannableString);
             while (matcher.find()) {
                 spannableString.setSpan(
                         new ForegroundColorSpan(
                                 //context.getResources().getColor(R.color.primary_dark)
                                 ContextCompat.getColor(view.getContext(), R.color.red)
                         ),
-                        matcher.start(), matcher.end(), 0);
+                        matcher.start()+1, matcher.end()-1, 0);
+            }
+            matcher = Pattern.compile("\\((0\\.00)\\)", Pattern.CASE_INSENSITIVE).matcher(spannableString);
+            while (matcher.find()) {
+                spannableString.setSpan(
+                        new ForegroundColorSpan(
+                                //context.getResources().getColor(R.color.primary_dark)
+                                ContextCompat.getColor(view.getContext(), R.color.light_blue)
+                        ),
+                        matcher.start()+1, matcher.end()-1, 0);
             }
             name.setText(spannableString, TextView.BufferType.SPANNABLE);
 

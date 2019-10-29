@@ -959,13 +959,13 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                     if (memberIndex != -1) {
                         long searchMemberId = memberIds.get(memberIndex);
                         // payer
-                        nameSql += "("+key_payer_id+"=?) AND ";
+                        nameSql += "( ("+key_payer_id+"=?) OR ";
                         args.add(String.valueOf(searchMemberId));
                         // ower
                         String joinOwer = "select "+table_bills+"."+key_id+" from "+table_bills+" inner join "+table_billowers+
                                 " where "+key_member_id+"=? and "+
                                 table_bills+"."+key_id+"="+table_billowers+"."+key_billId;
-                        nameSql += "("+key_id+" IN ("+joinOwer+")) AND ";
+                        nameSql += "("+key_id+" IN ("+joinOwer+")) ) AND ";
                         args.add(String.valueOf(searchMemberId));
                     }
                 }

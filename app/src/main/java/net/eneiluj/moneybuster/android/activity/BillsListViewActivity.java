@@ -2090,6 +2090,45 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         return swipeRefreshLayout;
     }
 
+    private void displaySearchHelp() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean noMoreSearchHelp = preferences.getBoolean(SettingsActivity.SETTINGS_NO_MORE_SEARCH_HELP, false);
+
+        if (!noMoreSearchHelp) {
+            AlertDialog.Builder helpBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog));
+            helpBuilder.setTitle(getString(R.string.search_help_dialog_title));
+            helpBuilder.setMessage(getString(R.string.search_help_dialog_content));
+
+            // add OK and Cancel buttons
+            helpBuilder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            helpBuilder.setNeutralButton(getString(R.string.simple_ok_no_more), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    preferences.edit().putBoolean(SettingsActivity.SETTINGS_NO_MORE_SEARCH_HELP, true).apply();
+                }
+            });
+
+            AlertDialog selectDialog = helpBuilder.create();
+            selectDialog.show();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.search:
+                displaySearchHelp();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     /**
      * Adds the Menu Items to the Action Bar.
      *

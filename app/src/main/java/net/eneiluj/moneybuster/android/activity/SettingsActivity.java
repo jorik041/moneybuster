@@ -81,6 +81,8 @@ public class SettingsActivity extends AppCompatActivity {
     public static final String DEFAULT_SETTINGS = "";
     public static final int CREDENTIALS_CHANGED = 3;
 
+    public static final String SETTINGS_NO_MORE_SEARCH_HELP = "settingsNoMoreSearchHelp";
+
     public static final String LOGIN_URL_DATA_KEY_VALUE_SEPARATOR = ":";
     public static final String WEBDAV_PATH_4_0_AND_LATER = "/remote.php/webdav";
 

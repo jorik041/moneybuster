@@ -85,12 +85,13 @@
     <string name="creating_remote_project">Creating remote project</string>
     <string name="simple_cancel">Cancelar</string>
     <string name="simple_ok">Ok</string>
+    <string name="simple_ok_no_more">Got it!</string>
     <string name="simple_yes">Sí</string>
     <string name="simple_no">No</string>
     <string name="simple_edit_bill">Editar factura</string>
     <string name="simple_new_bill">Nueva factura</string>
     <string name="simple_add_project">Añadir proyecto en MoneyBuster</string>
-    <string name="simple_edit_project">Editar proyecto remoto</string>
+    <string name="simple_edit_project">Edit project</string>
     <string name="simple_about">Acerca de</string>
     <string name="simple_settle_share">Compartir acuerdo</string>
     <string name="simple_create_bills">Create bills</string>
@@ -114,6 +115,8 @@
     <string name="fab_edit_member">Editar un miembro</string>
     <string name="choose_member_to_edit">Elegir un miembro para editar</string>
     <string name="member_already_exists">Este miembro ya existe en este proyecto</string>
+    <string name="search_help_dialog_title">How to search</string>
+    <string name="search_help_dialog_content">You can search by bill title and amount.\n\nYou can also search by:\n* payer with +NAME\n* ower with -NAME\n* payer or ower with @NAME\n\nExample 1: \"@julia -robert\" will show bills involving Julia (as payer or ower) AND Robert as ower.\n\nExample 2: \"+julia -julia -robert\" will show bills payed by Julia for at least Julia AND Robert.</string>
     <string name="confirm_remove_project_dialog_title">¿Está seguro?</string>
     <string name="confirm_delete_bill_dialog_title">¿Estás seguro de que deseas eliminar esta factura?</string>
     <string name="confirm_delete_project_dialog_title">¿Estás seguro de que deseas eliminar este proyecto?</string>

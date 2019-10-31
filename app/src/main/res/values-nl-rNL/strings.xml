@@ -85,12 +85,13 @@
     <string name="creating_remote_project">Creating remote project</string>
     <string name="simple_cancel">Annuleren</string>
     <string name="simple_ok">Oké</string>
+    <string name="simple_ok_no_more">Got it!</string>
     <string name="simple_yes">Ja</string>
     <string name="simple_no">Nee</string>
     <string name="simple_edit_bill">Rekening bewerken</string>
     <string name="simple_new_bill">Nieuwe rekening</string>
     <string name="simple_add_project">Project toevoegen op MoneyBuster</string>
-    <string name="simple_edit_project">Extern project bewerken</string>
+    <string name="simple_edit_project">Edit project</string>
     <string name="simple_about">Over</string>
     <string name="simple_settle_share">Schikking delen</string>
     <string name="simple_create_bills">Create bills</string>
@@ -114,6 +115,8 @@
     <string name="fab_edit_member">Deelnemer bewerken</string>
     <string name="choose_member_to_edit">Kies een te bewerken deelnemer</string>
     <string name="member_already_exists">Deze deelnemer is al lid van het project</string>
+    <string name="search_help_dialog_title">How to search</string>
+    <string name="search_help_dialog_content">You can search by bill title and amount.\n\nYou can also search by:\n* payer with +NAME\n* ower with -NAME\n* payer or ower with @NAME\n\nExample 1: \"@julia -robert\" will show bills involving Julia (as payer or ower) AND Robert as ower.\n\nExample 2: \"+julia -julia -robert\" will show bills payed by Julia for at least Julia AND Robert.</string>
     <string name="confirm_remove_project_dialog_title">Weet je het zeker?</string>
     <string name="confirm_delete_bill_dialog_title">Weet je zeker dat je de rekening wilt verwijderen?</string>
     <string name="confirm_delete_project_dialog_title">Weet je zeker dat je het externe project wilt verwijderen?</string>

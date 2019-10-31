@@ -54,7 +54,7 @@
     <string name="new_project_where">Onde?</string>
     <string name="where_local">Apenas no meu telefone (local)</string>
     <string name="where_ihm">Servidor IHateMoney</string>
-    <string name="where_cospend">Aplicação Cospend do Nexcloud</string>
+    <string name="where_cospend">Aplicação Cospend do Nextcloud</string>
     <string name="where_local_short">Local</string>
     <string name="where_ihm_short">IHateMoney</string>
     <string name="where_cospend_short">Cospend</string>

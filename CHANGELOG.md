@@ -5,12 +5,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-## 0.0.15 – 2019-10-27
+## 0.0.15 – 2019-11-03
 ### Added
 - now able to change local password
 - use member colors from Cospend if possible
-- search by name with prefixes (+payer -ower @both)
+- search by name with prefixes (+payer -ower @payer-OR-ower)
 [#22](https://gitlab.com/eneiluj/moneybuster/issues/22) @patxiku
+- help dialog explaining how to search
 
 ### Changed
 - improve new project URL check, add https:// prefix if absent
@@ -21,10 +22,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 [#51](https://gitlab.com/eneiluj/cospend-nc/issues/51) @eneiluj
 - give focus to password field when scanning/browsing link with no password
 [#51](https://gitlab.com/eneiluj/cospend-nc/issues/51) @eneiluj
+- select member in sidebar: show bill involving this member as payer OR ower
+[#22](https://gitlab.com/eneiluj/moneybuster/issues/22) @patxiku
 
 ### Fixed
 - avoid having server URL overriden by default URL after scanning a QRCode
 - fix link browsing project type choice
+- balance color bug with number ending with 0.00
+[#22](https://gitlab.com/eneiluj/moneybuster/issues/22) @patxiku
 
 ## 0.0.14 – 2019-10-19
 ### Added

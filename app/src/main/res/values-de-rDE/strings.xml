@@ -85,13 +85,13 @@
     <string name="creating_remote_project">Erstelle win remote Projekt</string>
     <string name="simple_cancel">Abbrechen</string>
     <string name="simple_ok">OK</string>
-    <string name="simple_ok_no_more">Got it!</string>
+    <string name="simple_ok_no_more">Ok!</string>
     <string name="simple_yes">Ja</string>
     <string name="simple_no">Nein</string>
     <string name="simple_edit_bill">Ausgabe bearbeiten</string>
     <string name="simple_new_bill">Neue Ausgabe</string>
     <string name="simple_add_project">Projekt in MoneyBuster hinzufügen</string>
-    <string name="simple_edit_project">Edit project</string>
+    <string name="simple_edit_project">Projekt bearbeiten</string>
     <string name="simple_about">Über</string>
     <string name="simple_settle_share">Abrechnung teilen</string>
     <string name="simple_create_bills">Abrechnung erstellen</string>
@@ -106,7 +106,7 @@
     <string name="action_select_project">Aktuelles Projekt auswählen</string>
     <string name="menu_select_all">Alle auswählen</string>
     <string name="menu_delete">Löschen</string>
-    <string name="menu_delete_project_remote">Projekt auf Server löschen</string>
+    <string name="menu_delete_project_remote">Projekt auf dem Server löschen</string>
     <string name="menu_save_project">Projekt speichern</string>
     <string name="menu_save_bill">Ausgabe speichern</string>
     <string name="fab_add_project">Projekt hinzufügen</string>

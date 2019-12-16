@@ -41,9 +41,10 @@ assembleDevDebug:
       - build
   script:
     - ./gradlew assembleDevDebug
+    - mv app/build/outputs/apk/dev/debug/*.apk ./
   artifacts:
     paths:
-    - app/build/outputs/apk/dev/debug/*.apk
+    - ./*.apk
 
 assembleNormalRelease:
   stage: build
@@ -57,9 +58,10 @@ assembleNormalRelease:
           -Pandroid.injected.signing.store.password="$KEY_STORE_PASSWORD"
           -Pandroid.injected.signing.key.alias=$KEY_ALIAS
           -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
+    - mv app/build/outputs/apk/normal/release/*.apk
   artifacts:
     paths:
-    - app/build/outputs/apk/normal/release/*.apk
+    - ./*.apk
     - CHANGELOG.md
 
 debugTests:

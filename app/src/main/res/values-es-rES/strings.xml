@@ -178,29 +178,29 @@
     <string name="share_dialog_title">Compartir proyecto</string>
     <string name="share_project_dialog_message">Scan this QRCode with MoneyBuster or a scanner app on an Android device where MoneyBuster is installed. You can also simply send/share the MoneyBuster link above.</string>
     <string name="share_project_public_url_dialog_message">Share this web link to let others access the project with a web browser.</string>
-    <string name="share_project_public_url_title">Web link</string>
-    <string name="share_project_public_qrcode_title">MoneyBuster link</string>
-    <string name="qrcode_link_open_attempt_warning">Share this link to a MoneyBuster user.</string>
-    <string name="share_share_intent_title">MoneyBuster link of %1$s</string>
-    <string name="share_share_chooser_title">Share MoneyBuster link of %1$s</string>
+    <string name="share_project_public_url_title">Enlace web</string>
+    <string name="share_project_public_qrcode_title">Enlace de MoneyBuster</string>
+    <string name="qrcode_link_open_attempt_warning">Comparte este enlace con un usuario de MoneyBuster.</string>
+    <string name="share_share_intent_title">Enlace de MoneyBuster de %1$s</string>
+    <string name="share_share_chooser_title">Compartir enlace de MoneyBuster de %1$s</string>
     <string name="share_settle_intro">Here is how to settle project %1$s :</string>
     <string name="share_settle_sentence">%1$s owes %3$.2f to %2$s</string>
     <string name="share_settle_title">Settle the project %1$s</string>
     <string name="share_stats_intro">Estadísticas del proyecto %1$s :</string>
     <string name="share_stats_title">Share statistics of project %1$s</string>
-    <string name="share_stats_header">MEMBER_NAME (PAID | SPENT | BALANCE)</string>
-    <string name="drawer_no_project">There is no project.\nTap here to create/add one</string>
+    <string name="share_stats_header">NOMBRE_DEL_MIEMBRO (PAGADO | GASTADO | BALANCE)</string>
+    <string name="drawer_no_project">No hay ningún proyecto.\nPulsa aquí para crear/añadir uno</string>
     <string name="choose_project_to_select">Selecciona un proyecto</string>
-    <string name="edit_bill_impossible_no_member">At least two activated members are required to add a bill</string>
-    <string name="edit_project_local_impossible">Impossible for local projects</string>
-    <string name="choose_account_project_dialog_title">Choose a project from your Nextcloud account</string>
-    <string name="choose_account_project_dialog_impossible">There is no Cospend project in your Nextcloud account</string>
+    <string name="edit_bill_impossible_no_member">Se requieren al menos dos miembros activados para añadir una factura</string>
+    <string name="edit_project_local_impossible">Imposible para proyectos locales</string>
+    <string name="choose_account_project_dialog_title">Elige un proyecto de tu cuenta de Nextcloud</string>
+    <string name="choose_account_project_dialog_impossible">No hay ningún proyecto Cospend en tu cuenta de Nextcloud</string>
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Seguridad de la conexión</string>
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster ha encontrado un certificado desconocido. ¿Quiere confiar en él?</string>
     <!-- Network -->
     <!-- Error -->
-    <string name="error_sync">Project sync failed: %1$s</string>
+    <string name="error_sync">Error de sincronización del proyecto: %1$s</string>
     <string name="error_invalid_login">Login incorrecto: %1$s</string>
     <string name="error_json">¿Está la app Cospend activada en el servidor?</string>
     <string name="error_io">se ha perdido la conexión con el servidor</string>
@@ -214,8 +214,8 @@
     <string name="error_invalid_project_name">Nombre de proyecto no válido</string>
     <string name="error_invalid_bill_what">Nombre de factura no válido</string>
     <string name="error_invalid_bill_date">Fecha de factura no válida</string>
-    <string name="error_invalid_bill_amount">Invalid bill amount</string>
-    <string name="error_invalid_bill_payerid">Bill should have a payer</string>
+    <string name="error_invalid_bill_amount">Importe de factura no válido</string>
+    <string name="error_invalid_bill_payerid">La factura debe tener un pagador</string>
     <string name="error_invalid_bill_owers">Bill should have at least one ower</string>
     <string name="error_create_remote_project_helper">Error at remote project creation : %s</string>
     <string name="error_edit_remote_project_helper">Error at remote project edition : %s</string>

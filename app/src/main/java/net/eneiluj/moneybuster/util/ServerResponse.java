@@ -133,8 +133,13 @@ public class ServerResponse {
             return getBillsFromJSONArray(new JSONArray(getContent()), projId, memberRemoteIdToId);
         }
 
-        public List<DBBill> getBillsCospend(long projId, Map<Long, Long> memberRemoteIdToId) throws JSONException {
-            return getBillsFromJSONObject(new JSONObject(getContent()), projId, memberRemoteIdToId);
+        public List<DBBill> getBillsCospend(long projId, Map<Long, Long> memberRemoteIdToId, boolean cospendSmartSync) throws JSONException {
+            if (cospendSmartSync) {
+                return getBillsFromJSONObject(new JSONObject(getContent()), projId, memberRemoteIdToId);
+            }
+            else {
+                return getBillsFromJSONArray(new JSONArray(getContent()), projId, memberRemoteIdToId);
+            }
         }
 
         public List<Long> getAllBillIds() throws JSONException {

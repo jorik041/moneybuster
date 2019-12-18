@@ -517,7 +517,8 @@ public class MoneyBusterServerSyncHelper {
          */
         private LoginStatus pullRemoteChanges() {
             Log.d(getClass().getSimpleName(), "pullRemoteChanges(" + project + ")");
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(appContext);
+            boolean cospendSmartSync = pref.getBoolean(appContext.getString(R.string.pref_key_smart_sync), false);
             String lastETag = null;
             long lastModified = 0;
             LoginStatus status;
@@ -586,7 +587,7 @@ public class MoneyBusterServerSyncHelper {
                 }
 
                 // get bills
-                ServerResponse.BillsResponse billsResponse = client.getBills(customCertManager, project);
+                ServerResponse.BillsResponse billsResponse = client.getBills(customCertManager, project, cospendSmartSync);
                 List<DBBill> remoteBills;
                 List<Long> remoteAllBillIds = new ArrayList<>();
                 long serverSyncTimestamp = project.getLastSyncedTimestamp();
@@ -595,9 +596,11 @@ public class MoneyBusterServerSyncHelper {
                 // COSPEND => we only get new/changed bills since last sync
                 // and bill id list and server timestamp at the sync moment
                 if (ProjectType.COSPEND.equals(project.getType())) {
-                    remoteBills = billsResponse.getBillsCospend(project.getId(), memberRemoteIdToId);
-                    remoteAllBillIds = billsResponse.getAllBillIds();
-                    serverSyncTimestamp = billsResponse.getSyncTimestamp();
+                    remoteBills = billsResponse.getBillsCospend(project.getId(), memberRemoteIdToId, cospendSmartSync);
+                    if (cospendSmartSync) {
+                        remoteAllBillIds = billsResponse.getAllBillIds();
+                        serverSyncTimestamp = billsResponse.getSyncTimestamp();
+                    }
                 }
                 // IHATEMONEY => we get all bills
                 else {
@@ -666,7 +669,7 @@ public class MoneyBusterServerSyncHelper {
 
                 // delete local bill
                 // DELETION is now different between IHM and COSPEND
-                if (ProjectType.COSPEND.equals(project.getType())) {
+                if (ProjectType.COSPEND.equals(project.getType()) && cospendSmartSync) {
                     for (DBBill localBill : localBills) {
                         // if local bill does not exist remotely
                         if (remoteAllBillIds.indexOf(localBill.getRemoteId()) <= -1) {

@@ -3,6 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <PreferenceCategory
+        android:title="@string/settings_appearance_category"
+        android:key="settings_appearance_category">
+
     <SwitchPreferenceCompat
         android:defaultValue="@string/pref_value_theme_light"
         android:icon="@drawable/ic_brightness_2_grey_24dp"
@@ -19,12 +23,25 @@
         app:colorShape="circle"
         app:showDialog="false" />
 
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_network_category"
+        android:key="settings_network_category">
+
     <SwitchPreferenceCompat
         android:defaultValue="false"
         android:icon="@drawable/ic_sync_grey_24dp"
         android:key="@string/pref_key_offline_mode"
         android:summary="@string/settings_offline_mode_summary"
         android:title="@string/settings_offline_mode_title" />
+
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:icon="@drawable/ic_lightbulb_outline_grey_24dp"
+        android:key="@string/pref_key_smart_sync"
+        android:summary="@string/settings_smart_sync_summary"
+        android:title="@string/settings_smart_sync_title" />
 
     <Preference
         android:icon="@drawable/ic_account_circle_grey_24dp"
@@ -49,5 +66,7 @@
             android:title="@string/settings_cert_reset"
             android:summary="@string/settings_cert_reset_summary" />
     </PreferenceScreen>
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

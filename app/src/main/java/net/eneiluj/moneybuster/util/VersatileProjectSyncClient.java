@@ -330,15 +330,22 @@ public class VersatileProjectSyncClient {
         return new ServerResponse.CreateRemoteMemberResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, username, password));
     }
 
-    public ServerResponse.BillsResponse getBills(CustomCertManager ccm, DBProject project) throws JSONException, IOException {
+    public ServerResponse.BillsResponse getBills(CustomCertManager ccm, DBProject project, boolean cospendSmartSync) throws JSONException, IOException {
         String target;
         String username = null;
         String password = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
-            Long tsLastSync = project.getLastSyncedTimestamp();
-            target = project.getIhmUrl().replaceAll("/+$", "")
-                    + "/apiv2/projects/" + project.getRemoteId() + "/"
-                    + project.getPassword() + "/bills?lastchanged="+tsLastSync;
+            if (cospendSmartSync) {
+                Long tsLastSync = project.getLastSyncedTimestamp();
+                target = project.getIhmUrl().replaceAll("/+$", "")
+                        + "/apiv2/projects/" + project.getRemoteId() + "/"
+                        + project.getPassword() + "/bills?lastchanged=" + tsLastSync;
+            }
+            else {
+                target = project.getIhmUrl().replaceAll("/+$", "")
+                        + "/api/projects/" + project.getRemoteId() + "/"
+                        + project.getPassword() + "/bills";
+            }
         }
         else {
             target = project.getIhmUrl().replaceAll("/+$", "")

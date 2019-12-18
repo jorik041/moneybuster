@@ -15,8 +15,10 @@ public class DBProject implements Serializable {
     private String password;
     private Long lastPayerId;
     private ProjectType type;
+    private Long lastSyncedTimestamp;
 
-    public DBProject(long id, String remoteId, String password, String name, String ihmUrl, String email, Long lastPayerId, ProjectType type) {
+    public DBProject(long id, String remoteId, String password, String name, String ihmUrl,
+                     String email, Long lastPayerId, ProjectType type, Long lastSyncedTimestamp) {
         this.id = id;
         this.remoteId = remoteId;
         this.name = name;
@@ -24,7 +26,16 @@ public class DBProject implements Serializable {
         this.email = email;
         this.password = password;
         this.lastPayerId = lastPayerId;
+        this.lastSyncedTimestamp = lastSyncedTimestamp;
         this.type = type;
+    }
+
+    public Long getLastSyncedTimestamp() {
+        return lastSyncedTimestamp;
+    }
+
+    public void setLastSyncedTimestamp(Long lastSyncedTimestamp) {
+        this.lastSyncedTimestamp = lastSyncedTimestamp;
     }
 
     public Long getLastPayerId() {

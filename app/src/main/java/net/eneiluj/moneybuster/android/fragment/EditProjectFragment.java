@@ -290,7 +290,10 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                         saveButton.clearAnimation();
                         return;
                     }
-                    db.updateProject(project.getId(), null, null, pwd, null, project.getType());
+                    db.updateProject(
+                            project.getId(), null, null, pwd,
+                            null, project.getType(), null
+                    );
                 }
 
                 // edit remote project if necessary

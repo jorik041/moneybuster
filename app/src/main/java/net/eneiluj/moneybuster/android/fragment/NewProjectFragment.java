@@ -870,7 +870,10 @@ public class NewProjectFragment extends Fragment {
 
         }
 
-        DBProject newProject = new DBProject(0, remoteId, password, name, url, email, null, type);
+        DBProject newProject = new DBProject(
+                0, remoteId, password, name, url,
+                email, null, type, Long.valueOf(0)
+        );
         long pid = db.addProject(newProject);
 
         // to make it the selected project even if we got here because of a VIEW intent

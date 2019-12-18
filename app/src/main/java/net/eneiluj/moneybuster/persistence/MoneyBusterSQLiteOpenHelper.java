@@ -38,7 +38,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String TAG = MoneyBusterSQLiteOpenHelper.class.getSimpleName();
 
-    private static final int database_version = 7;
+    private static final int database_version = 8;
     private static final String database_name = "IHATEMONEY";
 
     private static final String table_members = "MEMBERS";
@@ -62,6 +62,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String key_ihmUrl = "IHMURL";
     private static final String key_lastPayerId = "LASTPAYERID";
     private static final String key_type = "TYPE";
+    private static final String key_lastSyncTimestamp = "LASTSYNCED";
 
     private static final String table_bills = "BILLS";
     //private static final String key_id = "ID";
@@ -96,7 +97,8 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String[] columnsProjects = {
             // long id, String remoteId, String password, String name, String ihmUrl, String email
-            key_id, key_remoteId, key_password,  key_name, key_ihmUrl, key_email, key_lastPayerId, key_type
+            key_id, key_remoteId, key_password,  key_name, key_ihmUrl,
+            key_email, key_lastPayerId, key_type, key_lastSyncTimestamp
     };
 
     private static final String[] columnsBills = {
@@ -175,6 +177,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 key_ihmUrl + " TEXT, " +
                 key_password + " TEXT, " +
                 key_lastPayerId + " INTEGER, " +
+                key_lastSyncTimestamp + " INTEGER DEFAULT 0, " +
                 key_email + " TEXT, " +
                 key_type + " TEXT)");
     }
@@ -236,7 +239,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                     project.setType(ProjectType.IHATEMONEY);
                 }
 
-                updateProject(project.getId(), project.getName(), project.getEmail(), project.getPassword(), project.getLastPayerId(), project.getType(), db);
+                updateProject(project.getId(), project.getName(), project.getEmail(),
+                        project.getPassword(), project.getLastPayerId(), project.getType(),
+                        project.getLastSyncedTimestamp(), db);
             }
         }
 
@@ -254,6 +259,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + table_members + " ADD COLUMN " + key_r + " INTEGER DEFAULT NULL");
             db.execSQL("ALTER TABLE " + table_members + " ADD COLUMN " + key_g + " INTEGER DEFAULT NULL");
             db.execSQL("ALTER TABLE " + table_members + " ADD COLUMN " + key_b + " INTEGER DEFAULT NULL");
+        }
+        if (oldVersion < 8) {
+            db.execSQL("ALTER TABLE " + table_projects + " ADD COLUMN " + key_lastSyncTimestamp + " INTEGER DEFAULT 0");
         }
     }
 
@@ -453,7 +461,8 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 cursor.getString(4),
                 cursor.getString(5),
                 cursor.getLong(6),
-                ProjectType.getTypeById(cursor.getString(7))
+                ProjectType.getTypeById(cursor.getString(7)),
+                cursor.getLong(8)
         );
     }
 
@@ -473,7 +482,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(id)});
     }
 
-    public void updateProject(long projId, @Nullable String newName, @Nullable String newEmail, @Nullable String newPassword, @Nullable Long newLastPayerId) {
+    public void updateProject(long projId, @Nullable String newName, @Nullable String newEmail,
+                              @Nullable String newPassword, @Nullable Long newLastPayerId,
+                              @Nullable Long newLastSyncedTimestamp) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -488,19 +499,27 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         }
         if (newLastPayerId != null) {
             values.put(key_lastPayerId, newLastPayerId);
+        }
+        if (newLastSyncedTimestamp != null) {
+            values.put(key_lastSyncTimestamp, newLastSyncedTimestamp);
         }
         if (values.size() > 0) {
             int rows = db.update(table_projects, values, key_id + " = ?", new String[]{String.valueOf(projId)});
         }
     }
 
-    public void updateProject(long projId, @Nullable String newName, @Nullable String newEmail, @Nullable String newPassword, @Nullable Long newLastPayerId, @NonNull ProjectType projectType) {
+    public void updateProject(long projId, @Nullable String newName, @Nullable String newEmail,
+                              @Nullable String newPassword, @Nullable Long newLastPayerId,
+                              @NonNull ProjectType projectType, @Nullable Long newLastSyncedTimestamp) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
-        updateProject(projId, newName, newEmail, newPassword, newLastPayerId, projectType, db);
+        updateProject(projId, newName, newEmail, newPassword, newLastPayerId, projectType, newLastSyncedTimestamp, db);
     }
 
-    private void updateProject(long projId, @Nullable String newName, @Nullable String newEmail, @Nullable String newPassword, @Nullable Long newLastPayerId, @NonNull ProjectType projectType, SQLiteDatabase db) {
+    private void updateProject(long projId, @Nullable String newName, @Nullable String newEmail,
+                               @Nullable String newPassword, @Nullable Long newLastPayerId,
+                               @NonNull ProjectType projectType, @Nullable Long newLastSyncedTimestamp,
+                               SQLiteDatabase db) {
         //debugPrintFullDB();
         ContentValues values = new ContentValues();
         if (newName != null) {
@@ -514,6 +533,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         }
         if (newLastPayerId != null) {
             values.put(key_lastPayerId, newLastPayerId);
+        }
+        if (newLastSyncedTimestamp != null) {
+            values.put(key_lastSyncTimestamp, newLastSyncedTimestamp);
         }
         values.put(key_type, projectType.getId());
         if (values.size() > 0) {

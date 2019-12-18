@@ -129,8 +129,20 @@ public class ServerResponse {
             super(response);
         }
 
-        public List<DBBill> getBills(long projId, Map<Long, Long> memberRemoteIdToId) throws JSONException {
-            return getBillsFromJSON(new JSONArray(getContent()), projId, memberRemoteIdToId);
+        public List<DBBill> getBillsIHM(long projId, Map<Long, Long> memberRemoteIdToId) throws JSONException {
+            return getBillsFromJSONArray(new JSONArray(getContent()), projId, memberRemoteIdToId);
+        }
+
+        public List<DBBill> getBillsCospend(long projId, Map<Long, Long> memberRemoteIdToId) throws JSONException {
+            return getBillsFromJSONObject(new JSONObject(getContent()), projId, memberRemoteIdToId);
+        }
+
+        public List<Long> getAllBillIds() throws JSONException {
+            return getAllBillIdsFromJSON(new JSONObject(getContent()));
+        }
+
+        public Long getSyncTimestamp() throws JSONException {
+            return getSyncTimestampFromJSON(new JSONObject(getContent()));
         }
     }
 
@@ -259,11 +271,42 @@ public class ServerResponse {
         return new DBMember(0, remoteId, projId, name, activated, weight, DBBill.STATE_OK, r, g, b);
     }
 
-    protected List<DBBill> getBillsFromJSON(JSONArray json, long projId, Map<Long, Long> memberRemoteIdToId) throws JSONException {
+    protected List<Long> getAllBillIdsFromJSON(JSONObject json) throws JSONException {
+        List<Long> billIds = new ArrayList<>();
+        if (json.has("allBillIds") && !json.isNull("allBillIds")) {
+            JSONArray jsonBillIds = json.getJSONArray("allBillIds");
+            for (int i = 0; i < jsonBillIds.length(); i++) {
+                billIds.add(jsonBillIds.getLong(i));
+            }
+        }
+        return billIds;
+    }
+
+    protected Long getSyncTimestampFromJSON(JSONObject json) throws JSONException {
+        Long ts = Long.valueOf(0);
+        if (json.has("timestamp") && !json.isNull("timestamp")) {
+            ts = json.getLong("timestamp");
+        }
+        return ts;
+    }
+
+    protected List<DBBill> getBillsFromJSONArray(JSONArray json, long projId, Map<Long, Long> memberRemoteIdToId) throws JSONException {
         List<DBBill> bills = new ArrayList<>();
         for (int i = 0; i < json.length(); i++) {
-            JSONObject jsonB = json.getJSONObject(i);
-            bills.add(getBillFromJSON(jsonB, projId, memberRemoteIdToId));
+            JSONObject jsonBill = json.getJSONObject(i);
+            bills.add(getBillFromJSON(jsonBill, projId, memberRemoteIdToId));
+        }
+        return bills;
+    }
+
+    protected List<DBBill> getBillsFromJSONObject(JSONObject json, long projId, Map<Long, Long> memberRemoteIdToId) throws JSONException {
+        List<DBBill> bills;
+        if (json.has("bills") && !json.isNull("bills")) {
+            JSONArray jsonBills = json.getJSONArray("bills");
+            bills = getBillsFromJSONArray(jsonBills, projId, memberRemoteIdToId);
+        }
+        else {
+            bills = new ArrayList<>();
         }
         return bills;
     }

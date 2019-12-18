@@ -532,9 +532,10 @@ public class MoneyBusterServerSyncHelper {
                         || project.getEmail().equals("")
                         || !email.equals(project.getEmail())) {
                     Log.d(getClass().getSimpleName(), "update local project : " + project);
-                    // this is usefull to transmit correct info back to billlistactivity when project was just added
+                    // this is usefull to transmit correct info back to billListActivity when project was just added
                     project.setName(name);
-                    dbHelper.updateProject(project.getId(), name, email, null, null);
+                    dbHelper.updateProject(project.getId(), name, email,
+                            null, null, null);
                 }
 
                 // get members
@@ -586,7 +587,23 @@ public class MoneyBusterServerSyncHelper {
 
                 // get bills
                 ServerResponse.BillsResponse billsResponse = client.getBills(customCertManager, project);
-                List<DBBill> remoteBills = billsResponse.getBills(project.getId(), memberRemoteIdToId);
+                List<DBBill> remoteBills;
+                List<Long> remoteAllBillIds = new ArrayList<>();
+                long serverSyncTimestamp = project.getLastSyncedTimestamp();
+                // get all bill ids
+                // and get server timestamp when this request was done
+                // COSPEND => we only get new/changed bills since last sync
+                // and bill id list and server timestamp at the sync moment
+                if (ProjectType.COSPEND.equals(project.getType())) {
+                    remoteBills = billsResponse.getBillsCospend(project.getId(), memberRemoteIdToId);
+                    remoteAllBillIds = billsResponse.getAllBillIds();
+                    serverSyncTimestamp = billsResponse.getSyncTimestamp();
+                }
+                // IHATEMONEY => we get all bills
+                else {
+                    remoteBills = billsResponse.getBillsIHM(project.getId(), memberRemoteIdToId);
+                }
+
                 Map<Long, DBBill> remoteBillsByRemoteId = new HashMap<>();
                 for (DBBill remoteBill : remoteBills) {
                     remoteBillsByRemoteId.put(remoteBill.getRemoteId(), remoteBill);
@@ -603,10 +620,6 @@ public class MoneyBusterServerSyncHelper {
                     if (!localBillsByRemoteId.containsKey(remoteBill.getRemoteId())) {
                         long billId = dbHelper.addBill(remoteBill);
                         Log.d(TAG, "Add local bill : " + remoteBill);
-                        /*//////// billowers
-                        for (DBBillOwer rbo : remoteBill.getBillOwers()) {
-                            dbHelper.addBillower(billId, rbo);
-                        }*/
                     }
                     // update bill if necessary
                     // and billOwers if necessary
@@ -650,12 +663,25 @@ public class MoneyBusterServerSyncHelper {
                         }
                     }
                 }
+
                 // delete local bill
-                for (DBBill localBill : localBills) {
-                    // if local bill does not exist remotely
-                    if (!remoteBillsByRemoteId.containsKey(localBill.getRemoteId())) {
-                        dbHelper.deleteBill(localBill.getId());
-                        Log.d(TAG, "Delete local bill : " + localBill);
+                // DELETION is now different between IHM and COSPEND
+                if (ProjectType.COSPEND.equals(project.getType())) {
+                    for (DBBill localBill : localBills) {
+                        // if local bill does not exist remotely
+                        if (remoteAllBillIds.indexOf(localBill.getRemoteId()) <= -1) {
+                            dbHelper.deleteBill(localBill.getId());
+                            Log.d(TAG, "Delete local bill : " + localBill);
+                        }
+                    }
+                }
+                else {
+                    for (DBBill localBill : localBills) {
+                        // if local bill does not exist remotely
+                        if (!remoteBillsByRemoteId.containsKey(localBill.getRemoteId())) {
+                            dbHelper.deleteBill(localBill.getId());
+                            Log.d(TAG, "Delete local bill : " + localBill);
+                        }
                     }
                 }
 
@@ -679,6 +705,13 @@ public class MoneyBusterServerSyncHelper {
                         }
                     }
                 }
+
+                // finally update local project last sync timestamp
+                //serverSyncTimestamp
+                dbHelper.updateProject(
+                        project.getId(), null, null,
+                        null, null, serverSyncTimestamp
+                );
                 status = LoginStatus.OK;
             } catch (ServerResponse.NotModifiedException e) {
                 Log.d(TAG, "No changes, nothing to do.");
@@ -809,7 +842,8 @@ public class MoneyBusterServerSyncHelper {
                     errorString += e.getClass().getName() + ": " + e.getMessage();
                 }
             } else {
-                dbHelper.updateProject(project.getId(), newName, newEmail, newPassword, null);
+                dbHelper.updateProject(project.getId(), newName, newEmail, newPassword,
+                          null, null);
             }
             callback.onFinish(newName, errorString);
         }
@@ -893,7 +927,8 @@ public class MoneyBusterServerSyncHelper {
 
     public boolean createRemoteProject(String remoteId, String name, String email, String password, String ihmUrl, ProjectType projectType, ICallback callback) {
         if (isSyncPossible()) {
-            DBProject proj = new DBProject(0, remoteId, password, name, ihmUrl, email, null, projectType);
+            DBProject proj = new DBProject(0, remoteId, password, name, ihmUrl, email,
+                    null, projectType, Long.valueOf(0));
             CreateRemoteProjectTask createRemoteProjectTask = new CreateRemoteProjectTask(proj, callback);
             createRemoteProjectTask.execute();
             return true;

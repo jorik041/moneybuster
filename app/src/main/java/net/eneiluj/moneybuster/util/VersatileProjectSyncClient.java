@@ -335,9 +335,10 @@ public class VersatileProjectSyncClient {
         String username = null;
         String password = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
+            Long tsLastSync = project.getLastSyncedTimestamp();
             target = project.getIhmUrl().replaceAll("/+$", "")
-                    + "/api/projects/" + project.getRemoteId() + "/"
-                    + project.getPassword() + "/bills";
+                    + "/apiv2/projects/" + project.getRemoteId() + "/"
+                    + project.getPassword() + "/bills?lastchanged="+tsLastSync;
         }
         else {
             target = project.getIhmUrl().replaceAll("/+$", "")

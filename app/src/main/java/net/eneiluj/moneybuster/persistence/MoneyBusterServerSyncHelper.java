@@ -1130,6 +1130,8 @@ public class MoneyBusterServerSyncHelper {
                     url = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS);
                 }
 
+                List<DBProject> localProjects = dbHelper.getProjects();
+
                 ServerResponse.AccountProjectsResponse response = client.getAccountProjects(customCertManager);
                 List<DBAccountProject> remoteAccountProjects = response.getAccountProjects(url);
                 // we successfully got accounts (or zero), so we can clear local ones before adding new ones
@@ -1137,6 +1139,30 @@ public class MoneyBusterServerSyncHelper {
                 for (DBAccountProject remoteAccountProject : remoteAccountProjects) {
                     dbHelper.addAccountProject(remoteAccountProject);
                     Log.v(getClass().getSimpleName(), "received account project "+remoteAccountProject);
+                    // if the project does not exist yet, add it with empty password
+                    boolean found = false;
+                    for (DBProject localProject : localProjects) {
+                        if (localProject.getRemoteId().equals(remoteAccountProject.getRemoteId())
+                                && localProject.getIhmUrl().replaceAll("/+$", "")
+                                    .equals(remoteAccountProject.getncUrl().replaceAll("/+$", ""))
+                        ) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        DBProject newProj = new DBProject(0,
+                                remoteAccountProject.getRemoteId(),
+                                "",
+                                remoteAccountProject.getName(),
+                                remoteAccountProject.getncUrl(),
+                                "",
+                                null,
+                                ProjectType.COSPEND,
+                                Long.valueOf(0)
+                        );
+                        dbHelper.addProject(newProj);
+                    }
                 }
                 status = LoginStatus.OK;
             } catch (ServerResponse.NotModifiedException e) {

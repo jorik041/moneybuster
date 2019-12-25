@@ -294,46 +294,40 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                             project.getId(), null, null, pwd,
                             null, project.getType(), null
                     );
-                }
-
-                // edit remote project if necessary
-                String newPwd = getNewPassword();
-                if (newPwd == null || newPwd.equals("")) {
-                    showToast(getString(R.string.error_invalid_project_password), Toast.LENGTH_LONG);
-                    saveButton.clearAnimation();
-                    return;
-                }
-                String newName = getName();
-                if (newName == null || newName.equals("")) {
-                    showToast(getString(R.string.error_invalid_project_name), Toast.LENGTH_LONG);
-                    saveButton.clearAnimation();
-                    return;
-                }
-                String newEmail = getEmail();
-                if (newEmail == null || newEmail.equals("") || !SupportUtil.isValidEmail(newEmail)) {
-                    showToast(getString(R.string.error_invalid_email), Toast.LENGTH_LONG);
-                    saveButton.clearAnimation();
-                    return;
-                }
-
-                if (!newPwd.equals(project.getPassword()) || !newName.equals(project.getName()) || !newEmail.equals(project.getEmail())) {
-                    if (!db.getMoneyBusterServerSyncHelper().editRemoteProject(project.getId(), newName, newEmail, newPwd, editCallBack)) {
-                        showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
-                        saveButton.clearAnimation();
-                    }
+                    listener.closeOnEdit(project.getId());
                 }
                 else {
-                    // no remote edition
-                    // tell if nothing was changed
-                    if (pwd != null && !pwd.equals("") && pwd.equals(project.getPassword())) {
+                    // edit remote project if necessary
+                    String newPwd = getNewPassword();
+                    if (newPwd == null || newPwd.equals("")) {
+                        showToast(getString(R.string.error_invalid_project_password), Toast.LENGTH_LONG);
+                        saveButton.clearAnimation();
+                        return;
+                    }
+                    String newName = getName();
+                    if (newName == null || newName.equals("")) {
+                        showToast(getString(R.string.error_invalid_project_name), Toast.LENGTH_LONG);
+                        saveButton.clearAnimation();
+                        return;
+                    }
+                    String newEmail = getEmail();
+                    if (newEmail == null || newEmail.equals("") || !SupportUtil.isValidEmail(newEmail)) {
+                        showToast(getString(R.string.error_invalid_email), Toast.LENGTH_LONG);
+                        saveButton.clearAnimation();
+                        return;
+                    }
+
+                    if (!newPwd.equals(project.getPassword()) || !newName.equals(project.getName()) || !newEmail.equals(project.getEmail())) {
+                        if (!db.getMoneyBusterServerSyncHelper().editRemoteProject(project.getId(), newName, newEmail, newPwd, editCallBack)) {
+                            showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
+                            saveButton.clearAnimation();
+                        }
+                    } else {
+                        // no remote edition
                         showToast(getString(R.string.project_edition_no_change), Toast.LENGTH_LONG);
                         saveButton.clearAnimation();
                     }
-                    else {
-                        listener.closeOnEdit(project.getId());
-                    }
                 }
-
             }
         });
     }

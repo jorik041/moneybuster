@@ -1142,9 +1142,10 @@ public class MoneyBusterServerSyncHelper {
                     // if the project does not exist yet, add it with empty password
                     boolean found = false;
                     for (DBProject localProject : localProjects) {
+                        Log.v(getClass().getSimpleName(), "QQQQQQ "+localProject.getName()+" "+localProject.getIhmUrl());
                         if (localProject.getRemoteId().equals(remoteAccountProject.getRemoteId())
                                 && localProject.getIhmUrl().replaceAll("/+$", "")
-                                    .equals(remoteAccountProject.getncUrl().replaceAll("/+$", ""))
+                                    .equals(remoteAccountProject.getncUrl().replaceAll("/+$", "") + "/index.php/apps/cospend")
                         ) {
                             found = true;
                             break;
@@ -1155,7 +1156,7 @@ public class MoneyBusterServerSyncHelper {
                                 remoteAccountProject.getRemoteId(),
                                 "",
                                 remoteAccountProject.getName(),
-                                remoteAccountProject.getncUrl(),
+                                remoteAccountProject.getncUrl().replaceAll("/+$", "") + "/index.php/apps/cospend",
                                 "",
                                 null,
                                 ProjectType.COSPEND,

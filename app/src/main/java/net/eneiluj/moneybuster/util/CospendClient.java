@@ -82,7 +82,6 @@ public class CospendClient {
         }
 
         try {
-            Log.d(getClass().getSimpleName(), "BEGGGGGGGGGGG ");
             InputStream inputStream = nextcloudAPI.performNetworkRequest(nextcloudRequest);
 
             BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
@@ -90,7 +89,7 @@ public class CospendClient {
             while ((line = rd.readLine()) != null) {
                 result.append(line);
             }
-            Log.d(getClass().getSimpleName(), "RESSSS " + result.toString());
+            Log.d(getClass().getSimpleName(), "RES " + result.toString());
             inputStream.close();
         } catch (TokenMismatchException e) {
             Log.d(getClass().getSimpleName(), "Mismatcho SSO server request error "+e.toString());

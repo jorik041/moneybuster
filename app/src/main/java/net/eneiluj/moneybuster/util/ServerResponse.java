@@ -125,16 +125,18 @@ public class ServerResponse {
     }
 
     public static class BillsResponse extends ServerResponse {
-        public BillsResponse(VersatileProjectSyncClient.ResponseData response) {
+        private boolean smartSync;
+        public BillsResponse(VersatileProjectSyncClient.ResponseData response, boolean smartSync) {
             super(response);
+            this.smartSync = smartSync;
         }
 
         public List<DBBill> getBillsIHM(long projId, Map<Long, Long> memberRemoteIdToId) throws JSONException {
             return getBillsFromJSONArray(new JSONArray(getContent()), projId, memberRemoteIdToId);
         }
 
-        public List<DBBill> getBillsCospend(long projId, Map<Long, Long> memberRemoteIdToId, boolean cospendSmartSync) throws JSONException {
-            if (cospendSmartSync) {
+        public List<DBBill> getBillsCospend(long projId, Map<Long, Long> memberRemoteIdToId) throws JSONException {
+            if (smartSync) {
                 return getBillsFromJSONObject(new JSONObject(getContent()), projId, memberRemoteIdToId);
             }
             else {

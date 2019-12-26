@@ -507,6 +507,9 @@ public class MoneyBusterServerSyncHelper {
                 Log.e(getClass().getSimpleName(), "Exception", e);
                 exceptions.add(e);
                 status = LoginStatus.JSON_FAILED;
+            } catch (TokenMismatchException e) {
+                Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
+                status = LoginStatus.SSO_TOKEN_MISMATCH;
             }
             Log.d(getClass().getSimpleName(), "END PUSH LOCAL CHANGES");
             return status;
@@ -596,7 +599,7 @@ public class MoneyBusterServerSyncHelper {
                 // COSPEND => we only get new/changed bills since last sync
                 // and bill id list and server timestamp at the sync moment
                 if (ProjectType.COSPEND.equals(project.getType())) {
-                    remoteBills = billsResponse.getBillsCospend(project.getId(), memberRemoteIdToId, cospendSmartSync);
+                    remoteBills = billsResponse.getBillsCospend(project.getId(), memberRemoteIdToId);
                     if (cospendSmartSync) {
                         remoteAllBillIds = billsResponse.getAllBillIds();
                         serverSyncTimestamp = billsResponse.getSyncTimestamp();
@@ -727,6 +730,9 @@ public class MoneyBusterServerSyncHelper {
                 Log.e(TAG, "Exception", e);
                 exceptions.add(e);
                 status = LoginStatus.JSON_FAILED;
+            } catch (TokenMismatchException e) {
+                Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
+                status = LoginStatus.SSO_TOKEN_MISMATCH;
             }
             return status;
         }
@@ -748,6 +754,10 @@ public class MoneyBusterServerSyncHelper {
                 Intent intent = new Intent(BROADCAST_PROJECT_SYNC_FAILED);
                 intent.putExtra(BillsListViewActivity.BROADCAST_ERROR_MESSAGE, errorString);
                 appContext.sendBroadcast(intent);
+                if (status == LoginStatus.SSO_TOKEN_MISMATCH) {
+                    Intent intent2 = new Intent(BillsListViewActivity.BROADCAST_SSO_TOKEN_MISMATCH);
+                    appContext.sendBroadcast(intent2);
+                }
             } else {
                 Intent intent = new Intent(BROADCAST_PROJECT_SYNCED);
                 intent.putExtra(BillsListViewActivity.BROADCAST_EXTRA_PARAM, project.getName());
@@ -766,7 +776,31 @@ public class MoneyBusterServerSyncHelper {
     }
 
     private VersatileProjectSyncClient createVersatileProjectSyncClient() {
-        return new VersatileProjectSyncClient();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext.getApplicationContext());
+        String url = "";
+        String username = "";
+        String password = "";
+        boolean useSSO = preferences.getBoolean(SettingsActivity.SETTINGS_USE_SSO, false);
+        if (useSSO) {
+            try {
+                SingleSignOnAccount ssoAccount = SingleAccountHelper.getCurrentSingleSignOnAccount(appContext.getApplicationContext());
+                NextcloudAPI nextcloudAPI = new NextcloudAPI(appContext.getApplicationContext(), ssoAccount, new GsonBuilder().create(), apiCallback);
+                //Log.d(TAG, "SSSSSSSSSSSSS "+ssoAccount.url+" "+ssoAccount.userId);
+                return new VersatileProjectSyncClient(url, username, password, nextcloudAPI, ssoAccount);
+            }
+            catch (NextcloudFilesAppAccountNotFoundException e) {
+                return null;
+            }
+            catch (NoCurrentAccountSelectedException e) {
+                return null;
+            }
+        }
+        else {
+            url = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS);
+            username = preferences.getString(SettingsActivity.SETTINGS_USERNAME, SettingsActivity.DEFAULT_SETTINGS);
+            password = preferences.getString(SettingsActivity.SETTINGS_PASSWORD, SettingsActivity.DEFAULT_SETTINGS);
+            return new VersatileProjectSyncClient(url, username, password, null, null);
+        }
     }
 
     public boolean editRemoteProject(long projId, String newName, String newEmail, String newPassword, ICallback callback) {
@@ -824,6 +858,9 @@ public class MoneyBusterServerSyncHelper {
                 }
                 exceptions.add(e);
                 status = LoginStatus.CONNECTION_FAILED;
+            } catch (TokenMismatchException e) {
+                Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
+                status = LoginStatus.SSO_TOKEN_MISMATCH;
             }
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "FINISHED edit remote project");
@@ -843,6 +880,10 @@ public class MoneyBusterServerSyncHelper {
                 errorString += "\n\n";
                 for (Throwable e : exceptions) {
                     errorString += e.getClass().getName() + ": " + e.getMessage();
+                }
+                if (status == LoginStatus.SSO_TOKEN_MISMATCH) {
+                    Intent intent2 = new Intent(BillsListViewActivity.BROADCAST_SSO_TOKEN_MISMATCH);
+                    appContext.sendBroadcast(intent2);
                 }
             } else {
                 dbHelper.updateProject(project.getId(), newName, newEmail, newPassword,
@@ -901,6 +942,9 @@ public class MoneyBusterServerSyncHelper {
                 }
                 exceptions.add(e);
                 status = LoginStatus.CONNECTION_FAILED;
+            } catch (TokenMismatchException e) {
+                Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
+                status = LoginStatus.SSO_TOKEN_MISMATCH;
             }
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "FINISHED delete device");
@@ -920,6 +964,10 @@ public class MoneyBusterServerSyncHelper {
                 errorString += "\n\n";
                 for (Throwable e : exceptions) {
                     errorString += e.getClass().getName() + ": " + e.getMessage();
+                }
+                if (status == LoginStatus.SSO_TOKEN_MISMATCH) {
+                    Intent intent2 = new Intent(BillsListViewActivity.BROADCAST_SSO_TOKEN_MISMATCH);
+                    appContext.sendBroadcast(intent2);
                 }
             } else {
                 dbHelper.deleteProject(project.getId());

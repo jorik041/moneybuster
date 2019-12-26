@@ -600,7 +600,7 @@ public class MoneyBusterServerSyncHelper {
                 // and bill id list and server timestamp at the sync moment
                 if (ProjectType.COSPEND.equals(project.getType())) {
                     remoteBills = billsResponse.getBillsCospend(project.getId(), memberRemoteIdToId);
-                    if (cospendSmartSync) {
+                    if (cospendSmartSync || client.canAccessProjectWithSSO(project) || client.canAccessProjectWithNCLogin(project)) {
                         remoteAllBillIds = billsResponse.getAllBillIds();
                         serverSyncTimestamp = billsResponse.getSyncTimestamp();
                     }
@@ -672,7 +672,10 @@ public class MoneyBusterServerSyncHelper {
 
                 // delete local bill
                 // DELETION is now different between IHM and COSPEND
-                if (ProjectType.COSPEND.equals(project.getType()) && cospendSmartSync) {
+                // if smartsync is enable OR if project is accessed with NC login =>
+                // we just get bill ids
+                if (ProjectType.COSPEND.equals(project.getType())
+                        && (cospendSmartSync || client.canAccessProjectWithSSO(project) || client.canAccessProjectWithNCLogin(project))) {
                     for (DBBill localBill : localBills) {
                         // if local bill does not exist remotely
                         if (remoteAllBillIds.indexOf(localBill.getRemoteId()) <= -1) {

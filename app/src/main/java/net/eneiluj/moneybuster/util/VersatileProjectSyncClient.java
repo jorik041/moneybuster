@@ -90,7 +90,7 @@ public class VersatileProjectSyncClient {
         this.ssoAccount = ssoAccount;
     }
 
-    private boolean canAccessProjectWithNCLogin(DBProject project) {
+    public boolean canAccessProjectWithNCLogin(DBProject project) {
         return (project.getPassword().equals("")
                 && !url.replaceAll("/+$", "").equals("")
                 && project.getIhmUrl()
@@ -99,7 +99,7 @@ public class VersatileProjectSyncClient {
         );
     }
 
-    private boolean canAccessProjectWithSSO(DBProject project) {
+    public boolean canAccessProjectWithSSO(DBProject project) {
         return (project.getPassword().equals("")
                 && ssoAccount != null
                 && project.getIhmUrl().replace("/index.php/apps/cospend", "").equals(ssoAccount.url)

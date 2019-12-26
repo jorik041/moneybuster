@@ -92,14 +92,14 @@ public class VersatileProjectSyncClient {
 
     private boolean canAccessProjectWithNCLogin(DBProject project) {
         return (project.getPassword().equals("")
-                && !url.equals("")
-                && project.getIhmUrl().replace("/index.php/apps/cospend", "").equals(url)
+                && !url.replaceAll("/+$", "").equals("")
+                && project.getIhmUrl()
+                    .replace("/index.php/apps/cospend", "")
+                    .equals(url.replaceAll("/+$", ""))
         );
     }
 
     private boolean canAccessProjectWithSSO(DBProject project) {
-        Log.v("LALA", project.getIhmUrl().replace("/index.php/apps/cospend", ""));
-        Log.v("LALA", ssoAccount.url);
         return (project.getPassword().equals("")
                 && ssoAccount != null
                 && project.getIhmUrl().replace("/index.php/apps/cospend", "").equals(ssoAccount.url)

@@ -133,6 +133,8 @@
     <string name="first_welcome_dialog_content">First, create or join a project (IHateMoney or Nextcloud Cospend), then add some members and/or create some bills!\n\nOther main actions:\n* Settle the project to generate a global repayment plan\n* Show project statistics\n* Share: generate a QRCode that others can scan to join the project\n\nOn Android &gt;= 8.0 you can long press the action buttons to display help.</string>
     <string name="changelog">Changelog</string>
     <!-- Settings -->
+    <string name="settings_appearance_category">Appearance</string>
+    <string name="settings_network_category">Network</string>
     <string name="settings_server_settings">Nextcloud account</string>
     <string name="settings_url">Serveradres</string>
     <string name="settings_url_warn_http">WAARSCHUWING: \'http\' is onveilig. Gebruik \'https\'.</string>
@@ -144,6 +146,8 @@
     <string name="settings_theme_title">Thema</string>
     <string name="settings_offline_mode_title">Offline mode</string>
     <string name="settings_offline_mode_summary">Do not automatically sync. Only sync when user asks.</string>
+    <string name="settings_smart_sync_title">Smart sync with Cospend</string>
+    <string name="settings_smart_sync_summary">Only get bills which have changed since last synchronisation. This is faster and uses less data. Compatible with Cospend &gt;= 0.2.0</string>
     <string name="settings_color_title">Hoofdkleur van app</string>
     <string name="settings_color_summary">Kleur voor actiebalken, knoppen, etc...</string>
     <string name="settings_colorpicker_title">Kleur kiezen</string>

@@ -133,6 +133,8 @@
     <string name="first_welcome_dialog_content">Πρώτα δημιουργήσετε ή συνδεθείτε σε ένα έργο (IHateMoney ή Nextcloud Cospend), προσθέστε μερικά μέλη και/ή δημιουργήστε μερικούς λογαριασμούς!\n\nΆλλες κύριες δράσεις:\n* Εξοφλήστε το έργο για να δημιουργήσετε ένα συνολικό σχέδιο αποπληρωμής\n* Εμφάνιση στατιστικών έργων\n* Κοινοποίηση: δημιουργήστε ένα QRCode που μπορούν να σαρώσουν άλλοι για να συμμετάσχουν στο έργο\n\nΣτο Android &gt;= 8.0 μπορείτε να πατήσετε πατημένα τα κουμπιά δράσης για να εμφανιστεί η βοήθεια.</string>
     <string name="changelog">Αρχείο αλλαγών</string>
     <!-- Settings -->
+    <string name="settings_appearance_category">Appearance</string>
+    <string name="settings_network_category">Network</string>
     <string name="settings_server_settings">Λογαριασμός Nextcloud</string>
     <string name="settings_url">Διεύθυνση διακομιστή</string>
     <string name="settings_url_warn_http">ΠΡΟΣΟΧΗ: Το \"http\" δεν είναι ασφαλές. Παρακαλώ χρησιμοποιήστε το \"https\".</string>
@@ -144,6 +146,8 @@
     <string name="settings_theme_title">Θέμα</string>
     <string name="settings_offline_mode_title">Λειτουργία χωρίς σύνδεση</string>
     <string name="settings_offline_mode_summary">Όχι αυτόματος συγχρονισμός. Συγχρονισμός μόνο όταν ζητάει ο χρήστης.</string>
+    <string name="settings_smart_sync_title">Smart sync with Cospend</string>
+    <string name="settings_smart_sync_summary">Only get bills which have changed since last synchronisation. This is faster and uses less data. Compatible with Cospend &gt;= 0.2.0</string>
     <string name="settings_color_title">Κύριο χρώμα εφαρμογής</string>
     <string name="settings_color_summary">Χρώματα για τα μενού, τα πλήκτρα χάρτη και άλλα...</string>
     <string name="settings_colorpicker_title">Επιλογή χρώματος</string>

@@ -133,6 +133,8 @@
     <string name="first_welcome_dialog_content">Zuerst erstellen Sie ein Projekt oder treten einem Projekt bei (IHateMoney oder Nextcloud Cospend), dann fügen Sie die Mitglieder hinzu und/oder erstellen Sie eine Abrechnung!\n\nWeitere Hauptaktionen:\n* Rechnen Sie das Projekt ab, um einen gemeinsamen Rückzahlungsplan zu generieren\n* Projektstatistiken anzeigen\n* Teilen: Generieren Sie einen QR-Code, den andere scannen können, um dem Projekt beizutreten\n\nAuf Android &gt;= 8.0 können Sie lange auf die Aktionsbuttons drücken, um die Hilfe anzuzeigen.</string>
     <string name="changelog">Änderungsprotokoll</string>
     <!-- Settings -->
+    <string name="settings_appearance_category">Appearance</string>
+    <string name="settings_network_category">Network</string>
     <string name="settings_server_settings">Nextcloud Konto</string>
     <string name="settings_url">Server-Adresse</string>
     <string name="settings_url_warn_http">WARNUNG: \"http\" ist unsicher. Bitte \"https\" benutzen.</string>
@@ -144,6 +146,8 @@
     <string name="settings_theme_title">Oberfläche</string>
     <string name="settings_offline_mode_title">Offline Modus</string>
     <string name="settings_offline_mode_summary">Nicht autmatisch synchronisieren. Synchronisiere nur wenn der Benutzer fragt.</string>
+    <string name="settings_smart_sync_title">Smart sync with Cospend</string>
+    <string name="settings_smart_sync_summary">Only get bills which have changed since last synchronisation. This is faster and uses less data. Compatible with Cospend &gt;= 0.2.0</string>
     <string name="settings_color_title">App Hauptfarbe</string>
     <string name="settings_color_summary">Farbe für Aktionsleisten, Knöpfe, etc...</string>
     <string name="settings_colorpicker_title">Wähle eine Farbe</string>

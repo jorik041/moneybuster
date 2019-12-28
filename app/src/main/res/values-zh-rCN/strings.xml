@@ -133,6 +133,8 @@
     <string name="first_welcome_dialog_content">首先，创建或加入一个项目(IHateMoney 或 Nextcloud Cospend)，然后添加一些成员和/或创建一些账单！\n\n其他主要操作：\n* 结算项目从而生成全局的偿还计划\n* 显示项目统计\n* 分享：其他人可以扫描事先生成的二维码来加入项目\n\n在 安卓@@ &gt;= 8.0 系统上，您可以长按功能按钮来显示帮助。</string>
     <string name="changelog">更新日志</string>
     <!-- Settings -->
+    <string name="settings_appearance_category">Appearance</string>
+    <string name="settings_network_category">Network</string>
     <string name="settings_server_settings">Nextcloud 帐户</string>
     <string name="settings_url">服务器地址</string>
     <string name="settings_url_warn_http">警告：“http” 不安全。请使用 “https”。</string>
@@ -144,6 +146,8 @@
     <string name="settings_theme_title">主题</string>
     <string name="settings_offline_mode_title">离线模式</string>
     <string name="settings_offline_mode_summary">不要自动同步。只有当用户请求时才同步。</string>
+    <string name="settings_smart_sync_title">Smart sync with Cospend</string>
+    <string name="settings_smart_sync_summary">Only get bills which have changed since last synchronisation. This is faster and uses less data. Compatible with Cospend &gt;= 0.2.0</string>
     <string name="settings_color_title">应用主颜色</string>
     <string name="settings_color_summary">动作栏、地图按钮等等的颜色</string>
     <string name="settings_colorpicker_title">选择颜色</string>

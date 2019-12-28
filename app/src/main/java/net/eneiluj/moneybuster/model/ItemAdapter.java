@@ -166,6 +166,9 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             else if (bill.getCategoryId() == DBBill.CATEGORY_CLOTHES) {
                 whatPrefix += "\uD83D\uDC5A ";
             }
+            else if (bill.getCategoryId() == DBBill.CATEGORY_REIMBURSEMENT) {
+                whatPrefix += "\uD83D\uDCB0 ";
+            }
             nvHolder.billTitle.setText(Html.fromHtml(whatPrefix + bill.getWhat()));
 
             if (selected.contains(position)) {

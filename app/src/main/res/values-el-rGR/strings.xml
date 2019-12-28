@@ -47,6 +47,7 @@
     <string name="category_tools">Εργαλεία</string>
     <string name="category_multimedia">Πολυμέσα</string>
     <string name="category_clothes">Ρούχα</string>
+    <string name="category_reimbursement">Reimbursement</string>
     <string name="project_type_local">Τοπικό έργο</string>
     <string name="project_type_ihatemoney">Έργο IHateMoney</string>
     <string name="project_type_nextcloud_cospend">Έργο Nextcloud Cospend</string>

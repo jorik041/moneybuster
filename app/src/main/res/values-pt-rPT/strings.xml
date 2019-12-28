@@ -47,6 +47,7 @@
     <string name="category_tools">Ferramentas</string>
     <string name="category_multimedia">Multimédia</string>
     <string name="category_clothes">Roupas</string>
+    <string name="category_reimbursement">Reimbursement</string>
     <string name="project_type_local">Projecto local</string>
     <string name="project_type_ihatemoney">Projecto IHateMoney</string>
     <string name="project_type_nextcloud_cospend">Projecto Cospend do Nextcloud</string>

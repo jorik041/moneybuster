@@ -822,6 +822,10 @@ public class EditBillFragment extends Fragment {
             categoryNameList.add("\uD83D\uDCBB "+getString(R.string.category_multimedia));
             categoryNameList.add("\uD83D\uDC5A "+getString(R.string.category_clothes));
             categoryNameList.add("\uD83D\uDCB0 "+getString(R.string.category_reimbursement));
+            categoryNameList.add("\uD83C\uDF74 "+getString(R.string.category_restaurant));
+            categoryNameList.add("\uD83D\uDECC "+getString(R.string.category_accomodation));
+            categoryNameList.add("\uD83D\uDE8C "+getString(R.string.category_transport));
+            categoryNameList.add("\uD83D\uDEB8 "+getString(R.string.category_excursions));
 
             String[] categoryNames = categoryNameList.toArray(new String[categoryNameList.size()]);
 

@@ -811,17 +811,17 @@ public class EditBillFragment extends Fragment {
 
             // CATEGORY
             List<String> categoryNameList = new ArrayList<>();
-            categoryNameList.add(getString(R.string.category_none));
-            categoryNameList.add(getString(R.string.category_groceries));
-            categoryNameList.add(getString(R.string.category_leisure));
-            categoryNameList.add(getString(R.string.category_rent));
-            categoryNameList.add(getString(R.string.category_bills));
-            categoryNameList.add(getString(R.string.category_culture));
-            categoryNameList.add(getString(R.string.category_health));
-            categoryNameList.add(getString(R.string.category_tools));
-            categoryNameList.add(getString(R.string.category_multimedia));
-            categoryNameList.add(getString(R.string.category_clothes));
-            categoryNameList.add(getString(R.string.category_reimbursement));
+            categoryNameList.add("❌ "+getString(R.string.category_none));
+            categoryNameList.add("\uD83D\uDED2 "+getString(R.string.category_groceries));
+            categoryNameList.add("\uD83C\uDF89 "+getString(R.string.category_leisure));
+            categoryNameList.add("\uD83C\uDFE0 "+getString(R.string.category_rent));
+            categoryNameList.add("\uD83C\uDF29 "+getString(R.string.category_bills));
+            categoryNameList.add("\uD83D\uDDFD "+getString(R.string.category_culture));
+            categoryNameList.add("\uD83D\uDC9A "+getString(R.string.category_health));
+            categoryNameList.add("\uD83D\uDD28 "+getString(R.string.category_tools));
+            categoryNameList.add("\uD83D\uDCBB "+getString(R.string.category_multimedia));
+            categoryNameList.add("\uD83D\uDC5A "+getString(R.string.category_clothes));
+            categoryNameList.add("\uD83D\uDCB0 "+getString(R.string.category_reimbursement));
 
             String[] categoryNames = categoryNameList.toArray(new String[categoryNameList.size()]);
 

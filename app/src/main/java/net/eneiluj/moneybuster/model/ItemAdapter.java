@@ -146,7 +146,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 whatPrefix += "\uD83C\uDF89 ";
             }
             else if (bill.getCategoryId() == DBBill.CATEGORY_RENT) {
-                whatPrefix += "🏠 ";
+                whatPrefix += "\uD83C\uDFE0 ";
             }
             else if (bill.getCategoryId() == DBBill.CATEGORY_BILLS) {
                 whatPrefix += "\uD83C\uDF29 ";

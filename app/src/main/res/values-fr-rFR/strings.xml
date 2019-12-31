@@ -48,6 +48,10 @@
     <string name="category_multimedia">Multimédia</string>
     <string name="category_clothes">Vêtements</string>
     <string name="category_reimbursement">Remboursement</string>
+    <string name="category_restaurant">Restaurant</string>
+    <string name="category_accomodation">Logement</string>
+    <string name="category_transport">Transport</string>
+    <string name="category_excursions">Excursions</string>
     <string name="project_type_local">Projet local</string>
     <string name="project_type_ihatemoney">Projet IHateMoney</string>
     <string name="project_type_nextcloud_cospend">Projet Nextcloud Cospend</string>

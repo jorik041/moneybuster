@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ## 0.0.16 – 2019-12-24
+### Added
+- now able to access projects with Nextcloud credentials
+- automatically add projects from Nextcloud account
+- 'reimbursement' bill category
+
 ### Changed
 - new optional way of syncing with Cospend, just get what's newer than last sync
 

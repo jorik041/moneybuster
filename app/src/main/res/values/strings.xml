@@ -52,6 +52,7 @@
     <string name="category_accomodation">Accomodation</string>
     <string name="category_transport">Transport</string>
     <string name="category_excursions">Excursions</string>
+    <string name="category_sport">Sport</string>
     <string name="project_type_local">Local project</string>
     <string name="project_type_ihatemoney">IHateMoney project</string>
     <string name="project_type_nextcloud_cospend">Nextcloud Cospend project</string>

@@ -32,15 +32,12 @@ public class DBBill implements Item, Serializable {
     public static final int CATEGORY_BILLS = -4;
     public static final int CATEGORY_CULTURE = -5;
     public static final int CATEGORY_HEALTH = -6;
-    public static final int CATEGORY_TOOLS = -7;
-    public static final int CATEGORY_MULTIMEDIA = -8;
-    public static final int CATEGORY_CLOTHES = -9;
-    public static final int CATEGORY_REIMBURSEMENT = -10;
-    public static final int CATEGORY_RESTAURANT = -11;
-    public static final int CATEGORY_ACCOMODATION = -12;
-    public static final int CATEGORY_TRANSPORT = -13;
-    public static final int CATEGORY_EXCURSIONS = -14;
-    public static final int CATEGORY_SPORT = -15;
+    public static final int CATEGORY_SHOPPING = -7;
+    public static final int CATEGORY_REIMBURSEMENT = -8;
+    public static final int CATEGORY_RESTAURANT = -9;
+    public static final int CATEGORY_ACCOMODATION = -10;
+    public static final int CATEGORY_TRANSPORT = -11;
+    public static final int CATEGORY_SPORT = -12;
 
     private List<DBBillOwer> billOwers;
 

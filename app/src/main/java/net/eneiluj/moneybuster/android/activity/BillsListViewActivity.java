@@ -739,12 +739,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         categoryNameList.add(getString(R.string.category_leisure));
                         categoryNameList.add(getString(R.string.category_rent));
                         categoryNameList.add(getString(R.string.category_bills));
-                        categoryNameList.add(getString(R.string.category_culture));
+                        categoryNameList.add(getString(R.string.category_excursion));
                         categoryNameList.add(getString(R.string.category_health));
-                        categoryNameList.add(getString(R.string.category_tools));
-                        categoryNameList.add(getString(R.string.category_multimedia));
-                        categoryNameList.add(getString(R.string.category_clothes));
+                        categoryNameList.add(getString(R.string.category_shopping));
                         categoryNameList.add(getString(R.string.category_reimbursement));
+                        categoryNameList.add(getString(R.string.category_restaurant));
+                        categoryNameList.add(getString(R.string.category_accomodation));
+                        categoryNameList.add(getString(R.string.category_transport));
+                        categoryNameList.add(getString(R.string.category_sport));
+
 
                         String[] categoryNames = categoryNameList.toArray(new String[categoryNameList.size()]);
 

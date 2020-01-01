@@ -152,19 +152,13 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 whatPrefix += "\uD83C\uDF29 ";
             }
             else if (bill.getCategoryId() == DBBill.CATEGORY_CULTURE) {
-                whatPrefix += "\uD83D\uDDFD ";
+                whatPrefix += "\uD83D\uDEB8 ";
             }
             else if (bill.getCategoryId() == DBBill.CATEGORY_HEALTH) {
                 whatPrefix += "\uD83D\uDC9A ";
             }
-            else if (bill.getCategoryId() == DBBill.CATEGORY_TOOLS) {
-                whatPrefix += "\uD83D\uDD28 ";
-            }
-            else if (bill.getCategoryId() == DBBill.CATEGORY_MULTIMEDIA) {
-                whatPrefix += "\uD83D\uDCBB ";
-            }
-            else if (bill.getCategoryId() == DBBill.CATEGORY_CLOTHES) {
-                whatPrefix += "\uD83D\uDC5A ";
+            else if (bill.getCategoryId() == DBBill.CATEGORY_SHOPPING) {
+                whatPrefix += "\uD83D\uDECD ";
             }
             else if (bill.getCategoryId() == DBBill.CATEGORY_REIMBURSEMENT) {
                 whatPrefix += "\uD83D\uDCB0 ";
@@ -177,9 +171,6 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
             else if (bill.getCategoryId() == DBBill.CATEGORY_TRANSPORT) {
                 whatPrefix += "\uD83D\uDE8C ";
-            }
-            else if (bill.getCategoryId() == DBBill.CATEGORY_EXCURSIONS) {
-                whatPrefix += "\uD83D\uDEB8 ";
             }
             else if (bill.getCategoryId() == DBBill.CATEGORY_SPORT) {
                 whatPrefix += "\uD83C\uDFBE ";

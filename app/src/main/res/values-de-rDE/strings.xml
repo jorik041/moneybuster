@@ -38,6 +38,7 @@
     <string name="payment_mode_check">Scheck</string>
     <string name="category_none">Keine Kategorie</string>
     <string name="category_all">Alle Kategorien</string>
+    <string name="category_all_except_reimbursement">All except reimbursement</string>
     <string name="category_groceries">Grocery</string>
     <string name="category_leisure">Bar/Party</string>
     <string name="category_rent">Miete</string>

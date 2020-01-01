@@ -38,6 +38,7 @@
     <string name="payment_mode_check">Έλεγχος</string>
     <string name="category_none">Χωρίς κατηγορία</string>
     <string name="category_all">Όλες οι κατηγορίες</string>
+    <string name="category_all_except_reimbursement">All except reimbursement</string>
     <string name="category_groceries">Grocery</string>
     <string name="category_leisure">Bar/Party</string>
     <string name="category_rent">Ενοίκιο</string>

@@ -38,6 +38,7 @@
     <string name="payment_mode_check">Chèque</string>
     <string name="category_none">Pas de catégorie</string>
     <string name="category_all">Toutes les catégories</string>
+    <string name="category_all_except_reimbursement">Tout sauf remboursement</string>
     <string name="category_groceries">Courses</string>
     <string name="category_leisure">Bar/Fête</string>
     <string name="category_rent">Loyer</string>

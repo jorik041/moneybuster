@@ -38,6 +38,7 @@
     <string name="payment_mode_check">Cheque</string>
     <string name="category_none">Sem categoria</string>
     <string name="category_all">Todas as categorias</string>
+    <string name="category_all_except_reimbursement">All except reimbursement</string>
     <string name="category_groceries">Grocery</string>
     <string name="category_leisure">Bar/Party</string>
     <string name="category_rent">Renda</string>

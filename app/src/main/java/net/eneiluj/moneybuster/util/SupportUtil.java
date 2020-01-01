@@ -174,7 +174,8 @@ public class SupportUtil {
         for (DBBill b : dbBills) {
             // don't take deleted bills and respect category filter
             if (b.getState() != DBBill.STATE_DELETED &&
-                    (catId == 0 || b.getCategoryId() == catId) &&
+                    (catId == 0 || catId == -100 || b.getCategoryId() == catId) &&
+                    (catId != -100 || b.getCategoryId() != DBBill.CATEGORY_REIMBURSEMENT) &&
                     (paymentMode == null || b.getPaymentMode().equals(paymentMode)) &&
                     (dateMin == null || b.getDate().compareTo(dateMin) >= 0) &&
                     (dateMax == null || b.getDate().compareTo(dateMax) <= 0)) {

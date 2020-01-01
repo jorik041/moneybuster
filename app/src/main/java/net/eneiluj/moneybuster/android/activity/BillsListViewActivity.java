@@ -735,18 +735,18 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     if (proj.getType().equals(ProjectType.COSPEND)) {
                         List<String> categoryNameList = new ArrayList<>();
                         categoryNameList.add(getString(R.string.category_all));
-                        categoryNameList.add(getString(R.string.category_groceries));
-                        categoryNameList.add(getString(R.string.category_leisure));
-                        categoryNameList.add(getString(R.string.category_rent));
-                        categoryNameList.add(getString(R.string.category_bills));
-                        categoryNameList.add(getString(R.string.category_excursion));
-                        categoryNameList.add(getString(R.string.category_health));
-                        categoryNameList.add(getString(R.string.category_shopping));
-                        categoryNameList.add(getString(R.string.category_reimbursement));
-                        categoryNameList.add(getString(R.string.category_restaurant));
-                        categoryNameList.add(getString(R.string.category_accomodation));
-                        categoryNameList.add(getString(R.string.category_transport));
-                        categoryNameList.add(getString(R.string.category_sport));
+                        categoryNameList.add("\uD83D\uDED2 "+getString(R.string.category_groceries));
+                        categoryNameList.add("\uD83C\uDF89 "+getString(R.string.category_leisure));
+                        categoryNameList.add("\uD83C\uDFE0 "+getString(R.string.category_rent));
+                        categoryNameList.add("\uD83C\uDF29 "+getString(R.string.category_bills));
+                        categoryNameList.add("\uD83D\uDEB8 "+getString(R.string.category_excursion));
+                        categoryNameList.add("\uD83D\uDC9A "+getString(R.string.category_health));
+                        categoryNameList.add("\uD83D\uDECD "+getString(R.string.category_shopping));
+                        categoryNameList.add("\uD83D\uDCB0 "+getString(R.string.category_reimbursement));
+                        categoryNameList.add("\uD83C\uDF74 "+getString(R.string.category_restaurant));
+                        categoryNameList.add("\uD83D\uDECC "+getString(R.string.category_accomodation));
+                        categoryNameList.add("\uD83D\uDE8C "+getString(R.string.category_transport));
+                        categoryNameList.add("\uD83C\uDFBE "+getString(R.string.category_sport));
 
 
                         String[] categoryNames = categoryNameList.toArray(new String[categoryNameList.size()]);
@@ -754,7 +754,18 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         String[] categoryIds = getResources().getStringArray(R.array.categoryValues);
 
                         ArrayList<Map<String, String>> dataC = new ArrayList<>();
-                        for (int i = 0; i < categoryNames.length; i++) {
+                        // first add "all"
+                        HashMap<String, String> hashMap0 = new HashMap<>();
+                        hashMap0.put("name", categoryNames[0]);
+                        hashMap0.put("id", categoryIds[0]);
+                        dataC.add(hashMap0);
+                        // first add "all except reimbursement"
+                        HashMap<String, String> hashMap1 = new HashMap<>();
+                        hashMap1.put("name", getString(R.string.category_all_except_reimbursement));
+                        hashMap1.put("id", "-100");
+                        dataC.add(hashMap1);
+                        // then add categories
+                        for (int i = 1; i < categoryNames.length; i++) {
                             HashMap<String, String> hashMap = new HashMap<>();
                             hashMap.put("name", categoryNames[i]);
                             hashMap.put("id", categoryIds[i]);

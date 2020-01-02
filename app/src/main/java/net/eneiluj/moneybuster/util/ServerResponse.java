@@ -264,15 +264,26 @@ public class ServerResponse {
             name = json.getString("name");
         }
         if (json.has("color") && !json.isNull("color")) {
-            JSONObject color = json.getJSONObject("color");
-            if (color.has("r") && !color.isNull("r")) {
-                r = color.getInt("r");
+            Object obj = json.get("color");
+            if (obj instanceof String) {
+                String color = json.getString("color").replace("#", "");
+                if (color.length() == 6) {
+                    r = Integer.parseInt(color.substring(0,2), 16);
+                    g = Integer.parseInt(color.substring(2,4), 16);
+                    b = Integer.parseInt(color.substring(4,6), 16);
+                }
             }
-            if (color.has("g") && !color.isNull("g")) {
-                g = color.getInt("g");
-            }
-            if (color.has("b") && !color.isNull("b")) {
-                b = color.getInt("b");
+            else if (obj instanceof JSONObject) {
+                JSONObject color = json.getJSONObject("color");
+                if (color.has("r") && !color.isNull("r")) {
+                    r = color.getInt("r");
+                }
+                if (color.has("g") && !color.isNull("g")) {
+                    g = color.getInt("g");
+                }
+                if (color.has("b") && !color.isNull("b")) {
+                    b = color.getInt("b");
+                }
             }
         }
         return new DBMember(0, remoteId, projId, name, activated, weight, DBBill.STATE_OK, r, g, b);

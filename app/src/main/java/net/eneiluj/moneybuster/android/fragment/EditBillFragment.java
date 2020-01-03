@@ -211,9 +211,8 @@ public class EditBillFragment extends Fragment {
                 calendar.set(Calendar.MONTH, month);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 updateLabel();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    datePickerDialog.dismiss();
-                }
+                // to make sure we don't get out of old-style date picker dialogs
+                //datePickerDialog.dismiss();
             }
         };
 

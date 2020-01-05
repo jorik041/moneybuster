@@ -10,18 +10,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.graphics.Paint;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.eneiluj.moneybuster.R;
+import net.eneiluj.moneybuster.android.ui.TextDrawable;
+import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.util.ThemeUtils;
 
 public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.ViewHolder> {
@@ -36,13 +43,16 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
         @Nullable
         public Integer count;
         public boolean activated;
+        public boolean isMember;
 
-        public NavigationItem(@NonNull String id, @NonNull String label, @Nullable Integer count, @DrawableRes int icon, boolean activated) {
+        public NavigationItem(@NonNull String id, @NonNull String label, @Nullable Integer count,
+                              @DrawableRes int icon, boolean activated, boolean isMember) {
             this.id = id;
             this.label = label;
             this.count = count;
             this.icon = icon;
             this.activated = activated;
+            this.isMember = isMember;
         }
     }
 
@@ -79,15 +89,36 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
 
         void assignItem(@NonNull NavigationItem item) {
             currentItem = item;
+            MoneyBusterSQLiteOpenHelper db = MoneyBusterSQLiteOpenHelper.getInstance(icon.getContext());
             boolean isSelected = item.id.equals(selectedItem);
             //name.setText(item.label);
             count.setVisibility((item.count == null) ? View.GONE : View.VISIBLE);
             count.setText(String.valueOf(item.count));
             if (item.icon > 0) {
                 if (item.activated) {
-                    icon.setImageDrawable(
-                            ContextCompat.getDrawable(icon.getContext(), item.icon)
-                    );
+                    if (item.isMember) {
+                        try {
+                            int width = ContextCompat.getDrawable(icon.getContext(), item.icon).getMinimumWidth();
+                            int height = ContextCompat.getDrawable(icon.getContext(), item.icon).getMinimumHeight();
+                            DBMember member = db.getMember(Long.valueOf(currentItem.id));
+                            TextDrawable td =TextDrawable.createNamedAvatar(
+                                    member.getName(), width/2,
+                                    member.getR(), member.getG(), member.getB()
+                            );
+                            icon.setImageDrawable(td);
+                            icon.setPadding(width/4, height/2,0,0);
+                        } catch (NoSuchAlgorithmException e) {
+                            Log.v(getClass().getSimpleName(), "error creating avatar", e);
+                            icon.setImageDrawable(
+                                    ContextCompat.getDrawable(icon.getContext(), item.icon)
+                            );
+                        }
+                    }
+                    else {
+                        icon.setImageDrawable(
+                                ContextCompat.getDrawable(icon.getContext(), item.icon)
+                        );
+                    }
                 }
                 else {
                     icon.setImageDrawable(

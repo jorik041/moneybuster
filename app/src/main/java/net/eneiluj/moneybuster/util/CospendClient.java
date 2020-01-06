@@ -55,6 +55,7 @@ public class CospendClient {
 
     public ServerResponse.AccountProjectsResponse getAccountProjects(CustomCertManager ccm) throws JSONException, IOException, TokenMismatchException {
         String target = "/index.php/apps/cospend/" + "getProjects";
+        Log.d(getClass().getSimpleName(), "target "+target);
         if (nextcloudAPI != null) {
             Log.d(getClass().getSimpleName(), "using SSO to get account projects");
             return new ServerResponse.AccountProjectsResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_POST, null));

@@ -239,7 +239,7 @@ public class ServerResponse {
     protected List<DBCategory> getCategoriesFromJSON(JSONObject json, long projId) throws JSONException {
         List<DBCategory> categories = new ArrayList<>();
 
-        if (json.has("categories")) {
+        if (json.has("categories") && json.get("categories") instanceof JSONObject) {
             JSONObject jsonCats = json.getJSONObject("categories");
             Iterator<String> keys = jsonCats.keys();
             while (keys.hasNext()) {
@@ -261,10 +261,10 @@ public class ServerResponse {
             color = json.getString("color");
         }
         if (json.has("icon") && !json.isNull("icon")) {
-            color = json.getString("icon");
+            icon = json.getString("icon");
         }
         if (json.has("name") && !json.isNull("name")) {
-            color = json.getString("name");
+            name = json.getString("name");
         }
         return new DBCategory(0, remoteId, projId, name, icon, color);
     }

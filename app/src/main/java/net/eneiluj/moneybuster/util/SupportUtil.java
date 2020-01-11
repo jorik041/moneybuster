@@ -169,8 +169,8 @@ public class SupportUtil {
         for (DBBill b : dbBills) {
             // don't take deleted bills and respect category filter
             if (b.getState() != DBBill.STATE_DELETED &&
-                    (catId == 0 || catId == -100 || b.getRemoteCategoryId() == catId) &&
-                    (catId != -100 || b.getRemoteCategoryId() != DBBill.CATEGORY_REIMBURSEMENT) &&
+                    (catId == 0 || catId == -100 || b.getCategoryRemoteId() == catId) &&
+                    (catId != -100 || b.getCategoryRemoteId() != DBBill.CATEGORY_REIMBURSEMENT) &&
                     (paymentMode == null || b.getPaymentMode().equals(paymentMode)) &&
                     (dateMin == null || b.getDate().compareTo(dateMin) >= 0) &&
                     (dateMax == null || b.getDate().compareTo(dateMax) <= 0)) {

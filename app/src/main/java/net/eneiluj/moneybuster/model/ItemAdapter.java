@@ -136,40 +136,40 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             else if ("f".equals(bill.getPaymentMode())) {
                 whatPrefix += "🎫 ";
             }
-            if (bill.getRemoteCategoryId() == DBBill.CATEGORY_GROCERIES) {
+            if (bill.getCategoryRemoteId() == DBBill.CATEGORY_GROCERIES) {
                 whatPrefix += "\uD83D\uDED2 ";
             }
-            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_LEISURE) {
+            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_LEISURE) {
                 whatPrefix += "\uD83C\uDF89 ";
             }
-            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_RENT) {
+            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_RENT) {
                 whatPrefix += "\uD83C\uDFE0 ";
             }
-            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_BILLS) {
+            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_BILLS) {
                 whatPrefix += "\uD83C\uDF29 ";
             }
-            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_CULTURE) {
+            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_CULTURE) {
                 whatPrefix += "\uD83D\uDEB8 ";
             }
-            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_HEALTH) {
+            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_HEALTH) {
                 whatPrefix += "\uD83D\uDC9A ";
             }
-            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_SHOPPING) {
+            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_SHOPPING) {
                 whatPrefix += "\uD83D\uDECD ";
             }
-            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_REIMBURSEMENT) {
+            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_REIMBURSEMENT) {
                 whatPrefix += "\uD83D\uDCB0 ";
             }
-            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_RESTAURANT) {
+            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_RESTAURANT) {
                 whatPrefix += "\uD83C\uDF74 ";
             }
-            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_ACCOMODATION) {
+            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_ACCOMODATION) {
                 whatPrefix += "\uD83D\uDECC ";
             }
-            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_TRANSPORT) {
+            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_TRANSPORT) {
                 whatPrefix += "\uD83D\uDE8C ";
             }
-            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_SPORT) {
+            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_SPORT) {
                 whatPrefix += "\uD83C\uDFBE ";
             }
             nvHolder.billTitle.setText(Html.fromHtml(whatPrefix + bill.getWhat()));

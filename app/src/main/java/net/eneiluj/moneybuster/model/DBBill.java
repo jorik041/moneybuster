@@ -24,7 +24,7 @@ public class DBBill implements Item, Serializable {
     public static final String PAYMODE_CASH = "b";
     public static final String PAYMODE_CHECK = "f";
 
-    private int categoryId;
+    private int categoryRemoteId;
     public static final int CATEGORY_NONE = 0;
     public static final int CATEGORY_GROCERIES = -1;
     public static final int CATEGORY_LEISURE = -2;
@@ -49,7 +49,7 @@ public class DBBill implements Item, Serializable {
     public static final String NON_REPEATED = "n";
 
     public DBBill(long id, long remoteId, long projectId, long payerId, double amount,
-                  String date, String what, int state, String repeat, String paymentMode, int categoryId) {
+                  String date, String what, int state, String repeat, String paymentMode, int categoryRemoteId) {
         this.id = id;
         this.remoteId = remoteId;
         this.projectId = projectId;
@@ -59,7 +59,7 @@ public class DBBill implements Item, Serializable {
         this.what = what;
         this.repeat = repeat;
         this.paymentMode = paymentMode;
-        this.categoryId = categoryId;
+        this.categoryRemoteId = categoryRemoteId;
 
         this.billOwers = new ArrayList<>();
 
@@ -162,12 +162,12 @@ public class DBBill implements Item, Serializable {
         this.paymentMode = paymentMode;
     }
 
-    public int getRemoteCategoryId() {
-        return categoryId;
+    public int getCategoryRemoteId() {
+        return categoryRemoteId;
     }
 
-    public void setRemoteCategoryId(int categoryId) {
-        this.categoryId = categoryId;
+    public void setCategoryRemoteId(int categoryId) {
+        this.categoryRemoteId = categoryId;
     }
 
     @Override
@@ -175,7 +175,7 @@ public class DBBill implements Item, Serializable {
         // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what, key_repeat
         return "#DBBill" + getId() + "/" + this.remoteId + "," + this.projectId
                 + ", " + this.payerId + ", " + this.amount + ", " + this.date + ", "
-                + this.what + ", " + this.state + ", " + this.repeat + ", " + this.paymentMode + ", " + this.categoryId;
+                + this.what + ", " + this.state + ", " + this.repeat + ", " + this.paymentMode + ", " + this.categoryRemoteId;
     }
 
     @Override

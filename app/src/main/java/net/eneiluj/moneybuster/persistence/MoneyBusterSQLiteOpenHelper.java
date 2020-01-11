@@ -884,7 +884,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_state, b.getState());
         values.put(key_repeat, b.getRepeat());
         values.put(key_payment_mode, b.getPaymentMode());
-        values.put(key_category_id, b.getRemoteCategoryId());
+        values.put(key_category_id, b.getCategoryRemoteId());
 
         long billId = db.insert(table_bills, null, values);
 

@@ -560,7 +560,7 @@ public class EditBillFragment extends Fragment {
                     bill.getPayerId() == newPayerId &&
                     newRepeat.equals(bill.getRepeat()) &&
                     newPaymentMode.equals(bill.getPaymentMode()) &&
-                    newCategoryId == bill.getRemoteCategoryId() &&
+                    newCategoryId == bill.getCategoryRemoteId() &&
                     !owersChanged
             ) {
                 Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed " + bill.getWhat() + " " + newWhat);
@@ -835,14 +835,21 @@ public class EditBillFragment extends Fragment {
 
             String[] categoryNames = categoryNameList.toArray(new String[categoryNameList.size()]);
 
-            String[] categoryIds = getResources().getStringArray(R.array.categoryValues);
-            List<String> categoryIdList = Arrays.asList(categoryIds);
+            String[] categoryIdsTmp = getResources().getStringArray(R.array.categoryValues);
+            List<String> categoryIdList = new ArrayList<>();
+            categoryIdList.add(categoryIdsTmp[0]);
             for (DBCategory cat : userCategories) {
-                categoryIdList.add(1, String.valueOf(cat.getRemoteId()));
+                categoryIdList.add(String.valueOf(cat.getRemoteId()));
+            }
+            for (int i = 1; i < categoryIdsTmp.length; i++) {
+                categoryIdList.add(categoryIdsTmp[i]);
             }
 
-            int indexC = categoryIdList.indexOf(String.valueOf(bill.getRemoteCategoryId()));
-            Log.d(TAG, "CATTTT of loaded bill "+bill.getRemoteCategoryId());
+            String[] categoryIds = new String[categoryIdList.size()];
+            categoryIdList.toArray(categoryIds);
+
+            int indexC = categoryIdList.indexOf(String.valueOf(bill.getCategoryRemoteId()));
+            Log.d(TAG, "CATTTT of loaded bill "+bill.getCategoryRemoteId());
 
             ArrayList<Map<String, String>> dataC = new ArrayList<>();
             for (int i = 0; i < categoryNames.length; i++) {

@@ -75,6 +75,7 @@ import net.eneiluj.moneybuster.android.fragment.NewProjectFragment;
 import net.eneiluj.moneybuster.model.Category;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
+import net.eneiluj.moneybuster.model.DBCategory;
 import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.Item;
@@ -735,6 +736,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     if (proj.getType().equals(ProjectType.COSPEND)) {
                         List<String> categoryNameList = new ArrayList<>();
                         categoryNameList.add(getString(R.string.category_all));
+
+                        List<DBCategory> userCategories = db.getCategories(selectedProjectId);
+                        for (DBCategory cat : userCategories) {
+                            categoryNameList.add(cat.getIcon()+" "+cat.getName());
+                        }
+
                         categoryNameList.add("\uD83D\uDED2 "+getString(R.string.category_groceries));
                         categoryNameList.add("\uD83C\uDF89 "+getString(R.string.category_leisure));
                         categoryNameList.add("\uD83C\uDFE0 "+getString(R.string.category_rent));
@@ -751,7 +758,18 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                         String[] categoryNames = categoryNameList.toArray(new String[categoryNameList.size()]);
 
-                        String[] categoryIds = getResources().getStringArray(R.array.categoryValues);
+                        String[] categoryIdsTmp = getResources().getStringArray(R.array.categoryValues);
+                        List<String> categoryIdList = new ArrayList<>();
+                        categoryIdList.add(categoryIdsTmp[0]);
+                        for (DBCategory cat : userCategories) {
+                            categoryIdList.add(String.valueOf(cat.getRemoteId()));
+                        }
+                        for (int i = 1; i < categoryIdsTmp.length; i++) {
+                            categoryIdList.add(categoryIdsTmp[i]);
+                        }
+
+                        String[] categoryIds = new String[categoryIdList.size()];
+                        categoryIdList.toArray(categoryIds);
 
                         ArrayList<Map<String, String>> dataC = new ArrayList<>();
                         // first add "all"

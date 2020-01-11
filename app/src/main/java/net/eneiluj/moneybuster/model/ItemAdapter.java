@@ -136,7 +136,11 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             else if ("f".equals(bill.getPaymentMode())) {
                 whatPrefix += "🎫 ";
             }
-            if (bill.getCategoryRemoteId() == DBBill.CATEGORY_GROCERIES) {
+            DBCategory cat = db.getCategory(bill.getCategoryRemoteId(), bill.getProjectId());
+            if (cat != null) {
+                whatPrefix += cat.getIcon()+" ";
+            }
+            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_GROCERIES) {
                 whatPrefix += "\uD83D\uDED2 ";
             }
             else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_LEISURE) {

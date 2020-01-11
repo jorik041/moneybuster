@@ -19,6 +19,7 @@ import net.eneiluj.moneybuster.android.activity.BillsListViewActivity;
 import net.eneiluj.moneybuster.model.DBAccountProject;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
+import net.eneiluj.moneybuster.model.DBCategory;
 import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
@@ -38,7 +39,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String TAG = MoneyBusterSQLiteOpenHelper.class.getSimpleName();
 
-    private static final int database_version = 8;
+    private static final int database_version = 9;
     private static final String database_name = "IHATEMONEY";
 
     private static final String table_members = "MEMBERS";
@@ -90,6 +91,14 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     //private static final String key_password = "PASSWORD";
     private static final String key_ncUrl = "NCURL";
 
+    private static final String table_categories = "CATEGORIES";
+    //private static final String key_id = "ID";
+    //private static final String key_remoteId = "REMOTEID";
+    //private static final String key_projectId = "PROJECTID";
+    //private static final String key_name = "NAME";
+    private static final String key_icon = "ICON";
+    private static final String key_color = "COLOR";
+
     private static final String[] columnsMembers = {
             key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight, key_state,
             key_r, key_g, key_b
@@ -112,6 +121,10 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String[] columnsAccountProjects = {
             key_id, key_remoteId, key_password,  key_name, key_ncUrl
+    };
+
+    private static final String[] columnsCategories = {
+            key_id, key_remoteId, key_projectid, key_name,  key_icon, key_color
     };
 
     private static final String default_order = key_id + " DESC";
@@ -151,6 +164,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         createTableBillowers(db, table_billowers);
         createTableProjects(db, table_projects);
         createTableAccountProjects(db, table_account_projects);
+        createTableCategories(db, table_categories);
         createIndexes(db);
     }
 
@@ -215,6 +229,16 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 key_password + " TEXT)");
     }
 
+    private void createTableCategories(SQLiteDatabase db, String tableName) {
+        db.execSQL("CREATE TABLE " + tableName + " ( " +
+                key_id + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                key_remoteId + " INTEGER, " +
+                key_projectid + " INTEGER, " +
+                key_name + " TEXT, " +
+                key_icon + " TEXT, " +
+                key_color + " TEXT)");
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 2) {
@@ -263,6 +287,10 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         if (oldVersion < 8) {
             db.execSQL("ALTER TABLE " + table_projects + " ADD COLUMN " + key_lastSyncTimestamp + " INTEGER DEFAULT 0");
         }
+        if (oldVersion < 9) {
+            createTableCategories(db, table_categories);
+            createIndex(db, table_categories, key_id);
+        }
     }
 
     @Override
@@ -276,6 +304,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         db.delete(table_bills, null, null);
         db.delete(table_billowers, null, null);
         db.delete(table_account_projects, null, null);
+        db.delete(table_categories, null, null);
     }
 
     private void recreateDatabase(SQLiteDatabase db) {
@@ -285,6 +314,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE " + table_bills);
         db.execSQL("DROP TABLE " + table_billowers);
         db.execSQL("DROP TABLE " + table_account_projects);
+        db.execSQL("DROP TABLE " + table_categories);
         onCreate(db);
     }
 
@@ -302,6 +332,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         createIndex(db, table_bills, key_id);
         createIndex(db, table_billowers, key_id);
         createIndex(db, table_account_projects, key_id);
+        createIndex(db, table_categories, key_id);
     }
 
     private void createIndex(SQLiteDatabase db, String table, String column) {
@@ -374,6 +405,106 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     public void clearAccountProjects() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(table_account_projects, null, null);
+    }
+
+    public long addCategory(DBCategory category) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(key_remoteId, category.getRemoteId());
+        values.put(key_projectid, category.getProjectId());
+        values.put(key_name, category.getName());
+        values.put(key_icon, category.getIcon());
+        values.put(key_color, category.getColor());
+        return db.insert(table_categories, null, values);
+    }
+
+    public DBCategory getCategory(long id) {
+        List<DBCategory> categories = getCategoriesCustom(key_id + " = ?", new String[]{String.valueOf(id)}, null);
+        return categories.isEmpty() ? null : categories.get(0);
+    }
+
+    public DBCategory getCategory(long remoteId, long projectId) {
+        List<DBCategory> categories = getCategoriesCustom(
+                key_remoteId + " = ? AND " + key_projectid + " = ?",
+                new String[]{String.valueOf(remoteId), String.valueOf(projectId)},
+                null
+        );
+        return categories.isEmpty() ? null : categories.get(0);
+    }
+
+    @NonNull
+    public List<DBCategory> getCategories(long projectId) {
+        return getCategoriesCustom(key_projectid + " = ?", new String[]{String.valueOf(projectId)}, null);
+    }
+
+    @NonNull
+    @WorkerThread
+    private List<DBCategory> getCategoriesCustom(@NonNull String selection, @NonNull String[] selectionArgs, @Nullable String orderBy) {
+        return getCategoriesCustom(selection, selectionArgs, orderBy, getReadableDatabase());
+    }
+
+    @NonNull
+    @WorkerThread
+    private List<DBCategory> getCategoriesCustom(@NonNull String selection, @NonNull String[] selectionArgs, @Nullable String orderBy, SQLiteDatabase db) {
+        if (selectionArgs.length > 2) {
+            Log.v("Category", selection + "   ----   " + selectionArgs[0] + " " + selectionArgs[1] + " " + selectionArgs[2]);
+        }
+        Cursor cursor = db.query(table_categories, columnsCategories, selection, selectionArgs, null, null, orderBy);
+        List<DBCategory> categories = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            categories.add(getCategoryFromCursor(cursor));
+        }
+        cursor.close();
+        return categories;
+    }
+
+    /**
+     * Creates a DBProject object from the current row of a Cursor.
+     *
+     * @param cursor database cursor
+     * @return DBProject
+     */
+    @NonNull
+    private DBCategory getCategoryFromCursor(@NonNull Cursor cursor) {
+        // key_id, key_remoteId, key_projectid, key_name,  key_icon, key_color
+        return new DBCategory(cursor.getLong(0),
+                cursor.getLong(1),
+                cursor.getLong(2),
+                cursor.getString(3),
+                cursor.getString(4),
+                cursor.getString(5)
+        );
+    }
+
+    public void updateCategory(long categoryId, @Nullable String newName, @Nullable String newIcon,
+                             @Nullable String newColor) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        if (newName != null) {
+            values.put(key_name, newName);
+        }
+        if (newIcon != null) {
+            values.put(key_icon, newIcon);
+        }
+        if (newColor != null) {
+            values.put(key_color, newColor);
+        }
+        if (values.size() > 0) {
+            int rows = db.update(table_categories, values, key_id + " = ?",
+                    new String[]{String.valueOf(categoryId)});
+        }
+    }
+
+    public void deleteCategory(long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(table_categories,
+                key_id + " = ?",
+                new String[]{String.valueOf(id)});
+    }
+
+    public void clearCategories() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(table_categories, null, null);
     }
 
     public long addProject(DBProject project) {
@@ -753,7 +884,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_state, b.getState());
         values.put(key_repeat, b.getRepeat());
         values.put(key_payment_mode, b.getPaymentMode());
-        values.put(key_category_id, b.getCategoryId());
+        values.put(key_category_id, b.getRemoteCategoryId());
 
         long billId = db.insert(table_bills, null, values);
 

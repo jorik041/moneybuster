@@ -33,6 +33,7 @@ import net.eneiluj.moneybuster.android.activity.SettingsActivity;
 import net.eneiluj.moneybuster.model.DBAccountProject;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
+import net.eneiluj.moneybuster.model.DBCategory;
 import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
@@ -542,6 +543,48 @@ public class MoneyBusterServerSyncHelper {
                             null, null, null);
                 }
 
+                // get categories
+                List<DBCategory> remoteCategories = projResponse.getCategories(project.getId());
+                Map<Long, DBCategory> remoteCategoriesByRemoteId = new HashMap<>();
+                for (DBCategory remoteCategory : remoteCategories) {
+                    remoteCategoriesByRemoteId.put(remoteCategory.getRemoteId(), remoteCategory);
+                }
+
+                // add/update/delete categories
+                for (DBCategory c : remoteCategories) {
+                    DBCategory localCategory = dbHelper.getCategory(c.getRemoteId(), project.getId());
+                    // category does not exist locally, add it
+                    if (localCategory == null) {
+                        Log.d(getClass().getSimpleName(), "Add local category : " + c);
+                        dbHelper.addCategory(c);
+                    }
+                    // category exists, check if needs update
+                    else {
+                        if (c.getName().equals(localCategory.getName()) &&
+                                c.getColor().equals(localCategory.getColor()) &&
+                                c.getIcon().equals(localCategory.getIcon())
+                        ) {
+                            // alright
+                            Log.d(getClass().getSimpleName(), "Nothing to do for category : " + localCategory);
+                        } else {
+                            Log.d(getClass().getSimpleName(), "Update local category : " + c);
+
+                            dbHelper.updateCategory(
+                                    localCategory.getId(), c.getName(), c.getIcon(), c.getColor()
+                            );
+                        }
+                    }
+                }
+
+                // delete local categories which are not there remotely
+                List<DBCategory> localCategories = dbHelper.getCategories(project.getId());
+                for (DBCategory localCategory : localCategories) {
+                    if (!remoteCategoriesByRemoteId.containsKey(localCategory.getRemoteId())) {
+                        dbHelper.deleteCategory(localCategory.getId());
+                        Log.d(TAG, "Delete local category : " + localCategory);
+                    }
+                }
+
                 // get members
                 List<DBMember> remoteMembers = projResponse.getMembers(project.getId());
                 Map<Long, DBMember> remoteMembersByRemoteId = new HashMap<>();
@@ -636,7 +679,7 @@ public class MoneyBusterServerSyncHelper {
                                     localBill.getId(), null, remoteBill.getPayerId(),
                                     remoteBill.getAmount(), remoteBill.getDate(),
                                     remoteBill.getWhat(), DBBill.STATE_OK, remoteBill.getRepeat(),
-                                    remoteBill.getPaymentMode(), remoteBill.getCategoryId()
+                                    remoteBill.getPaymentMode(), remoteBill.getRemoteCategoryId()
                             );
                             Log.d(TAG, "Update local bill : " + remoteBill);
                         } else {
@@ -1063,7 +1106,7 @@ public class MoneyBusterServerSyncHelper {
                         localBill.getDate().equals(remoteBill.getDate()) &&
                         localBill.getWhat().equals(remoteBill.getWhat()) &&
                         localBill.getPaymentMode().equals(remoteBill.getPaymentMode()) &&
-                        localBill.getCategoryId() == remoteBill.getCategoryId()
+                        localBill.getRemoteCategoryId() == remoteBill.getRemoteCategoryId()
         ) {
             String localRepeat = localBill.getRepeat() == null ? DBBill.NON_REPEATED : localBill.getRepeat();
             String remoteRepeat = remoteBill.getRepeat() == null ? DBBill.NON_REPEATED : remoteBill.getRepeat();

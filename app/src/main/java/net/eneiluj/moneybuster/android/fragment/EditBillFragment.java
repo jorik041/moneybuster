@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -47,6 +46,7 @@ import net.eneiluj.moneybuster.android.ui.UserAdapter;
 import net.eneiluj.moneybuster.android.ui.UserItem;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
+import net.eneiluj.moneybuster.model.DBCategory;
 import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
@@ -560,7 +560,7 @@ public class EditBillFragment extends Fragment {
                     bill.getPayerId() == newPayerId &&
                     newRepeat.equals(bill.getRepeat()) &&
                     newPaymentMode.equals(bill.getPaymentMode()) &&
-                    newCategoryId == bill.getCategoryId() &&
+                    newCategoryId == bill.getRemoteCategoryId() &&
                     !owersChanged
             ) {
                 Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed " + bill.getWhat() + " " + newWhat);
@@ -814,6 +814,12 @@ public class EditBillFragment extends Fragment {
             // CATEGORY
             List<String> categoryNameList = new ArrayList<>();
             categoryNameList.add("❌ "+getString(R.string.category_none));
+
+            List<DBCategory> userCategories = db.getCategories(bill.getProjectId());
+            for (DBCategory cat : userCategories) {
+                categoryNameList.add(cat.getIcon()+" "+cat.getName());
+            }
+
             categoryNameList.add("\uD83D\uDED2 "+getString(R.string.category_groceries));
             categoryNameList.add("\uD83C\uDF89 "+getString(R.string.category_leisure));
             categoryNameList.add("\uD83C\uDFE0 "+getString(R.string.category_rent));
@@ -830,8 +836,13 @@ public class EditBillFragment extends Fragment {
             String[] categoryNames = categoryNameList.toArray(new String[categoryNameList.size()]);
 
             String[] categoryIds = getResources().getStringArray(R.array.categoryValues);
-            int indexC = Arrays.asList(categoryIds).indexOf(String.valueOf(bill.getCategoryId()));
-            Log.d(TAG, "CATTTT of loaded bill "+bill.getCategoryId());
+            List<String> categoryIdList = Arrays.asList(categoryIds);
+            for (DBCategory cat : userCategories) {
+                categoryIdList.add(1, String.valueOf(cat.getRemoteId()));
+            }
+
+            int indexC = categoryIdList.indexOf(String.valueOf(bill.getRemoteCategoryId()));
+            Log.d(TAG, "CATTTT of loaded bill "+bill.getRemoteCategoryId());
 
             ArrayList<Map<String, String>> dataC = new ArrayList<>();
             for (int i = 0; i < categoryNames.length; i++) {

@@ -248,7 +248,7 @@ public class VersatileProjectSyncClient {
             paramKeys.add("paymentmode");
             paramValues.add(bill.getPaymentMode());
             paramKeys.add("categoryid");
-            paramValues.add(String.valueOf(bill.getCategoryId()));
+            paramValues.add(String.valueOf(bill.getRemoteCategoryId()));
 
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
@@ -392,7 +392,7 @@ public class VersatileProjectSyncClient {
             paramKeys.add("paymentmode");
             paramValues.add(bill.getPaymentMode());
             paramKeys.add("categoryid");
-            paramValues.add(String.valueOf(bill.getCategoryId()));
+            paramValues.add(String.valueOf(bill.getRemoteCategoryId()));
 
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;

@@ -162,11 +162,11 @@ public class DBBill implements Item, Serializable {
         this.paymentMode = paymentMode;
     }
 
-    public int getCategoryId() {
+    public int getRemoteCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(int categoryId) {
+    public void setRemoteCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
 

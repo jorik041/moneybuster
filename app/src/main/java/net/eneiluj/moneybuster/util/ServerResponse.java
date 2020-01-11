@@ -7,6 +7,7 @@ import android.util.Log;
 import net.eneiluj.moneybuster.model.DBAccountProject;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
+import net.eneiluj.moneybuster.model.DBCategory;
 import net.eneiluj.moneybuster.model.DBMember;
 
 import org.json.JSONArray;
@@ -15,6 +16,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +43,10 @@ public class ServerResponse {
 
         public List<DBMember> getMembers(long projId) throws JSONException {
             return getMembersFromJSON(new JSONObject(getContent()), projId);
+        }
+
+        public List<DBCategory> getCategories(long projId) throws JSONException {
+            return getCategoriesFromJSON(new JSONObject(getContent()), projId);
         }
     }
 
@@ -228,6 +234,39 @@ public class ServerResponse {
         }
 
         return members;
+    }
+
+    protected List<DBCategory> getCategoriesFromJSON(JSONObject json, long projId) throws JSONException {
+        List<DBCategory> categories = new ArrayList<>();
+
+        if (json.has("categories")) {
+            JSONObject jsonCats = json.getJSONObject("categories");
+            Iterator<String> keys = jsonCats.keys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                if (jsonCats.get(key) instanceof JSONObject) {
+                    categories.add(getCategoryFromJSON(jsonCats.getJSONObject(key), key, projId));
+                }
+            }
+        }
+        return categories;
+    }
+
+    protected DBCategory getCategoryFromJSON(JSONObject json, String remoteIdStr, long projId) throws JSONException {
+        long remoteId = Long.valueOf(remoteIdStr);
+        String name = "";
+        String color = "";
+        String icon = "";
+        if (json.has("color") && !json.isNull("color")) {
+            color = json.getString("color");
+        }
+        if (json.has("icon") && !json.isNull("icon")) {
+            color = json.getString("icon");
+        }
+        if (json.has("name") && !json.isNull("name")) {
+            color = json.getString("name");
+        }
+        return new DBCategory(0, remoteId, projId, name, icon, color);
     }
 
     protected List<DBMember> getMembersFromJSON(JSONObject json, long projId) throws JSONException {

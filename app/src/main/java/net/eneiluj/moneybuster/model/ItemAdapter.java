@@ -1,7 +1,6 @@
 package net.eneiluj.moneybuster.model;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,7 +20,6 @@ import net.eneiluj.moneybuster.android.ui.TextDrawable;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 
 import java.security.NoSuchAlgorithmException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -139,40 +136,40 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             else if ("f".equals(bill.getPaymentMode())) {
                 whatPrefix += "🎫 ";
             }
-            if (bill.getCategoryId() == DBBill.CATEGORY_GROCERIES) {
+            if (bill.getRemoteCategoryId() == DBBill.CATEGORY_GROCERIES) {
                 whatPrefix += "\uD83D\uDED2 ";
             }
-            else if (bill.getCategoryId() == DBBill.CATEGORY_LEISURE) {
+            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_LEISURE) {
                 whatPrefix += "\uD83C\uDF89 ";
             }
-            else if (bill.getCategoryId() == DBBill.CATEGORY_RENT) {
+            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_RENT) {
                 whatPrefix += "\uD83C\uDFE0 ";
             }
-            else if (bill.getCategoryId() == DBBill.CATEGORY_BILLS) {
+            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_BILLS) {
                 whatPrefix += "\uD83C\uDF29 ";
             }
-            else if (bill.getCategoryId() == DBBill.CATEGORY_CULTURE) {
+            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_CULTURE) {
                 whatPrefix += "\uD83D\uDEB8 ";
             }
-            else if (bill.getCategoryId() == DBBill.CATEGORY_HEALTH) {
+            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_HEALTH) {
                 whatPrefix += "\uD83D\uDC9A ";
             }
-            else if (bill.getCategoryId() == DBBill.CATEGORY_SHOPPING) {
+            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_SHOPPING) {
                 whatPrefix += "\uD83D\uDECD ";
             }
-            else if (bill.getCategoryId() == DBBill.CATEGORY_REIMBURSEMENT) {
+            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_REIMBURSEMENT) {
                 whatPrefix += "\uD83D\uDCB0 ";
             }
-            else if (bill.getCategoryId() == DBBill.CATEGORY_RESTAURANT) {
+            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_RESTAURANT) {
                 whatPrefix += "\uD83C\uDF74 ";
             }
-            else if (bill.getCategoryId() == DBBill.CATEGORY_ACCOMODATION) {
+            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_ACCOMODATION) {
                 whatPrefix += "\uD83D\uDECC ";
             }
-            else if (bill.getCategoryId() == DBBill.CATEGORY_TRANSPORT) {
+            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_TRANSPORT) {
                 whatPrefix += "\uD83D\uDE8C ";
             }
-            else if (bill.getCategoryId() == DBBill.CATEGORY_SPORT) {
+            else if (bill.getRemoteCategoryId() == DBBill.CATEGORY_SPORT) {
                 whatPrefix += "\uD83C\uDFBE ";
             }
             nvHolder.billTitle.setText(Html.fromHtml(whatPrefix + bill.getWhat()));

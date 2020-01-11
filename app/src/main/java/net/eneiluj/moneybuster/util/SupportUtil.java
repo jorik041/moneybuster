@@ -11,8 +11,6 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.preference.PreferenceManager;
 
@@ -31,13 +29,10 @@ import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -174,8 +169,8 @@ public class SupportUtil {
         for (DBBill b : dbBills) {
             // don't take deleted bills and respect category filter
             if (b.getState() != DBBill.STATE_DELETED &&
-                    (catId == 0 || catId == -100 || b.getCategoryId() == catId) &&
-                    (catId != -100 || b.getCategoryId() != DBBill.CATEGORY_REIMBURSEMENT) &&
+                    (catId == 0 || catId == -100 || b.getRemoteCategoryId() == catId) &&
+                    (catId != -100 || b.getRemoteCategoryId() != DBBill.CATEGORY_REIMBURSEMENT) &&
                     (paymentMode == null || b.getPaymentMode().equals(paymentMode)) &&
                     (dateMin == null || b.getDate().compareTo(dateMin) >= 0) &&
                     (dateMax == null || b.getDate().compareTo(dateMax) <= 0)) {

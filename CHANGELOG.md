@@ -10,9 +10,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - now able to access projects with Nextcloud credentials
 - automatically add projects from Nextcloud account
 - 'reimbursement' bill category
+- show custom categories (Cospend >= 0.3.2)
 
 ### Changed
 - new optional way of syncing with Cospend, just get what's newer than last sync
+- show category/payment mode icons in stat filters and bill edition form
+[Cospend#58](https://gitlab.com/eneiluj/cospend-nc/issues/58) @archit3kt
+- launcher icons
+- show member avatars in sidebar
+
+### Fixed
+- old date dialog (on some Android versions) closing on click
+[#29](https://gitlab.com/eneiluj/moneybuster/issues/29) @almereyda
 
 ## 0.0.15 – 2019-11-03
 ### Added

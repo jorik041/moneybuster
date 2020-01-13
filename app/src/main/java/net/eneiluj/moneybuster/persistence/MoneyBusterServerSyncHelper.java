@@ -605,20 +605,31 @@ public class MoneyBusterServerSyncHelper {
                         if (m.getName().equals(localMember.getName()) &&
                                 m.getWeight() == localMember.getWeight() &&
                                 m.isActivated() == localMember.isActivated() &&
-                                m.getR() == localMember.getR() &&
-                                m.getG() == localMember.getG() &&
-                                m.getB() == localMember.getB()
+                                (
+                                        // if we get null color, then keep our local color
+                                        (m.getR() == null && m.getG() == null && m.getB() == null) ||
+                                        (m.getR() == localMember.getR() &&
+                                            m.getG() == localMember.getG() &&
+                                            m.getB() == localMember.getB())
+                                )
                         ) {
                             // alright
                             Log.d(getClass().getSimpleName(), "Nothing to do for member : " + localMember);
                         } else {
                             Log.d(getClass().getSimpleName(), "Update local member : " + m);
-                            // long memberId, @Nullable String newName, @Nullable Double newWeight,
-                            // @Nullable Boolean newActivated, @Nullable Integer newState, @Nullable Long newRemoteId
+                            Integer r = m.getR();
+                            Integer g = m.getG();
+                            Integer b = m.getB();
+                            // don't change color if we get null from server
+                            if (m.getR() == null && m.getG() == null && m.getB() == null) {
+                                r = localMember.getR();
+                                g = localMember.getG();
+                                b = localMember.getB();
+                            }
                             dbHelper.updateMember(
                                     localMember.getId(), m.getName(), m.getWeight(),
                                     m.isActivated(), null, null,
-                                    m.getR(), m.getG(), m.getB()
+                                    r, g, b
                             );
                         }
                     }

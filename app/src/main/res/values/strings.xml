@@ -127,6 +127,7 @@
     <string name="confirm_remove_project_dialog_message">The remote project will NOT be deleted</string>
     <string name="member_edit_toggle">Activated</string>
     <string name="member_edit_name">Name</string>
+    <string name="member_edit_color">Color</string>
     <string name="member_edit_weight">Weight</string>
     <string name="remote_project_operation_no_network">Remote project operations require network connectivity</string>
     <string name="member_edit_weight_error">Member weight is incorrect</string>

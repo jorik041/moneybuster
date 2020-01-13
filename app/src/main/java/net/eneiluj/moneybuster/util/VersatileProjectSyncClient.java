@@ -189,6 +189,16 @@ public class VersatileProjectSyncClient {
         String username = null;
         String password = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
+            // put color if set
+            Integer r = member.getR();
+            Integer g = member.getG();
+            Integer b = member.getB();
+            if (r != null && g != null && b != null) {
+                String hexColor = "#"+Integer.toHexString(r)+Integer.toHexString(g)+Integer.toHexString(b);
+                paramKeys.add("color");
+                paramValues.add(hexColor);
+            }
+            // launch the request
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
                 password = this.password;
@@ -439,6 +449,16 @@ public class VersatileProjectSyncClient {
         String username = null;
         String password = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
+            // put color if set
+            Integer r = member.getR();
+            Integer g = member.getG();
+            Integer b = member.getB();
+            if (r != null && g != null && b != null) {
+                String hexColor = "#"+Integer.toHexString(r)+Integer.toHexString(g)+Integer.toHexString(b);
+                paramKeys.add("color");
+                paramValues.add(hexColor);
+            }
+            // launch the request
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
                 password = this.password;

@@ -150,6 +150,17 @@ public class TextDrawable extends Drawable {
         return PixelFormat.TRANSLUCENT;
     }
 
+    public static int getColorFromName(String name) {
+        try {
+            int[] hsl = calculateHSL(name);
+            int[] rgb = HSLtoRGB(hsl[0], hsl[1], hsl[2], 1);
+            return Color.rgb(rgb[0], rgb[1], rgb[2]);
+        }
+        catch (NoSuchAlgorithmException e) {
+            return Color.WHITE;
+        }
+    }
+
     /**
      * calculates the RGB value based on a given account name.
      *

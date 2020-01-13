@@ -94,6 +94,36 @@
             android:text="@string/member_edit_toggle" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/colorLayout"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
+        <ImageView
+            android:id="@+id/colorIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="9dp"
+            android:paddingRight="5dp"
+            android:src="@drawable/ic_palette_grey_24dp" />
+
+        <TextView
+            android:id="@+id/editMemberColorLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/member_edit_color" />
+
+        <Button
+            android:id="@+id/editMemberColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button" />
+
+    </LinearLayout>
 
 </LinearLayout>

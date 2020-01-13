@@ -17,6 +17,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -36,6 +37,7 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -68,10 +70,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.zxing.WriterException;
+import com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat;
+import com.larswerkman.lobsterpicker.LobsterPicker;
+import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider;
 
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.fragment.EditBillFragment;
 import net.eneiluj.moneybuster.android.fragment.NewProjectFragment;
+import net.eneiluj.moneybuster.android.ui.TextDrawable;
 import net.eneiluj.moneybuster.model.Category;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
@@ -1654,6 +1660,17 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     private void editMember(View view, long memberId) {
         final DBMember memberToEdit = db.getMember(memberId);
+        Integer r = memberToEdit.getR();
+        Integer g = memberToEdit.getG();
+        Integer b = memberToEdit.getB();
+
+        int color;
+        if (r != null && g != null && b != null) {
+            color = Color.rgb(memberToEdit.getR(), memberToEdit.getG(), memberToEdit.getB());
+        }
+        else {
+            color = TextDrawable.getColorFromName(memberToEdit.getName());
+        }
 
         Log.v(TAG, "MEMBER ID " + memberId);
 
@@ -1682,6 +1699,42 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         CheckBox ch = iView.findViewById(R.id.editMemberActivated);
         ch.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
         ch.setChecked(memberToEdit.isActivated());
+        Button bu = iView.findViewById(R.id.editMemberColor);
+        bu.setBackgroundColor(color);
+        bu.setText("");
+
+        bu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View buview) {
+                LayoutInflater inflater = getLayoutInflater();
+                View colorView = inflater.inflate(R.layout.dialog_color, new LinearLayout(view.getContext()));
+
+                final LobsterPicker lobsterPicker = colorView.findViewById(R.id.lobsterPicker);
+                LobsterShadeSlider shadeSlider = colorView.findViewById(R.id.shadeSlider);
+
+                lobsterPicker.addDecorator(shadeSlider);
+                lobsterPicker.setColorHistoryEnabled(true);
+                lobsterPicker.setHistory(color);
+                lobsterPicker.setColor(color);
+
+                new AlertDialog.Builder(new ContextThemeWrapper(
+                        view.getContext(),
+                        R.style.AppThemeDialog
+                ))
+                        .setView(colorView)
+                        .setTitle(getString(R.string.settings_colorpicker_title))
+                        .setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                int newColor = lobsterPicker.getColor();
+                                bu.setBackgroundColor(newColor);
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.simple_cancel), null)
+                        .show();
+
+            }
+        });
 
                     /*final EditText input = new EditText(getApplicationContext());
                     input.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -1709,12 +1762,18 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 CheckBox cvi = iView.findViewById(R.id.editMemberActivated);
                 boolean newActivated = cvi.isChecked();
 
+                Button bu = iView.findViewById(R.id.editMemberColor);
+                int newColor = ((ColorDrawable) bu.getBackground()).getColor();
+                int red = Color.red(newColor);
+                int green = Color.green(newColor);
+                int blue = Color.blue(newColor);
+
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 long selectedProjectId = preferences.getLong("selected_project", 0);
 
                 if (selectedProjectId != 0) {
                     if (!newMemberName.isEmpty() && !newMemberName.equals("")) {
-                        db.updateMemberAndSync(memberToEdit, newMemberName, newMemberWeight, newActivated, null, null, null);
+                        db.updateMemberAndSync(memberToEdit, newMemberName, newMemberWeight, newActivated, red, green, blue);
                         refreshLists();
                         // this was used to programmatically select member
                         //navigationSelection = new Category(newMemberName, memberToEdit.getId());

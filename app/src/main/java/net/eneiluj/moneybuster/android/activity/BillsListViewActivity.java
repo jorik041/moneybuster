@@ -1699,6 +1699,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         CheckBox ch = iView.findViewById(R.id.editMemberActivated);
         ch.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
         ch.setChecked(memberToEdit.isActivated());
+
+        TextView tvCol = iView.findViewById(R.id.editMemberColorLabel);
+        tvCol.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
         Button bu = iView.findViewById(R.id.editMemberColor);
         bu.setBackgroundColor(color);
         bu.setText("");

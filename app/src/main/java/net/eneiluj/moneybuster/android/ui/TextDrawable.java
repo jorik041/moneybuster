@@ -92,7 +92,12 @@ public class TextDrawable extends Drawable {
         mBackground.setColor(Color.rgb(r, g, b));
 
         mTextPaint = new Paint();
-        mTextPaint.setColor(Color.WHITE);
+        if (r < 230 || g < 230 || b < 230) {
+            mTextPaint.setColor(Color.WHITE);
+        }
+        else {
+            mTextPaint.setColor(Color.BLACK);
+        }
         mTextPaint.setTextSize(radius);
         mTextPaint.setAntiAlias(true);
         mTextPaint.setTextAlign(Paint.Align.CENTER);

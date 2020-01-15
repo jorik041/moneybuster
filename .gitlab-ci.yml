@@ -58,7 +58,8 @@ assembleNormalRelease:
           -Pandroid.injected.signing.store.password="$KEY_STORE_PASSWORD"
           -Pandroid.injected.signing.key.alias=$KEY_ALIAS
           -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
-    - mv app/build/outputs/apk/normal/release/*.apk
+    - find ./ -name "*.apk"
+    - mv `find ./ -name "*.apk"` ./
   artifacts:
     paths:
     - ./*.apk

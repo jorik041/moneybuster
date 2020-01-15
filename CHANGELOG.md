@@ -5,12 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-## 0.0.16 – 2019-12-24
+## 0.0.16 – 2020-01-15
 ### Added
 - now able to access projects with Nextcloud credentials
 - automatically add projects from Nextcloud account
 - 'reimbursement' bill category
 - show custom categories (Cospend >= 0.3.2)
+- member color edition
+[#18](https://gitlab.com/eneiluj/moneybuster/issues/18) @nicoe
 
 ### Changed
 - new optional way of syncing with Cospend, just get what's newer than last sync
@@ -22,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - old date dialog (on some Android versions) closing on click
 [#29](https://gitlab.com/eneiluj/moneybuster/issues/29) @almereyda
+- write avatar letter in black if color is too bright
 
 ## 0.0.15 – 2019-11-03
 ### Added

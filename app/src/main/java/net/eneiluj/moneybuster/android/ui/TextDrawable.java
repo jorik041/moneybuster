@@ -92,7 +92,7 @@ public class TextDrawable extends Drawable {
         mBackground.setColor(Color.rgb(r, g, b));
 
         mTextPaint = new Paint();
-        if (r < 230 || g < 230 || b < 230) {
+        if ((r + g + b) / 3 < 220) {
             mTextPaint.setColor(Color.WHITE);
         }
         else {

@@ -42,16 +42,14 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
         public int icon;
         @Nullable
         public Integer count;
-        public boolean activated;
         public boolean isMember;
 
         public NavigationItem(@NonNull String id, @NonNull String label, @Nullable Integer count,
-                              @DrawableRes int icon, boolean activated, boolean isMember) {
+                              @DrawableRes int icon, boolean isMember) {
             this.id = id;
             this.label = label;
             this.count = count;
             this.icon = icon;
-            this.activated = activated;
             this.isMember = isMember;
         }
     }
@@ -95,36 +93,30 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
             count.setVisibility((item.count == null) ? View.GONE : View.VISIBLE);
             count.setText(String.valueOf(item.count));
             if (item.icon > 0) {
-                if (item.activated) {
-                    if (item.isMember) {
-                        try {
-                            int width = ContextCompat.getDrawable(icon.getContext(), item.icon).getMinimumWidth();
-                            int height = ContextCompat.getDrawable(icon.getContext(), item.icon).getMinimumHeight();
-                            DBMember member = db.getMember(Long.valueOf(currentItem.id));
-                            TextDrawable td =TextDrawable.createNamedAvatar(
-                                    member.getName(), width/2,
-                                    member.getR(), member.getG(), member.getB()
-                            );
-                            icon.setImageDrawable(td);
-                            icon.setPadding(width/4, height/2,0,0);
-                        } catch (NoSuchAlgorithmException e) {
-                            Log.v(getClass().getSimpleName(), "error creating avatar", e);
-                            icon.setImageDrawable(
-                                    ContextCompat.getDrawable(icon.getContext(), item.icon)
-                            );
-                        }
-                    }
-                    else {
+                if (item.isMember) {
+                    try {
+                        int width = ContextCompat.getDrawable(icon.getContext(), item.icon).getMinimumWidth();
+                        int height = ContextCompat.getDrawable(icon.getContext(), item.icon).getMinimumHeight();
+                        DBMember member = db.getMember(Long.valueOf(currentItem.id));
+                        TextDrawable td = TextDrawable.createNamedAvatar(
+                                member.getName(), width / 2,
+                                member.getR(), member.getG(), member.getB(),
+                                !member.isActivated()
+                        );
+                        icon.setImageDrawable(td);
+                        icon.setPadding(width / 4, height / 2, 0, 0);
+                    } catch (NoSuchAlgorithmException e) {
+                        Log.v(getClass().getSimpleName(), "error creating avatar", e);
                         icon.setImageDrawable(
                                 ContextCompat.getDrawable(icon.getContext(), item.icon)
                         );
                     }
-                }
-                else {
+                } else {
                     icon.setImageDrawable(
-                            ContextCompat.getDrawable(icon.getContext(), R.drawable.ic_lock_grey_24dp)
+                            ContextCompat.getDrawable(icon.getContext(), item.icon)
                     );
                 }
+
                 icon.setVisibility(View.VISIBLE);
 
             } else {

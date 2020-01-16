@@ -651,7 +651,8 @@ public class EditBillFragment extends Fragment {
                     avatar.setImageDrawable(
                             TextDrawable.createNamedAvatar(
                                     member.getName(), 30,
-                                    member.getR(), member.getG(), member.getB()
+                                    member.getR(), member.getG(), member.getB(),
+                                    !member.isActivated()
                             )
                     );
                     avatar.setScaleType(ImageView.ScaleType.FIT_CENTER);

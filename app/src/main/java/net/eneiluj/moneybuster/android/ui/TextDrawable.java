@@ -23,6 +23,7 @@
 
 package net.eneiluj.moneybuster.android.ui;
 
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -33,6 +34,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
+
+import net.eneiluj.moneybuster.R;
 
 import org.apache.commons.codec.binary.Hex;
 
@@ -68,6 +72,11 @@ public class TextDrawable extends Drawable {
      */
     private Paint mBackground;
 
+    private Paint mDisabledCircle;
+
+    // is the member disabled
+    private boolean mDisabled;
+
     /**
      * the radius of the circular background to be rendered.
      */
@@ -82,7 +91,7 @@ public class TextDrawable extends Drawable {
      * @param b      rgb blue value
      * @param radius circle radius
      */
-    private TextDrawable(String text, int r, int g, int b, float radius) {
+    private TextDrawable(String text, int r, int g, int b, float radius, boolean disabled) {
         mRadius = radius;
         mText = text;
 
@@ -101,6 +110,13 @@ public class TextDrawable extends Drawable {
         mTextPaint.setTextSize(radius);
         mTextPaint.setAntiAlias(true);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
+
+        mDisabled = disabled;
+        mDisabledCircle = new Paint();
+        mDisabledCircle.setStyle(Paint.Style.STROKE);
+        mDisabledCircle.setStrokeWidth(mRadius * 0.2f);
+        mDisabledCircle.setAntiAlias(true);
+        mDisabledCircle.setColor(Color.DKGRAY);
     }
 
     /**
@@ -113,18 +129,18 @@ public class TextDrawable extends Drawable {
      * @throws NoSuchAlgorithmException     if the specified algorithm is not available when calculating the color values
      */
     @NonNull
-    public static TextDrawable createNamedAvatar(String name, float radiusInDp, @Nullable Integer r, @Nullable Integer g, @Nullable Integer b) throws NoSuchAlgorithmException {
+    public static TextDrawable createNamedAvatar(String name, float radiusInDp, @Nullable Integer r, @Nullable Integer g, @Nullable Integer b, boolean disabled) throws NoSuchAlgorithmException {
         Log.v(TAG, "AVATAAAAR "+r+" "+g+" "+b);
         if (r != null && g != null && b != null) {
             return new TextDrawable(name.substring(0, 1).toUpperCase(Locale.getDefault()), r, g, b,
-                    radiusInDp);
+                    radiusInDp, disabled);
         }
         else {
             int[] hsl = calculateHSL(name);
             int[] rgb = HSLtoRGB(hsl[0], hsl[1], hsl[2], 1);
 
             return new TextDrawable(name.substring(0, 1).toUpperCase(Locale.getDefault()), rgb[0], rgb[1], rgb[2],
-                    radiusInDp);
+                    radiusInDp, disabled);
         }
     }
 
@@ -138,6 +154,10 @@ public class TextDrawable extends Drawable {
     public void draw(@NonNull Canvas canvas) {
         canvas.drawCircle(mRadius, mRadius, mRadius, mBackground);
         canvas.drawText(mText, mRadius, mRadius - ((mTextPaint.descent() + mTextPaint.ascent()) / 2), mTextPaint);
+        if (mDisabled) {
+            canvas.drawCircle(mRadius, mRadius, mRadius * 0.9f, mDisabledCircle);
+            canvas.drawLine(mRadius*0.4f, mRadius*1.6f, mRadius*1.6f, mRadius*0.4f, mDisabledCircle);
+        }
     }
 
     @Override

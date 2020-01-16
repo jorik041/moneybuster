@@ -61,7 +61,8 @@ public class UserAdapter extends ArrayAdapter<UserItem> {
                 viewHolder.avatar.setImageDrawable(
                         TextDrawable.createNamedAvatar(
                                 user.getName(), mAccountAvatarRadiusDimension,
-                                m.getR(), m.getG(), m.getB()
+                                m.getR(), m.getG(), m.getB(),
+                                !m.isActivated()
                         )
                 );
             } catch (NoSuchAlgorithmException e) {
@@ -100,7 +101,8 @@ public class UserAdapter extends ArrayAdapter<UserItem> {
                 viewHolder.avatar.setImageDrawable(
                         TextDrawable.createNamedAvatar(
                                 user.getName(), mAccountAvatarRadiusDimension,
-                                m.getR(), m.getG(), m.getB()
+                                m.getR(), m.getG(), m.getB(),
+                                !m.isActivated()
                         )
                 );
             } catch (NoSuchAlgorithmException e) {

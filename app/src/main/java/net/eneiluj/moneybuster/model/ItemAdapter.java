@@ -187,7 +187,8 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     nvHolder.avatar.setImageDrawable(
                             TextDrawable.createNamedAvatar(
                                     m.getName(), avatarRadius,
-                                    m.getR(), m.getG(), m.getB()
+                                    m.getR(), m.getG(), m.getB(),
+                                    !m.isActivated()
                             )
                     );
                 } catch (NoSuchAlgorithmException e) {

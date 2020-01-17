@@ -621,29 +621,36 @@ public class EditBillFragment extends Fragment {
 
         // manage member list
         List<DBMember> memberList = db.getMembersOfProject(bill.getProjectId(), null);
-        List<String> memberNameList = new ArrayList<>();
-        List<String> memberIdList = new ArrayList<>();
+        List<String> payerNameList = new ArrayList<>();
+        List<String> payerIdList = new ArrayList<>();
         for (DBMember member : memberList) {
-            if (member.isActivated()) {
-                memberNameList.add(member.getName());
-                memberIdList.add(String.valueOf(member.getId()));
+            if (member.isActivated() || member.getId() == bill.getPayerId()) {
+                payerNameList.add(member.getName());
+                payerIdList.add(String.valueOf(member.getId()));
             }
         }
 
         // build ower list
         owerCheckboxes = new HashMap<>();
         for (DBMember member : memberList) {
-            if (member.isActivated()) {
+            int owerIndex = bill.getBillOwersIds().indexOf(member.getId());
+
+            // we show a member if he/she's activated OR
+            // if it's an existing bill and he/she's an ower
+            if (member.isActivated() || (bill.getId() != 0 && owerIndex != -1)) {
                 View row = LayoutInflater.from(getContext()).inflate(R.layout.ower_row, null);
 
                 final CheckBox cb = row.findViewById(R.id.owerBox);
-                int owerIndex = bill.getBillOwersIds().indexOf(member.getId());
+
                 if (bill.getId() == 0 || owerIndex != -1) {
                     cb.setChecked(true);
                 }
                 cb.setText(member.getName());
                 cb.setTextColor(ContextCompat.getColor(owersLayout.getContext(), R.color.fg_default));
                 owerCheckboxes.put(member.getId(), cb);
+                if (!member.isActivated()) {
+                    cb.setEnabled(false);
+                }
 
                 // avatar
                 ImageView avatar = row.findViewById(R.id.avatar);
@@ -687,10 +694,10 @@ public class EditBillFragment extends Fragment {
         showHideAllNoneButtons();
 
         // build payer list
-        if (memberNameList.size() > 0) {
+        if (payerNameList.size() > 0) {
             List<UserItem> userList = new ArrayList<>();
-            for (int i = 0; i < memberNameList.size(); i++) {
-                userList.add(new UserItem(Long.valueOf(memberIdList.get(i)), memberNameList.get(i)));
+            for (int i = 0; i < payerNameList.size(); i++) {
+                userList.add(new UserItem(Long.valueOf(payerIdList.get(i)), payerNameList.get(i)));
             }
 
             UserAdapter userAdapter = new UserAdapter(this.getActivity(), userList);
@@ -699,16 +706,21 @@ public class EditBillFragment extends Fragment {
 
             // set selected value for payer
             if (bill.getPayerId() != 0) {
+                DBMember payerMember = db.getMember(bill.getPayerId());
                 String payerId = String.valueOf(bill.getPayerId());
                 // if the id is not found, it means the user is disabled
-                int payerIndex = memberIdList.indexOf(payerId);
+                int payerIndex = payerIdList.indexOf(payerId);
                 if (payerIndex != -1) {
                     editPayer.setSelection(payerIndex);
+                    // disable select if payer is disabled
+                    if (!payerMember.isActivated()) {
+                        editPayer.setEnabled(false);
+                    }
                 }
             } else {
                 // this is a new bill, we try to put last payer id
                 long lastPayerId = db.getProject(bill.getProjectId()).getLastPayerId();
-                int payerIndex = memberIdList.indexOf(String.valueOf(lastPayerId));
+                int payerIndex = payerIdList.indexOf(String.valueOf(lastPayerId));
                 if (payerIndex != -1) {
                     editPayer.setSelection(payerIndex);
                 }

@@ -872,7 +872,7 @@ public class NewProjectFragment extends Fragment {
 
         DBProject newProject = new DBProject(
                 0, remoteId, password, name, url,
-                email, null, type, Long.valueOf(0)
+                email, null, type, Long.valueOf(0), null
         );
         long pid = db.addProject(newProject);
 

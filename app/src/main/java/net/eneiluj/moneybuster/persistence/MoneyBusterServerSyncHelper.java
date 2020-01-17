@@ -34,6 +34,7 @@ import net.eneiluj.moneybuster.model.DBAccountProject;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBCategory;
+import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
@@ -530,17 +531,24 @@ public class MoneyBusterServerSyncHelper {
                 ServerResponse.ProjectResponse projResponse = client.getProject(customCertManager, project, lastModified, lastETag);
                 String name = projResponse.getName();
                 String email = projResponse.getEmail();
+                String currencyName = projResponse.getCurrencyName();
                 // update project if needed
                 if (project.getName() == null || project.getName().equals("")
                         || !name.equals(project.getName())
                         || project.getEmail() == null
                         || project.getEmail().equals("")
+                        || (
+                                (currencyName == null && project.getCurrencyName() != null) ||
+                                (currencyName != null && project.getCurrencyName() == null) ||
+                                (currencyName != null && !currencyName.equals(project.getCurrencyName()))
+                        )
                         || !email.equals(project.getEmail())) {
                     Log.d(getClass().getSimpleName(), "update local project : " + project);
                     // this is usefull to transmit correct info back to billListActivity when project was just added
                     project.setName(name);
+                    project.setCurrencyName(currencyName);
                     dbHelper.updateProject(project.getId(), name, email,
-                            null, null, null);
+                            null, null, null, currencyName);
                 }
 
                 // get categories
@@ -582,6 +590,47 @@ public class MoneyBusterServerSyncHelper {
                     if (!remoteCategoriesByRemoteId.containsKey(localCategory.getRemoteId())) {
                         dbHelper.deleteCategory(localCategory.getId());
                         Log.d(TAG, "Delete local category : " + localCategory);
+                    }
+                }
+
+                // get currencies
+                List<DBCurrency> remoteCurrencies = projResponse.getCurrencies(project.getId());
+                Map<Long, DBCurrency> remoteCurrenciesByRemoteId = new HashMap<>();
+                for (DBCurrency remoteCurrency : remoteCurrencies) {
+                    remoteCurrenciesByRemoteId.put(remoteCurrency.getRemoteId(), remoteCurrency);
+                }
+
+                // add/update/delete currencies
+                for (DBCurrency c : remoteCurrencies) {
+                    DBCurrency localCurrency = dbHelper.getCurrency(c.getRemoteId(), project.getId());
+                    // currency does not exist locally, add it
+                    if (localCurrency == null) {
+                        Log.d(getClass().getSimpleName(), "Add local currency : " + c);
+                        dbHelper.addCurrency(c);
+                    }
+                    // currency exists, check if needs update
+                    else {
+                        if (c.getName().equals(localCurrency.getName()) &&
+                                c.getExchangeRate() == localCurrency.getExchangeRate()
+                        ) {
+                            // alright
+                            Log.d(getClass().getSimpleName(), "Nothing to do for currency : " + localCurrency);
+                        } else {
+                            Log.d(getClass().getSimpleName(), "Update local currency : " + c);
+
+                            dbHelper.updateCurrency(
+                                    localCurrency.getId(), c.getName(), c.getExchangeRate()
+                            );
+                        }
+                    }
+                }
+
+                // delete local currencies which are not there remotely
+                List<DBCurrency> localCurrencies = dbHelper.getCurrencies(project.getId());
+                for (DBCurrency localCurrency : localCurrencies) {
+                    if (!remoteCurrenciesByRemoteId.containsKey(localCurrency.getRemoteId())) {
+                        dbHelper.deleteCurrency(localCurrency.getId());
+                        Log.d(TAG, "Delete local currency : " + localCurrencies);
                     }
                 }
 
@@ -773,7 +822,8 @@ public class MoneyBusterServerSyncHelper {
                 //serverSyncTimestamp
                 dbHelper.updateProject(
                         project.getId(), null, null,
-                        null, null, serverSyncTimestamp
+                        null, null, serverSyncTimestamp,
+                        null
                 );
                 status = LoginStatus.OK;
             } catch (ServerResponse.NotModifiedException e) {
@@ -944,7 +994,7 @@ public class MoneyBusterServerSyncHelper {
                 }
             } else {
                 dbHelper.updateProject(project.getId(), newName, newEmail, newPassword,
-                          null, null);
+                          null, null, null);
             }
             callback.onFinish(newName, errorString);
         }
@@ -1036,7 +1086,7 @@ public class MoneyBusterServerSyncHelper {
     public boolean createRemoteProject(String remoteId, String name, String email, String password, String ihmUrl, ProjectType projectType, ICallback callback) {
         if (isSyncPossible()) {
             DBProject proj = new DBProject(0, remoteId, password, name, ihmUrl, email,
-                    null, projectType, Long.valueOf(0));
+                    null, projectType, Long.valueOf(0), null);
             CreateRemoteProjectTask createRemoteProjectTask = new CreateRemoteProjectTask(proj, callback);
             createRemoteProjectTask.execute();
             return true;
@@ -1264,7 +1314,8 @@ public class MoneyBusterServerSyncHelper {
                                 "",
                                 null,
                                 ProjectType.COSPEND,
-                                Long.valueOf(0)
+                                Long.valueOf(0),
+                                null
                         );
                         dbHelper.addProject(newProj);
                     }

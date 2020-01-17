@@ -8,6 +8,7 @@ import net.eneiluj.moneybuster.model.DBAccountProject;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBCategory;
+import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.model.DBMember;
 
 import org.json.JSONArray;
@@ -41,12 +42,20 @@ public class ServerResponse {
             return getNameFromJSON(new JSONObject(getContent()));
         }
 
+        public String getCurrencyName() throws JSONException {
+            return getCurrencyNameFromJSON(new JSONObject(getContent()));
+        }
+
         public List<DBMember> getMembers(long projId) throws JSONException {
             return getMembersFromJSON(new JSONObject(getContent()), projId);
         }
 
         public List<DBCategory> getCategories(long projId) throws JSONException {
             return getCategoriesFromJSON(new JSONObject(getContent()), projId);
+        }
+
+        public List<DBCurrency> getCurrencies(long projId) throws JSONException {
+            return getCurrenciesFromJSON(new JSONObject(getContent()), projId);
         }
     }
 
@@ -218,6 +227,14 @@ public class ServerResponse {
         return name;
     }
 
+    protected String getCurrencyNameFromJSON(JSONObject json) throws JSONException {
+        String currencyName = "";
+        if (json.has("currencyname")) {
+            currencyName = json.getString("currencyname");
+        }
+        return currencyName;
+    }
+
     protected String getEmailFromJSON(JSONObject json) throws JSONException {
         String email = "";
         if (json.has("contact_email")) {
@@ -267,6 +284,36 @@ public class ServerResponse {
             name = json.getString("name");
         }
         return new DBCategory(0, remoteId, projId, name, icon, color);
+    }
+
+    protected List<DBCurrency> getCurrenciesFromJSON(JSONObject json, long projId) throws JSONException {
+        List<DBCurrency> currencies = new ArrayList<>();
+
+        if (json.has("currencies") && json.get("currencies") instanceof JSONArray) {
+            JSONArray jsonCurs = json.getJSONArray("currencies");
+            for (int i = 0; i < jsonCurs.length(); i++) {
+                if (jsonCurs.get(i) instanceof JSONObject) {
+                    currencies.add(getCurrencyFromJSON(jsonCurs.getJSONObject(i), projId));
+                }
+            }
+        }
+        return currencies;
+    }
+
+    protected DBCurrency getCurrencyFromJSON(JSONObject json, long projId) throws JSONException {
+        long remoteId = 0;
+        String name = "";
+        Double exchangeRate = 1.0;
+        if (json.has("exchange_rate") && !json.isNull("exchange_rate")) {
+            exchangeRate = json.getDouble("exchange_rate");
+        }
+        if (json.has("id") && !json.isNull("id")) {
+            remoteId = json.getLong("id");
+        }
+        if (json.has("name") && !json.isNull("name")) {
+            name = json.getString("name");
+        }
+        return new DBCurrency(0, remoteId, projId, name, exchangeRate);
     }
 
     protected List<DBMember> getMembersFromJSON(JSONObject json, long projId) throws JSONException {

@@ -1,5 +1,7 @@
 package net.eneiluj.moneybuster.model;
 
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
 
 public class DBProject implements Serializable {
@@ -16,9 +18,11 @@ public class DBProject implements Serializable {
     private Long lastPayerId;
     private ProjectType type;
     private Long lastSyncedTimestamp;
+    private String currencyName;
 
     public DBProject(long id, String remoteId, String password, String name, String ihmUrl,
-                     String email, Long lastPayerId, ProjectType type, Long lastSyncedTimestamp) {
+                     String email, Long lastPayerId, ProjectType type, Long lastSyncedTimestamp,
+                     @Nullable String currencyName) {
         this.id = id;
         this.remoteId = remoteId;
         this.name = name;
@@ -28,6 +32,15 @@ public class DBProject implements Serializable {
         this.lastPayerId = lastPayerId;
         this.lastSyncedTimestamp = lastSyncedTimestamp;
         this.type = type;
+        this.currencyName = currencyName;
+    }
+
+    public String getCurrencyName() {
+        return currencyName;
+    }
+
+    public void setCurrencyName(String currencyName) {
+        this.currencyName = currencyName;
     }
 
     public Long getLastSyncedTimestamp() {

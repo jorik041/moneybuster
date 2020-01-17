@@ -47,7 +47,9 @@ import net.eneiluj.moneybuster.android.ui.UserItem;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBCategory;
+import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.util.ICallback;
@@ -98,6 +100,7 @@ public class EditBillFragment extends Fragment {
     private String isoDate;
     private Spinner editPayer;
     private EditText editAmount;
+    private ImageView currencyIcon;
     private Spinner editRepeat;
     private Spinner editPaymentMode;
     private Spinner editCategory;
@@ -129,6 +132,7 @@ public class EditBillFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_edit_bill_form, container, false);
         editWhat = view.findViewById(R.id.editWhat);
         editAmount = view.findViewById(R.id.editAmount);
+        currencyIcon = view.findViewById(R.id.currencyIcon);
         editDate = view.findViewById(R.id.editDate);
         editDate.setFocusable(false);
         editPayer = view.findViewById(R.id.editPayerSpinner);
@@ -222,6 +226,18 @@ public class EditBillFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 datePickerDialog.show();
+            }
+        });
+
+        currencyIcon.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "click on currency icon, projId "+bill.getProjectId());
+                List<DBCurrency> currencies = db.getCurrencies(bill.getProjectId());
+                // TODO display multiple choice alert dialog
+                // which call convertion method
+                // conv method converts, potentially clean "what" and adds an indication about original currency
             }
         });
 
@@ -618,6 +634,12 @@ public class EditBillFragment extends Fragment {
         Log.d(TAG, "ACT EDIT BILL CREATED");
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+        // manage currency icon
+        DBProject proj = db.getProject(bill.getProjectId());
+        if (db.getCurrencies(bill.getProjectId()).size() == 0 || proj.getCurrencyName() == null) {
+            currencyIcon.setVisibility(View.GONE);
+        }
 
         // manage member list
         List<DBMember> memberList = db.getMembersOfProject(bill.getProjectId(), null);

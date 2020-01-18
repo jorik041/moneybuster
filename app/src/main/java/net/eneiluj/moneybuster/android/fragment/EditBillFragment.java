@@ -387,6 +387,7 @@ public class EditBillFragment extends Fragment {
         DBCurrency currency = db.getCurrency(currencyId);
         double amount = getAmount();
         double newAmount = amount * currency.getExchangeRate();
+        newAmount = Math.round(newAmount*100.0)/100.0;
         editAmount.setText(String.valueOf(newAmount));
         String suffix = " ("+amount+" "+currency.getName()+")";
         cleanExistingSuffix();

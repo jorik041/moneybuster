@@ -235,8 +235,44 @@ public class EditBillFragment extends Fragment {
             public void onClick(View v) {
                 Log.d(TAG, "click on currency icon, projId "+bill.getProjectId());
                 List<DBCurrency> currencies = db.getCurrencies(bill.getProjectId());
-                // TODO display multiple choice alert dialog
-                // which call convertion method
+                String mainCurrencyName = db.getProject(bill.getProjectId()).getCurrencyName();
+
+                List<String> currencyNameList = new ArrayList<>();
+                final List<Long> currencyIdList = new ArrayList<>();
+                for (DBCurrency currency : currencies) {
+                    currencyNameList.add(currency.getName()+" ⇒ "+mainCurrencyName+" (x"+currency.getExchangeRate()+")");
+                    currencyIdList.add(currency.getId());
+                }
+
+                AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(v.getContext(), R.style.AppThemeDialog));
+                selectBuilder.setTitle(getString(R.string.currency_dialog_title, mainCurrencyName));
+
+                if (currencyNameList.size() > 0) {
+                    CharSequence[] entcs = currencyNameList.toArray(new CharSequence[currencyNameList.size()]);
+
+                    selectBuilder.setSingleChoiceItems(entcs, -1, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            long cid = currencyIdList.get(which);
+                            convertToCurrency(cid);
+                            dialog.dismiss();
+
+                        }
+                    });
+                    selectBuilder.setNegativeButton(getString(R.string.simple_cancel), null);
+                    selectBuilder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+
+
+                    AlertDialog selectDialog = selectBuilder.create();
+                    selectDialog.show();
+                }
+                else {
+                    showToast(getString(R.string.no_currency_error), Toast.LENGTH_LONG);
+                }
                 // conv method converts, potentially clean "what" and adds an indication about original currency
             }
         });
@@ -345,6 +381,27 @@ public class EditBillFragment extends Fragment {
         Log.d(TAG, "CREATEVIEW FINISHEDDDDDDD");
 
         return view;
+    }
+
+    private void convertToCurrency(long currencyId) {
+        DBCurrency currency = db.getCurrency(currencyId);
+        double amount = getAmount();
+        double newAmount = amount * currency.getExchangeRate();
+        editAmount.setText(String.valueOf(newAmount));
+        String suffix = " ("+amount+" "+currency.getName()+")";
+        cleanExistingSuffix();
+        String what = getWhat();
+        what += suffix;
+        editWhat.setText(what);
+    }
+
+    private void cleanExistingSuffix() {
+        String what = getWhat();
+        List<DBCurrency> currencies = db.getCurrencies(bill.getProjectId());
+        for (DBCurrency cur: currencies) {
+            what = what.replaceAll(" \\(\\d+\\.?\\d+ "+cur.getName()+"\\)", "");
+        }
+        editWhat.setText(what);
     }
 
     private void updateLabel() {

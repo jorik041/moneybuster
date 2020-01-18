@@ -18,6 +18,8 @@
     <string name="setting_payer">Who paid?</string>
     <string name="setting_all">All</string>
     <string name="setting_none">None</string>
+    <string name="currency_dialog_title">Convert current amount from another currency into %s</string>
+    <string name="no_currency_error">There is no additional currency</string>
     <string name="setting_amount">How much?</string>
     <string name="setting_amount_long">How much did it cost?</string>
     <string name="setting_owers">For whom?</string>

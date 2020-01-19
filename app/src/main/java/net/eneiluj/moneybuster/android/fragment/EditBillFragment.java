@@ -385,11 +385,12 @@ public class EditBillFragment extends Fragment {
 
     private void convertToCurrency(long currencyId) {
         DBCurrency currency = db.getCurrency(currencyId);
-        double amount = getAmount();
-        double newAmount = amount * currency.getExchangeRate();
-        newAmount = Math.round(newAmount*100.0)/100.0;
+        double initAmount = getAmount();
+        double initAmountRounded = Math.round(initAmount*100.0)/100.0;
+        double newAmount = initAmount * currency.getExchangeRate();
+        //newAmount = Math.round(newAmount*100.0)/100.0;
         editAmount.setText(String.valueOf(newAmount));
-        String suffix = " ("+amount+" "+currency.getName()+")";
+        String suffix = " ("+initAmountRounded+" "+currency.getName()+")";
         cleanExistingSuffix();
         String what = getWhat();
         what += suffix;

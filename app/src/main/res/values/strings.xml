@@ -28,6 +28,9 @@
     <string name="setting_project_repetition">Repeat this bill every</string>
     <string name="setting_payment_mode">Payment mode</string>
     <string name="setting_category">Category</string>
+    <string name="empty_action_dialog_title">What do you want to do?</string>
+    <string name="configure_account_choice">Configure Nextcloud account</string>
+    <string name="add_project_choice">Manually add a project (IHateMoney, Cospend or local)</string>
     <string name="repeat_no">do not repeat</string>
     <string name="repeat_day">day</string>
     <string name="repeat_week">week</string>

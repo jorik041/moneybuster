@@ -256,12 +256,50 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         setupNavigationMenu();
         setupMembersNavigationList(categoryAdapterSelectedItem);
 
-        // create project if there isn't any
-        if (db.getProjects().isEmpty()) {
-            Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
-            newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_IHM_URL, "https://ihatemoney.org");
-            newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_NC_URL, "https://mynextcloud.org");
-            startActivityForResult(newProjectIntent, addproject);
+        // ask user what to do if no project an no account configured
+        if (db.getProjects().isEmpty() && !MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(this)) {
+            AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog));
+            selectBuilder.setTitle(getString(R.string.empty_action_dialog_title));
+
+            List<String> options = new ArrayList<>();
+            options.add(getString(R.string.configure_account_choice));
+            options.add(getString(R.string.add_project_choice));
+            CharSequence[] optcs = options.toArray(new CharSequence[options.size()]);
+
+            selectBuilder.setSingleChoiceItems(optcs, -1, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    if (which == 0) {
+                        Intent newProjectIntent = new Intent(getApplicationContext(), SettingsActivity.class);
+                        startActivity(newProjectIntent);
+                        dialog.dismiss();
+                    } else if (which == 1) {
+                        Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
+                        newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_IHM_URL, "https://ihatemoney.org");
+                        newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_NC_URL, "https://mynextcloud.org");
+                        startActivityForResult(newProjectIntent, addproject);
+                        dialog.dismiss();
+                    }
+                }
+            });
+            selectBuilder.setNegativeButton(getString(R.string.simple_cancel), null);
+            selectBuilder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+
+            AlertDialog selectDialog = selectBuilder.create();
+            selectDialog.show();
+        }
+
+        // select a project if there are some and none is selected
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        long selectedProjectId = preferences.getLong("selected_project", 0);
+        List<DBProject> dbProjects = db.getProjects();
+        if (selectedProjectId == 0 && dbProjects.size() > 0) {
+            setSelectedProject(dbProjects.get(0).getId());
+            Log.v(TAG, "set selection 0");
         }
     }
 
@@ -2653,6 +2691,27 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     toast2.setDuration(Toast.LENGTH_SHORT);
                     toast2.setView(layout2);
                     toast2.show();
+
+                    // select a project if there are some and none is selected
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    long selectedProjectId = prefs.getLong("selected_project", 0);
+                    List<DBProject> dbProjects = db.getProjects();
+                    if (selectedProjectId == 0 && dbProjects.size() > 0) {
+                        setSelectedProject(dbProjects.get(0).getId());
+                        Log.v(TAG, "set selection 0");
+                        refreshLists();
+                        if (!db.getMoneyBusterServerSyncHelper().isSyncPossible()) {
+                            swipeRefreshLayout.setEnabled(false);
+                        }
+                        else {
+                            swipeRefreshLayout.setEnabled(true);
+                            db.getMoneyBusterServerSyncHelper().addCallbackPull(syncCallBack);
+                            boolean offlineMode2 = prefs.getBoolean(getString(R.string.pref_key_offline_mode), false);
+                            if (!offlineMode2) {
+                                synchronize();
+                            }
+                        }
+                    }
                     break;
             }
         }

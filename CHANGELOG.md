@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## 0.0.17 – 2020-01-20
+### Added
+- custom currencies support
+
+### Changed
+- disabled avatar
+
+### Fixed
+- coherence between Cospend and MoneyBuster behaviour regarding disabled members
+
 ## 0.0.16 – 2020-01-15
 ### Added
 - now able to access projects with Nextcloud credentials

@@ -594,55 +594,10 @@ public class NewProjectFragment extends Fragment {
         db = MoneyBusterSQLiteOpenHelper.getInstance(context);
     }
 
-    private void displayWelcomeDialog() {
-        // WELCOME/NEWS dialog
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        //preferences.edit().putLong("last_welcome_dialog_displayed_at_version", -1).apply();
-        long lastV = preferences.getLong("last_welcome_dialog_displayed_at_version", -1);
-        String dialogContent = null;
-        if (lastV == -1) {
-            dialogContent = getString(R.string.first_welcome_dialog_content);
-            // save last version for which welcome dialog was shown
-            preferences.edit().putLong("last_welcome_dialog_displayed_at_version", 0).apply();
-        }
-
-        if (dialogContent != null) {
-            // show the dialog
-            String dialogTitle = getString(R.string.welcome_dialog_title, getVersionName(getContext()));
-
-            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(
-                    new ContextThemeWrapper(
-                            getContext(),
-                            R.style.AppThemeDialog
-                    )
-            );
-            builder.setTitle(dialogTitle);
-            builder.setMessage(dialogContent);
-            // Set up the buttons
-            builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    displayWelcomeDialog();
-                }
-            });
-            builder.setNeutralButton(getString(R.string.changelog), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(getString(R.string.changelog_url)));
-                    startActivity(i);
-                }
-            });
-
-            builder.show();
-        }
-    }
-
     @Override
     public void onResume() {
         super.onResume();
         //listener.onProjectUpdated(project);
-        displayWelcomeDialog();
     }
 
     @Override

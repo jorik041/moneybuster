@@ -301,33 +301,27 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             setSelectedProject(dbProjects.get(0).getId());
             Log.v(TAG, "set selection 0");
         }
+
+        displayWelcomeDialog();
     }
 
     private void displayWelcomeDialog() {
         // WELCOME/NEWS dialog
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         //preferences.edit().putLong("last_welcome_dialog_displayed_at_version", -1).apply();
         long lastV = preferences.getLong("last_welcome_dialog_displayed_at_version", -1);
         String dialogContent = null;
-        if (lastV != -1) {
-            int versionCode = getVersionCode(this);
-            if (lastV < versionCode) {
-                if (versionCode == 12) {
-                    dialogContent = getString(R.string.welcome_dialog_content_v12);
-                }
-                else if (versionCode == 13) {
-                    dialogContent = getString(R.string.welcome_dialog_content_v13);
-                }
-                // save last version for which welcome dialog was shown
-                preferences.edit().putLong("last_welcome_dialog_displayed_at_version", getVersionCode(this)).apply();
-            }
+        if (lastV == -1) {
+            dialogContent = getString(R.string.first_welcome_dialog_content);
+            // save last version for which welcome dialog was shown
+            preferences.edit().putLong("last_welcome_dialog_displayed_at_version", 0).apply();
         }
 
         if (dialogContent != null) {
             // show the dialog
             String dialogTitle = getString(R.string.welcome_dialog_title, getVersionName(this));
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(
                     new ContextThemeWrapper(
                             this,
                             R.style.AppThemeDialog

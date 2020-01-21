@@ -66,13 +66,14 @@ Then open/import the project in Android studio and build it.
 
 
 ## :eyes: Screenshots
-[1<img src="https://gitlab.com/eneiluj/moneybuster/wikis/uploads/4cc6bd1f49d77a84b1881b97c04847ac/1.png" width="300"/>](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/4cc6bd1f49d77a84b1881b97c04847ac/1.png)
-[2<img src="https://gitlab.com/eneiluj/moneybuster/wikis/uploads/501a1204a978be980e261e8ddfb7d906/2.png" width="300"/>](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/501a1204a978be980e261e8ddfb7d906/2.png)
-[3<img src="https://gitlab.com/eneiluj/moneybuster/wikis/uploads/3a541720d5ea2ffdd0d4c15db8db726c/3.png" width="300"/>](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/3a541720d5ea2ffdd0d4c15db8db726c/3.png)
-[4<img src="https://gitlab.com/eneiluj/moneybuster/wikis/uploads/48a1ff39bdfe174d01d3d05a791a167a/4.png" width="300"/>](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/48a1ff39bdfe174d01d3d05a791a167a/4.png)
-[5<img src="https://gitlab.com/eneiluj/moneybuster/wikis/uploads/11652084266faad1bb76ea2fc7656d58/5.png" width="300"/>](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/11652084266faad1bb76ea2fc7656d58/5.png)
-[6<img src="https://gitlab.com/eneiluj/moneybuster/wikis/uploads/0e3f2051691217447f412b9f507412e6/6.png" width="300"/>](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/0e3f2051691217447f412b9f507412e6/6.png)
-[7<img src="https://gitlab.com/eneiluj/moneybuster/wikis/uploads/e837e86534aaad08e1f277798bbe8df3/7.png" width="300"/>](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/e837e86534aaad08e1f277798bbe8df3/7.png)
+[1<img src="https://gitlab.com/eneiluj/moneybuster/wikis/uploads/169e0f613b705486b4e9c1a9ebb00ac5/1.png" width="300"/>](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/169e0f613b705486b4e9c1a9ebb00ac5/1.png)
+[2<img src="https://gitlab.com/eneiluj/moneybuster/wikis/uploads/0d615cbd7542968ea049d8dfa9e29f66/2.png" width="300"/>](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/0d615cbd7542968ea049d8dfa9e29f66/2.png)
+
+[3<img src="https://gitlab.com/eneiluj/moneybuster/wikis/uploads/89abab095d65b4582d18164dbc0d04a3/3.png" width="300"/>](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/89abab095d65b4582d18164dbc0d04a3/3.png)
+[4<img src="https://gitlab.com/eneiluj/moneybuster/wikis/uploads/25db391ad49b66ddc771872849b48241/4.png" width="300"/>](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/25db391ad49b66ddc771872849b48241/4.png)
+
+[5<img src="https://gitlab.com/eneiluj/moneybuster/wikis/uploads/22c1f04901aef50272d2211b6f542cfe/5.png" width="300"/>](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/22c1f04901aef50272d2211b6f542cfe/5.png)
+[6<img src="https://gitlab.com/eneiluj/moneybuster/wikis/uploads/dae06d01b9053188d08127b96e12f4aa/6.png" width="300"/>](https://gitlab.com/eneiluj/moneybuster/wikis/uploads/dae06d01b9053188d08127b96e12f4aa/6.png)
 
 ## :notebook: License
 This project is licensed under the [GNU GENERAL PUBLIC LICENSE](/LICENSE).

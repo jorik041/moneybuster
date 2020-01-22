@@ -18,6 +18,8 @@
     <string name="setting_payer">Wer hat gezahlt?</string>
     <string name="setting_all">Alle</string>
     <string name="setting_none">Keine</string>
+    <string name="currency_dialog_title">Rechne den aktuellen Betrag aus einer anderen Währung in %s um</string>
+    <string name="no_currency_error">Es gibt keine zusätzliche Währung</string>
     <string name="setting_amount">Wie viel?</string>
     <string name="setting_amount_long">Wie viel hat es gekostet?</string>
     <string name="setting_owers">Für wen?</string>
@@ -38,17 +40,17 @@
     <string name="payment_mode_check">Scheck</string>
     <string name="category_none">Keine Kategorie</string>
     <string name="category_all">Alle Kategorien</string>
-    <string name="category_all_except_reimbursement">All except reimbursement</string>
-    <string name="category_groceries">Grocery</string>
+    <string name="category_all_except_reimbursement">Alle außer Rückerstattung</string>
+    <string name="category_groceries">Lebensmittel</string>
     <string name="category_leisure">Bar/Party</string>
     <string name="category_rent">Miete</string>
-    <string name="category_bills">Bill</string>
-    <string name="category_excursion">Excursion/Culture</string>
+    <string name="category_bills">Rechnung</string>
+    <string name="category_excursion">Ausflug/Kultur</string>
     <string name="category_health">Gesundheit</string>
-    <string name="category_shopping">Shopping</string>
-    <string name="category_reimbursement">Reimbursement</string>
+    <string name="category_shopping">Shoppen</string>
+    <string name="category_reimbursement">Erstattung</string>
     <string name="category_restaurant">Restaurant</string>
-    <string name="category_accomodation">Accommodation</string>
+    <string name="category_accomodation">Unterkunft</string>
     <string name="category_transport">Transport</string>
     <string name="category_sport">Sport</string>
     <string name="project_type_local">Lokales Projekt</string>
@@ -71,17 +73,17 @@
     <string name="setting_ihm_project_url">IHateMoney Adresse</string>
     <string name="setting_cospend_project_url_long">Adresse des Nextcloud-Servers welche das Cospend Projekt hosted</string>
     <string name="setting_cospend_project_url">Nextcloud Server-Adresse</string>
-    <string name="setting_project_name">Project name (remote)</string>
+    <string name="setting_project_name">Projektname (Remote)</string>
     <string name="setting_project_name_long">Angezeigter Name in der Anwendung</string>
-    <string name="setting_password_long">Password you use to connect to the project</string>
+    <string name="setting_password_long">Passwort für die Verbindung zum Projekt</string>
     <string name="setting_password">Passwort (lokal)</string>
     <string name="project_edition_no_change">Nichts wurde verändert</string>
-    <string name="setting_new_password_long">Change the remote project password (tell other project users)</string>
-    <string name="setting_new_password">New password (remote)</string>
+    <string name="setting_new_password_long">Remote Projekt Passwort ändern (andere Projektteilnehmer informieren)</string>
+    <string name="setting_new_password">Neues Passwort (Remote)</string>
     <string name="setting_create_project_title">Projekt auf Server erstellen</string>
     <string name="setting_create_project_summary">Nur möglich, wenn anonyme Projekterstellung auf dem Server erlaubt ist</string>
     <string name="setting_email_long">Kontakt E-Mail</string>
-    <string name="setting_email">E-mail (remote)</string>
+    <string name="setting_email">E-Mail (Remote)</string>
     <string name="project_added_success">Projekt erfolgreich zu MoneyBuster hinzugefügt</string>
     <string name="action_search">Suche</string>
     <string name="simple_error">Fehler</string>
@@ -119,14 +121,15 @@
     <string name="fab_edit_member">Mitglied bearbeiten</string>
     <string name="choose_member_to_edit">Ein Mitglied zum Bearbeiten auswählen</string>
     <string name="member_already_exists">Dieser Nutzer ist bereits Projektmitglied</string>
-    <string name="search_help_dialog_title">How to search</string>
-    <string name="search_help_dialog_content">You can search by bill title and amount.\n\nYou can also search by:\n* payer with +NAME\n* ower with -NAME\n* payer or ower with @NAME\n\nExample 1: \"@julia -robert\" will show bills involving Julia (as payer or ower) AND Robert as ower.\n\nExample 2: \"+julia -julia -robert\" will show bills payed by Julia for at least Julia AND Robert.</string>
+    <string name="search_help_dialog_title">Anleitung Suche</string>
+    <string name="search_help_dialog_content">Du kannst nach Rechnungstitel und Summe suchen.\n\nEbenfalls kann gesucht werden nach:\n* Zahler mit +NAME\n* Besitzer mit -NAME\n* Zahler oder Besitzer mit @NAME\n\nBeispiel 1: \"@julia -robert\" zeigt Rechnungen mit Julia (als Zahler oder Besitzer) UND Robert als Besitzer.\n\nBeispiel 2: \"+julia -julia -robert\" zeigt Rechnungen, welche von Julia bezahlt wurden und mindestens an Julia und Robert gerichtet sind.</string>
     <string name="confirm_remove_project_dialog_title">Bist du sicher?</string>
     <string name="confirm_delete_bill_dialog_title">Bist du sicher, dass du diese Ausgabe löschen möchtest?</string>
     <string name="confirm_delete_project_dialog_title">Bist du sicher, dass du dieses Projekt löschen möchtest?</string>
     <string name="confirm_remove_project_dialog_message">Das Projekt wird NICHT auf dem Server gelöscht</string>
     <string name="member_edit_toggle">Aktiviert</string>
     <string name="member_edit_name">Name</string>
+    <string name="member_edit_color">Farbe</string>
     <string name="member_edit_weight">Aufteilung</string>
     <string name="remote_project_operation_no_network">Projektoperationen erfordern eine Netzwerkverbindung</string>
     <string name="member_edit_weight_error">Mitgliederaufteilung ist ungültig</string>
@@ -137,8 +140,8 @@
     <string name="first_welcome_dialog_content">Zuerst erstellen Sie ein Projekt oder treten einem Projekt bei (IHateMoney oder Nextcloud Cospend), dann fügen Sie die Mitglieder hinzu und/oder erstellen Sie eine Abrechnung!\n\nWeitere Hauptaktionen:\n* Rechnen Sie das Projekt ab, um einen gemeinsamen Rückzahlungsplan zu generieren\n* Projektstatistiken anzeigen\n* Teilen: Generieren Sie einen QR-Code, den andere scannen können, um dem Projekt beizutreten\n\nAuf Android &gt;= 8.0 können Sie lange auf die Aktionsbuttons drücken, um die Hilfe anzuzeigen.</string>
     <string name="changelog">Änderungsprotokoll</string>
     <!-- Settings -->
-    <string name="settings_appearance_category">Appearance</string>
-    <string name="settings_network_category">Network</string>
+    <string name="settings_appearance_category">Aussehen</string>
+    <string name="settings_network_category">Netzwerk</string>
     <string name="settings_server_settings">Nextcloud Konto</string>
     <string name="settings_url">Server-Adresse</string>
     <string name="settings_url_warn_http">WARNUNG: \"http\" ist unsicher. Bitte \"https\" benutzen.</string>
@@ -150,8 +153,8 @@
     <string name="settings_theme_title">Oberfläche</string>
     <string name="settings_offline_mode_title">Offline Modus</string>
     <string name="settings_offline_mode_summary">Nicht autmatisch synchronisieren. Synchronisiere nur wenn der Benutzer fragt.</string>
-    <string name="settings_smart_sync_title">Smart sync with Cospend</string>
-    <string name="settings_smart_sync_summary">Only get bills which have changed since last synchronisation. This is faster and uses less data. Compatible with Cospend &gt;= 0.2.0</string>
+    <string name="settings_smart_sync_title">Intelligente Synchronisierung mit Cospend</string>
+    <string name="settings_smart_sync_summary">Nur Rechnungen erhalten, die sich seit der letzten Synchronisation geändert haben. Dies ist schneller und verbraucht weniger Daten. Kompatibel mit Cospend &gt;= 0.2.0</string>
     <string name="settings_color_title">App Hauptfarbe</string>
     <string name="settings_color_summary">Farbe für Aktionsleisten, Knöpfe, etc...</string>
     <string name="settings_colorpicker_title">Wähle eine Farbe</string>

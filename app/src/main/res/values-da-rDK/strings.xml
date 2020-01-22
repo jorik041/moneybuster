@@ -18,6 +18,8 @@
     <string name="setting_payer">Who paid?</string>
     <string name="setting_all">All</string>
     <string name="setting_none">None</string>
+    <string name="currency_dialog_title">Convert current amount from another currency into %s</string>
+    <string name="no_currency_error">There is no additional currency</string>
     <string name="setting_amount">How much?</string>
     <string name="setting_amount_long">How much did it cost?</string>
     <string name="setting_owers">For whom?</string>
@@ -127,6 +129,7 @@
     <string name="confirm_remove_project_dialog_message">The remote project will NOT be deleted</string>
     <string name="member_edit_toggle">Activated</string>
     <string name="member_edit_name">Name</string>
+    <string name="member_edit_color">Color</string>
     <string name="member_edit_weight">Weight</string>
     <string name="remote_project_operation_no_network">Remote project operations require network connectivity</string>
     <string name="member_edit_weight_error">Member weight is incorrect</string>

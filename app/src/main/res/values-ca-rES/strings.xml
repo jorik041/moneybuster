@@ -18,6 +18,8 @@
     <string name="setting_payer">Qui va pagar?</string>
     <string name="setting_all">Tot</string>
     <string name="setting_none">Res</string>
+    <string name="currency_dialog_title">Convert current amount from another currency into %s</string>
+    <string name="no_currency_error">There is no additional currency</string>
     <string name="setting_amount">Quant?</string>
     <string name="setting_amount_long">Quant costa?</string>
     <string name="setting_owers">A qui?</string>
@@ -127,6 +129,7 @@
     <string name="confirm_remove_project_dialog_message">El projecte remot NO serà esborrat</string>
     <string name="member_edit_toggle">Activat</string>
     <string name="member_edit_name">Nom</string>
+    <string name="member_edit_color">Color</string>
     <string name="member_edit_weight">Pes</string>
     <string name="remote_project_operation_no_network">Les operacions en projectes remots requereixen conexió de xarxa</string>
     <string name="member_edit_weight_error">El pes del membre és incorrecte</string>

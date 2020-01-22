@@ -18,6 +18,8 @@
     <string name="setting_payer">谁购买了？</string>
     <string name="setting_all">全部</string>
     <string name="setting_none">无</string>
+    <string name="currency_dialog_title">Convert current amount from another currency into %s</string>
+    <string name="no_currency_error">There is no additional currency</string>
     <string name="setting_amount">多少钱？</string>
     <string name="setting_amount_long">此物品多少钱？</string>
     <string name="setting_owers">为谁购买？</string>
@@ -127,6 +129,7 @@
     <string name="confirm_remove_project_dialog_message">远程项目将不会被删除</string>
     <string name="member_edit_toggle">已激活</string>
     <string name="member_edit_name">名称</string>
+    <string name="member_edit_color">Color</string>
     <string name="member_edit_weight">权重</string>
     <string name="remote_project_operation_no_network">远程项目操作需要网络连接</string>
     <string name="member_edit_weight_error">成员权重不正确</string>

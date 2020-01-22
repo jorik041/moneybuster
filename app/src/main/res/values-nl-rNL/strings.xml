@@ -18,6 +18,8 @@
     <string name="setting_payer">Wie heeft er betaald?</string>
     <string name="setting_all">Alle</string>
     <string name="setting_none">Geen</string>
+    <string name="currency_dialog_title">Convert current amount from another currency into %s</string>
+    <string name="no_currency_error">There is no additional currency</string>
     <string name="setting_amount">Hoeveel?</string>
     <string name="setting_amount_long">Hoeveel kostte het?</string>
     <string name="setting_owers">Aan wie?</string>
@@ -127,6 +129,7 @@
     <string name="confirm_remove_project_dialog_message">Het externe project wordt NIET verwijderd</string>
     <string name="member_edit_toggle">Geactiveerd</string>
     <string name="member_edit_name">Naam</string>
+    <string name="member_edit_color">Color</string>
     <string name="member_edit_weight">Gewicht</string>
     <string name="remote_project_operation_no_network">Voor externe projecthandelingen is een netwerkverbinding vereist</string>
     <string name="member_edit_weight_error">Deelnamegewicht is onjuist</string>

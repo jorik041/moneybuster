@@ -18,6 +18,8 @@
     <string name="setting_payer">Ποιος πλήρωσε;</string>
     <string name="setting_all">Όλα</string>
     <string name="setting_none">Κανένα</string>
+    <string name="currency_dialog_title">Convert current amount from another currency into %s</string>
+    <string name="no_currency_error">There is no additional currency</string>
     <string name="setting_amount">Πόσο;</string>
     <string name="setting_amount_long">Πόσο κόστισε;</string>
     <string name="setting_owers">Προς ποιον;</string>
@@ -127,6 +129,7 @@
     <string name="confirm_remove_project_dialog_message">Το απομακρυσμένο έργο ΔΕΝ θα διαγραφεί</string>
     <string name="member_edit_toggle">Ενεργοποιήθηκε</string>
     <string name="member_edit_name">Όνομα</string>
+    <string name="member_edit_color">Color</string>
     <string name="member_edit_weight">Βάρος</string>
     <string name="remote_project_operation_no_network">Οι απομακρυσμένες λειτουργίες του έργου απαιτούν σύνδεση δικτύου</string>
     <string name="member_edit_weight_error">Το βάρος μέλους είναι λανθασμένο</string>

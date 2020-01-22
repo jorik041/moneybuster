@@ -28,6 +28,9 @@
     <string name="setting_project_repetition">重复此账单的频率</string>
     <string name="setting_payment_mode">支付模式</string>
     <string name="setting_category">类别</string>
+    <string name="empty_action_dialog_title">What do you want to do?</string>
+    <string name="configure_account_choice">Configure Nextcloud account</string>
+    <string name="add_project_choice">Manually add a project (IHateMoney, Cospend or local)</string>
     <string name="repeat_no">不要重复</string>
     <string name="repeat_day">日</string>
     <string name="repeat_week">周</string>
@@ -137,7 +140,7 @@
     <string name="welcome_dialog_title">欢迎来到 MoneyBuster v%s</string>
     <string name="welcome_dialog_content_v12">有什么新功能？\n\n* 二维码扫描\n* 更好的接口\n* Nextcloud帐户项目导入\n* 优化统计\n* 更多 :-)</string>
     <string name="welcome_dialog_content_v13">有什么新功能？\n\n* 统计过滤器\n* 自动生成结算账单\n* 通过拥有者用户名搜索\n* 和更多 :-)</string>
-    <string name="first_welcome_dialog_content">首先，创建或加入一个项目(IHateMoney 或 Nextcloud Cospend)，然后添加一些成员和/或创建一些账单！\n\n其他主要操作：\n* 结算项目从而生成全局的偿还计划\n* 显示项目统计\n* 分享：其他人可以扫描事先生成的二维码来加入项目\n\n在 安卓@@ &gt;= 8.0 系统上，您可以长按功能按钮来显示帮助。</string>
+    <string name="first_welcome_dialog_content">First, configure Nextcloud account or create/join a project (IHateMoney or Nextcloud Cospend), then add some members and/or create some bills!\n\nOther main actions:\n* Settle the project to generate a global repayment plan\n* Show project statistics\n* Share: generate a QRCode that others can scan to join the project\n\nOn Android &gt;= 8.0 you can long press the action buttons to display help.</string>
     <string name="changelog">更新日志</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Appearance</string>
@@ -165,6 +168,8 @@
     <string name="settings_cert_reset">重置（非）受信证书</string>
     <string name="settings_cert_reset_summary">重置对所有自定义证书的信任</string>
     <string name="settings_cert_reset_toast">已清除所有自定义证书</string>
+    <string name="settings_use_server_color_title">Use server color</string>
+    <string name="settings_use_server_color_subtitle">Get server color when syncing and use it as main app color</string>
     <string name="project_sync_success">已同步项目 %s</string>
     <string name="add_member_dialog_title">新成员名称</string>
     <string name="edit_member_dialog_title">编辑成员</string>

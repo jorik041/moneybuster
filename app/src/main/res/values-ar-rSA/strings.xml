@@ -28,6 +28,9 @@
     <string name="setting_project_repetition">Repeat this bill every</string>
     <string name="setting_payment_mode">Payment mode</string>
     <string name="setting_category">Category</string>
+    <string name="empty_action_dialog_title">What do you want to do?</string>
+    <string name="configure_account_choice">Configure Nextcloud account</string>
+    <string name="add_project_choice">Manually add a project (IHateMoney, Cospend or local)</string>
     <string name="repeat_no">do not repeat</string>
     <string name="repeat_day">day</string>
     <string name="repeat_week">week</string>
@@ -137,7 +140,7 @@
     <string name="welcome_dialog_title">Welcome to MoneyBuster v%s</string>
     <string name="welcome_dialog_content_v12">What\'s new?\n\n* QRCode scanning\n* Better interface\n* Nextcloud account project import\n* Improved statistics\n* And much more :-)</string>
     <string name="welcome_dialog_content_v13">What\'s new?\n\n* Filters in statistics\n* Automatic settlement bills creation\n* Search by ower name\n* And much more :-)</string>
-    <string name="first_welcome_dialog_content">First, create or join a project (IHateMoney or Nextcloud Cospend), then add some members and/or create some bills!\n\nOther main actions:\n* Settle the project to generate a global repayment plan\n* Show project statistics\n* Share: generate a QRCode that others can scan to join the project\n\nOn Android &gt;= 8.0 you can long press the action buttons to display help.</string>
+    <string name="first_welcome_dialog_content">First, configure Nextcloud account or create/join a project (IHateMoney or Nextcloud Cospend), then add some members and/or create some bills!\n\nOther main actions:\n* Settle the project to generate a global repayment plan\n* Show project statistics\n* Share: generate a QRCode that others can scan to join the project\n\nOn Android &gt;= 8.0 you can long press the action buttons to display help.</string>
     <string name="changelog">Changelog</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Appearance</string>
@@ -165,6 +168,8 @@
     <string name="settings_cert_reset">Reset (un)trusted certificates</string>
     <string name="settings_cert_reset_summary">Resets trust of all custom certificates</string>
     <string name="settings_cert_reset_toast">All custom certificates have been cleared</string>
+    <string name="settings_use_server_color_title">Use server color</string>
+    <string name="settings_use_server_color_subtitle">Get server color when syncing and use it as main app color</string>
     <string name="project_sync_success">Project %s synchronized</string>
     <string name="add_member_dialog_title">New member name</string>
     <string name="edit_member_dialog_title">Edit member</string>

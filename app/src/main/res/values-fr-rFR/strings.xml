@@ -28,6 +28,9 @@
     <string name="setting_project_repetition">Répéter cette facture tous les</string>
     <string name="setting_payment_mode">Mode de paiement</string>
     <string name="setting_category">Catégorie</string>
+    <string name="empty_action_dialog_title">Que voulez-vous faire ?</string>
+    <string name="configure_account_choice">Configurer le compte Nextcloud</string>
+    <string name="add_project_choice">Ajouter un projet manuellement (IHateMoney, Cospend ou local)</string>
     <string name="repeat_no">ne pas répéter</string>
     <string name="repeat_day">jours</string>
     <string name="repeat_week">semaines</string>
@@ -137,7 +140,7 @@
     <string name="welcome_dialog_title">Bienvenue dans MoneyBuster v%s</string>
     <string name="welcome_dialog_content_v12">Quoi de neuf ?\n\n* Scan de QRCode\n* Meilleure interface\n* Import de projets d\'un compte Nextcloud\n* Statistiques améliorées\n* Et bien plus :-)</string>
     <string name="welcome_dialog_content_v13">Quoi de neuf ?\n\n* Filtres de statistiques\n* Création automatique des factures de remboursement\n* Recherche par nom de débiteur\n* Et bien plus :-)</string>
-    <string name="first_welcome_dialog_content">Tout d\'abord, créez ou rejoignez un projet (IHateMoney ou Nextcloud Cospend), puis ajoutez des membres et/ou créez des factures!\n\n Autres actions principales:\n* Générer un plan de remboursement global\n* Afficher les statistiques d\'un projet\n* Partager: génère un QRCode pour que d\'autres puissent le scanner et rejoindre le projet\n\n Sur Android &gt;= 8.0 vous pouvez effectuer un appui long sur les boutons pour afficher de l\'aide.</string>
+    <string name="first_welcome_dialog_content">Tout d\'abord, configurez un compte Nextcloud ou créez/rejoignez un projet (IHateMoney ou Nextcloud Cospend), puis ajoutez des membres et/ou créez des factures!\n\n Autres actions principales:\n* Générer un plan de remboursement global\n* Afficher les statistiques d\'un projet\n* Partager: génère un QRCode pour que d\'autres puissent le scanner et rejoindre le projet\n\n Sur Android &gt;= 8.0 vous pouvez effectuer un appui long sur les boutons pour afficher de l\'aide.</string>
     <string name="changelog">Journal des modifications</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Apparence</string>
@@ -165,6 +168,8 @@
     <string name="settings_cert_reset">Réinitialiser la confiance pour les certificats</string>
     <string name="settings_cert_reset_summary">Réinitialiser la confiance de tous les certificats personnels</string>
     <string name="settings_cert_reset_toast">Tous les certificats personnels ont été effacés</string>
+    <string name="settings_use_server_color_title">Utiliser la couleur du serveur</string>
+    <string name="settings_use_server_color_subtitle">Récupérer la couleur du serveur pendant la synchronisation et l\'utiliser comme couleur principale de l\'appli</string>
     <string name="project_sync_success">Projet %s synchronisé</string>
     <string name="add_member_dialog_title">Nom du nouveau membre</string>
     <string name="edit_member_dialog_title">Éditer un membre</string>

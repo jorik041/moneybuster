@@ -28,6 +28,9 @@
     <string name="setting_project_repetition">Επανάληψη αυτού του λογαριασμού κάθε</string>
     <string name="setting_payment_mode">Τρόπος πληρωμής</string>
     <string name="setting_category">Κατηγορία</string>
+    <string name="empty_action_dialog_title">What do you want to do?</string>
+    <string name="configure_account_choice">Configure Nextcloud account</string>
+    <string name="add_project_choice">Manually add a project (IHateMoney, Cospend or local)</string>
     <string name="repeat_no">να μην επαναληφθεί</string>
     <string name="repeat_day">μέρα</string>
     <string name="repeat_week">εβδομάδα</string>
@@ -137,7 +140,7 @@
     <string name="welcome_dialog_title">Καλωσήρθατε στο MoneyBuster v%s</string>
     <string name="welcome_dialog_content_v12">Τι νέο υπάρχει;\n\n* Σάρωση QRCode\n* Καλύτερη διεπαφή\n* Εισαγωγή έργου Nextcloud λογαριασμού\n* Βελτιωμένα στατιστικά στοιχεία\n* Και πολλά άλλα :-)</string>
     <string name="welcome_dialog_content_v13">Τι νέο υπάρχει;\n\n* Φίλτρα στα στατιστικά στοιχεία\n* Δημιουργία λογαριασμών αυτοματοποιημένων διακανονισμών\n* Αναζήτηση βάσει ονόματος οφειλέτη\n* Και πολλά άλλα :-)</string>
-    <string name="first_welcome_dialog_content">Πρώτα δημιουργήσετε ή συνδεθείτε σε ένα έργο (IHateMoney ή Nextcloud Cospend), προσθέστε μερικά μέλη και/ή δημιουργήστε μερικούς λογαριασμούς!\n\nΆλλες κύριες δράσεις:\n* Εξοφλήστε το έργο για να δημιουργήσετε ένα συνολικό σχέδιο αποπληρωμής\n* Εμφάνιση στατιστικών έργων\n* Κοινοποίηση: δημιουργήστε ένα QRCode που μπορούν να σαρώσουν άλλοι για να συμμετάσχουν στο έργο\n\nΣτο Android &gt;= 8.0 μπορείτε να πατήσετε πατημένα τα κουμπιά δράσης για να εμφανιστεί η βοήθεια.</string>
+    <string name="first_welcome_dialog_content">First, configure Nextcloud account or create/join a project (IHateMoney or Nextcloud Cospend), then add some members and/or create some bills!\n\nOther main actions:\n* Settle the project to generate a global repayment plan\n* Show project statistics\n* Share: generate a QRCode that others can scan to join the project\n\nOn Android &gt;= 8.0 you can long press the action buttons to display help.</string>
     <string name="changelog">Αρχείο αλλαγών</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Εμφάνιση</string>
@@ -165,6 +168,8 @@
     <string name="settings_cert_reset">Επαναφορά μη έμπιστων πιστοποιητικών</string>
     <string name="settings_cert_reset_summary">Επαναφέρει την εμπιστοσύνη όλων των προσαρμοσμένων πιστοποιητικών</string>
     <string name="settings_cert_reset_toast">Όλα τα προσαρμοσμένα πιστοποιητικά εκκαθαρίστηκαν</string>
+    <string name="settings_use_server_color_title">Use server color</string>
+    <string name="settings_use_server_color_subtitle">Get server color when syncing and use it as main app color</string>
     <string name="project_sync_success">Το έργο %s συγχρονίστηκε</string>
     <string name="add_member_dialog_title">Νέο όνομα μέλους</string>
     <string name="edit_member_dialog_title">Επεξεργασία μέλους</string>

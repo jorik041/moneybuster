@@ -28,6 +28,9 @@
     <string name="setting_project_repetition">Herhaal deze rekening elke</string>
     <string name="setting_payment_mode">Betaalwijze</string>
     <string name="setting_category">Categorie</string>
+    <string name="empty_action_dialog_title">What do you want to do?</string>
+    <string name="configure_account_choice">Configure Nextcloud account</string>
+    <string name="add_project_choice">Manually add a project (IHateMoney, Cospend or local)</string>
     <string name="repeat_no">niet herhalen</string>
     <string name="repeat_day">dag</string>
     <string name="repeat_week">week</string>
@@ -137,7 +140,7 @@
     <string name="welcome_dialog_title">Welkom bij MoneyBuster v%s</string>
     <string name="welcome_dialog_content_v12">Wat is er nieuw?\n\n* QRCode scannen\n* Betere interface\n* Nextcloud account project import\n* Verbeterde statistieken\n* En nog veel meer :-)</string>
     <string name="welcome_dialog_content_v13">Wat is er nieuw?\n\n* Filters in statistieken\n* Automatisch verrekeningen aanmaken\n* Zoek op naam\n* En nog veel meer :-)</string>
-    <string name="first_welcome_dialog_content">Maak eerst een nieuw of neem deel aan een project (IHateMoney of Nextcloud Cospend), voeg dan deelnemers toe en/of maak rekeningen aan!\n\nAndere hoofdacties:\n* Stel het project in om een globaal terugbetalingsplan te genereren\n* Toon projectstatistieken\n* Delen: genereer een QRCode die anderen kunnen scannen om deel te nemen aan het project\n\nOp Android &gt;= 8. je kan de actieknoppen lang indrukken om hulp te tonen.</string>
+    <string name="first_welcome_dialog_content">First, configure Nextcloud account or create/join a project (IHateMoney or Nextcloud Cospend), then add some members and/or create some bills!\n\nOther main actions:\n* Settle the project to generate a global repayment plan\n* Show project statistics\n* Share: generate a QRCode that others can scan to join the project\n\nOn Android &gt;= 8.0 you can long press the action buttons to display help.</string>
     <string name="changelog">Wijzigingslogboek</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Uiterlijk</string>
@@ -165,6 +168,8 @@
     <string name="settings_cert_reset">(Niet-)vertrouwde certificaten herstellen</string>
     <string name="settings_cert_reset_summary">Herstelt het vertrouwen van alle persoonlijke certificaten</string>
     <string name="settings_cert_reset_toast">Alle persoonlijke certificaten zijn gewist</string>
+    <string name="settings_use_server_color_title">Use server color</string>
+    <string name="settings_use_server_color_subtitle">Get server color when syncing and use it as main app color</string>
     <string name="project_sync_success">Project \'%s\' is gesynchroniseerd</string>
     <string name="add_member_dialog_title">Nieuwe deelnemernaam</string>
     <string name="edit_member_dialog_title">Deelnemer bewerken</string>

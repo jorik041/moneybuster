@@ -28,6 +28,9 @@
     <string name="setting_project_repetition">Ripeti questa spesa ogni</string>
     <string name="setting_payment_mode">Modalità pagamento</string>
     <string name="setting_category">Categoria</string>
+    <string name="empty_action_dialog_title">What do you want to do?</string>
+    <string name="configure_account_choice">Configure Nextcloud account</string>
+    <string name="add_project_choice">Manually add a project (IHateMoney, Cospend or local)</string>
     <string name="repeat_no">Non ripetere</string>
     <string name="repeat_day">giorno</string>
     <string name="repeat_week">settimana</string>
@@ -137,7 +140,7 @@
     <string name="welcome_dialog_title">Benvenuto in MoneyBuster v%s</string>
     <string name="welcome_dialog_content_v12">Cosa c\'è di nuovo?\n\n* La scansione del QRCode\n* Interfaccia migliore\n* Importa progetto di un Nextcloud account\n* Statistiche migliori\n* e tanto altro :-)</string>
     <string name="welcome_dialog_content_v13">Cosa c\'è di nuovo?\n\n* Filtri nelle statistiche\n* Creazione automatica di fatture di pagamento\n* Ricerca per nome\n* e tanto altro :-)</string>
-    <string name="first_welcome_dialog_content">Prima, crea o unisci un progetto (IHateMoney o Nextcloud Cospend), poi aggiungi alcuni membri e/o crei delle fatture!\n\n Altre azioni principali:\n* Sistemare il progetto per generare un piano di rimborso globale\n* Mostra statistiche di progetto\n* Condividi: generare un QRCode che altri possono scansionare per unirsi al progetto\n\nSu Android &gt;= 8.0 è possibile premere a lungo i pulsanti azione per visualizzare l\'aiuto.</string>
+    <string name="first_welcome_dialog_content">First, configure Nextcloud account or create/join a project (IHateMoney or Nextcloud Cospend), then add some members and/or create some bills!\n\nOther main actions:\n* Settle the project to generate a global repayment plan\n* Show project statistics\n* Share: generate a QRCode that others can scan to join the project\n\nOn Android &gt;= 8.0 you can long press the action buttons to display help.</string>
     <string name="changelog">Changelog</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Appearance</string>
@@ -165,6 +168,8 @@
     <string name="settings_cert_reset">Reimposta certificati (non)affidabili</string>
     <string name="settings_cert_reset_summary">Reimposta la fiducia di tutti i certificati personalizzati</string>
     <string name="settings_cert_reset_toast">Tutti i certificati personalizzati sono stati cancellati</string>
+    <string name="settings_use_server_color_title">Use server color</string>
+    <string name="settings_use_server_color_subtitle">Get server color when syncing and use it as main app color</string>
     <string name="project_sync_success">Progetto %s sincronizzato</string>
     <string name="add_member_dialog_title">Nome nuovo membro</string>
     <string name="edit_member_dialog_title">Modifica un membro</string>

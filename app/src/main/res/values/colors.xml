@@ -2,9 +2,9 @@
 <resources>
     <!-- Colors -->
 
-    <color name="primary">#71B922</color>
-    <color name="primary_dark">#5A941A</color>
-    <color name="primary_light">#B4F173</color>
+    <color name="primary">#0082C9</color>
+    <color name="primary_dark">#286090</color>
+    <color name="primary_light">#5AABFC</color>
 
     <color name="separator">#d2d2d2</color>
 
@@ -14,7 +14,7 @@
     <color name="bg_normal_transparent">#bbffffff</color>
     <color name="bg_fab_transparent">#ddffffff</color>
     <color name="bg_attention">#d40000</color>
-    <color name="bg_warning">#74991B</color>
+    <color name="bg_warning">#0082C9</color>
     <color name="fg_default">#000000</color>
     <color name="fg_default_selection">#333333</color>
     <color name="fg_default_low">#666666</color>

@@ -65,6 +65,18 @@ public class CospendClient {
         }
     }
 
+    public ServerResponse.CapabilitiesResponse getColor(CustomCertManager ccm) throws JSONException, IOException, TokenMismatchException {
+        String target = "/ocs/v2.php/cloud/capabilities";
+        if (nextcloudAPI != null) {
+            Log.d(getClass().getSimpleName(), "using SSO to get color");
+            //return new ServerResponse.SessionsResponse(new ResponseData("[]", lastETag, lastModified));
+            return new ServerResponse.CapabilitiesResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_GET, null));
+        }
+        else {
+            return new ServerResponse.CapabilitiesResponse(requestServer(ccm, target, METHOD_GET, null, null, true, true));
+        }
+    }
+
     private VersatileProjectSyncClient.ResponseData requestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, Map<String, String> params) throws TokenMismatchException{
         StringBuffer result = new StringBuffer();
 

@@ -171,6 +171,8 @@
     <string name="settings_cert_reset">Reset (un)trusted certificates</string>
     <string name="settings_cert_reset_summary">Resets trust of all custom certificates</string>
     <string name="settings_cert_reset_toast">All custom certificates have been cleared</string>
+    <string name="settings_use_server_color_title">Use server color</string>
+    <string name="settings_use_server_color_subtitle">Get server color when syncing and use it as main app color</string>
     <string name="project_sync_success">Project %s synchronized</string>
     <string name="add_member_dialog_title">New member name</string>
     <string name="edit_member_dialog_title">Edit member</string>
@@ -286,6 +288,7 @@
     <string name="pref_key_reset_trust" translatable="false">resetTrust</string>
     <string name="pref_key_theme" translatable="false">darkTheme</string>
     <string name="pref_key_color" translatable="false">appColor</string>
+    <string name="pref_key_use_server_color" translatable="false">useServerColor</string>
     <string name="pref_key_offline_mode" translatable="false">offlineMode</string>
     <string name="pref_key_smart_sync" translatable="false">smartSync</string>
     <string name="pref_value_theme_light">Light</string>

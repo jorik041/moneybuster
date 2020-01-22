@@ -14,6 +14,13 @@
         android:summary="%s"
         android:title="@string/settings_theme_title" />
 
+    <CheckBoxPreference
+        android:icon="@drawable/ic_palette_grey_24dp"
+        android:key="@string/pref_key_use_server_color"
+        android:title="@string/settings_use_server_color_title"
+        android:defaultValue="true"
+        android:summary="@string/settings_use_server_color_subtitle" />
+
     <com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat
         android:defaultValue="@color/primary"
         android:icon="@drawable/ic_palette_grey_24dp"

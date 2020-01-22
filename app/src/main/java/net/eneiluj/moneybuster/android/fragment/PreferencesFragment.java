@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.preference.CheckBoxPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
@@ -74,6 +75,28 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
 
         final SwitchPreferenceCompat themePref = (SwitchPreferenceCompat) findPreference(getString(R.string.pref_key_theme));
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+
+        final CheckBoxPreference useServerColorPref = (CheckBoxPreference) findPreference(getString(R.string.pref_key_use_server_color));
+
+        Boolean useServerColor = sp.getBoolean(getString(R.string.pref_key_use_server_color), false);
+        if (useServerColor) {
+            findPreference(getString(R.string.pref_key_color)).setVisible(false);
+        }
+
+        useServerColorPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                Boolean useServerColor = (Boolean) newValue;
+                if (useServerColor) {
+                    findPreference(getString(R.string.pref_key_color)).setVisible(false);
+                }
+                else {
+                    findPreference(getString(R.string.pref_key_color)).setVisible(true);
+                }
+                return true;
+            }
+        });
+
         Boolean darkTheme = sp.getBoolean(getString(R.string.pref_key_theme), false);
 
         setThemePreferenceSummary(themePref, darkTheme);

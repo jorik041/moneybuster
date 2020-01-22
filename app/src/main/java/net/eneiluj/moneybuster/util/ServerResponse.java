@@ -14,17 +14,27 @@ import net.eneiluj.moneybuster.model.DBMember;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 /**
  * Provides entity classes for handling server responses
  */
 public class ServerResponse {
+    private static final String TAG = ServerResponse.class.getSimpleName();
 
     public static class NotModifiedException extends IOException {
     }
@@ -185,6 +195,16 @@ public class ServerResponse {
 
         public List<DBAccountProject> getAccountProjects(String ncUrl) throws JSONException {
             return getAccountProjectsFromJSONArray(new JSONArray(getContent()), ncUrl);
+        }
+    }
+
+    public static class CapabilitiesResponse extends ServerResponse {
+        public CapabilitiesResponse(VersatileProjectSyncClient.ResponseData response) {
+            super(response);
+        }
+
+        public String getColor() throws IOException {
+            return getColorFromContent(getContent());
         }
     }
 
@@ -501,5 +521,30 @@ public class ServerResponse {
             ncUrl = accountNcUrl;
         }
         return new DBAccountProject(0, remoteId, null, name, ncUrl);
+    }
+
+    protected String getColorFromContent(String content) throws IOException {
+        //Log.i(TAG, content);
+        String result = null;
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory
+                    .newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+
+            InputStream stream = new ByteArrayInputStream(content.getBytes());
+            Document doc = db.parse(stream);
+            doc.getDocumentElement().normalize();
+            // Locate the Tag Name
+            NodeList nodelist = doc.getElementsByTagName("color");
+            if (nodelist.getLength() > 0) {
+                result = nodelist.item(0).getTextContent();
+                Log.i(TAG,"I GOT THE COLOR from server: "+result);
+            }
+        }
+        catch (ParserConfigurationException e) {
+        }
+        catch (SAXException e) {
+        }
+        return result;
     }
 }

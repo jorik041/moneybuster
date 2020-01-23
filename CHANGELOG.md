@@ -5,12 +5,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-## 0.0.17 – 2020-01-20
+## 0.0.17 – 2020-01-23
 ### Added
 - custom currencies support
+- select dialog to choose what to do when no project/account
+- get NC color if account configured, optionnaly use it as main app color
 
 ### Changed
 - disabled avatar
+- updated screenshots (english/french)
+- default app color is nextcloudish blue
+- updated AUTHORS
 
 ### Fixed
 - coherence between Cospend and MoneyBuster behaviour regarding disabled members

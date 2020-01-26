@@ -1,37 +1,37 @@
-Moneybuster is a shared budget manager able to synchronize with IHateMoney and Nextcloud Cospend.
+Moneybuster es un gestor de presupuestos compartido capaz de sincronizar con IHateMoney y Nextcloud Cospend.
 
-What's different from other shared budget managers?
+¿Cual es la diferencia con otros gestores de presupuestos compartidos?
 
-You can keep your project local or make it synchronize with IHateMoney and Nextcloud Cospend projects.
-This means you can choose where your data is going and preserve your privacy.
+Puedes mantener tu proyecto en local o sincronizarlo con proyectos como IHateMoney y Nextcloud Cospend.
+Esto significa que puedes elegir a dónde van sus datos y mantener tu privacidad.
 
-# Features
+# Características
 
-* manage projects (add/remove/create/delete/edit)
-* manage members (add/remove/edit)
-* manage bills (add/remove/edit)
-* search bills (by payer, name, amount, date)
-* project statistics
-* project settlement plan
-* share statistics and settlement plan
-* dark theme and customizable main app color
-* share/import projects with link/QRCode
-* multi-lingual user-interface (translated on Crowdin: https://crowdin.com/project/moneybuster)
+* administrar proyectos (añadir/quitar/crear/eliminar/editar)
+* administrar miembros (añadir/quitar/editar)
+* gestionar facturas (añadir/quitar/editar)
+* buscar facturas (por pagador, nombre, cantidad, fecha)
+* estadísticas de proyecto
+* plan de liquidación del proyecto
+* compartir estadísticas y plan de liquidación
+* tema oscuro y color de aplicación principal personalizable
+* compartir/importar proyectos con enlaces/códigos QR
+* interfaz de usuario multilingüe (traducida en https://crowdin.com/project/moneybuster)
 
-# Requirements
+# Requisitos
 
-If you want to host a project in IHateMoney :
+Si quieres organizar un proyecto en IHateMoney :
 
-* IHateMoney instance running
+* una instancia de IHateMoney en funcionamiento
 
-If you want to host a project in Nextcloud Cospend :
+Si quieres organizar un proyecto en Nextcloud Cospend :
 
-* Nextcloud instance running with Cospend app installed
+* una instancia de Nextcloud en funcionamiento con la aplicación Cospend instalada
 
-If you want to be able to create remote projects from MoneyBuster : enable public project creation on your IHateMoney or Nextcloud Cospend instance.
+Si quieres poder crear proyectos remotos desde MoneyBuster : habilita la creación pública de proyectos en tu instancia IHateMoney o Nextcloud Cospend.
 
-The app runs on Android>=4.1
+La aplicación se ejecuta en Android>=4.1
 
-# Alternatives
+# Alternativas
 
-Tricount, Cospender, Splitwise etc... which are not FOSS and force you to give away your private data.
+Tricount, Cospender, Splitwise etc... que no son FOSS y te obligan a dar tus datos privados.

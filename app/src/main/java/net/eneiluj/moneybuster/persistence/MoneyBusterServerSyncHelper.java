@@ -128,7 +128,7 @@ public class MoneyBusterServerSyncHelper {
 
     // current state of the synchronization
     private boolean syncActive = false;
-    private boolean syncScheduled = false;
+    private static List<Long> projectIdsToSync = new ArrayList<>();
 
     // current state of the account projects synchronization
     private boolean syncAccountProjectsActive = false;
@@ -297,7 +297,7 @@ public class MoneyBusterServerSyncHelper {
             }
         } else if (!onlyLocalChanges) {
             Log.d(getClass().getSimpleName(), "... scheduled");
-            syncScheduled = true;
+            projectIdsToSync.add(projId);
             for (ICallback callback : callbacksPush) {
                 callback.onScheduled();
             }
@@ -345,9 +345,6 @@ public class MoneyBusterServerSyncHelper {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (!onlyLocalChanges && syncScheduled) {
-                syncScheduled = false;
-            }
             syncActive = true;
         }
 
@@ -359,7 +356,7 @@ public class MoneyBusterServerSyncHelper {
             LoginStatus status = LoginStatus.OK;
 
             status = pushLocalChanges();
-            if (!onlyLocalChanges && status == LoginStatus.OK) {
+            if (status == LoginStatus.OK) {
                 status = pullRemoteChanges();
             }
             //dbHelper.debugPrintFullDB();
@@ -876,9 +873,10 @@ public class MoneyBusterServerSyncHelper {
             for (ICallback callback : callbacks) {
                 callback.onFinish();
             }
-            // start next sync if scheduled meanwhile
-            if (syncScheduled) {
-                scheduleSync(false, project.getId());
+            // start next sync if there are ids in the schedule
+            if (projectIdsToSync.size() > 0) {
+                long pid = projectIdsToSync.remove(projectIdsToSync.size() - 1);
+                scheduleSync(false, pid);
             }
         }
     }

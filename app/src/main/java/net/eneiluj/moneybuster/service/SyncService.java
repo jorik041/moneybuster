@@ -59,6 +59,7 @@ public class SyncService extends Service {
     private SyncServiceThread thread;
     private Looper looper;
     private MoneyBusterSQLiteOpenHelper db;
+    private long intervalMinutes;
 
     private final int NOTIFICATION_ID = 1526756648;
     private NotificationManager mNotificationManager;
@@ -76,9 +77,7 @@ public class SyncService extends Service {
      */
     @Override
     public void onCreate() {
-        if (DEBUG) {
-            Log.d(TAG, "[onCreate]");
-        }
+        Log.d(TAG, "[onCreate]");
         firstRun = true;
 
         connectionMonitor = null;
@@ -93,7 +92,16 @@ public class SyncService extends Service {
         }
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mSyncWorker = new SyncWorker(prefs.getLong(getString(R.string.pref_key_sync_interval), 900));
+        String intervalStr = prefs.getString(getString(R.string.pref_key_sync_interval), "15");
+        intervalMinutes = 15;
+        try {
+            intervalMinutes = Long.valueOf(intervalStr);
+        }
+        catch (Exception e) {
+
+        }
+
+        mSyncWorker = new SyncWorker(intervalMinutes * 60);
 
 
         final Notification notification = showNotification(NOTIFICATION_ID);
@@ -126,13 +134,17 @@ public class SyncService extends Service {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "[onstartCommand]");
         if (isRunning) {
+            Log.d(TAG, "[onstartCommand isrunning yes]");
             final boolean stopService = (intent != null) && intent.getBooleanExtra(PreferencesFragment.STOP_SYNC_SERVICE, false);
             if (stopService) {
+                Log.d(TAG, "[stop sync service]");
                 stopSelf();
             }
             else {
                 if (firstRun) {
+                    Log.d(TAG, "[start sync service => loop]");
                     mSyncWorker.startSyncLoop();
                     // anyway, first run is over
                     firstRun = false;
@@ -183,8 +195,10 @@ public class SyncService extends Service {
     }
 
     public void requestSync() {
+        Log.v(TAG, "request sync of all projects");
         List<DBProject> projs = db.getProjects();
         for (DBProject proj: projs) {
+            Log.v(TAG, "request sync of project "+proj.getRemoteId());
             if (!proj.getType().equals(DBProject.TYPE_LOCAL)) {
                 db.getMoneyBusterServerSyncHelper().scheduleSync(false, proj.getId());
             }
@@ -244,11 +258,15 @@ public class SyncService extends Service {
         String lastSyncDate = "plop";
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this, channelId)
-                        .setSmallIcon(R.drawable.ic_notify_24dp)
+                        .setSmallIcon(R.drawable.ic_dollar_grey_24dp)
                         .setContentTitle(getString(R.string.app_name))
                         .setPriority(priority)
                         .setOnlyAlertOnce(true)
-                        .setContentText(String.format(getString(R.string.is_running), lastSyncDate));
+                        .setContentText(String.format(
+                                getString(R.string.is_running),
+                                intervalMinutes,
+                                lastSyncDate
+                        ));
                         //.setSmallIcon(R.drawable.ic_stat_notify_24dp)
                         //.setContentText(String.format(getString(R.string.is_running), getString(R.string.app_name)));
         mNotificationBuilder = mBuilder;
@@ -270,7 +288,11 @@ public class SyncService extends Service {
 
     private void updateNotificationContent() {
         String lastSyncDate = "plop";
-        mNotificationBuilder.setContentText(String.format(getString(R.string.is_running), lastSyncDate));
+        mNotificationBuilder.setContentText(String.format(
+                getString(R.string.is_running),
+                intervalMinutes,
+                lastSyncDate
+        ));
         mNotificationManager.notify(this.NOTIFICATION_ID, mNotificationBuilder.build());
     }
 

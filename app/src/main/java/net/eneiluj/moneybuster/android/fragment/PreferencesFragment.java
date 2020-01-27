@@ -175,10 +175,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 Boolean newPeriodicalSync = (Boolean) newValue;
+                Log.d("preference", "PERIOSYNC "+newPeriodicalSync);
                 if (newPeriodicalSync) {
                     syncIntervalPref.setVisible(true);
                     // launch service
                     if (!SyncService.isRunning()) {
+                        Log.d("preference", "not running => launch");
                         Intent intent = new Intent(getContext(), SyncService.class);
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                             getContext().startService(intent);
@@ -191,6 +193,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                     syncIntervalPref.setVisible(false);
                     // TODO stop service
                     if (SyncService.isRunning()) {
+                        Log.d("preference", "running => stop");
                         Intent intent = new Intent(getContext(), SyncService.class);
                         intent.putExtra(STOP_SYNC_SERVICE, true);
                         getContext().startService(intent);

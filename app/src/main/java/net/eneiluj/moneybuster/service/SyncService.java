@@ -54,6 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import net.eneiluj.moneybuster.android.activity.BillsListViewActivity;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.nextcloud.phonetrack.R;
 import net.eneiluj.nextcloud.phonetrack.android.activity.LogjobsListViewActivity;
@@ -171,7 +172,7 @@ public class SyncService extends Service {
     }
 
     /**
-     * Start main thread, request location updates, start synchronization.
+     * Start main thread, start synchronization.
      *
      * @param intent Intent
      * @param flags Flags
@@ -181,305 +182,12 @@ public class SyncService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (isRunning) {
-            final boolean logjobsUpdated = (intent != null) && intent.getBooleanExtra(LogjobsListViewActivity.UPDATED_LOGJOBS, false);
-            final boolean providersUpdated = (intent != null) && intent.getBooleanExtra(PreferencesFragment.UPDATED_PROVIDERS, false);
-            final boolean updateNotif = (intent != null) && intent.getBooleanExtra(UPDATE_NOTIFICATION, false);
-            if (logjobsUpdated) {
-                // this to avoid doing two loc upd when service is down and then a logjob is enabled
-                // in this scenario, we run onCreate which already does it all, no need to handle logjo updated
-                if (firstRun) {
-                    if (DEBUG) {
-                        Log.d(TAG, "[onStartCommand : upd logjob but firstrun so nothing]");
-                    }
-                } else {
-                    long ljId = intent.getLongExtra(LogjobsListViewActivity.UPDATED_LOGJOB_ID, 0);
-                    if (DEBUG) {
-                        Log.d(TAG, "[onStartCommand : upd logjob]");
-                    }
-                    handleLogjobUpdated(ljId);
-                }
-            } else if (providersUpdated) {
-                if (DEBUG) {
-                    Log.d(TAG, "[onStartCommand : upd providers]");
-                }
-                String providersValue = intent.getStringExtra(PreferencesFragment.UPDATED_PROVIDERS_VALUE);
-                updatePreferences(providersValue);
-                for (long ljId : logjobs.keySet()) {
-                    restartUpdates(ljId);
-                }
-            } else if (updateNotif && isRunning) {
-                updateNotificationContent();
-            } else {
-                // start without parameter
-                if (DEBUG) {
-                    Log.d(TAG, "[onStartCommand : start without parameter]");
-                }
-            }
+            mSyncWorker.startSyncLoop();
             // anyway, first run is over
             firstRun = false;
         }
 
         return START_STICKY;
-    }
-
-    /**
-     * When user updated a logjob, restart location updates, stop service on failure
-     */
-    private void handleLogjobUpdated(long ljId) {
-        boolean wasAlreadyThere = logjobs.containsKey(ljId);
-        updateLogjob(ljId);
-        // if it was not deleted or disabled
-        if (logjobs.containsKey(ljId)) {
-            if (isRunning) {
-                // it was modified
-                if (wasAlreadyThere) {
-                    restartUpdates(ljId);
-                }
-                // it was created
-                else {
-                    requestLocationUpdates(ljId, true, true);
-                }
-            }
-        }
-        // it was deleted or disabled
-        else {
-            if (logjobs.isEmpty()) {
-                stopSelf();
-            }
-        }
-    }
-
-    private void updateAllActiveLogjobs() {
-        List<DBLogjob> logjobs = db.getLogjobs();
-        // we tell logger service to restart updates for enabled logjobs
-        for (DBLogjob lj: logjobs) {
-            if (lj.isEnabled()) {
-                handleLogjobUpdated(lj.getId());
-            }
-        }
-    }
-
-    /**
-     * Check if user granted permission to access location.
-     *
-     * @return True if permission granted, false otherwise
-     */
-    private boolean canAccessLocation() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // first we check is device is in power saving mode
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        boolean isPowerSaveMode = false;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && pm != null) {
-            isPowerSaveMode = pm.isPowerSaveMode();
-        }
-        if (DEBUG) { Log.d(TAG, "POWEEEEEEEEE "+ isPowerSaveMode); }
-        if (DEBUG) { Log.d(TAG, "AIRPLANEEEEEEEEEEEEEEEEEEEEEEEE "+ SupportUtil.isAirplaneModeOn(this)); }
-
-        boolean respectPowerSaveMode = prefs.getBoolean(getString(R.string.pref_key_power_saving_awareness), false);
-
-        // then we check airplane mode related stuff
-        boolean respectAirplaneMode = prefs.getBoolean(getString(R.string.pref_key_offline_mode_awareness), false);
-
-        // then we check if we have location permissions
-        boolean hasLocPermissions = (
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && (
-                        Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
-                        || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
-                )
-        );
-
-        return (!respectPowerSaveMode || !isPowerSaveMode)
-                && (!respectAirplaneMode || !SupportUtil.isAirplaneModeOn(this))
-                && hasLocPermissions;
-    }
-
-    /**
-     * Check if given provider exists on device
-     * @param provider Provider
-     * @return True if exists, false otherwise
-     */
-    private boolean providerExists(String provider) {
-        return locManager.getAllProviders().contains(provider);
-    }
-
-    /**
-     * Reread preferences
-     */
-    private void updatePreferences(String value) {
-        String providersPref;
-        if (value == null) {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            providersPref = prefs.getString(getString(R.string.pref_key_providers), "1");
-        }
-        else {
-            providersPref = value;
-        }
-        useGps = ((providersPref.equals("1")
-                   || providersPref.equals("3")
-                   || providersPref.equals("5")
-                   || providersPref.equals("7")
-                 ) && providerExists(LocationManager.GPS_PROVIDER));
-        useNet = ((providersPref.equals("2")
-                   || providersPref.equals("3")
-                   || providersPref.equals("6")
-                   || providersPref.equals("7")
-                 ) && providerExists(LocationManager.NETWORK_PROVIDER));
-        usePassive = ((providersPref.equals("4")
-                || providersPref.equals("5")
-                || providersPref.equals("6")
-                || providersPref.equals("7")
-        ) && providerExists(LocationManager.PASSIVE_PROVIDER));
-        if (DEBUG) { Log.d(TAG, "[update prefs "+providersPref+", gps : "+useGps+
-                                     ", net : "+useNet+", passive : "+usePassive+"]"); }
-    }
-
-    /**
-     * update internal values
-     *
-     * logjob might have been added, modified or deleted
-     *
-     */
-    private void updateLogjob(long ljId) {
-        DBLogjob lj = db.getLogjob(ljId);
-        if (lj != null && lj.isEnabled()) {
-            // new or modified : update logjob
-            logjobs.put(ljId, lj);
-
-            mLocationListener ll;
-            // this is a new logjob
-            if (!locListeners.containsKey(ljId)) {
-                ll = new mLocationListener(lj);
-                locListeners.put(ljId, ll);
-                lastLocations.put(ljId, null);
-                lastUpdateRealtime.put(ljId, Long.valueOf(0));
-            } else {
-                ll = locListeners.get(ljId);
-                // Update listener for changed parameters
-                ll.populateFromLogjob(lj);
-
-                mLogjobWorkers.get(ljId).stop();
-                //mLogjobWorkers.get(ljId).populate(lj);
-            }
-
-            // anyway (new/existing logjob) we instanciate a new one
-            LogjobWorker jw;
-            if (lj.useSignificantMotion()) {
-                // Assume motion exists when logging begins
-                jw = new LogjobSignificantMotionWorker(lj, ll);
-            } else {
-                if (lj.keepGpsOnBetweenFixes()) {
-                    jw = new LogjobClassicGpsOnWorker(lj, ll);
-                }
-                else {
-                    jw = new LogjobClassicWorker(lj, ll);
-                }
-            }
-            mLogjobWorkers.put(ljId, jw);
-        }
-        // it has been deleted or disabled
-        else {
-            if (locListeners.containsKey(ljId)) {
-                // Stop requested updates, sleeping motion-based job
-                stopJob(ljId);
-
-                locListeners.remove(ljId);
-                lastLocations.remove(ljId);
-                lastUpdateRealtime.remove(ljId);
-                logjobs.remove(ljId);
-                mLogjobWorkers.remove(ljId);
-            }
-        }
-    }
-
-    /**
-     * Restart request for location updates
-     *
-     * @return True if succeeded, false otherwise (eg. disabled all providers)
-     */
-    private boolean restartUpdates(long jobId) {
-        if (DEBUG) { Log.d(TAG, "[job "+jobId+" location updates restart]"); }
-
-        stopJob(jobId);
-
-        return requestLocationUpdates(jobId, true, true);
-    }
-
-    private void stopJob(long jobId) {
-        locManager.removeUpdates(locListeners.get(jobId));
-
-        // stop any runnables waiting for an interval
-        DBLogjob lj = db.getLogjob(jobId);
-        if (lj != null) {
-            mLogjobWorkers.get(jobId).stop();
-        }
-    }
-
-    /**
-     * Request location updates
-     * @return True if succeeded from at least one provider
-     */
-    @SuppressWarnings({"MissingPermission"})
-    private boolean requestLocationUpdates(long ljId, boolean startTimeout, boolean firstRequestAfterAccepted) {
-        // here we start a location request for each activated logjob
-        DBLogjob lj = logjobs.get(ljId);
-        int minTimeMillis = lj.getMinTime() * 1000;
-        int minDistance = lj.getMinDistance();
-        boolean keepGpsOn = lj.keepGpsOnBetweenFixes();
-        mLocationListener locListener = locListeners.get(ljId);
-        boolean hasLocationUpdates = false;
-        if (canAccessLocation()) {
-            // update last acquisition start time only if we know
-            // we are not in an "accuracy improvement" loop
-            // in other words: if we start a timeout
-            if (firstRequestAfterAccepted) {
-                mLogjobWorkers.get(ljId).updateLastAcquisitionStart();
-            }
-            if (useNet) {
-                // normal or significant motion based sampling, request single update
-                // the worker takes care of looping
-                locManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, locListener, looper);
-
-                if (locManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                    hasLocationUpdates = true;
-                    if (DEBUG) { Log.d(TAG, "job "+ljId+" [Using net provider, freq "+lj.getMinTime()+"]"); }
-                }
-            }
-            if (usePassive) {
-                locManager.requestSingleUpdate(LocationManager.PASSIVE_PROVIDER, locListener, looper);
-
-                if (locManager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
-                    hasLocationUpdates = true;
-                    if (DEBUG) { Log.d(TAG, "job "+ljId+" [Using passive provider, freq "+lj.getMinTime()+"]"); }
-                }
-            }
-            if (useGps) {
-                locManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locListener, looper);
-
-                if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    hasLocationUpdates = true;
-                    if (DEBUG) { Log.d(TAG, "job "+ljId+" [Using gps provider, freq "+(minTimeMillis/1000)+"]"); }
-                }
-            }
-            if (hasLocationUpdates) {
-                // start timeout only if we're not in an "accuracy improvement" loop
-                if (startTimeout) {
-                    mLogjobWorkers.get(ljId).startResultTimeout();
-                }
-            } else {
-                // no location provider available
-                sendBroadcast(BROADCAST_LOCATION_DISABLED);
-                if (DEBUG) { Log.d(TAG, "job "+ljId+"[No available location updates]"); }
-            }
-        } else {
-            // can't access location
-            sendBroadcast(BROADCAST_LOCATION_PERMISSION_DENIED);
-            if (DEBUG) { Log.d(TAG, "job "+ljId+"[Location permission denied]"); }
-        }
-
-        return hasLocationUpdates;
     }
 
     /**
@@ -489,12 +197,7 @@ public class SyncService extends Service {
     public void onDestroy() {
         if (DEBUG) { Log.d(TAG, "[onDestroy]"); }
 
-        if (canAccessLocation()) {
-            //noinspection MissingPermission
-            for (long ljId : locListeners.keySet()) {
-                stopJob(ljId);
-            }
-        }
+        mSyncWorker.stop();
 
         isRunning = false;
 
@@ -503,8 +206,7 @@ public class SyncService extends Service {
 
         if (thread != null) {
             thread.interrupt();
-            unregisterReceiver(mBatInfoReceiver);
-            sendBroadcast(BROADCAST_LOCATION_STOPPED);
+            //sendBroadcast(BROADCAST_LOCATION_STOPPED);
         }
         thread = null;
 
@@ -537,23 +239,7 @@ public class SyncService extends Service {
     }
 
     /**
-     * Return realtime of last update in milliseconds
-     *
-     * @return Time or zero if not set
-     */
-    public static long lastUpdateRealtime(long ljId) {
-        return lastUpdateRealtime.get(ljId);
-    }
-
-    /**
-     * Reset realtime of last update
-     */
-    public static void resetUpdateRealtime(long ljId) {
-        lastUpdateRealtime.put(ljId, Long.valueOf(0));
-    }
-
-    /**
-     * Main service thread class handling location updates.
+     * Main service thread class handling sync requests.
      */
     private class SyncServiceThread extends HandlerThread {
         SyncServiceThread() {
@@ -598,15 +284,15 @@ public class SyncService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(channelId, lowImportance);
         }
-        String nbLocations = String.valueOf(db.getLocationNotSyncedCount());
-        String nbSent = String.valueOf(db.getNbTotalSync());
+        // TODO get last sync date and set notification icon
+        String lastSyncDate = "plop";
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.ic_notify_24dp)
                         .setContentTitle(getString(R.string.app_name))
                         .setPriority(priority)
                         .setOnlyAlertOnce(true)
-                        .setContentText(String.format(getString(R.string.is_running), nbLocations, nbSent));
+                        .setContentText(String.format(getString(R.string.is_running), lastSyncDate));
                         //.setSmallIcon(R.drawable.ic_stat_notify_24dp)
                         //.setContentText(String.format(getString(R.string.is_running), getString(R.string.app_name)));
         mNotificationBuilder = mBuilder;
@@ -614,10 +300,10 @@ public class SyncService extends Service {
             mBuilder.setChannelId(channelId);
         }
 
-        Intent resultIntent = new Intent(this, LogjobsListViewActivity.class);
+        Intent resultIntent = new Intent(this, BillsListViewActivity.class);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(LogjobsListViewActivity.class);
+        stackBuilder.addParentStack(BillsListViewActivity.class);
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
@@ -627,9 +313,8 @@ public class SyncService extends Service {
     }
 
     private void updateNotificationContent() {
-        String nbLocations = String.valueOf(db.getLocationNotSyncedCount());
-        String nbSent = String.valueOf(db.getNbTotalSync());
-        mNotificationBuilder.setContentText(String.format(getString(R.string.is_running), nbLocations, nbSent));
+        String lastSyncDate = "plop";
+        mNotificationBuilder.setContentText(String.format(getString(R.string.is_running), lastSyncDate));
         mNotificationManager.notify(this.NOTIFICATION_ID, mNotificationBuilder.build());
     }
 
@@ -650,181 +335,6 @@ public class SyncService extends Service {
     private void sendBroadcast(String broadcast) {
         Intent intent = new Intent(broadcast);
         sendBroadcast(intent);
-    }
-
-    /**
-     * Send broadcast message
-     * @param broadcast Broadcast message
-     */
-    private void sendBroadcast(String broadcast, long ljId) {
-        Intent intent = new Intent(broadcast);
-        intent.putExtra(SyncService.BROADCAST_EXTRA_PARAM, ljId);
-        sendBroadcast(intent);
-    }
-
-    private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver(){
-        @Override
-        public void onReceive(Context ctxt, Intent intent) {
-            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-            int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-            if(level == -1 || scale == -1) {
-                battery = 0.0;
-            }
-            double batLevel = ((double)level / (double)scale) * 100.0;
-            battery = Math.round(batLevel * 100.0) / 100.0;
-            if (SyncService.DEBUG) { Log.d(TAG, "[BATT changed " + battery + "]"); }
-        }
-    };
-
-    private double getBatteryLevelOnce() {
-        Intent batteryIntent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-        if(level == -1 || scale == -1) {
-            return 0.0;
-        }
-
-        double batLevel = ((double)level / (double)scale) * 100.0;
-        batLevel = Math.round(batLevel * 100.0) / 100.0;
-        return batLevel;
-    }
-
-    /**
-     * Location listener class
-     */
-    private class mLocationListener implements LocationListener {
-
-        private DBLogjob logjob;
-        private long logjobId;
-        private long minTimeTolerance;
-        private long maxTimeMillis;
-        private long minTimeMillis;
-        private boolean keepGpsOn;
-        private boolean useSignificantMotion;
-
-        public mLocationListener(DBLogjob logjob) {
-            populateFromLogjob(logjob);
-        }
-
-        /**
-         * Populate logging job and cache values
-         * @param logjob The logging job
-         */
-        public void populateFromLogjob(DBLogjob logjob) {
-            this.logjob = logjob;
-            this.logjobId = logjob.getId();
-            this.keepGpsOn = logjob.keepGpsOnBetweenFixes();
-            this.useSignificantMotion = logjob.useSignificantMotion();
-            // max time tolerance is half min time, but not more that 5 min
-            this.minTimeMillis = logjob.getMinTime() * 1000;
-            minTimeTolerance = Math.min(minTimeMillis / 2, 5 * 60 * 1000);
-            maxTimeMillis = minTimeMillis + minTimeTolerance;
-        }
-
-        @Override
-        public void onLocationChanged(Location loc) {
-            if (DEBUG) {
-                Log.d(TAG, "[location changed: " + logjobId + "/" + logjob.getTitle() + " : bat : " + battery + ", " + loc + "]");
-            }
-
-            // always pass to the worker (sig motion or not)
-            mLogjobWorkers.get(logjobId).handleLocationChange(loc);
-        }
-
-        /**
-         * Should the location be logged or skipped
-         * @param loc Location
-         * @return True if skipped
-         */
-        private boolean skipLocation(DBLogjob logjob, Location loc) {
-            // if we keep gps on, we take care of the timing between points
-            if (keepGpsOn) {
-                long elapsedMillisSinceLastUpdate;
-                elapsedMillisSinceLastUpdate = (loc.getElapsedRealtimeNanos() / 1000000) - lastUpdateRealtime.get(logjobId);
-
-                if (elapsedMillisSinceLastUpdate < minTimeMillis) {
-                    if (DEBUG) { Log.d(TAG,"skip because "+elapsedMillisSinceLastUpdate + " < "+ minTimeMillis); }
-                    return true;
-                }
-            }
-            int maxAccuracy = logjob.getMinAccuracy();
-            // accuracy radius too high
-            if (loc.hasAccuracy() && loc.getAccuracy() > maxAccuracy) {
-                if (DEBUG) { Log.d(TAG, "[location accuracy above limit: " + loc.getAccuracy() + " > " + maxAccuracy + "]"); }
-                // reset gps provider to get better accuracy even if time and distance criteria don't change
-                if (loc.getProvider().equals(LocationManager.GPS_PROVIDER)) {
-                    restartUpdates(logjobId);
-                }
-                return true;
-            }
-            // use network provider only if recent gps data is missing
-            if (loc.getProvider().equals(LocationManager.NETWORK_PROVIDER) && lastLocations.get(logjobId) != null) {
-                // we received update from gps provider not later than after maxTime period
-                long elapsedMillis = SystemClock.elapsedRealtime() - lastUpdateRealtime.get(logjobId);
-                if (lastLocations.get(logjobId).getProvider().equals(LocationManager.GPS_PROVIDER) && elapsedMillis < maxTimeMillis) {
-                    // skip network provider
-                    if (DEBUG) { Log.d(TAG, "[location network provider skipped]"); }
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         * Callback on provider disabled
-         * @param provider Provider
-         */
-        @Override
-        public void onProviderDisabled(String provider) {
-            if (DEBUG) { Log.d(TAG, "[location provider " + provider + " disabled]"); }
-            if (provider.equals(LocationManager.GPS_PROVIDER)) {
-                sendBroadcast(BROADCAST_LOCATION_GPS_DISABLED);
-            } else if (provider.equals(LocationManager.NETWORK_PROVIDER)) {
-                sendBroadcast(BROADCAST_LOCATION_NETWORK_DISABLED);
-            }
-        }
-
-        /**
-         * Callback on provider enabled
-         * @param provider Provider
-         */
-        @Override
-        public void onProviderEnabled(String provider) {
-            if (DEBUG) { Log.d(TAG, "[location provider " + provider + " enabled]"); }
-            if (provider.equals(LocationManager.GPS_PROVIDER)) {
-                sendBroadcast(BROADCAST_LOCATION_GPS_ENABLED);
-            } else if (provider.equals(LocationManager.NETWORK_PROVIDER)) {
-                sendBroadcast(BROADCAST_LOCATION_NETWORK_ENABLED);
-            }
-        }
-
-        /**
-         * Callback on provider status change
-         * @param provider Provider
-         * @param status Status
-         * @param extras Extras
-         */
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            if (DEBUG) {
-                final String statusString;
-                switch (status) {
-                    case OUT_OF_SERVICE:
-                        statusString = "out of service";
-                        break;
-                    case TEMPORARILY_UNAVAILABLE:
-                        statusString = "temporarily unavailable";
-                        break;
-                    case AVAILABLE:
-                        statusString = "available";
-                        break;
-                    default:
-                        statusString = "unknown";
-                        break;
-                }
-                if (DEBUG) { Log.d(TAG, "[location status for " + provider + " changed: " + statusString + "]"); }
-            }
-        }
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -860,22 +370,9 @@ public class SyncService extends Service {
             catch (InterruptedException e) {
 
             }
-            startService(syncIntent);
+            //startService(syncIntent);
+            // TODO trigger the sync here
         }
-    }
-
-    private void acceptAndSyncLocation(long logjobId, Location loc) {
-        lastLocations.put(logjobId, loc);
-        lastUpdateRealtime.put(logjobId, loc.getElapsedRealtimeNanos() / 1000000);
-
-        db.addLocation(logjobId, loc, battery);
-
-        sendBroadcast(BROADCAST_LOCATION_UPDATED, logjobId);
-        updateNotificationContent();
-
-        Intent syncOneDev = new Intent(getApplicationContext(), WebTrackService.class);
-        syncOneDev.putExtra(LogjobsListViewActivity.UPDATED_LOGJOB_ID, logjobId);
-        startService(syncOneDev);
     }
 
     // worker superclass

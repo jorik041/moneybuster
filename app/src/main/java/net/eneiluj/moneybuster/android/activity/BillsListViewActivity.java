@@ -1,5 +1,6 @@
 package net.eneiluj.moneybuster.android.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.SearchManager;
@@ -57,6 +58,7 @@ import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.preference.PreferenceManager;
@@ -92,6 +94,7 @@ import net.eneiluj.moneybuster.model.Transaction;
 import net.eneiluj.moneybuster.persistence.LoadBillsListTask;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.persistence.MoneyBusterServerSyncHelper;
+import net.eneiluj.moneybuster.service.SyncService;
 import net.eneiluj.moneybuster.util.CospendClientUtil;
 import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.MoneyBuster;
@@ -303,6 +306,28 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         }
 
         displayWelcomeDialog();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                Log.d(TAG, "[request foreground permission]");
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{Manifest.permission.FOREGROUND_SERVICE},
+                        PERMISSION_FOREGROUND
+                );
+            }
+        }
+
+        if (!SyncService.isRunning() && preferences.getBoolean(getString(R.string.pref_key_periodical_sync), false)) {
+            Intent intent = new Intent(this, SyncService.class);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                startService(intent);
+            } else {
+                startForegroundService(intent);
+            }
+        }
     }
 
     private void displayWelcomeDialog() {

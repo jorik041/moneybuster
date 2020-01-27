@@ -1,17 +1,28 @@
 package net.eneiluj.moneybuster.android.fragment;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.CheckBoxPreference;
+import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
@@ -25,6 +36,7 @@ import com.larswerkman.lobsterpicker.LobsterPicker;
 import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider;
 
 import net.eneiluj.moneybuster.R;
+import net.eneiluj.moneybuster.service.SyncService;
 import net.eneiluj.moneybuster.util.MoneyBuster;
 
 import at.bitfire.cert4android.CustomCertManager;
@@ -32,6 +44,8 @@ import at.bitfire.cert4android.CustomCertManager;
 //import android.support.v4.app.Fragment;
 
 public class PreferencesFragment extends PreferenceFragmentCompat implements PreferenceFragmentCompat.OnPreferenceStartScreenCallback{
+
+    public final static String STOP_SYNC_SERVICE = "net.eneiluj.moneybuster.STOP_SYNC_SERVICE";
 
     @Override
     public Fragment getCallbackFragment() {
@@ -62,6 +76,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         Preference resetTrust = findPreference(getString(R.string.pref_key_reset_trust));
         resetTrust.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -125,6 +141,74 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                 return true;
             }
         });
+
+        final EditTextPreference syncIntervalPref = (EditTextPreference) findPreference(getString(R.string.pref_key_sync_interval));
+        String interval = sp.getString(getString(R.string.pref_key_sync_interval), "15");
+        syncIntervalPref.setSummary(interval);
+        syncIntervalPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+
+            @Override
+            public boolean onPreferenceChange(Preference preference,
+                                              Object newValue) {
+                String newValueString = (String) newValue;
+                long newInterval;
+                try {
+                    newInterval = Long.valueOf(newValueString);
+                }
+                catch (Exception e) {
+                    showToast(getString(R.string.error_invalid_sync_interval), Toast.LENGTH_LONG);
+                    return false;
+                }
+                if (newInterval > 1440 || newInterval < 1) {
+                    showToast(getString(R.string.error_invalid_sync_interval), Toast.LENGTH_LONG);
+                    return false;
+                }
+                else {
+                    preference.setSummary((CharSequence) newValue);
+                    return true;
+                }
+            }
+
+        });
+        final SwitchPreferenceCompat periodicalSyncPref = (SwitchPreferenceCompat) findPreference(getString(R.string.pref_key_periodical_sync));
+        periodicalSyncPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                Boolean newPeriodicalSync = (Boolean) newValue;
+                if (newPeriodicalSync) {
+                    syncIntervalPref.setVisible(true);
+                    // launch service
+                    if (!SyncService.isRunning()) {
+                        Intent intent = new Intent(getContext(), SyncService.class);
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                            getContext().startService(intent);
+                        } else {
+                            getContext().startForegroundService(intent);
+                        }
+                    }
+                }
+                else {
+                    syncIntervalPref.setVisible(false);
+                    // TODO stop service
+                    if (SyncService.isRunning()) {
+                        Intent intent = new Intent(getContext(), SyncService.class);
+                        intent.putExtra(STOP_SYNC_SERVICE, true);
+                        getContext().startService(intent);
+                    }
+                }
+                return true;
+            }
+        });
+
+        if (!periodicalSyncPref.isChecked()) {
+            syncIntervalPref.setVisible(false);
+        }
+    }
+
+    protected void showToast(CharSequence text, int duration) {
+        Context context = getContext();
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
     private void setThemePreferenceIcon(Preference preference, boolean darkThemeActive) {

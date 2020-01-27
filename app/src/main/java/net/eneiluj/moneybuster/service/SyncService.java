@@ -9,7 +9,6 @@
 
 package net.eneiluj.moneybuster.service;
 
-import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -19,53 +18,31 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
-import android.hardware.TriggerEvent;
-import android.hardware.TriggerEventListener;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
-import android.os.BatteryManager;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
-import android.os.PowerManager;
-import android.os.SystemClock;
+
 import androidx.preference.PreferenceManager;
 import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
 import android.util.Log;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.activity.BillsListViewActivity;
+import net.eneiluj.moneybuster.android.fragment.PreferencesFragment;
+import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
-import net.eneiluj.nextcloud.phonetrack.R;
-import net.eneiluj.nextcloud.phonetrack.android.activity.LogjobsListViewActivity;
-import net.eneiluj.nextcloud.phonetrack.android.fragment.PreferencesFragment;
-import net.eneiluj.nextcloud.phonetrack.model.DBLogjob;
-import net.eneiluj.nextcloud.phonetrack.persistence.PhoneTrackSQLiteOpenHelper;
-import net.eneiluj.nextcloud.phonetrack.util.SupportUtil;
-
-import static android.location.LocationProvider.AVAILABLE;
-import static android.location.LocationProvider.OUT_OF_SERVICE;
-import static android.location.LocationProvider.TEMPORARILY_UNAVAILABLE;
 
 /**
  * Background service logging positions to database
@@ -88,7 +65,7 @@ public class SyncService extends Service {
     private NotificationCompat.Builder mNotificationBuilder;
     public static boolean DEBUG = true;
 
-    private LogjobWorker mSyncWorker;
+    private SyncWorker mSyncWorker;
 
     private ConnectionStateMonitor connectionMonitor;
     private BroadcastReceiver powerSaverChangeReceiver;
@@ -115,7 +92,8 @@ public class SyncService extends Service {
             mNotificationManager.cancelAll();
         }
 
-        mSyncWorker = new LogjobWorker();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mSyncWorker = new SyncWorker(prefs.getLong(getString(R.string.pref_key_sync_interval), 900));
 
 
         final Notification notification = showNotification(NOTIFICATION_ID);
@@ -136,39 +114,6 @@ public class SyncService extends Service {
             connectionMonitor.enable(getApplicationContext());
         }
 
-        // listen to power saving mode change
-        powerSaverChangeReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "[POWER LISTENER] power saving state changed");
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                boolean respectPowerSaveMode = prefs.getBoolean(getString(R.string.pref_key_power_saving_awareness), false);
-                if (respectPowerSaveMode) {
-                    updateAllActiveLogjobs();
-                }
-            }
-        };
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("android.os.action.POWER_SAVE_MODE_CHANGED");
-        registerReceiver(powerSaverChangeReceiver, filter);
-
-        // listen to offline (airplane) mode change
-        airplaneModeChangeReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "[AIRPLANE MODE LISTENER] airplane mode state changed");
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                boolean respectAirplaneMode = prefs.getBoolean(getString(R.string.pref_key_offline_mode_awareness), false);
-                if (respectAirplaneMode) {
-                    updateAllActiveLogjobs();
-                }
-            }
-        };
-        IntentFilter filterAirplane = new IntentFilter();
-        //filterAirplane.addAction("android.intent.action.AIRPLANE_MODE_CHANGED");
-        filterAirplane.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-        registerReceiver(airplaneModeChangeReceiver, filterAirplane);
-
     }
 
     /**
@@ -182,9 +127,17 @@ public class SyncService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (isRunning) {
-            mSyncWorker.startSyncLoop();
-            // anyway, first run is over
-            firstRun = false;
+            final boolean stopService = (intent != null) && intent.getBooleanExtra(PreferencesFragment.STOP_SYNC_SERVICE, false);
+            if (stopService) {
+                stopSelf();
+            }
+            else {
+                if (firstRun) {
+                    mSyncWorker.startSyncLoop();
+                    // anyway, first run is over
+                    firstRun = false;
+                }
+            }
         }
 
         return START_STICKY;
@@ -227,6 +180,15 @@ public class SyncService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         throw new UnsupportedOperationException("Not implemented");
+    }
+
+    public void requestSync() {
+        List<DBProject> projs = db.getProjects();
+        for (DBProject proj: projs) {
+            if (!proj.getType().equals(DBProject.TYPE_LOCAL)) {
+                db.getMoneyBusterServerSyncHelper().scheduleSync(false, proj.getId());
+            }
+        }
     }
 
     /**
@@ -272,17 +234,11 @@ public class SyncService extends Service {
      */
     private Notification showNotification(int mId) {
         if (DEBUG) { Log.d(TAG, "[showNotification " + mId + "]"); }
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean lowImportance = prefs.getBoolean(getString(R.string.pref_key_notification_importance), false);
-        int priority = NotificationCompat.PRIORITY_DEFAULT;
-        if (lowImportance) {
-            priority = NotificationCompat.PRIORITY_MIN;
-        }
+        int priority = NotificationCompat.PRIORITY_MIN;
 
         final String channelId = String.valueOf(mId);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel(channelId, lowImportance);
+            createNotificationChannel(channelId, true);
         }
         // TODO get last sync date and set notification icon
         String lastSyncDate = "plop";
@@ -370,87 +326,59 @@ public class SyncService extends Service {
             catch (InterruptedException e) {
 
             }
-            //startService(syncIntent);
-            // TODO trigger the sync here
+            requestSync();
         }
     }
 
     // worker superclass
-    private abstract class LogjobWorker extends TriggerEventListener {
-        protected mLocationListener mLocationListener;
-        protected DBLogjob mLogJob;
-        protected long mJobId;
-        protected Location lastLocation;
+    private class SyncWorker {
 
-        protected Long mLastUpdateRealtime;
+        protected Long mLastSyncSystemTime;
 
         protected Handler mIntervalHandler;
         protected Runnable mIntervalRunnable;
-        protected Handler mTimeoutHandler;
-        protected Runnable mTimeoutRunnable;
-        protected Boolean mMotionDetected;
-        protected Location mCachedNetworkResult;
 
-        protected boolean mUseSignificantMotion;
-        protected boolean mUseMixedMode;
+        protected long mIntervalTimeSecs;
 
-        protected long mIntervalTimeMillis;
-        protected boolean mUseInterval;
-        protected int mLocationTimeout;
-        protected long lastAcquisitionStartTimestamp;
-
-        LogjobWorker(DBLogjob logjob, mLocationListener listener) {
-            populate(logjob);
-            mLocationListener = listener;
-        }
-
-        protected void populate(DBLogjob logjob) {
-            mLogJob = logjob;
-            mJobId = logjob.getId();
-            lastLocation = null;
-
-            mLastUpdateRealtime = Long.valueOf(0);
-            lastAcquisitionStartTimestamp = System.currentTimeMillis()/1000;
+        SyncWorker(long intervalSec) {
+            mIntervalTimeSecs = intervalSec;
+            mLastSyncSystemTime = Long.valueOf(0);
+            //lastAcquisitionStartTimestamp = System.currentTimeMillis()/1000;
 
             mIntervalHandler = null;
             mIntervalRunnable = null;
-            mTimeoutHandler = null;
-            mTimeoutRunnable = null;
-            mCachedNetworkResult = null;
-
-            mIntervalTimeMillis = mLogJob.getMinTime() * 1000;
-            mUseInterval = mIntervalTimeMillis > 0;
-            mUseSignificantMotion = logjob.useSignificantMotion();
-            mUseMixedMode = logjob.useSignificantMotionMixed();
-            mLocationTimeout = mLogJob.getLocationRequestTimeout();
         }
 
-        protected boolean isMinDistanceOk(Location loc) {
-            int minDistance = mLogJob.getMinDistance();
-            if (minDistance == 0 || lastLocation == null) {
-                return true;
+        public void setInterval(long intervalSec) {
+            mIntervalTimeSecs = intervalSec;
+        }
+
+        public void startSyncLoop() {
+            scheduleSyncAfterInterval(mIntervalTimeSecs * 1000);
+        }
+
+        private void scheduleSyncAfterInterval(long millisDelay) {
+            Log.d(TAG, "Scheduling sync in " + millisDelay/1000.0 + "s");
+            // Create new handler if one doesn't exist
+            if (mIntervalHandler == null) {
+                mIntervalHandler = new Handler();
             }
-            else {
-                double distance = SupportUtil.distance(
-                        lastLocation.getLatitude(), loc.getLatitude(),
-                        lastLocation.getLongitude(), loc.getLongitude(),
-                        lastLocation.getAltitude(), loc.getAltitude()
-                );
-                Log.d(TAG, "Distance with last point: "+distance);
-                Log.d(TAG, "Logjob minimum distance: "+minDistance);
-                return (distance >= minDistance);
-            }
-        }
 
-        protected boolean isMinAccuracyOk(Location loc) {
-            int minAccuracy = mLogJob.getMinAccuracy();
-            Log.d(TAG, "Accuracy of current point: "+loc.getAccuracy());
-            return (loc.getAccuracy() <= minAccuracy);
-        }
+            mIntervalRunnable = new Runnable() {
+                public void run() {
+                    Log.d(TAG, "End of delay => sync");
 
-        public void updateLastAcquisitionStart() {
-            // store time when position acquisition was launched
-            lastAcquisitionStartTimestamp = System.currentTimeMillis()/1000;
+                    // Assists with ensuring we don't end up with two interval sequences running for one job
+                    mIntervalRunnable = null;
+
+                    requestSync();
+                    updateNotificationContent();
+                    scheduleSyncAfterInterval(mIntervalTimeSecs * 1000);
+                }
+            };
+
+            // Create and post
+            mIntervalHandler.postDelayed(mIntervalRunnable, millisDelay);
         }
 
         protected void stop() {
@@ -461,496 +389,6 @@ public class SyncService extends Service {
                 }
                 mIntervalHandler = null;
             }
-            if (mTimeoutHandler != null) {
-                if (mTimeoutRunnable != null) {
-                    mTimeoutHandler.removeCallbacks(mTimeoutRunnable);
-                    mTimeoutRunnable = null;
-                }
-                mTimeoutHandler = null;
-            }
-        }
-
-        public void startResultTimeout() {
-            mCachedNetworkResult = null;
-
-            if (mLocationTimeout > 0) {
-                if (mTimeoutHandler == null)
-                    mTimeoutHandler = new Handler();
-
-                // Create and post
-                mTimeoutRunnable = createSampleTimeoutDelayRunnable();
-                Log.d(TAG, "Waiting " + mLocationTimeout + "s for timeout");
-                mTimeoutHandler.postDelayed(mTimeoutRunnable, mLocationTimeout * 1000);
-            }
-        }
-
-        protected abstract Runnable createSampleTimeoutDelayRunnable();
-
-        public abstract void handleLocationChange(Location loc);
-    }
-
-    private class LogjobClassicWorker extends LogjobWorker {
-
-        LogjobClassicWorker(DBLogjob logjob, mLocationListener listener) {
-            super(logjob, listener);
-        }
-
-        protected Runnable createSampleTimeoutDelayRunnable() {
-
-            Runnable runnable = new Runnable() {
-                public void run() {
-                    Log.d(TAG, "Sampling timeout hit");
-
-                    if (mCachedNetworkResult != null) {
-                        // Cancel location request
-                        if (useGps || usePassive) {
-                            locManager.removeUpdates(mLocationListener);
-                        }
-
-                        Log.d(TAG, "Reached timeout before GPS or passive sample, using network sample");
-                        lastLocation = mCachedNetworkResult;
-                        acceptAndSyncLocation(mJobId, mCachedNetworkResult);
-
-                        mCachedNetworkResult = null;
-                    } else {
-                        // Cancel location request
-                        if (useGps || useNet || usePassive) {
-                            locManager.removeUpdates(mLocationListener);
-                        }
-                    }
-
-                    // Schedule sample for X seconds from last time a sample was asked
-                    if (mUseInterval) {
-                        long timeToWait = mIntervalTimeMillis - (mLocationTimeout * 1000);
-                        Log.d(TAG, "Schedule next sample in "+(timeToWait / 1000)+"s");
-                        scheduleSampleAfterInterval(timeToWait);
-                    }
-                }
-            };
-            return runnable;
-        }
-
-        private void scheduleSampleAfterInterval(long millisDelay) {
-            Log.d(TAG, "Scheduling sampling delay for " + millisDelay/1000.0 + "s");
-            // Create new handler if one doesn't exist
-            if (mIntervalHandler == null) {
-                mIntervalHandler = new Handler();
-            }
-
-            mIntervalRunnable = new Runnable() {
-                public void run() {
-                    Log.d(TAG, "End of delay in NORMAL mode, recording point");
-
-                    // Assists with ensuring we don't end up with two interval sequences running for one job
-                    mIntervalRunnable = null;
-
-                    requestLocationUpdates(mJobId, true, true);
-                }
-            };
-
-            // Create and post
-            mIntervalHandler.postDelayed(mIntervalRunnable, millisDelay);
-        }
-
-        public void handleLocationChange(Location loc) {
-            if (loc.getProvider().equals(LocationManager.GPS_PROVIDER)
-                    || loc.getProvider().equals(LocationManager.PASSIVE_PROVIDER)
-                    || (!useGps && !usePassive)
-            ) {
-                // Got GPS result, accept
-                Log.d(TAG, "Got position result, immediately accepting");
-
-                // Remove any cached network result or disable update
-                if (mCachedNetworkResult == null) {
-                    if (useNet
-                            && (loc.getProvider().equals(LocationManager.GPS_PROVIDER)
-                            || loc.getProvider().equals(LocationManager.PASSIVE_PROVIDER))
-                    ) {
-                        locManager.removeUpdates(mLocationListener);
-                    }
-                } else {
-                    mCachedNetworkResult = null;
-                }
-
-                // respect minimum distance/accuracy settings
-                boolean minDistanceOk = isMinDistanceOk(loc);
-                boolean minAccuracyOk = isMinAccuracyOk(loc);
-                if (minDistanceOk && minAccuracyOk) {
-                    // Accept, store and sync location
-                    lastLocation = loc;
-                    acceptAndSyncLocation(mJobId, loc);
-
-                    mLastUpdateRealtime = loc.getElapsedRealtimeNanos() / 1000000;
-                }
-                else {
-                    Log.d(TAG, "Not enough DISTANCE (min "+mLogJob.getMinDistance()+
-                            ") or ACCURACY (min "+mLogJob.getMinAccuracy()+"), we skip this location");
-                }
-
-                // we stop the timeout only if there was no accuracy problem
-                // if there was an accuracy problem, we will launch a position request again,
-                // staying in same timeout
-                if (minAccuracyOk) {
-                    // Cancel timeout runnable
-                    if (mTimeoutHandler != null) {
-                        mTimeoutHandler.removeCallbacks(mTimeoutRunnable);
-                        mTimeoutRunnable = null;
-                    }
-                }
-
-                // If using an interval and NO accuracy problem, schedule sample for X seconds from last sample
-                if (mUseInterval) {
-                    if (minAccuracyOk) {
-                        long timeToWaitSecond = mLogJob.getMinTime();
-
-                        // how much time did it take to get current position?
-                        long cTs = System.currentTimeMillis() / 1000;
-                        long timeSpentSearching = cTs - lastAcquisitionStartTimestamp;
-                        timeToWaitSecond = mLogJob.getMinTime() - timeSpentSearching;
-                        if (timeToWaitSecond < 0) {
-                            timeToWaitSecond = 0;
-                        }
-                        Log.d(TAG, "As we spent " + timeSpentSearching + "s to search position, " +
-                                "with interval=" + mLogJob.getMinTime() + ", " +
-                                "we now wait " + timeToWaitSecond + "s before getting a new one");
-
-                        scheduleSampleAfterInterval(timeToWaitSecond * 1000);
-                    }
-                    // if there was an accuracy problem, just request position again, staying in same timeout
-                    else {
-                        Log.d(TAG, "ACCURACY is not good enough, launch location REQUEST again, staying in same timeout");
-                        // except this request does not start a timeout
-                        requestLocationUpdates(mJobId, false, false);
-                    }
-                }
-            } else {
-                Log.d(TAG, "Network location returned first, caching");
-                // Cache lower quality network result
-                mCachedNetworkResult = loc;
-            }
-        }
-
-        // this is triggered only when significant motion mode is enabled
-        @Override
-        public void onTrigger(TriggerEvent event) {
-        }
-    }
-
-    private class LogjobClassicGpsOnWorker extends LogjobWorker {
-
-        LogjobClassicGpsOnWorker(DBLogjob logjob, mLocationListener listener) {
-            super(logjob, listener);
-        }
-
-        protected Runnable createSampleTimeoutDelayRunnable() {
-            return null;
-        }
-
-        private void scheduleSampleAfterInterval(long millisDelay, boolean firstRequestAfterAccepted) {
-            Log.d(TAG, "Scheduling sampling delay for " + millisDelay/1000.0 + "s");
-            // Create new handler if one doesn't exist
-            if (mIntervalHandler == null) {
-                mIntervalHandler = new Handler();
-            }
-
-            mIntervalRunnable = new Runnable() {
-                public void run() {
-                    Log.d(TAG, "End of delay in NORMAL mode, recording point");
-
-                    // Assists with ensuring we don't end up with two interval sequences running for one job
-                    mIntervalRunnable = null;
-
-                    requestLocationUpdates(mJobId, false, firstRequestAfterAccepted);
-                }
-            };
-
-            // Create and post
-            mIntervalHandler.postDelayed(mIntervalRunnable, millisDelay);
-        }
-
-        public void handleLocationChange(Location loc) {
-            if (loc.getProvider().equals(LocationManager.GPS_PROVIDER)
-                    || loc.getProvider().equals(LocationManager.PASSIVE_PROVIDER)
-                    || (!useGps && !usePassive)
-            ) {
-                // Got GPS result, accept
-                Log.d(TAG, "Got position result, immediately accepting if constraints are respected");
-
-                // Remove any cached network result or disable update
-                if (mCachedNetworkResult == null) {
-                    if (useNet
-                            && (loc.getProvider().equals(LocationManager.GPS_PROVIDER)
-                            || loc.getProvider().equals(LocationManager.PASSIVE_PROVIDER))
-                    ) {
-                        locManager.removeUpdates(mLocationListener);
-                    }
-                } else {
-                    mCachedNetworkResult = null;
-                }
-
-                // respect minimum distance/accuracy/time settings
-                boolean minDistanceOk = isMinDistanceOk(loc);
-                boolean minAccuracyOk = isMinAccuracyOk(loc);
-                boolean minTimeOk = isMinTimeOk(loc);
-                long timeSinceLastAccepted = (loc.getElapsedRealtimeNanos() / 1000000000) - (mLastUpdateRealtime / 1000);
-                boolean positionAccepted;
-                if (minDistanceOk && minAccuracyOk && minTimeOk) {
-                    // Accept, store and sync location
-                    lastLocation = loc;
-                    acceptAndSyncLocation(mJobId, loc);
-                    positionAccepted = true;
-
-                    mLastUpdateRealtime = loc.getElapsedRealtimeNanos() / 1000000;
-
-                    // how much time did it take to get current position?
-                    long cTs = System.currentTimeMillis() / 1000;
-                    long timeSpentSearching = cTs - lastAcquisitionStartTimestamp;
-                }
-                else {
-                    positionAccepted = false;
-                    Log.d(TAG, "Not enough DISTANCE (min "+mLogJob.getMinDistance()+
-                            ") or ACCURACY (min "+mLogJob.getMinAccuracy()+
-                            ") or TIME ("+timeSinceLastAccepted+"/"+mLogJob.getMinTime()+"), we skip this location");
-                }
-
-                // we always want a new position
-                scheduleSampleAfterInterval(1000, positionAccepted);
-            } else {
-                Log.d(TAG, "Network location returned first, caching");
-                // Cache lower quality network result
-                mCachedNetworkResult = loc;
-            }
-        }
-
-        protected boolean isMinTimeOk(Location loc) {
-            long timeSinceLastAccepted = (loc.getElapsedRealtimeNanos() / 1000000000) - (mLastUpdateRealtime / 1000);
-            int minTime = mLogJob.getMinTime();
-            Log.d(TAG, "is "+timeSinceLastAccepted+" >= "+minTime+" ?");
-            return (timeSinceLastAccepted >= minTime);
-        }
-
-        // this is triggered only when significant motion mode is enabled
-        @Override
-        public void onTrigger(TriggerEvent event) {
-        }
-    }
-
-    // this worker can be used for significant motion ones (with or without hybrid mode)
-    private class LogjobSignificantMotionWorker extends LogjobWorker {
-        private SensorManager mSensorManager;
-        private Sensor mSensor;
-
-        LogjobSignificantMotionWorker(DBLogjob logjob, mLocationListener listener) {
-            super(logjob, listener);
-
-            mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-            mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_SIGNIFICANT_MOTION);
-        }
-
-        protected Runnable createSampleTimeoutDelayRunnable() {
-
-            Runnable runnable = new Runnable() {
-                public void run() {
-                    Log.d(TAG, "Sampling timeout hit");
-
-                    if (mCachedNetworkResult != null) {
-                        // Cancel location request
-                        if (useGps || usePassive) {
-                            locManager.removeUpdates(mLocationListener);
-                        }
-
-                        Log.d(TAG, "Reached timeout before GPS or passive sample, using network sample");
-                        lastLocation = mCachedNetworkResult;
-                        acceptAndSyncLocation(mJobId, mCachedNetworkResult);
-
-                        mCachedNetworkResult = null;
-                    } else {
-                        // Cancel location request
-                        if (useGps || useNet || usePassive) {
-                            locManager.removeUpdates(mLocationListener);
-                        }
-                    }
-
-                    // Clear significant motion flag for next interval
-                    mMotionDetected = false;
-                    // Request significant motion notification
-                    mSensorManager.requestTriggerSensor(LogjobSignificantMotionWorker.this, mSensor);
-
-                    // Schedule sample for X seconds from last time a sample was asked
-                    if (mUseInterval) {
-                        long timeToWait = mIntervalTimeMillis - (mLocationTimeout * 1000);
-                        Log.d(TAG, "Schedule next sample in " + (timeToWait / 1000) + "s");
-                        scheduleSampleAfterInterval(timeToWait);
-                    }
-                }
-            };
-            return runnable;
-        }
-
-        private void scheduleSampleAfterInterval(long millisDelay) {
-            Log.d(TAG, "Scheduling sampling delay for " + millisDelay / 1000.0 + "s");
-            // Create new handler if one doesn't exist
-            if (mIntervalHandler == null) {
-                mIntervalHandler = new Handler();
-            }
-
-            mIntervalRunnable = new Runnable() {
-                public void run() {
-                    if (mMotionDetected || mUseMixedMode) {
-                        if (mUseMixedMode) {
-                            Log.d(TAG, "End of delay in SIGMOTION MIXED mode, recording point regardless of motion");
-                        } else {
-                            Log.d(TAG, "End of delay in SIGMOTION normal mode, significant motion detected during delay, recording point");
-                        }
-
-                        // Assists with ensuring we don't end up with two interval sequences running for one job
-                        mIntervalRunnable = null;
-
-                        requestLocationUpdates(mJobId, true, true);
-                    } else {
-                        Log.d(TAG, "No significant motion, not recording point");
-
-                        scheduleSampleAfterInterval(mIntervalTimeMillis);
-                    }
-                }
-            };
-
-            // Ensure significant motion notifications are enabled
-            mSensorManager.requestTriggerSensor(LogjobSignificantMotionWorker.this, mSensor);
-
-            // Create and post
-            mIntervalHandler.postDelayed(mIntervalRunnable, millisDelay);
-        }
-
-        public void handleLocationChange(Location loc) {
-            if (loc.getProvider().equals(LocationManager.GPS_PROVIDER)
-                    || loc.getProvider().equals(LocationManager.PASSIVE_PROVIDER)
-                    || (!useGps && !usePassive)
-            ) {
-                // Got GPS result, accept
-                Log.d(TAG, "Got position result, immediately accepting");
-
-                // Remove any cached network result or disable update
-                if (mCachedNetworkResult == null) {
-                    if (useNet
-                            && (loc.getProvider().equals(LocationManager.GPS_PROVIDER)
-                                || loc.getProvider().equals(LocationManager.PASSIVE_PROVIDER))
-                    ) {
-                        locManager.removeUpdates(mLocationListener);
-                    }
-                } else {
-                    mCachedNetworkResult = null;
-                }
-
-                // respect minimum distance/accuracy settings
-                boolean minDistanceOk = isMinDistanceOk(loc);
-                boolean minAccuracyOk = isMinAccuracyOk(loc);
-                if (minDistanceOk && minAccuracyOk) {
-                    // Accept, store and sync location
-                    lastLocation = loc;
-                    acceptAndSyncLocation(mJobId, loc);
-
-                    mLastUpdateRealtime = loc.getElapsedRealtimeNanos() / 1000000;
-                }
-                else {
-                    Log.d(TAG, "Not enough DISTANCE (min "+mLogJob.getMinDistance()+
-                            ") or ACCURACY (min "+mLogJob.getMinAccuracy()+"), we skip this location");
-                }
-
-                // we stop the timeout only if there was no accuracy problem
-                // if there was an accuracy problem, we will launch a position request again,
-                // staying in same timeout
-                if (minAccuracyOk) {
-                    // Cancel timeout runnable
-                    if (mTimeoutHandler != null) {
-                        mTimeoutHandler.removeCallbacks(mTimeoutRunnable);
-                        mTimeoutRunnable = null;
-                    }
-                }
-
-                    // Clear significant motion flag for next interval
-                    mMotionDetected = false;
-
-                    // Request significant motion notification
-                    mSensorManager.requestTriggerSensor(LogjobSignificantMotionWorker.this, mSensor);
-
-                // If using an interval and NO accuracy problem, schedule sample for X seconds from last sample
-                if (mUseInterval) {
-                    if (minAccuracyOk) {
-                        long timeToWaitSecond = mLogJob.getMinTime();
-                        scheduleSampleAfterInterval(timeToWaitSecond * 1000);
-                    }
-                    // if there was an accuracy problem, just request position again, staying in same timeout
-                    else {
-                        Log.d(TAG, "ACCURACY is not good enough, launch location REQUEST again, staying in same timeout");
-                        // except this request does not start a timeout
-                        requestLocationUpdates(mJobId, false, false);
-                    }
-                }
-            } else {
-                Log.d(TAG, "Network location returned first, caching");
-                // Cache lower quality network result
-                mCachedNetworkResult = loc;
-            }
-        }
-
-        // this is triggered only when significant motion mode is enabled
-        @Override
-        public void onTrigger(TriggerEvent event) {
-            Log.d(TAG, "Significant motion seen");
-
-            // Flag motion in interval
-            mMotionDetected = true;
-
-            // If the job doesn't have a minimum interval, or hasn't taken a sample for longer than its interval,
-            // sample immediately
-            long millisSinceLast = SystemClock.elapsedRealtime() - mLastUpdateRealtime;
-            // without mixed mode
-            if (!mUseInterval || !mUseMixedMode) {
-                if (!mUseInterval || millisSinceLast > mIntervalTimeMillis) {
-                    // If not using an interval, definitely request updates
-                    boolean requestUpdates = !mUseInterval;
-
-                    // If we're interval-based and there is a runnable waiting for the next interval we know we haven't
-                    // already requested a location. This checks helps us prevent having two sampling sequences running
-                    // for the same job.
-                    if (mUseInterval && mIntervalRunnable != null) {
-                        // Stop waiting runnable
-                        mIntervalHandler.removeCallbacks(mIntervalRunnable);
-                        mIntervalRunnable = null;
-
-                        Log.d(TAG, "Triggering immediate sample after significant motion due to " +
-                                millisSinceLast / 1000.0 + "s since last point");
-
-                        requestUpdates = true;
-                    }
-
-                    if (requestUpdates) {
-                        requestLocationUpdates(mJobId, true, true);
-                    }
-                }
-            }
-            // with mixed mode
-            // we take the position anyway, then runnable has to be killed, it will be launched again
-            // when handling the position result
-            else {
-                Log.d(TAG, "Triggering immediate sample after significant motion because we're in MIXED mode");
-
-                // If we're interval-based and there is a runnable waiting for the next interval we know we haven't
-                // already requested a location. This checks helps us prevent having two sampling sequences running
-                // for the same job.
-                if (mIntervalRunnable != null) {
-                    Log.d(TAG, "stop runnable because MIXED mode");
-                    // Stop waiting runnable
-                    mIntervalHandler.removeCallbacks(mIntervalRunnable);
-                    mIntervalRunnable = null;
-                }
-
-                requestLocationUpdates(mJobId, true, true);
-            }
-
-            // Request notification for next significant motion
-            mSensorManager.requestTriggerSensor(LogjobSignificantMotionWorker.this, mSensor);
         }
     }
 }

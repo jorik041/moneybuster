@@ -43,13 +43,6 @@
         android:summary="@string/settings_offline_mode_summary"
         android:title="@string/settings_offline_mode_title" />
 
-    <SwitchPreferenceCompat
-        android:defaultValue="false"
-        android:icon="@drawable/ic_lightbulb_outline_grey_24dp"
-        android:key="@string/pref_key_smart_sync"
-        android:summary="@string/settings_smart_sync_summary"
-        android:title="@string/settings_smart_sync_title" />
-
     <Preference
         android:icon="@drawable/ic_account_circle_grey_24dp"
         android:title="@string/settings_server_settings">
@@ -73,6 +66,38 @@
             android:title="@string/settings_cert_reset"
             android:summary="@string/settings_cert_reset_summary" />
     </PreferenceScreen>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_sync_category"
+        android:key="settings_sync_category">
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:icon="@drawable/ic_lightbulb_outline_grey_24dp"
+            android:key="@string/pref_key_smart_sync"
+            android:summary="@string/settings_smart_sync_summary"
+            android:title="@string/settings_smart_sync_title" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:icon="@drawable/ic_sync_grey_24dp"
+            android:key="@string/pref_key_periodical_sync"
+            android:summary="@string/settings_periodical_sync_summary"
+            android:title="@string/settings_periodical_sync_title" />
+
+        <EditTextPreference
+            android:defaultValue="15"
+            android:icon="@drawable/ic_timer_grey_24dp"
+            android:dialogMessage="@string/settings_sync_interval_long"
+            android:dialogTitle="@string/settings_sync_interval_title"
+            android:key="@string/pref_key_sync_interval"
+            android:singleLine="true"
+            android:selectAllOnFocus="true"
+            android:persistent="true"
+            android:dialogLayout="@layout/preference_edit_text_integer"
+            android:title="@string/settings_sync_interval_title" />
 
     </PreferenceCategory>
 

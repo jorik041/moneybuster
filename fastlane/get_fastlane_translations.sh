@@ -1,38 +1,37 @@
 #!/bin/bash
 
-test -d metadata/android/fr-FR || mkdir metadata/android/fr-FR
-cp ../app/src/main/res/fr/moneybuster_fastlane/full_description.txt metadata/android/fr-FR/full_description.txt
-cp ../app/src/main/res/fr/moneybuster_fastlane/short_description.txt metadata/android/fr-FR/short_description.txt
-echo "MoneyBuster" > metadata/android/fr-FR/title.txt
+declare -A langCodes
 
-test -d metadata/android/de-DE || mkdir metadata/android/de-DE
-cp ../app/src/main/res/de/moneybuster_fastlane/full_description.txt metadata/android/de-DE/full_description.txt
-cp ../app/src/main/res/de/moneybuster_fastlane/short_description.txt metadata/android/de-DE/short_description.txt
-echo "MoneyBuster" > metadata/android/de-DE/title.txt
+langCodes=(
+    ["fr"]="fr-FR" ["de"]="de-DE" ["es"]="es-ES" ["el"]="el-GR" ["it"]="it-IT"
+    ["nl"]="nl-NL" ["pl"]="pl-PL" ["ro"]="ro-RO" ["ru"]="ru-RU"
+    ["vi"]="vi-VN" ["eo"]="eo-UY" ["pt-BR"]="pt-BR" ["sr"]="sr-SP"
+    ["tr"]="tr-TR" ["oc"]="oc-FR" ["fa"]="fa-IR" ["fi"]="fi-FI"
+    ["zh-CN"]="zh-CN" ["hu"]="hu-HU" ["ta"]="ta-IN" ["pt-PT"]="pt-PT"
+    ["ar"]="ar-SA" ["es-ES"]="es-ES" ["cs"]="cs-CZ" ["th"]="th-TH"
+    ["sv-SE"]="sv-SE" ["en-GB"]="en-GB" ["qu"]="qu-PE" ["hi"]="hi-IN"
+    ["ca"]="ca-ES" ["sk"]="sk-SK" ["ne-NP"]="ne-NP" ["mn"]="mn-MN"
+    ["no"]="no-NO" ["ko"]="ko-KR" ["te"]="te-IN" ["en-US"]="en-US"
+    ["sl"]="sl-SI" ["bn"]="bn-BD" ["zh-TW"]="zh-TW" ["bg"]="bg-BG"
+    ["af"]="af-ZA" ["uk"]="uk-UA" ["ja"]="ja-JP" ["da"]="da-DK"
+    ["he"]="he-IL" ["id"]="id-ID"
+)
 
-test -d metadata/android/es-ES || mkdir metadata/android/es-ES
-cp ../app/src/main/res/es-ES/moneybuster_fastlane/full_description.txt metadata/android/es-ES/full_description.txt
-cp ../app/src/main/res/es-ES/moneybuster_fastlane/short_description.txt metadata/android/es-ES/short_description.txt
-echo "MoneyBuster" > metadata/android/es-ES/title.txt
+for path in `find ../app/src/main/res -name "full_description.txt"`; do
+    inFolder=`dirname $path`
+    inLangFolder=`dirname $inFolder`
+    inLang=`basename $inLangFolder`
+    outLang=${langCodes[$inLang]}
+    outFolder=metadata/android/$outLang
 
-test -d metadata/android/it-IT || mkdir metadata/android/it-IT
-cp ../app/src/main/res/it/moneybuster_fastlane/full_description.txt metadata/android/it-IT/full_description.txt
-cp ../app/src/main/res/it/moneybuster_fastlane/short_description.txt metadata/android/it-IT/short_description.txt
-echo "MoneyBuster" > metadata/android/it-IT/title.txt
-
-test -d metadata/android/zh-CN || mkdir metadata/android/zh-CN
-cp ../app/src/main/res/zh-CN/moneybuster_fastlane/full_description.txt metadata/android/zh-CN/full_description.txt
-cp ../app/src/main/res/zh-CN/moneybuster_fastlane/short_description.txt metadata/android/zh-CN/short_description.txt
-echo "MoneyBuster" > metadata/android/zh-CN/title.txt
-
-test -d metadata/android/pt-BR || mkdir metadata/android/pt-BR
-cp ../app/src/main/res/pt-BR/moneybuster_fastlane/full_description.txt metadata/android/pt-BR/full_description.txt
-cp ../app/src/main/res/pt-BR/moneybuster_fastlane/short_description.txt metadata/android/pt-BR/short_description.txt
-echo "MoneyBuster" > metadata/android/pt-BR/title.txt
-
-test -d metadata/android/nl-NL || mkdir metadata/android/nl-NL
-cp ../app/src/main/res/nl/moneybuster_fastlane/full_description.txt metadata/android/nl-NL/full_description.txt
-cp ../app/src/main/res/nl/moneybuster_fastlane/short_description.txt metadata/android/nl-NL/short_description.txt
-echo "MoneyBuster" > metadata/android/nl-NL/title.txt
+    if [ ! -z "$outLang" ]; then
+        test -d $outFolder || mkdir $outFolder
+        cp $inFolder/full_description.txt $outFolder/
+        cp $inFolder/short_description.txt $outFolder/
+        echo 'PhoneTrack' > $outFolder/title.txt
+    else
+        echo "check $inLang language code!!!"
+    fi
+done
 
 git add .

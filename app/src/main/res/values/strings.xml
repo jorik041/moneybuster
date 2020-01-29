@@ -148,7 +148,7 @@
     <!-- Settings -->
     <string name="settings_appearance_category">Appearance</string>
     <string name="settings_network_category">Network</string>
-    <string name="settings_sync_category">Sync</string>
+    <string name="settings_sync_category">Synchronisation</string>
     <string name="settings_server_settings">Nextcloud account</string>
     <string name="settings_url">Server address</string>
     <string name="settings_url_warn_http">WARNING: "http" is unsafe. Please use "https".</string>

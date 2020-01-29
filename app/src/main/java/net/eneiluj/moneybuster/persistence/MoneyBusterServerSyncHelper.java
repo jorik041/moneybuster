@@ -1,10 +1,14 @@
 package net.eneiluj.moneybuster.persistence;
 
 import android.annotation.TargetApi;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -18,6 +22,8 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 import com.google.gson.GsonBuilder;
@@ -39,6 +45,7 @@ import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
+import net.eneiluj.moneybuster.service.SyncService;
 import net.eneiluj.moneybuster.util.CospendClient;
 import net.eneiluj.moneybuster.util.CospendClientUtil.LoginStatus;
 import net.eneiluj.moneybuster.util.ICallback;
@@ -72,6 +79,11 @@ public class MoneyBusterServerSyncHelper {
     public static final String BROADCAST_SYNC_PROJECT = "net.eneiluj.moneybuster.broadcast.sync_project";
     public static final String BROADCAST_NETWORK_AVAILABLE = "net.eneiluj.moneybuster.broadcast.network_available";
     public static final String BROADCAST_NETWORK_UNAVAILABLE = "net.eneiluj.moneybuster.broadcast.network_unavailable";
+
+    private static int NOTIFICATION_ID = 1526756699;
+    private static int CHANNEL_ID = 11122;
+
+    private SharedPreferences preferences;
 
     private static MoneyBusterServerSyncHelper instance;
 
@@ -140,6 +152,7 @@ public class MoneyBusterServerSyncHelper {
     private MoneyBusterServerSyncHelper(MoneyBusterSQLiteOpenHelper db) {
         this.dbHelper = db;
         this.appContext = db.getContext().getApplicationContext();
+        preferences = PreferenceManager.getDefaultSharedPreferences(dbHelper.getContext());
         new Thread() {
             @Override
             public void run() {
@@ -274,6 +287,12 @@ public class MoneyBusterServerSyncHelper {
         private final List<ICallback> callbacks = new ArrayList<>();
         private VersatileProjectSyncClient client;
         private List<Throwable> exceptions = new ArrayList<>();
+        private int nbPulledNewBills = 0;
+        private int nbPulledUpdatedBills = 0;
+        private int nbPulledDeletedBills = 0;
+        private String newBillsDialogText = "";
+        private String updatedBillsDialogText = "";
+        private String deletedBillsDialogText = "";
 
         public SyncTask(boolean onlyLocalChanges, DBProject project) {
             this.onlyLocalChanges = onlyLocalChanges;
@@ -669,6 +688,8 @@ public class MoneyBusterServerSyncHelper {
                     // add if local does not exist
                     if (!localBillsByRemoteId.containsKey(remoteBill.getRemoteId())) {
                         long billId = dbHelper.addBill(remoteBill);
+                        nbPulledNewBills++;
+                        newBillsDialogText += "+ " + remoteBill.getWhat() + "\n";
                         Log.d(TAG, "Add local bill : " + remoteBill);
                     }
                     // update bill if necessary
@@ -682,6 +703,8 @@ public class MoneyBusterServerSyncHelper {
                                     remoteBill.getWhat(), DBBill.STATE_OK, remoteBill.getRepeat(),
                                     remoteBill.getPaymentMode(), remoteBill.getCategoryRemoteId()
                             );
+                            nbPulledUpdatedBills++;
+                            updatedBillsDialogText += "✏ " + remoteBill.getWhat() + "\n";
                             Log.d(TAG, "Update local bill : " + remoteBill);
                         } else {
                             // fine
@@ -724,6 +747,8 @@ public class MoneyBusterServerSyncHelper {
                         // if local bill does not exist remotely
                         if (remoteAllBillIds.indexOf(localBill.getRemoteId()) <= -1) {
                             dbHelper.deleteBill(localBill.getId());
+                            nbPulledDeletedBills++;
+                            deletedBillsDialogText += "\uD83D\uDDD1 " + localBill.getWhat() + "\n";
                             Log.d(TAG, "Delete local bill : " + localBill);
                         }
                     }
@@ -733,6 +758,8 @@ public class MoneyBusterServerSyncHelper {
                         // if local bill does not exist remotely
                         if (!remoteBillsByRemoteId.containsKey(localBill.getRemoteId())) {
                             dbHelper.deleteBill(localBill.getId());
+                            nbPulledDeletedBills++;
+                            deletedBillsDialogText += "\uD83D\uDDD1 " + localBill.getWhat() + "\n";
                             Log.d(TAG, "Delete local bill : " + localBill);
                         }
                     }
@@ -810,6 +837,31 @@ public class MoneyBusterServerSyncHelper {
                 Intent intent = new Intent(BROADCAST_PROJECT_SYNCED);
                 intent.putExtra(BillsListViewActivity.BROADCAST_EXTRA_PARAM, project.getName());
                 appContext.sendBroadcast(intent);
+                // NOTIFICATION
+                boolean notifyNew = preferences.getBoolean(appContext.getString(R.string.pref_key_notify_new), true);
+                boolean notifyUpdated = preferences.getBoolean(appContext.getString(R.string.pref_key_notify_new), true);
+                boolean notifyDeleted = preferences.getBoolean(appContext.getString(R.string.pref_key_notify_new), true);
+                if (SyncService.isRunning() && !BillsListViewActivity.isActivityVisible()) {
+                    String dialogContent = "";
+                    String notificationContent = "";
+                    if (notifyNew && nbPulledNewBills > 0) {
+                        dialogContent += newBillsDialogText + "\n";
+                        notificationContent += "+" + nbPulledNewBills + "  ";
+                    }
+                    if (notifyUpdated && nbPulledUpdatedBills > 0) {
+                        dialogContent += updatedBillsDialogText + "\n";
+                        notificationContent += "✏" + nbPulledUpdatedBills + "  ";
+                    }
+                    if (notifyDeleted && nbPulledDeletedBills > 0) {
+                        dialogContent += deletedBillsDialogText;
+                        notificationContent += "\uD83D\uDDD1" + nbPulledDeletedBills;
+                    }
+                    if (!notificationContent.equals("")) {
+                        notificationContent = notificationContent.replaceAll(" \\| $", "");
+                        notificationContent = appContext.getString(R.string.project_activity_notification, project.getName()) + ": " + notificationContent;
+                        notifyProjectEvent(dialogContent, notificationContent, project.getId());
+                    }
+                }
             }
             syncActive = false;
             // notify callbacks
@@ -821,6 +873,48 @@ public class MoneyBusterServerSyncHelper {
                 long pid = projectIdsToSync.remove(projectIdsToSync.size() - 1);
                 scheduleSync(false, pid);
             }
+        }
+    }
+
+    public void notifyProjectEvent(String dialogContent, String notificationContent, long projectId) {
+        // intent of notification
+        Intent ptIntent = new Intent(appContext.getApplicationContext(), BillsListViewActivity.class);
+        ptIntent.putExtra(BillsListViewActivity.PARAM_DIALOG_CONTENT, dialogContent);
+        ptIntent.putExtra(BillsListViewActivity.PARAM_PROJECT_TO_SELECT, projectId);
+
+        createNotificationChannel();
+
+        String chanId = String.valueOf(CHANNEL_ID);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(appContext, chanId)
+                .setSmallIcon(R.drawable.ic_dollar_grey_24dp)
+                .setContentTitle(appContext.getString(R.string.app_name))
+                .setContentText(notificationContent)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                // Set the intent that will fire when the user taps the notification
+                .setContentIntent(PendingIntent.getActivity(appContext, 1, ptIntent, PendingIntent.FLAG_CANCEL_CURRENT))
+                .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(appContext);
+
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
+        NOTIFICATION_ID++;
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String chanId = String.valueOf(CHANNEL_ID);
+            CharSequence name = appContext.getString(R.string.app_name);
+            //String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(chanId, name, importance);
+            //channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = appContext.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 

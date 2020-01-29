@@ -99,6 +99,23 @@
             android:dialogLayout="@layout/preference_edit_text_integer"
             android:title="@string/settings_sync_interval_title" />
 
+        <CheckBoxPreference
+            android:icon="@drawable/ic_sync_grey_24dp"
+            android:key="@string/pref_key_notify_new"
+            android:title="@string/settings_notify_new"
+            android:defaultValue="true" />
+
+        <CheckBoxPreference
+            android:icon="@drawable/ic_sync_grey_24dp"
+            android:key="@string/pref_key_notify_updated"
+            android:title="@string/settings_notify_updated"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:icon="@drawable/ic_sync_grey_24dp"
+            android:key="@string/pref_key_notify_deleted"
+            android:title="@string/settings_notify_deleted"
+            android:defaultValue="true" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

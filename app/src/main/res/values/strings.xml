@@ -178,6 +178,9 @@
     <string name="settings_periodical_sync_title">Background sync</string>
     <string name="settings_sync_interval_long">How often is the background sync triggered (minutes)</string>
     <string name="settings_sync_interval_title">Background sync interval</string>
+    <string name="settings_notify_new">Notification on bill creations</string>
+    <string name="settings_notify_updated">Notification on bill changes</string>
+    <string name="settings_notify_deleted">Notification on bill deletions</string>
 
 
     <string name="project_sync_success">Project %s synchronized</string>
@@ -223,6 +226,9 @@
     <string name="choose_account_project_dialog_impossible">There is no Cospend project in your Nextcloud account</string>
     <string name="is_running">Sync every %1$d min, last sync %2$s</string>
     <string name="error_invalid_sync_interval">Sync interval must be between 5 and 1440 (24h)</string>
+    <string name="project_activity_notification">Project %1$s</string>
+    <string name="activity_dialog_title">Activity in project %1$s</string>
+
 
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Connection security</string>
@@ -300,7 +306,10 @@
     <string name="pref_key_offline_mode" translatable="false">offlineMode</string>
     <string name="pref_key_smart_sync" translatable="false">smartSync</string>
     <string name="pref_key_periodical_sync" translatable="false">periodicalSync</string>
-    <string name="pref_key_sync_interval" translatable="false">Synchronisation interval (minutes)</string>
+    <string name="pref_key_sync_interval" translatable="false">syncInterval</string>
+    <string name="pref_key_notify_new" translatable="false">notifNew</string>
+    <string name="pref_key_notify_updated" translatable="false">notifUpdated</string>
+    <string name="pref_key_notify_deleted" translatable="false">notifDeleted</string>
     <string name="pref_value_theme_light">Light</string>
     <string name="pref_value_theme_dark">Dark</string>
     <string name="avatar">Avatar</string>

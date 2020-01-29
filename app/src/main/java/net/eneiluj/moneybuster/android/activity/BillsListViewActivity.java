@@ -131,6 +131,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     public static final String BROADCAST_SSO_TOKEN_MISMATCH = "net.eneiluj.moneybuster.broadcast.token_mismatch";
     public static final String BROADCAST_ACCOUNT_PROJECTS_SYNCED = "net.eneiluj.moneybuster.broadcast.broadcast_acc_proj_synced";
 
+    public final static String PARAM_DIALOG_CONTENT = "net.eneiluj.moneybuster.PARAM_DIALOG_CONTENT";
+    public final static String PARAM_PROJECT_TO_SELECT = "net.eneiluj.moneybuster.PARAM_PROJECT_TO_SELECT";
+
     private final static int PERMISSION_FOREGROUND_SERVICE = 1;
 
     private static final String TAG = BillsListViewActivity.class.getSimpleName();
@@ -156,6 +159,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private final static int removeproject = 5;
     private final static int editproject = 6;
     private final static int scan_qrcode_import_cmd = 7;
+
+    private static boolean activityVisible = false;
 
     //private HashMap<Long, Double> membersBalance;
 
@@ -216,6 +221,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activityVisible = true;
         // First Run Wizard
         /*if (!MoneyBusterServerSyncHelper.isConfigured(this)) {
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
@@ -328,6 +334,28 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 startForegroundService(intent);
             }
         }
+
+        long projectToSelect = getIntent().getLongExtra(PARAM_PROJECT_TO_SELECT, 0);
+        if (projectToSelect != 0) {
+            setSelectedProject(projectToSelect);
+            DBProject project = db.getProject(projectToSelect);
+
+            String dialogContent = getIntent().getStringExtra(PARAM_DIALOG_CONTENT);
+            if (dialogContent != null) {
+                android.app.AlertDialog.Builder builder;
+                builder = new android.app.AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog));
+                builder.setTitle(this.getString(R.string.activity_dialog_title, project.getName()))
+                        .setMessage(dialogContent)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setIcon(R.drawable.ic_sync_grey_24dp)
+                        .show();
+            }
+        }
+
     }
 
     private void displayWelcomeDialog() {
@@ -403,6 +431,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         registerBroadcastReceiver();
 
         displayWelcomeDialog();
+        activityVisible = true;
     }
 
     /**
@@ -418,8 +447,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         catch (RuntimeException e) {
             if (DEBUG) { Log.d(TAG, "RECEIVER PROBLEM, let's ignore it..."); }
         }
+        activityVisible = false;
     }
 
+    public static boolean isActivityVisible() {
+        return activityVisible;
+    }
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {

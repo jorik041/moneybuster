@@ -145,6 +145,7 @@
     <!-- Settings -->
     <string name="settings_appearance_category">Uiterlijk</string>
     <string name="settings_network_category">Netwerk</string>
+    <string name="settings_sync_category">Synchronisation</string>
     <string name="settings_server_settings">Nextcloud account</string>
     <string name="settings_url">Serveradres</string>
     <string name="settings_url_warn_http">WAARSCHUWING: \'http\' is onveilig. Gebruik \'https\'.</string>
@@ -170,6 +171,13 @@
     <string name="settings_cert_reset_toast">Alle persoonlijke certificaten zijn gewist</string>
     <string name="settings_use_server_color_title">Use server color</string>
     <string name="settings_use_server_color_subtitle">Get server color when syncing and use it as main app color</string>
+    <string name="settings_periodical_sync_summary">Synchronize all projects periodically</string>
+    <string name="settings_periodical_sync_title">Background sync</string>
+    <string name="settings_sync_interval_long">How often is the background sync triggered (minutes)</string>
+    <string name="settings_sync_interval_title">Background sync interval</string>
+    <string name="settings_notify_new">Notification on bill creations</string>
+    <string name="settings_notify_updated">Notification on bill changes</string>
+    <string name="settings_notify_deleted">Notification on bill deletions</string>
     <string name="project_sync_success">Project \'%s\' is gesynchroniseerd</string>
     <string name="add_member_dialog_title">Nieuwe deelnemernaam</string>
     <string name="edit_member_dialog_title">Deelnemer bewerken</string>
@@ -211,6 +219,10 @@
     <string name="edit_project_local_impossible">Onmogelijk voor lokale projecten</string>
     <string name="choose_account_project_dialog_title">Kies een project uit je Nextcloud account</string>
     <string name="choose_account_project_dialog_impossible">Er is geen Samen Betalen-project in uw Nextcloud account</string>
+    <string name="is_running">Sync every %1$d min, last sync %2$s</string>
+    <string name="error_invalid_sync_interval">Sync interval must be between 5 and 1440 (24h)</string>
+    <string name="project_activity_notification">Project %1$s</string>
+    <string name="activity_dialog_title">Activity in project %1$s</string>
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Verbindingsbeveiliging</string>
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster heeft een onbekend certificaat aangetroffen. Wil je dit vertrouwen?</string>

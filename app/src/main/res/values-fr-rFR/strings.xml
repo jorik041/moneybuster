@@ -145,6 +145,7 @@
     <!-- Settings -->
     <string name="settings_appearance_category">Apparence</string>
     <string name="settings_network_category">Réseau</string>
+    <string name="settings_sync_category">Synchronisation</string>
     <string name="settings_server_settings">Compte Nextcloud</string>
     <string name="settings_url">Adresse du serveur</string>
     <string name="settings_url_warn_http">AVERTISSEMENT: \"http\" n\'est pas sur. Veuillez utiliser \"https\" s\'il vous plait.</string>
@@ -170,6 +171,13 @@
     <string name="settings_cert_reset_toast">Tous les certificats personnels ont été effacés</string>
     <string name="settings_use_server_color_title">Utiliser la couleur du serveur</string>
     <string name="settings_use_server_color_subtitle">Récupérer la couleur du serveur pendant la synchronisation et l\'utiliser comme couleur principale de l\'appli</string>
+    <string name="settings_periodical_sync_summary">Synchroniser périodiquement tous les projets</string>
+    <string name="settings_periodical_sync_title">Synchro en arrière-plan</string>
+    <string name="settings_sync_interval_long">À quelle fréquence la synchronisation en arrière-plan est-elle déclenchée (minutes)</string>
+    <string name="settings_sync_interval_title">Intervalle de synchro en arrière plan</string>
+    <string name="settings_notify_new">Notification à la création d\'une facture</string>
+    <string name="settings_notify_updated">Notification à la modification d\'une facture</string>
+    <string name="settings_notify_deleted">Notification à la suppression d\'une facture</string>
     <string name="project_sync_success">Projet %s synchronisé</string>
     <string name="add_member_dialog_title">Nom du nouveau membre</string>
     <string name="edit_member_dialog_title">Éditer un membre</string>
@@ -211,6 +219,10 @@
     <string name="edit_project_local_impossible">Impossible pour les projets locaux</string>
     <string name="choose_account_project_dialog_title">Choisissez un projet provenant de votre compte Nextcloud</string>
     <string name="choose_account_project_dialog_impossible">Aucun projet Cospend trouvé dans votre compte Nextcloud</string>
+    <string name="is_running">Synchro toutes les %1$d min, dernière synchro %2$s</string>
+    <string name="error_invalid_sync_interval">L\'intervalle de synchronisation doit être compris entre 5 et 1440 (24h)</string>
+    <string name="project_activity_notification">Projet %1$s</string>
+    <string name="activity_dialog_title">Activité dans le projet %1$s</string>
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Sécurité de la connexion</string>
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster a rencontré un certificat inconnu. Voulez-vous lui faire confiance ?</string>

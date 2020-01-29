@@ -149,6 +149,7 @@ public class SyncService extends Service {
             }
             else if (newInterval != 0) {
                 intervalMinutes = newInterval;
+                requestSync();
                 updateNotificationContent();
                 mSyncWorker.stop();
                 mSyncWorker.setInterval(intervalMinutes * 60);

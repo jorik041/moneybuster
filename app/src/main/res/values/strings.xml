@@ -221,7 +221,7 @@
     <string name="edit_project_local_impossible">Impossible for local projects</string>
     <string name="choose_account_project_dialog_title">Choose a project from your Nextcloud account</string>
     <string name="choose_account_project_dialog_impossible">There is no Cospend project in your Nextcloud account</string>
-    <string name="is_running">Sync every %1$d min, last sync on %2$s</string>
+    <string name="is_running">Sync every %1$d min, last sync %2$s</string>
     <string name="error_invalid_sync_interval">Sync interval must be between 5 and 1440 (24h)</string>
 
     <!-- Certificates -->

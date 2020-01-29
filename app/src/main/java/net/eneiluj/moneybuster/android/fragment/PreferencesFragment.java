@@ -46,6 +46,7 @@ import at.bitfire.cert4android.CustomCertManager;
 public class PreferencesFragment extends PreferenceFragmentCompat implements PreferenceFragmentCompat.OnPreferenceStartScreenCallback{
 
     public final static String STOP_SYNC_SERVICE = "net.eneiluj.moneybuster.STOP_SYNC_SERVICE";
+    public final static String CHANGE_SYNC_INTERVAL = "net.eneiluj.moneybuster.CHANGE_SYNC_INTERVAL";
 
     @Override
     public Fragment getCallbackFragment() {
@@ -165,6 +166,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                 }
                 else {
                     preference.setSummary((CharSequence) newValue);
+                    Intent intent = new Intent(getContext(), SyncService.class);
+                    intent.putExtra(CHANGE_SYNC_INTERVAL, newInterval);
+                    getContext().startService(intent);
                     return true;
                 }
             }
@@ -191,7 +195,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                 }
                 else {
                     syncIntervalPref.setVisible(false);
-                    // TODO stop service
                     if (SyncService.isRunning()) {
                         Log.d("preference", "running => stop");
                         Intent intent = new Intent(getContext(), SyncService.class);

@@ -35,6 +35,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -71,6 +73,8 @@ public class SyncService extends Service {
     private ConnectionStateMonitor connectionMonitor;
     private BroadcastReceiver powerSaverChangeReceiver;
     private BroadcastReceiver airplaneModeChangeReceiver;
+
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Basic initializations.
@@ -138,9 +142,17 @@ public class SyncService extends Service {
         if (isRunning) {
             Log.d(TAG, "[onstartCommand isrunning yes]");
             final boolean stopService = (intent != null) && intent.getBooleanExtra(PreferencesFragment.STOP_SYNC_SERVICE, false);
+            final long newInterval = (intent != null) ? intent.getLongExtra(PreferencesFragment.CHANGE_SYNC_INTERVAL, 0) : 0;
             if (stopService) {
                 Log.d(TAG, "[stop sync service]");
                 stopSelf();
+            }
+            else if (newInterval != 0) {
+                intervalMinutes = newInterval;
+                updateNotificationContent();
+                mSyncWorker.stop();
+                mSyncWorker.setInterval(intervalMinutes * 60);
+                mSyncWorker.startSyncLoop();
             }
             else {
                 if (firstRun) {
@@ -255,7 +267,7 @@ public class SyncService extends Service {
             createNotificationChannel(channelId, true);
         }
         // TODO get last sync date and set notification icon
-        String lastSyncDate = "plop";
+        String lastSyncDate = "∞";
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.ic_dollar_grey_24dp)
@@ -287,7 +299,7 @@ public class SyncService extends Service {
     }
 
     private void updateNotificationContent() {
-        String lastSyncDate = "plop";
+        String lastSyncDate = sdf.format(new Date());
         mNotificationBuilder.setContentText(String.format(
                 getString(R.string.is_running),
                 intervalMinutes,

@@ -28,9 +28,9 @@
     <string name="setting_project_repetition">Повторять этот счет каждый</string>
     <string name="setting_payment_mode">Форма оплаты</string>
     <string name="setting_category">Категория</string>
-    <string name="empty_action_dialog_title">What do you want to do?</string>
-    <string name="configure_account_choice">Configure Nextcloud account</string>
-    <string name="add_project_choice">Manually add a project (IHateMoney, Cospend or local)</string>
+    <string name="empty_action_dialog_title">Что вы хотите сделать?</string>
+    <string name="configure_account_choice">Настроить аккаунт Nextcloud</string>
+    <string name="add_project_choice">Добавить проект вручную (IHateMoney, Cospend или локальный)</string>
     <string name="repeat_no">не повторять</string>
     <string name="repeat_day">день</string>
     <string name="repeat_week">неделя</string>
@@ -140,7 +140,7 @@
     <string name="welcome_dialog_title">Добро пожаловать на MoneyBuster v%s</string>
     <string name="welcome_dialog_content_v12">Что нового?\n\n* Сканирование QRCode \n* Улучшенный интерфейс\n* Импорт проекта Nextcloud\n* Улучшенная статистика\n* И многое другое :-)</string>
     <string name="welcome_dialog_content_v13">Что нового?\n\n* Фильтры в статистике\n* Автоматическое создание счетов по расчету\n* Поиск по имени владельца\n* И многое другое :-)</string>
-    <string name="first_welcome_dialog_content">First, configure Nextcloud account or create/join a project (IHateMoney or Nextcloud Cospend), then add some members and/or create some bills!\n\nOther main actions:\n* Settle the project to generate a global repayment plan\n* Show project statistics\n* Share: generate a QRCode that others can scan to join the project\n\nOn Android &gt;= 8.0 you can long press the action buttons to display help.</string>
+    <string name="first_welcome_dialog_content">Сначала настройте учетную запись Nextcloud или создайте/присоединитесь к проекту (IHateMoney или Nextcloud Cospend), затем добавьте участников и/или создайте счета!\n\nДругие основные действия:\n* Сделать расчет по проекту для создания общего плана погашения\n* Показать статистику проекта\n* Как поделиться: сгенерируйте QRCode, который другие могут отсканировать, чтобы присоединиться к проекту\n\nНа Android &gt;= 8.0 вы можете использовать долгое нажатие кнопок для отображения подсказки.</string>
     <string name="changelog">Список изменений</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Тема оформления</string>
@@ -168,8 +168,8 @@
     <string name="settings_cert_reset">Сбросить (не)доверенные сертификаты</string>
     <string name="settings_cert_reset_summary">Сброс разрешений для всех пользовательских сертификатов</string>
     <string name="settings_cert_reset_toast">Все пользовательские сертификаты были очищены</string>
-    <string name="settings_use_server_color_title">Use server color</string>
-    <string name="settings_use_server_color_subtitle">Get server color when syncing and use it as main app color</string>
+    <string name="settings_use_server_color_title">Использовать цвет, настроенный на сервере</string>
+    <string name="settings_use_server_color_subtitle">При синхронизации получить цвет, настроенный на сервере и использовать его в качестве основного цвета приложения</string>
     <string name="project_sync_success">Проект %s синхронизирован</string>
     <string name="add_member_dialog_title">Имя нового участника</string>
     <string name="edit_member_dialog_title">Редактировать участника</string>

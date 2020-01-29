@@ -137,8 +137,6 @@ public class MoneyBusterServerSyncHelper {
     private List<ICallback> callbacksPush = new ArrayList<>();
     private List<ICallback> callbacksPull = new ArrayList<>();
 
-    private ConnectionStateMonitor connectionMonitor;
-
     private MoneyBusterServerSyncHelper(MoneyBusterSQLiteOpenHelper db) {
         this.dbHelper = db;
         this.appContext = db.getContext().getApplicationContext();
@@ -149,11 +147,6 @@ public class MoneyBusterServerSyncHelper {
             }
         }.start();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // track network connectivity changes
-            connectionMonitor = new ConnectionStateMonitor();
-            connectionMonitor.enable(appContext);
-        }
         updateNetworkStatus();
         // bind to certificate service to block sync attempts if service is not ready
         appContext.bindService(new Intent(appContext, CustomCertService.class), certService, Context.BIND_AUTO_CREATE);
@@ -161,61 +154,11 @@ public class MoneyBusterServerSyncHelper {
 
     @Override
     protected void finalize() throws Throwable {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            connectionMonitor.disable(appContext);
-        }
         appContext.unbindService(certService);
         if (customCertManager != null) {
             customCertManager.close();
         }
         super.finalize();
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private class ConnectionStateMonitor extends ConnectivityManager.NetworkCallback {
-
-        final NetworkRequest networkRequest;
-
-        public ConnectionStateMonitor() {
-            networkRequest = new NetworkRequest.Builder().addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR).addTransportType(NetworkCapabilities.TRANSPORT_WIFI).build();
-        }
-
-        public void enable(Context context) {
-            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            connectivityManager.registerNetworkCallback(networkRequest, this);
-        }
-
-        // Likewise, you can have a disable method that simply calls ConnectivityManager#unregisterCallback(networkRequest) too.
-
-        public void disable(Context context) {
-            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            connectivityManager.unregisterNetworkCallback(this);
-        }
-
-        @Override
-        public void onAvailable(Network network) {
-            if (BillsListViewActivity.DEBUG) {
-                Log.d(TAG, "NETWORK AVAILABLE in synchelper !!!!");
-            }
-            updateNetworkStatus();
-            if (isSyncPossible()) {
-                long lastId = PreferenceManager.getDefaultSharedPreferences(appContext).getLong("selected_project", 0);
-                DBProject proj = dbHelper.getProject(lastId);
-                if (lastId != 0 && proj != null && !proj.isLocal()) {
-                    scheduleSync(false, lastId);
-                }
-                Intent intent2 = new Intent(BROADCAST_NETWORK_AVAILABLE);
-                appContext.sendBroadcast(intent2);
-            }
-        }
-
-        @Override
-        public void onLost(Network network) {
-            if (!isSyncPossible()) {
-                Intent intent2 = new Intent(BROADCAST_NETWORK_UNAVAILABLE);
-                appContext.sendBroadcast(intent2);
-            }
-        }
     }
 
     public static boolean isNextcloudAccountConfigured(Context context) {

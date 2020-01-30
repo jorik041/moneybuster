@@ -115,6 +115,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
                     icon.setImageDrawable(
                             ContextCompat.getDrawable(icon.getContext(), item.icon)
                     );
+                    icon.setPadding(0, 0, 0, 0);
                 }
 
                 icon.setVisibility(View.VISIBLE);

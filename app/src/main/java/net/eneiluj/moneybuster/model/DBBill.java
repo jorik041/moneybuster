@@ -23,6 +23,7 @@ public class DBBill implements Item, Serializable {
     public static final String PAYMODE_CARD = "c";
     public static final String PAYMODE_CASH = "b";
     public static final String PAYMODE_CHECK = "f";
+    public static final String PAYMODE_TRANSFER = "t";
 
     private int categoryRemoteId;
     public static final int CATEGORY_NONE = 0;

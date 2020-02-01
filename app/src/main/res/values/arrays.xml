@@ -32,6 +32,7 @@
         <item>c</item>
         <item>b</item>
         <item>f</item>
+        <item>t</item>
     </string-array>
 
     <string-array name="categoryValues" translatable="false">

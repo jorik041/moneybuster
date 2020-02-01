@@ -136,6 +136,9 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             else if ("f".equals(bill.getPaymentMode())) {
                 whatPrefix += "🎫 ";
             }
+            else if ("t".equals(bill.getPaymentMode())) {
+                whatPrefix += "⇄ ";
+            }
             DBCategory cat = db.getCategory(bill.getCategoryRemoteId(), bill.getProjectId());
             if (cat != null) {
                 whatPrefix += cat.getIcon()+" ";

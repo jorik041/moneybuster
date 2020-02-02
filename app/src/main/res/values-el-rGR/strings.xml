@@ -41,6 +41,7 @@
     <string name="payment_mode_credit_card">Πιστωτική κάρτα</string>
     <string name="payment_mode_cash">Μετρητά</string>
     <string name="payment_mode_check">Έλεγχος</string>
+    <string name="payment_mode_transfer">Transfer</string>
     <string name="category_none">Χωρίς κατηγορία</string>
     <string name="category_all">Όλες οι κατηγορίες</string>
     <string name="category_all_except_reimbursement">Όλα εκτός από τις αποζημιώσεις</string>

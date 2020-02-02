@@ -41,6 +41,7 @@
     <string name="payment_mode_credit_card">Cartão de crédito</string>
     <string name="payment_mode_cash">Dinheiro</string>
     <string name="payment_mode_check">Cheque</string>
+    <string name="payment_mode_transfer">Transfer</string>
     <string name="category_none">Sem categoria</string>
     <string name="category_all">Todas as categorias</string>
     <string name="category_all_except_reimbursement">Tudo excepto reembolso</string>

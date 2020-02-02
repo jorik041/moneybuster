@@ -41,6 +41,7 @@
     <string name="payment_mode_credit_card">Tarjeta de crèdit</string>
     <string name="payment_mode_cash">Efectiu</string>
     <string name="payment_mode_check">Taló</string>
+    <string name="payment_mode_transfer">Transfer</string>
     <string name="category_none">Sense categoria</string>
     <string name="category_all">Totes les categories</string>
     <string name="category_all_except_reimbursement">Tot excepte reemborsament</string>

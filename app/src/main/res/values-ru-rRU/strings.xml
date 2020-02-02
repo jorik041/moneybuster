@@ -41,6 +41,7 @@
     <string name="payment_mode_credit_card">Кредитная карта</string>
     <string name="payment_mode_cash">Наличные</string>
     <string name="payment_mode_check">Чек</string>
+    <string name="payment_mode_transfer">Transfer</string>
     <string name="category_none">Без категории</string>
     <string name="category_all">Все категории</string>
     <string name="category_all_except_reimbursement">Все кроме возмещения</string>

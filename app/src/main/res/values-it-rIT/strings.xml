@@ -41,6 +41,7 @@
     <string name="payment_mode_credit_card">Carta di credito</string>
     <string name="payment_mode_cash">Contanti</string>
     <string name="payment_mode_check">Assegno</string>
+    <string name="payment_mode_transfer">Transfer</string>
     <string name="category_none">Nessuna categoria</string>
     <string name="category_all">Tutte le categorie</string>
     <string name="category_all_except_reimbursement">All except reimbursement</string>

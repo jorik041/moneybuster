@@ -41,6 +41,7 @@
     <string name="payment_mode_credit_card">信用卡</string>
     <string name="payment_mode_cash">现金</string>
     <string name="payment_mode_check">支票</string>
+    <string name="payment_mode_transfer">Transfer</string>
     <string name="category_none">没有类别</string>
     <string name="category_all">所有类别</string>
     <string name="category_all_except_reimbursement">All except reimbursement</string>

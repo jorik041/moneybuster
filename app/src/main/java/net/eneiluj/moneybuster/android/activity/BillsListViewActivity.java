@@ -1996,7 +1996,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 double rAbsBalance = Math.round( Math.abs(balance) * 100.0 ) / 100.0;
                 String balanceStr = balanceFormatter.format(rAbsBalance).replace(",", ".");
 
-                if (m.isActivated() || (balance <= -0.01 && balance >= 0.01)) {
+                // add member in sidebar list if he/she's activated or the balance is not "zero"
+                if (m.isActivated() || balance <= -0.01 || balance >= 0.01) {
                     String weightStr = "";
                     if (m.getWeight() != 1) {
                         weightStr = " x" + weightFormatter.format(m.getWeight()).replace(",", ".");

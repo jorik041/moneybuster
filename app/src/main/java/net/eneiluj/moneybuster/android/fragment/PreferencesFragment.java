@@ -179,6 +179,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
         final CheckBoxPreference notifyUpdatedPref = (CheckBoxPreference) findPreference(getString(R.string.pref_key_notify_updated));
         final CheckBoxPreference notifyDeletedPref = (CheckBoxPreference) findPreference(getString(R.string.pref_key_notify_deleted));
 
+        final SwitchPreferenceCompat autostartPref = (SwitchPreferenceCompat) findPreference(getString(R.string.pref_key_autostart));
+
         final SwitchPreferenceCompat periodicalSyncPref = (SwitchPreferenceCompat) findPreference(getString(R.string.pref_key_periodical_sync));
         periodicalSyncPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
@@ -190,6 +192,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                     notifyNewPref.setVisible(true);
                     notifyUpdatedPref.setVisible(true);
                     notifyDeletedPref.setVisible(true);
+                    autostartPref.setVisible(true);
                     // launch service
                     if (!SyncService.isRunning()) {
                         Log.d("preference", "not running => launch");
@@ -206,6 +209,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                     notifyNewPref.setVisible(false);
                     notifyUpdatedPref.setVisible(false);
                     notifyDeletedPref.setVisible(false);
+                    autostartPref.setVisible(false);
+                    autostartPref.setChecked(false);
                     if (SyncService.isRunning()) {
                         Log.d("preference", "running => stop");
                         Intent intent = new Intent(getContext(), SyncService.class);
@@ -222,6 +227,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
             notifyNewPref.setVisible(false);
             notifyUpdatedPref.setVisible(false);
             notifyDeletedPref.setVisible(false);
+            autostartPref.setVisible(false);
         }
     }
 

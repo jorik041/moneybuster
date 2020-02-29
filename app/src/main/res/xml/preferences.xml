@@ -87,6 +87,13 @@
             android:summary="@string/settings_periodical_sync_summary"
             android:title="@string/settings_periodical_sync_title" />
 
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:icon="@drawable/ic_power_settings_new_grey_24dp"
+            android:key="@string/pref_key_autostart"
+            android:summary="@string/settings_autostart_summary"
+            android:title="@string/settings_autostart_title" />
+
         <EditTextPreference
             android:defaultValue="15"
             android:icon="@drawable/ic_timer_grey_24dp"
@@ -100,18 +107,18 @@
             android:title="@string/settings_sync_interval_title" />
 
         <CheckBoxPreference
-            android:icon="@drawable/ic_sync_grey_24dp"
+            android:icon="@drawable/ic_chat_bubble_outline_grey_24dp"
             android:key="@string/pref_key_notify_new"
             android:title="@string/settings_notify_new"
             android:defaultValue="true" />
 
         <CheckBoxPreference
-            android:icon="@drawable/ic_sync_grey_24dp"
+            android:icon="@drawable/ic_chat_bubble_outline_grey_24dp"
             android:key="@string/pref_key_notify_updated"
             android:title="@string/settings_notify_updated"
             android:defaultValue="true" />
         <CheckBoxPreference
-            android:icon="@drawable/ic_sync_grey_24dp"
+            android:icon="@drawable/ic_chat_bubble_outline_grey_24dp"
             android:key="@string/pref_key_notify_deleted"
             android:title="@string/settings_notify_deleted"
             android:defaultValue="true" />

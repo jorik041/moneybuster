@@ -179,6 +179,8 @@
     <string name="settings_periodical_sync_title">Background sync</string>
     <string name="settings_sync_interval_long">How often is the background sync triggered (minutes)</string>
     <string name="settings_sync_interval_title">Background sync interval</string>
+    <string name="settings_autostart_title">Start on boot</string>
+    <string name="settings_autostart_summary">Start periodical sync service on boot</string>
     <string name="settings_notify_new">Notification on bill creations</string>
     <string name="settings_notify_updated">Notification on bill changes</string>
     <string name="settings_notify_deleted">Notification on bill deletions</string>
@@ -306,6 +308,7 @@
     <string name="pref_key_use_server_color" translatable="false">useServerColor</string>
     <string name="pref_key_offline_mode" translatable="false">offlineMode</string>
     <string name="pref_key_smart_sync" translatable="false">smartSync</string>
+    <string name="pref_key_autostart" translatable="false">autostart</string>
     <string name="pref_key_periodical_sync" translatable="false">periodicalSync</string>
     <string name="pref_key_sync_interval" translatable="false">syncInterval</string>
     <string name="pref_key_notify_new" translatable="false">notifNew</string>

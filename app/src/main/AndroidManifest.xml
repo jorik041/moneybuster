@@ -121,7 +121,7 @@
 
         <service
             android:name="net.eneiluj.moneybuster.android.quicksettings.NewProjectTileService"
-            android:icon="@drawable/ic_quicksettings_new"
+            android:icon="@drawable/ic_dollar_grey_24dp"
             android:label="@string/action_add_project"
             android:description="@string/action_add_project"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">

@@ -1658,17 +1658,42 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     }
 
     private void exportProject(long projectId) {
+        String fileContent = "";
+        // get information
         DBProject project = db.getProject(projectId);
         Map<Long, DBMember> membersById = new HashMap<>();
         List<DBMember> members = db.getMembersOfProject(projectId, null);
         for (DBMember m: members) {
             membersById.put(m.getId(), m);
         }
+        List<DBBill> bills = db.getBillsOfProject(projectId);
 
-        String content = "plop222 content !!!";
+        // gen file content
+        fileContent += "what,amount,date,payer_name,payer_weight,payer_active,owers,repeat,categoryid,paymentmode\n";
+        String payerName;
+        double payerWeight;
+        int payerActive;
+        Long payerId;
+        String owersTxt;
+        for (DBBill b: bills) {
+            payerId = b.getPayerId();
+            payerName = membersById.get(payerId).getName();
+            payerWeight = membersById.get(payerId).getWeight();
+            payerActive = membersById.get(payerId).isActivated() ? 1 : 0;
+            List<DBBillOwer> billOwers = b.getBillOwers();
+            owersTxt = "";
+            for (DBBillOwer bo: billOwers) {
+                owersTxt += membersById.get(bo.getMemberId()).getName() + ",";
+            }
+            owersTxt = owersTxt.replaceAll(",$", "");
+            fileContent += "\""+b.getWhat()+"\","+b.getAmount()+","+b.getDate()+",\""+payerName+"\","+
+                    payerWeight+","+payerActive+",\""+owersTxt+"\","+b.getRepeat()+","+b.getCategoryRemoteId()+
+                    ","+b.getPaymentMode()+"\n";
+        }
+
         String fileName = project.getName() + ".csv";
         String path = Environment.getExternalStorageDirectory() + File.separator  + "MoneyBuster";
-        saveToFile(content, path, fileName);
+        saveToFile(fileContent, path, fileName);
     }
 
     private void saveToFile(String content, String path, String fileName) {

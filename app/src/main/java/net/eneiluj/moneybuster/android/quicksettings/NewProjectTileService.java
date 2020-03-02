@@ -27,7 +27,7 @@ public class NewProjectTileService extends TileService {
         // create new project intent
         final Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
         // ensure it won't open twice if already running
-        newProjectIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        newProjectIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
         // ask to unlock the screen if locked, then start new project intent
         unlockAndRun(new Runnable() {

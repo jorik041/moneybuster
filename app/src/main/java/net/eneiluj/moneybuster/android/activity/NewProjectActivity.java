@@ -83,7 +83,11 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
 
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Uri data = getIntent().getData();
-            if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 2) {
+            if (data == null) {
+                showToast(getString(R.string.import_no_data), Toast.LENGTH_LONG);
+                shouldCloseActivity = true;
+            }
+            else if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 2) {
                 if (data.getPath().endsWith("/")) {
                     defaultProjectPassword = "";
                     defaultProjectId = data.getLastPathSegment();

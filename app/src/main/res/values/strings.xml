@@ -188,6 +188,8 @@
 
 
     <string name="project_sync_success">Project %s synchronized</string>
+    <string name="file_saved_success">Project saved in %s</string>
+    <string name="write_permission_refused">Write permission refused, impossible to write file</string>
     <string name="add_member_dialog_title">New member name</string>
     <string name="edit_member_dialog_title">Edit member</string>
     <string name="member_edit_empty_name">Member name can\'t be empty</string>

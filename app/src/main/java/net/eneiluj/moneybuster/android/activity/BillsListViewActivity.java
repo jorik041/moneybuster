@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.text.Html;
 import android.text.InputType;
@@ -50,6 +51,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -101,6 +103,10 @@ import net.eneiluj.moneybuster.util.MoneyBuster;
 import net.eneiluj.moneybuster.util.SupportUtil;
 import net.eneiluj.moneybuster.util.ThemeUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -124,6 +130,7 @@ import static net.eneiluj.moneybuster.util.SupportUtil.settleBills;
 public class BillsListViewActivity extends AppCompatActivity implements ItemAdapter.BillClickListener {
 
     private final static int PERMISSION_FOREGROUND = 1;
+    private final static int PERMISSION_WRITE = 2;
     public static boolean DEBUG = true;
     public static final String BROADCAST_EXTRA_PARAM = "net.eneiluj.moneybuster.broadcast_extra_param";
     public static final String BROADCAST_ERROR_MESSAGE = "net.eneiluj.moneybuster.broadcast_error_message";
@@ -752,7 +759,19 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 long selectedProjectId = preferences.getLong("selected_project", 0);
 
                 if (selectedProjectId != 0) {
-                    exportProject(selectedProjectId);
+                    if (ContextCompat.checkSelfPermission(view.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+
+                        Log.d(TAG, "[request write permission]");
+                        ActivityCompat.requestPermissions(
+                                BillsListViewActivity.this,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                PERMISSION_WRITE
+                        );
+                    }
+                    else {
+                        exportCurrentProject();
+                    }
                 }
             }
         });
@@ -1630,11 +1649,69 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         totalPayedTV.setText(getString(R.string.total_payed, totalPayed));
     }
 
+    private void exportCurrentProject() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        long selectedProjectId = preferences.getLong("selected_project", 0);
+        if (selectedProjectId != 0) {
+            exportProject(selectedProjectId);
+        }
+    }
+
     private void exportProject(long projectId) {
+        DBProject project = db.getProject(projectId);
         Map<Long, DBMember> membersById = new HashMap<>();
         List<DBMember> members = db.getMembersOfProject(projectId, null);
         for (DBMember m: members) {
             membersById.put(m.getId(), m);
+        }
+
+        String content = "plop222 content !!!";
+        String fileName = project.getName() + ".csv";
+        String path = Environment.getExternalStorageDirectory() + File.separator  + "MoneyBuster";
+        saveToFile(content, path, fileName);
+    }
+
+    private void saveToFile(String content, String path, String fileName) {
+        File folder = new File(path);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+
+        final File file = new File(path, fileName);
+
+        try {
+            file.createNewFile();
+            FileOutputStream fOut = new FileOutputStream(file);
+            OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+            myOutWriter.append(content);
+            myOutWriter.close();
+            fOut.flush();
+            fOut.close();
+            showToast(getString(R.string.file_saved_success, file.getAbsolutePath().replace(
+                    Environment.getExternalStorageDirectory().toString(),
+                    ""))
+            );
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+            showToast(e.toString());
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_WRITE:
+                if (grantResults.length > 0) {
+                    Log.d(TAG, "[permission WRITE result] "+grantResults[0]);
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        exportCurrentProject();
+                    }
+                    else {
+                        showToast(getString(R.string.write_permission_refused));
+                    }
+                }
+                break;
         }
     }
 

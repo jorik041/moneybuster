@@ -609,6 +609,9 @@ public class EditBillFragment extends Fragment {
             newRepeat = getRepeat();
             newPaymentMode = getPaymentMode();
             newCategoryId = getCategoryId();
+        } else if (ProjectType.LOCAL.equals(projectType)) {
+            newPaymentMode = getPaymentMode();
+            newCategoryId = getCategoryId();
         }
 
         List<Long> newOwersIds = getOwersIds();
@@ -840,7 +843,7 @@ public class EditBillFragment extends Fragment {
         fabSaveBill.hide();
         Log.d(TAG, "HIIIIIIIIIIDE FAB");
 
-        if (ProjectType.COSPEND.equals(projectType)) {
+        if (!ProjectType.IHATEMONEY.equals(projectType)) {
             List<String> repeatNameList = new ArrayList<>();
             repeatNameList.add(getString(R.string.repeat_no));
             repeatNameList.add(getString(R.string.repeat_day));
@@ -965,10 +968,14 @@ public class EditBillFragment extends Fragment {
                 editCategory.setSelection(0);
             }
 
-        } else {
+        }
+
+        if (ProjectType.IHATEMONEY.equals(projectType)) {
             editRepeatLayout.setVisibility(View.GONE);
             editPaymentModeLayout.setVisibility(View.GONE);
             editCategoryLayout.setVisibility(View.GONE);
+        } else if (ProjectType.LOCAL.equals(projectType)) {
+            editRepeatLayout.setVisibility(View.GONE);
         }
     }
 

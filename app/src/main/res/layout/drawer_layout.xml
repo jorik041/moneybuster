@@ -330,6 +330,17 @@
                         app:fab_showAnimation="@anim/fab_slide_in_from_right"
                         fab:fab_label="@string/fab_del_member"
                         fab:fab_size="normal" /-->
+                    <com.github.clans.fab.FloatingActionButton
+                        android:id="@+id/fabDrawer_export_project"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_save_white_24dp"
+                        app:fab_colorNormal="@color/primary"
+                        app:fab_colorPressed="@color/primary"
+                        app:fab_hideAnimation="@anim/fab_slide_out_to_left"
+                        app:fab_showAnimation="@anim/fab_slide_in_from_left"
+                        fab:fab_label="@string/fab_export_project"
+                        fab:fab_size="mini" />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/fabDrawer_edit_member"

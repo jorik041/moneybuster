@@ -171,6 +171,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     SwipeRefreshLayout swipeRefreshLayout;
     com.github.clans.fab.FloatingActionMenu fabMenuDrawerEdit;
     com.github.clans.fab.FloatingActionButton fabEditMember;
+    com.github.clans.fab.FloatingActionButton fabExportProject;
     com.github.clans.fab.FloatingActionButton fabEditProject;
     com.github.clans.fab.FloatingActionButton fabRemoveProject;
     FloatingActionButton fabAddBill;
@@ -241,6 +242,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         fabMenuDrawerEdit = findViewById(R.id.floatingMenuDrawerEdit);
         fabEditMember = findViewById(R.id.fabDrawer_edit_member);
+        fabExportProject = findViewById(R.id.fabDrawer_export_project);
         fabStatistics = findViewById(R.id.fab_statistics);
         fabSettle = findViewById(R.id.fab_settle);
         fabEditProject = findViewById(R.id.fabDrawer_edit_project);
@@ -739,6 +741,18 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     });
 
                     builder.show();
+                }
+            }
+        });
+
+        fabExportProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                long selectedProjectId = preferences.getLong("selected_project", 0);
+
+                if (selectedProjectId != 0) {
+                    exportProject(selectedProjectId);
                 }
             }
         });
@@ -1431,6 +1445,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         fabEditMember.setColorNormal(ThemeUtils.primaryColor(this));
         fabEditMember.setColorPressed(ThemeUtils.primaryColor(this));
+        fabExportProject.setColorNormal(ThemeUtils.primaryColor(this));
+        fabExportProject.setColorPressed(ThemeUtils.primaryColor(this));
         fabEditProject.setColorNormal(ThemeUtils.primaryColor(this));
         fabEditProject.setColorPressed(ThemeUtils.primaryColor(this));
         fabRemoveProject.setColorNormal(ThemeUtils.primaryColor(this));
@@ -1612,6 +1628,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         TextView totalPayedTV = tView.findViewById(R.id.totalPayedText);
         totalPayedTV.setText(getString(R.string.total_payed, totalPayed));
+    }
+
+    private void exportProject(long projectId) {
+        Map<Long, DBMember> membersById = new HashMap<>();
+        List<DBMember> members = db.getMembersOfProject(projectId, null);
+        for (DBMember m: members) {
+            membersById.put(m.getId(), m);
+        }
     }
 
     private void addProject() {

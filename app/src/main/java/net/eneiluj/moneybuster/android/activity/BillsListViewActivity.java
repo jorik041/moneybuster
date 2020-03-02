@@ -86,6 +86,7 @@ import net.eneiluj.moneybuster.model.Category;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBCategory;
+import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.Item;
@@ -1668,13 +1669,19 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         }
         List<DBBill> bills = db.getBillsOfProject(projectId);
 
-        // gen file content
-        fileContent += "what,amount,date,payer_name,payer_weight,payer_active,owers,repeat,categoryid,paymentmode\n";
         String payerName;
         double payerWeight;
         int payerActive;
         Long payerId;
         String owersTxt;
+        // write bills
+        fileContent += "what,amount,date,payer_name,payer_weight,payer_active,owers,repeat,categoryid,paymentmode\n";
+        // just a way to write all members
+        for (DBMember m: members) {
+            payerActive = m.isActivated() ? 1 : 0;
+            fileContent += "deleteMeIfYouWant,1,1970-01-01,\""+m.getName()+"\","+m.getWeight()+","+
+                              payerActive+",\""+m.getName()+"\",n,,\n";
+        }
         for (DBBill b: bills) {
             payerId = b.getPayerId();
             payerName = membersById.get(payerId).getName();
@@ -1683,12 +1690,32 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             List<DBBillOwer> billOwers = b.getBillOwers();
             owersTxt = "";
             for (DBBillOwer bo: billOwers) {
-                owersTxt += membersById.get(bo.getMemberId()).getName() + ",";
+                owersTxt += membersById.get(bo.getMemberId()).getName() + ", ";
             }
-            owersTxt = owersTxt.replaceAll(",$", "");
+            owersTxt = owersTxt.replaceAll(", $", "");
             fileContent += "\""+b.getWhat()+"\","+b.getAmount()+","+b.getDate()+",\""+payerName+"\","+
                     payerWeight+","+payerActive+",\""+owersTxt+"\","+b.getRepeat()+","+b.getCategoryRemoteId()+
                     ","+b.getPaymentMode()+"\n";
+        }
+
+        // write categories
+        List<DBCategory> cats = db.getCategories(projectId);
+        if (cats.size() > 0) {
+            fileContent += "\ncategoryname,categoryid,icon,color\n";
+            for (DBCategory cat: cats) {
+                fileContent += "\""+cat.getName()+"\","+cat.getId()+",\""+cat.getIcon()+"\",\""+cat.getColor()+"\"\n";
+            }
+        }
+
+        // write currencies
+        List<DBCurrency> curs = db.getCurrencies(projectId);
+        if (curs.size() > 0 && project.getCurrencyName() != null &&
+                !project.getCurrencyName().isEmpty() && !project.getCurrencyName().equals("null")) {
+            fileContent += "\ncurrencyname,exchange_rate\n";
+            fileContent += "\""+project.getCurrencyName()+"\",1\n";
+            for (DBCurrency cur: curs) {
+                fileContent += "\""+cur.getName()+"\","+cur.getExchangeRate()+"\n";
+            }
         }
 
         String fileName = project.getName() + ".csv";

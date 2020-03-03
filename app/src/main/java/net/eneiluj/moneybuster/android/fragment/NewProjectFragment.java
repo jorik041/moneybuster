@@ -1,5 +1,6 @@
 package net.eneiluj.moneybuster.android.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -122,6 +123,7 @@ public class NewProjectFragment extends Fragment {
 
     protected ImageView scanButton;
     protected ImageView nextcloudButton;
+    protected ImageView importButton;
 
     protected FloatingActionButton fabOk;
 
@@ -185,6 +187,7 @@ public class NewProjectFragment extends Fragment {
 
         scanButton = view.findViewById(R.id.scanButton);
         nextcloudButton = view.findViewById(R.id.nextcloudButton);
+        importButton = view.findViewById(R.id.importButton);
 
         fabOk = view.findViewById(R.id.fab_new_ok);
 
@@ -285,6 +288,17 @@ public class NewProjectFragment extends Fragment {
                 Log.d(TAG, "Scan button pressed");
                 Intent createIntent = new Intent(getContext(), QrCodeScanner.class);
                 startActivityForResult(createIntent, scan_qrcode_import_cmd);
+            }
+        });
+
+        importButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent()
+                        .setType("*/*")
+                        .setAction(Intent.ACTION_GET_CONTENT);
+
+                startActivityForResult(Intent.createChooser(intent, "Select a file"), 123);
             }
         });
 
@@ -522,6 +536,7 @@ public class NewProjectFragment extends Fragment {
             whereIcon.setLayoutParams(params);
 
             nextcloudButton.setVisibility(View.GONE);
+            importButton.setVisibility(View.VISIBLE);
         }
         else if (type.equals(ProjectType.IHATEMONEY)) {
             whereLocal.setTextSize(10);
@@ -542,6 +557,7 @@ public class NewProjectFragment extends Fragment {
             }
             newProjectUrlInputLayout.setHint(getString(R.string.setting_ihm_project_url));
             nextcloudButton.setVisibility(View.GONE);
+            importButton.setVisibility(View.GONE);
         }
         else if (type.equals(ProjectType.COSPEND)) {
             whereLocal.setTextSize(10);
@@ -563,6 +579,7 @@ public class NewProjectFragment extends Fragment {
             boolean isNCC = MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(getContext());
             List<DBAccountProject> accProjs = db.getAccountProjects();
             nextcloudButton.setVisibility((!todoCreate && isNCC && accProjs.size() > 0) ? View.VISIBLE : View.GONE);
+            importButton.setVisibility(View.GONE);
         }
     }
 
@@ -631,6 +648,9 @@ public class NewProjectFragment extends Fragment {
                 Log.d(TAG, "onActivityResult SCANNED URL : "+scannedUrl);
                 applyMBLink(Uri.parse(scannedUrl));
             }
+        } else if(requestCode == 123 && resultCode == Activity.RESULT_OK) {
+            Uri selectedfile = data.getData();
+            Log.v("PLOP", "here is the selected file : "+selectedfile.toString());
         }
     }
 

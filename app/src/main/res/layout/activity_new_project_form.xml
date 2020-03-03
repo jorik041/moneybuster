@@ -201,6 +201,19 @@
                     android:scaleY="2"
                     android:src="@drawable/ic_nextcloud_logo_white" />
 
+                <ImageView
+                    android:id="@+id/importButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingTop="4dp"
+                    android:paddingLeft="18dp"
+                    android:paddingRight="18dp"
+                    android:layout_gravity="center"
+                    android:tint="#999999"
+                    android:scaleX="2"
+                    android:scaleY="2"
+                    android:src="@drawable/ic_folder_open_grey600_24dp" />
+
             </LinearLayout>
 
             <LinearLayout

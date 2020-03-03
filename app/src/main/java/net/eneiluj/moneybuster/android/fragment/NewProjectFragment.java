@@ -26,37 +26,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioGroup;
-import android.widget.SimpleAdapter;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
 
 import net.eneiluj.moneybuster.R;
-import net.eneiluj.moneybuster.android.activity.EditBillActivity;
-import net.eneiluj.moneybuster.android.activity.NewProjectActivity;
 import net.eneiluj.moneybuster.android.activity.QrCodeScanner;
 import net.eneiluj.moneybuster.model.DBAccountProject;
-import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
@@ -66,13 +57,12 @@ import net.eneiluj.moneybuster.util.MoneyBuster;
 import net.eneiluj.moneybuster.util.SupportUtil;
 import net.eneiluj.moneybuster.util.ThemeUtils;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static net.eneiluj.moneybuster.util.SupportUtil.getVersionName;
 
 public class NewProjectFragment extends Fragment {
     private static final String TAG = NewProjectFragment.class.getSimpleName();
@@ -86,6 +76,7 @@ public class NewProjectFragment extends Fragment {
     public static final String PARAM_IS_IMPORT = "isImport";
 
     private final static int scan_qrcode_import_cmd = 33;
+    private final static int import_file_cmd = 123;
 
     public interface NewProjectFragmentListener {
         void close(long pid);
@@ -298,7 +289,7 @@ public class NewProjectFragment extends Fragment {
                         .setType("*/*")
                         .setAction(Intent.ACTION_GET_CONTENT);
 
-                startActivityForResult(Intent.createChooser(intent, "Select a file"), 123);
+                startActivityForResult(Intent.createChooser(intent, "Select a file"), import_file_cmd);
             }
         });
 
@@ -648,9 +639,10 @@ public class NewProjectFragment extends Fragment {
                 Log.d(TAG, "onActivityResult SCANNED URL : "+scannedUrl);
                 applyMBLink(Uri.parse(scannedUrl));
             }
-        } else if(requestCode == 123 && resultCode == Activity.RESULT_OK) {
+        } else if(requestCode == import_file_cmd && resultCode == Activity.RESULT_OK) {
             Uri selectedfile = data.getData();
             Log.v("PLOP", "here is the selected file : "+selectedfile.toString());
+            importFromFile(selectedfile);
         }
     }
 
@@ -994,6 +986,43 @@ public class NewProjectFragment extends Fragment {
         Context context = getActivity();
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
+    }
+
+    protected void importFromFile(Uri fileUri) {
+        String content = null;
+        try {
+            InputStream inputStream = getActivity().getContentResolver().openInputStream(fileUri);
+
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            // if we ever want to get file content :
+            /*BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            StringBuilder stringBuilder = new StringBuilder();
+            while ( (content = bufferedReader.readLine()) != null ) {
+                stringBuilder.append(content + System.getProperty("line.separator"));
+            }
+            inputStream.close();
+            content = stringBuilder.toString();
+            Log.v(TAG, "CONTENT "+content);
+            bufferedReader.close();*/
+            try {
+                CSVReader reader = new CSVReader(inputStreamReader);
+                String[] nextLine;
+                while ((nextLine = reader.readNext()) != null) {
+                    Log.d(TAG, "LEN "+nextLine.length+" = "+nextLine[0]);
+                    // if len==1 and content == "" => empty line
+                }
+            } catch (IOException e) {
+
+            }
+        }
+        catch(FileNotFoundException ex) {
+            Log.d(TAG, ex.getMessage());
+        }
+        catch(CsvValidationException ex) {
+            Log.d(TAG, ex.getMessage());
+        }
+
+        //listener.close(pid);
     }
 
 }

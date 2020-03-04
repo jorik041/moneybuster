@@ -2562,6 +2562,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             if (pid != 0) {
                 setSelectedProject(pid);
             }
+            DBProject addedProj = db.getProject(pid);
+            showDialog(
+                    getString(R.string.project_add_success, addedProj.getRemoteId()),
+                    getString(R.string.project_add_success_title),
+                    R.drawable.ic_add_circle_white_24dp
+            );
         } else if (requestCode == editproject) {
             if (data != null) {
                 // adapt after project has been deleted
@@ -2602,6 +2608,20 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 }
             }
         }*/
+    }
+
+    private void showDialog(String msg, String title, int icon) {
+        android.app.AlertDialog.Builder builder;
+        builder = new android.app.AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog));
+        builder.setTitle(title)
+                .setMessage(msg)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setIcon(icon)
+                .show();
     }
 
     private void updateUsernameInDrawer() {

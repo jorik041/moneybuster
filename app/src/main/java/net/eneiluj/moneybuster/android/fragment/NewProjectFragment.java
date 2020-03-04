@@ -1131,23 +1131,27 @@ public class NewProjectFragment extends Fragment {
                                 showToast(getString(R.string.import_error_owers, row), Toast.LENGTH_LONG);
                                 return;
                             }
-                            billRemoteIdToOwerStr.put(Long.valueOf(row), owersStr);
-                            owersArray = owersStr.split(", ");
-                            for (int i = 0; i < owersArray.length; i++) {
-                                if (owersArray[i].trim().length() == 0) {
-                                    showToast(getString(R.string.import_error_owers, row), Toast.LENGTH_LONG);
-                                    return;
+                            // ignore "deleteMeIfYouWant" bills that are just there
+                            // to make sure we add members
+                            if (!payer_name.equals(owersStr)) {
+                                billRemoteIdToOwerStr.put(Long.valueOf(row), owersStr);
+                                owersArray = owersStr.split(", ");
+                                for (int i = 0; i < owersArray.length; i++) {
+                                    if (owersArray[i].trim().length() == 0) {
+                                        showToast(getString(R.string.import_error_owers, row), Toast.LENGTH_LONG);
+                                        return;
+                                    }
+                                    if (!membersweight.containsKey(owersArray[i].trim())) {
+                                        membersweight.put(owersArray[i].trim(), 1.0);
+                                    }
                                 }
-                                if (!membersweight.containsKey(owersArray[i].trim())) {
-                                    membersweight.put(owersArray[i].trim(), 1.0);
-                                }
+                                bills.add(
+                                        new DBBill(0, row, 0, 0, amount, date, what,
+                                                DBBill.STATE_OK, "n", paymentmode, Integer.parseInt(categoryid)
+                                        )
+                                );
+                                billRemoteIdToPayerName.put(Long.valueOf(row), payer_name);
                             }
-                            bills.add(
-                                new DBBill(0, row, 0, 0, amount, date, what,
-                                        DBBill.STATE_OK, "n", paymentmode, Integer.parseInt(categoryid)
-                                )
-                            );
-                            billRemoteIdToPayerName.put(Long.valueOf(row), payer_name);
                         }
                     }
                     row++;

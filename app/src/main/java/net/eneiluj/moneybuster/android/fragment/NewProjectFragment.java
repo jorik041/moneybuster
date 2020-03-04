@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.Gravity;
@@ -48,8 +49,10 @@ import com.opencsv.exceptions.CsvValidationException;
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.activity.QrCodeScanner;
 import net.eneiluj.moneybuster.model.DBAccountProject;
+import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBCategory;
 import net.eneiluj.moneybuster.model.DBCurrency;
+import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
@@ -58,6 +61,8 @@ import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.MoneyBuster;
 import net.eneiluj.moneybuster.util.SupportUtil;
 import net.eneiluj.moneybuster.util.ThemeUtils;
+
+import org.apache.commons.collections.map.AbstractMapDecorator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -995,6 +1000,7 @@ public class NewProjectFragment extends Fragment {
     protected void importFromFile(Uri fileUri) {
         String content = null;
         try {
+            String projectRemoteId = fileUri.getLastPathSegment();
             InputStream inputStream = getActivity().getContentResolver().openInputStream(fileUri);
 
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -1013,11 +1019,23 @@ public class NewProjectFragment extends Fragment {
                 String currentSection = null;
                 int row = 0;
                 int nbCols;
-                String icon, color, categoryname, categoryid, currencyname, exchangeRate;
+                String icon, color, categoryname, categoryid, currencyname, exchangeRate,
+                    what, date, payer_name, owersStr, paymentmode;
+                String mainCurrencyName = null;
+                boolean payer_active;
+                double amount, payer_weight;
                 Map<String, Integer> columns = new HashMap<>();
                 int c;
                 List<DBCategory> categories = new ArrayList<>();
                 List<DBCurrency> currencies = new ArrayList<>();
+                List<DBBill> bills = new ArrayList<>();
+                Map<String, Boolean> membersActive = new HashMap<>();
+                Map<String, Double> membersweight = new HashMap<>();
+                Map<Long, Long> categoryIdConv = new HashMap<>();
+                Map<Long, String> billRemoteIdToPayerName = new HashMap<>();
+                Map<Long, String> billRemoteIdToOwerStr = new HashMap<>();
+                List<Long> owerIds = new ArrayList<>();
+                String[] owersArray;
 
                 CSVReader reader = new CSVReader(inputStreamReader);
                 String[] nextLine;
@@ -1030,7 +1048,7 @@ public class NewProjectFragment extends Fragment {
                         previousLineEmpty = false;
                         nbCols = nextLine.length;
                         columns.clear();
-                        for (c=0; c < nbCols; c++) {
+                        for (c = 0; c < nbCols; c++) {
                             columns.put(nextLine[c], c);
                         }
                         if (columns.containsKey("what") &&
@@ -1052,7 +1070,7 @@ public class NewProjectFragment extends Fragment {
                         ) {
                             currentSection = "currencies";
                         } else {
-                            showToast(getString(R.string.import_error_header));
+                            showToast(getString(R.string.import_error_header, row), Toast.LENGTH_LONG);
                             return;
                         }
                     } else {
@@ -1067,9 +1085,89 @@ public class NewProjectFragment extends Fragment {
                         } else if (currentSection.equals("currencies")) {
                             currencyname = nextLine[columns.get("name")];
                             exchangeRate = nextLine[columns.get("exchange_rate")];
-                            currencies.add(new DBCurrency(0, 0, 0, currencyname, Double.valueOf(exchangeRate)));
+                            if (Double.parseDouble(exchangeRate) == 1.0) {
+                                mainCurrencyName = currencyname;
+                            }
+                            currencies.add(new DBCurrency(0, 0, 0, currencyname, Double.parseDouble(exchangeRate)));
+                        } else if (currentSection == "bills") {
+                            what = nextLine[columns.get("what")];
+                            amount = Double.parseDouble(nextLine[columns.get("amount")]);
+                            date = nextLine[columns.get("date")];
+                            payer_name = nextLine[columns.get("payer_name")];
+                            payer_weight = Double.parseDouble(nextLine[columns.get("payer_weight")]);
+                            owersStr = nextLine[columns.get("owers")];
+                            payer_active = columns.containsKey("payer_active") && nextLine[columns.get("payer_active")].equals("1");
+                            categoryid = columns.containsKey("categoryid") ? nextLine[columns.get("categoryid")] : "0";
+                            paymentmode = columns.containsKey("paymentmode") ? nextLine[columns.get("paymentmode")] : null;
+
+                            membersActive.put(payer_name, payer_active);
+                            membersweight.put(payer_name, payer_weight);
+
+                            if (owersStr.trim().length() == 0) {
+                                showToast(getString(R.string.import_error_owers, row), Toast.LENGTH_LONG);
+                                return;
+                            }
+                            billRemoteIdToOwerStr.put(Long.valueOf(row), owersStr);
+                            owersArray = owersStr.split(", ");
+                            for (int i = 0; i < owersArray.length; i++) {
+                                if (owersArray[i].trim().length() == 0) {
+                                    showToast(getString(R.string.import_error_owers, row), Toast.LENGTH_LONG);
+                                    return;
+                                }
+                                if (!membersweight.containsKey(owersArray[i].trim())) {
+                                    membersweight.put(owersArray[i].trim(), 1.0);
+                                }
+                            }
+                            bills.add(
+                                new DBBill(0, row, 0, 0, amount, date, what,
+                                        DBBill.STATE_OK, "n", paymentmode, Integer.parseInt(categoryid)
+                                )
+                            );
+                            billRemoteIdToPayerName.put(Long.valueOf(row), payer_name);
                         }
                     }
+                    row++;
+                }
+                Map<String, Long> memberNameToId = new HashMap<>();
+                // add project
+                DBProject newProject = new DBProject(
+                        0, projectRemoteId, "", projectRemoteId, null,
+                        null, null, ProjectType.LOCAL, 0L, mainCurrencyName
+                );
+                long pid = db.addProject(newProject);
+
+                // add categories
+                for (DBCategory cat: categories) {
+                    long catDbId = db.addCategory(new DBCategory(0, cat.getRemoteId(), pid, cat.getName(), cat.getIcon(), cat.getColor()));
+                    categoryIdConv.put(cat.getRemoteId(), catDbId);
+                }
+                // add currencies
+                for (DBCurrency cur: currencies) {
+                    long currDbId = db.addCurrency(new DBCurrency(0, 0, pid, cur.getName(), cur.getExchangeRate()));
+                }
+                // add members
+                for (String mName: membersweight.keySet()) {
+                    long memberDbId = db.addMember(new DBMember(0, 0, pid, mName,
+                            membersActive.get(mName), membersweight.get(mName), DBBill.STATE_OK, null, null, null));
+                    memberNameToId.put(mName, memberDbId);
+                }
+                // add bills
+                for (DBBill b: bills) {
+                    String payerName = billRemoteIdToPayerName.get(b.getRemoteId());
+                    long payerId = memberNameToId.get(payerName);
+
+                    owerIds.clear();
+                    owersArray = billRemoteIdToOwerStr.get(b.getRemoteId()).split(", ");
+                    for (int i = 0; i < owersArray.length; i++) {
+                        owerIds.add(memberNameToId.get(owersArray[i]));
+                    }
+                    long billDbId = db.addBill(new DBBill(0, 0, pid, payerId, b.getAmount(), b.getDate(),
+                            b.getWhat(), DBBill.STATE_OK, "n", b.getPaymentMode(), b.getCategoryRemoteId()));
+                    // add bill owers
+                    for (Long owerId: owerIds) {
+                        db.addBillower(billDbId, owerId);
+                    }
+                    listener.close(pid);
                 }
             } catch (IOException e) {
 
@@ -1081,8 +1179,6 @@ public class NewProjectFragment extends Fragment {
         catch(CsvValidationException ex) {
             Log.d(TAG, ex.getMessage());
         }
-
-        //listener.close(pid);
     }
 
 }

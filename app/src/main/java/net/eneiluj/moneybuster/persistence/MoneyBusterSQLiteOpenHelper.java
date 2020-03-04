@@ -823,7 +823,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     /**
      *
      */
-    public void addMember(DBMember m) {
+    public long addMember(DBMember m) {
         // key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight
         if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[add member]"); }
         SQLiteDatabase db = this.getWritableDatabase();
@@ -838,7 +838,8 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_g, m.getG());
         values.put(key_b, m.getB());
 
-        db.insert(table_members, null, values);
+        long memberId = db.insert(table_members, null, values);
+        return memberId;
     }
 
     public void addMemberAndSync(DBMember m) {

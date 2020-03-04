@@ -124,6 +124,8 @@
     <string name="fab_rm_project">Remove current Project</string>
     <string name="fab_edit_member">Edit a member</string>
     <string name="fab_export_project">Export project</string>
+    <string name="import_error_owers">Malformed CSV, bad owers on line %1$d</string>
+    <string name="import_error_header">Malformed CSV, bad column names on line %1$d</string>
     <string name="choose_member_to_edit">Choose a member to edit</string>
     <string name="member_already_exists">This member already exists in this project</string>
     <string name="search_help_dialog_title">How to search</string>

@@ -8,12 +8,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.ArrayMap;
@@ -997,10 +999,32 @@ public class NewProjectFragment extends Fragment {
         toast.show();
     }
 
+    public String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
+    }
+
     protected void importFromFile(Uri fileUri) {
         String content = null;
         try {
-            String projectRemoteId = fileUri.getLastPathSegment();
+            String projectRemoteId = getFileName(fileUri).replaceAll("\\.csv$", "");
             InputStream inputStream = getActivity().getContentResolver().openInputStream(fileUri);
 
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -1083,7 +1107,7 @@ public class NewProjectFragment extends Fragment {
                             categoryname = nextLine[columns.get("categoryname")];
                             categories.add(new DBCategory(0, Long.valueOf(categoryid), 0, categoryname, icon, color));
                         } else if (currentSection.equals("currencies")) {
-                            currencyname = nextLine[columns.get("name")];
+                            currencyname = nextLine[columns.get("currencyname")];
                             exchangeRate = nextLine[columns.get("exchange_rate")];
                             if (Double.parseDouble(exchangeRate) == 1.0) {
                                 mainCurrencyName = currencyname;
@@ -1097,7 +1121,7 @@ public class NewProjectFragment extends Fragment {
                             payer_weight = Double.parseDouble(nextLine[columns.get("payer_weight")]);
                             owersStr = nextLine[columns.get("owers")];
                             payer_active = columns.containsKey("payer_active") && nextLine[columns.get("payer_active")].equals("1");
-                            categoryid = columns.containsKey("categoryid") ? nextLine[columns.get("categoryid")] : "0";
+                            categoryid = (columns.containsKey("categoryid") && !"".equals(nextLine[columns.get("categoryid")])) ? nextLine[columns.get("categoryid")] : "0";
                             paymentmode = columns.containsKey("paymentmode") ? nextLine[columns.get("paymentmode")] : null;
 
                             membersActive.put(payer_name, payer_active);
@@ -1135,6 +1159,7 @@ public class NewProjectFragment extends Fragment {
                         null, null, ProjectType.LOCAL, 0L, mainCurrencyName
                 );
                 long pid = db.addProject(newProject);
+                Log.v(TAG, "NEW PROJECT ID : "+pid);
 
                 // add categories
                 for (DBCategory cat: categories) {

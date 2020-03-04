@@ -48,6 +48,8 @@ import com.opencsv.exceptions.CsvValidationException;
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.activity.QrCodeScanner;
 import net.eneiluj.moneybuster.model.DBAccountProject;
+import net.eneiluj.moneybuster.model.DBCategory;
+import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
@@ -62,7 +64,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NewProjectFragment extends Fragment {
     private static final String TAG = NewProjectFragment.class.getSimpleName();
@@ -1005,11 +1009,67 @@ public class NewProjectFragment extends Fragment {
             Log.v(TAG, "CONTENT "+content);
             bufferedReader.close();*/
             try {
+                boolean previousLineEmpty = false;
+                String currentSection = null;
+                int row = 0;
+                int nbCols;
+                String icon, color, categoryname, categoryid, currencyname, exchangeRate;
+                Map<String, Integer> columns = new HashMap<>();
+                int c;
+                List<DBCategory> categories = new ArrayList<>();
+                List<DBCurrency> currencies = new ArrayList<>();
+
                 CSVReader reader = new CSVReader(inputStreamReader);
                 String[] nextLine;
                 while ((nextLine = reader.readNext()) != null) {
                     Log.d(TAG, "LEN "+nextLine.length+" = "+nextLine[0]);
                     // if len==1 and content == "" => empty line
+                    if (nextLine.length == 1 && nextLine[0].equals("")) {
+                        previousLineEmpty = true;
+                    } else if (row == 0 || previousLineEmpty) {
+                        previousLineEmpty = false;
+                        nbCols = nextLine.length;
+                        columns.clear();
+                        for (c=0; c < nbCols; c++) {
+                            columns.put(nextLine[c], c);
+                        }
+                        if (columns.containsKey("what") &&
+                                columns.containsKey("amount") &&
+                                columns.containsKey("date") &&
+                                columns.containsKey("payer_name") &&
+                                columns.containsKey("payer_weight") &&
+                                columns.containsKey("owers")
+                        ) {
+                            currentSection = "bills";
+                        } else if (columns.containsKey("icon") &&
+                                columns.containsKey("color") &&
+                                columns.containsKey("categoryid") &&
+                                columns.containsKey("categoryname")
+                        ) {
+                            currentSection = "categories";
+                        } else if (columns.containsKey("exchange_rate") &&
+                                columns.containsKey("currencyname")
+                        ) {
+                            currentSection = "currencies";
+                        } else {
+                            showToast(getString(R.string.import_error_header));
+                            return;
+                        }
+                    } else {
+                        // normal line
+                        previousLineEmpty = false;
+                        if (currentSection.equals("categories")) {
+                            icon = nextLine[columns.get("icon")];
+                            color = nextLine[columns.get("color")];
+                            categoryid = nextLine[columns.get("categoryid")];
+                            categoryname = nextLine[columns.get("categoryname")];
+                            categories.add(new DBCategory(0, Long.valueOf(categoryid), 0, categoryname, icon, color));
+                        } else if (currentSection.equals("currencies")) {
+                            currencyname = nextLine[columns.get("name")];
+                            exchangeRate = nextLine[columns.get("exchange_rate")];
+                            currencies.add(new DBCurrency(0, 0, 0, currencyname, Double.valueOf(exchangeRate)));
+                        }
+                    }
                 }
             } catch (IOException e) {
 

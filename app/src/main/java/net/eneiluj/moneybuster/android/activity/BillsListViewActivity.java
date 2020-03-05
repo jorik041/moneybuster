@@ -107,6 +107,7 @@ import net.eneiluj.moneybuster.util.ThemeUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -167,6 +168,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private final static int removeproject = 5;
     private final static int editproject = 6;
     private final static int scan_qrcode_import_cmd = 7;
+    private final static int save_file_cmd = 8;
+
+    private static String contentToExport = "";
 
     private static boolean activityVisible = false;
 
@@ -1723,6 +1727,37 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             saveToFile(fileContent, path, fileName);
         } else {
+            contentToExport = fileContent;
+            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("text/csv");
+            intent.putExtra(Intent.EXTRA_TITLE, fileName);
+
+            // Optionally, specify a URI for the directory that should be opened in
+            // the system file picker when your app creates the document.
+            //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+
+            startActivityForResult(intent, save_file_cmd);
+        }
+    }
+
+    private void saveToFileUri(String content, Uri fileUri) {
+        try {
+            OutputStream fOut = getContentResolver().openOutputStream(fileUri);
+            //FileOutputStream fOut = new FileOutputStream(fileUri.getPath());
+            OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+            myOutWriter.append(content);
+            myOutWriter.close();
+            fOut.flush();
+            fOut.close();
+            showToast(getString(R.string.file_saved_success, fileUri.getLastPathSegment().replace(
+                    Environment.getExternalStorageDirectory().toString(),
+                    ""))
+            );
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+            showToast(e.toString());
         }
     }
 
@@ -1813,7 +1848,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         List<String> projectNames = new ArrayList<>();
         List<Long> projectIds = new ArrayList<>();
         for (DBProject p : dbProjects) {
-            if (p.getName() == null) {
+            if (p.getName() == null || p.getIhmUrl() == null || p.getType().equals(DBProject.TYPE_LOCAL)) {
                 projectNames.add(p.getRemoteId());
             }
             else {
@@ -2598,6 +2633,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 i.setAction(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(scannedUrl));
                 startActivity(i);
+            }
+        } else if (requestCode == save_file_cmd) {
+            if (data != null) {
+                Uri savedFile = data.getData();
+                Log.v(TAG, "WE SAVE to "+savedFile);
+                saveToFileUri(contentToExport, savedFile);
             }
         }
         /*else if (requestCode == server_settings) {

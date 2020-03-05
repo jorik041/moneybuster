@@ -1668,7 +1668,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         DBProject project = db.getProject(projectId);
         Map<Long, DBMember> membersById = new HashMap<>();
         List<DBMember> members = db.getMembersOfProject(projectId, null);
-        for (DBMember m: members) {
+        for (DBMember m : members) {
             membersById.put(m.getId(), m);
         }
         List<DBBill> bills = db.getBillsOfProject(projectId);
@@ -1681,33 +1681,33 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         // write bills
         fileContent += "what,amount,date,payer_name,payer_weight,payer_active,owers,repeat,categoryid,paymentmode\n";
         // just a way to write all members
-        for (DBMember m: members) {
+        for (DBMember m : members) {
             payerActive = m.isActivated() ? 1 : 0;
-            fileContent += "deleteMeIfYouWant,1,1970-01-01,\""+m.getName()+"\","+m.getWeight()+","+
-                              payerActive+",\""+m.getName()+"\",n,,\n";
+            fileContent += "deleteMeIfYouWant,1,1970-01-01,\"" + m.getName() + "\"," + m.getWeight() + "," +
+                    payerActive + ",\"" + m.getName() + "\",n,,\n";
         }
-        for (DBBill b: bills) {
+        for (DBBill b : bills) {
             payerId = b.getPayerId();
             payerName = membersById.get(payerId).getName();
             payerWeight = membersById.get(payerId).getWeight();
             payerActive = membersById.get(payerId).isActivated() ? 1 : 0;
             List<DBBillOwer> billOwers = b.getBillOwers();
             owersTxt = "";
-            for (DBBillOwer bo: billOwers) {
+            for (DBBillOwer bo : billOwers) {
                 owersTxt += membersById.get(bo.getMemberId()).getName() + ", ";
             }
             owersTxt = owersTxt.replaceAll(", $", "");
-            fileContent += "\""+b.getWhat()+"\","+b.getAmount()+","+b.getDate()+",\""+payerName+"\","+
-                    payerWeight+","+payerActive+",\""+owersTxt+"\","+b.getRepeat()+","+b.getCategoryRemoteId()+
-                    ","+b.getPaymentMode()+"\n";
+            fileContent += "\"" + b.getWhat() + "\"," + b.getAmount() + "," + b.getDate() + ",\"" + payerName + "\"," +
+                    payerWeight + "," + payerActive + ",\"" + owersTxt + "\"," + b.getRepeat() + "," + b.getCategoryRemoteId() +
+                    "," + b.getPaymentMode() + "\n";
         }
 
         // write categories
         List<DBCategory> cats = db.getCategories(projectId);
         if (cats.size() > 0) {
             fileContent += "\ncategoryname,categoryid,icon,color\n";
-            for (DBCategory cat: cats) {
-                fileContent += "\""+cat.getName()+"\","+cat.getId()+",\""+cat.getIcon()+"\",\""+cat.getColor()+"\"\n";
+            for (DBCategory cat : cats) {
+                fileContent += "\"" + cat.getName() + "\"," + cat.getId() + ",\"" + cat.getIcon() + "\",\"" + cat.getColor() + "\"\n";
             }
         }
 
@@ -1716,29 +1716,28 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         if (curs.size() > 0 && project.getCurrencyName() != null &&
                 !project.getCurrencyName().isEmpty() && !project.getCurrencyName().equals("null")) {
             fileContent += "\ncurrencyname,exchange_rate\n";
-            fileContent += "\""+project.getCurrencyName()+"\",1\n";
-            for (DBCurrency cur: curs) {
-                fileContent += "\""+cur.getName()+"\","+cur.getExchangeRate()+"\n";
+            fileContent += "\"" + project.getCurrencyName() + "\",1\n";
+            for (DBCurrency cur : curs) {
+                fileContent += "\"" + cur.getName() + "\"," + cur.getExchangeRate() + "\n";
             }
         }
 
         String fileName = project.getName() + ".csv";
-        String path = Environment.getExternalStorageDirectory() + File.separator  + "MoneyBuster";
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            saveToFile(fileContent, path, fileName);
-        } else {
-            contentToExport = fileContent;
-            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("text/csv");
-            intent.putExtra(Intent.EXTRA_TITLE, fileName);
+        String path = Environment.getExternalStorageDirectory() + File.separator + "MoneyBuster";
+        // this does not work anymore from Android 10 (Q)
+        //saveToFile(fileContent, path, fileName);
 
-            // Optionally, specify a URI for the directory that should be opened in
-            // the system file picker when your app creates the document.
-            //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+        contentToExport = fileContent;
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("text/csv");
+        intent.putExtra(Intent.EXTRA_TITLE, fileName);
 
-            startActivityForResult(intent, save_file_cmd);
-        }
+        // Optionally, specify a URI for the directory that should be opened in
+        // the system file picker when your app creates the document.
+        //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+
+        startActivityForResult(intent, save_file_cmd);
     }
 
     private void saveToFileUri(String content, Uri fileUri) {

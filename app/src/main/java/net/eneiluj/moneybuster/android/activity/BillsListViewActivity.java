@@ -1720,15 +1720,20 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         String fileName = project.getName() + ".csv";
         String path = Environment.getExternalStorageDirectory() + File.separator  + "MoneyBuster";
-        saveToFile(fileContent, path, fileName);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            saveToFile(fileContent, path, fileName);
+        } else {
+        }
     }
 
     private void saveToFile(String content, String path, String fileName) {
         File folder = new File(path);
         if (!folder.exists()) {
+            Log.v(TAG, "create dir "+path);
             folder.mkdirs();
         }
 
+        Log.v(TAG, "try to write in ["+path+"] a file named: "+fileName);
         final File file = new File(path, fileName);
 
         try {

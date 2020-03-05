@@ -633,6 +633,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_remoteId, project.getRemoteId());
         values.put(key_password, project.getPassword());
         values.put(key_email, project.getEmail());
+        values.put(key_name, project.getName());
         values.put(key_ihmUrl, project.getIhmUrl());
         values.put(key_type, project.getType().getId());
         return db.insert(table_projects, null, values);

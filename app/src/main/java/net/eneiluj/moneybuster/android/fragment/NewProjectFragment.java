@@ -1024,6 +1024,8 @@ public class NewProjectFragment extends Fragment {
     protected void importFromFile(Uri fileUri) {
         String content = null;
         try {
+            Log.v(TAG, "file uri: "+fileUri);
+            Log.v(TAG, "file name: "+getFileName(fileUri));
             String projectRemoteId = getFileName(fileUri).replaceAll("\\.csv$", "");
             InputStream inputStream = getActivity().getContentResolver().openInputStream(fileUri);
 

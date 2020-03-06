@@ -1722,7 +1722,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         }
 
-        String fileName = project.getName() + ".csv";
+        String fileName;
+        if (project.getName() == null || project.getName().equals("")) {
+            fileName = project.getRemoteId() + ".csv";
+        } else {
+            fileName = project.getName() + ".csv";
+        }
         String path = Environment.getExternalStorageDirectory() + File.separator + "MoneyBuster";
         // this does not work anymore from Android 10 (Q)
         //saveToFile(fileContent, path, fileName);

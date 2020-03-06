@@ -122,6 +122,9 @@
     <string name="fab_add_member">Добавить участника</string>
     <string name="fab_rm_project">Удалить текущий проект</string>
     <string name="fab_edit_member">Редактировать участника</string>
+    <string name="fab_export_project">Export project</string>
+    <string name="import_error_owers">Malformed CSV, bad owers on line %1$d</string>
+    <string name="import_error_header">Malformed CSV, bad column names on line %1$d</string>
     <string name="choose_member_to_edit">Выберите участника для редактирования</string>
     <string name="member_already_exists">Этот участник уже существует в этом проекте</string>
     <string name="search_help_dialog_title">Как искать</string>
@@ -175,10 +178,14 @@
     <string name="settings_periodical_sync_title">Background sync</string>
     <string name="settings_sync_interval_long">How often is the background sync triggered (minutes)</string>
     <string name="settings_sync_interval_title">Background sync interval</string>
+    <string name="settings_autostart_title">Start on boot</string>
+    <string name="settings_autostart_summary">Start periodical sync service on boot</string>
     <string name="settings_notify_new">Notification on bill creations</string>
     <string name="settings_notify_updated">Notification on bill changes</string>
     <string name="settings_notify_deleted">Notification on bill deletions</string>
     <string name="project_sync_success">Проект %s синхронизирован</string>
+    <string name="file_saved_success">Project saved in %s</string>
+    <string name="write_permission_refused">Write permission refused, impossible to write file</string>
     <string name="add_member_dialog_title">Имя нового участника</string>
     <string name="edit_member_dialog_title">Редактировать участника</string>
     <string name="member_edit_empty_name">Имя участника не может быть пустым</string>
@@ -195,7 +202,10 @@
     <string name="stats_balance">Баланс</string>
     <string name="fab_statistics">Статистика проекта</string>
     <string name="fab_settle">Запросить расчет</string>
+    <string name="project_add_success">Project %1$s was successfully created</string>
+    <string name="project_add_success_title">Project added</string>
     <string name="import_bad_url">Неправильная ссылка MoneyBuster, невозможно импортировать</string>
+    <string name="import_no_data">Something went wrong when adding a new project</string>
     <string name="fab_scan_qrcode_import">Импортировать MB QRCode</string>
     <string name="statistic_dialog_title">Статистика проекта</string>
     <string name="settle_dialog_title">Расчитать проект</string>

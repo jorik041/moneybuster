@@ -2588,6 +2588,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (DEBUG) { Log.d(TAG, "[ACT RESULT]"); }
         // Check which request we're responding to
         if (requestCode == create_bill_cmd) {

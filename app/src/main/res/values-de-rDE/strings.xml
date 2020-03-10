@@ -27,9 +27,9 @@
     <string name="setting_project_repetition">Wiederhole diese Ausgabe jede(n)</string>
     <string name="setting_payment_mode">Zahlungsmodus</string>
     <string name="setting_category">Kategorie</string>
-    <string name="empty_action_dialog_title">What do you want to do?</string>
-    <string name="configure_account_choice">Configure Nextcloud account</string>
-    <string name="add_project_choice">Manually add a project (IHateMoney, Cospend or local)</string>
+    <string name="empty_action_dialog_title">Was möchtest Du machen?</string>
+    <string name="configure_account_choice">Nextcloud-Konto konfigurieren</string>
+    <string name="add_project_choice">Ein Projekt manuell hinzufügen (IHateMoney, Cospend oder lokal)</string>
     <string name="repeat_no">nicht wiederholen</string>
     <string name="repeat_day">Tag</string>
     <string name="repeat_week">Woche</string>
@@ -40,7 +40,7 @@
     <string name="payment_mode_credit_card">Kreditkarte</string>
     <string name="payment_mode_cash">Bar</string>
     <string name="payment_mode_check">Scheck</string>
-    <string name="payment_mode_transfer">Transfer</string>
+    <string name="payment_mode_transfer">Transaktion</string>
     <string name="category_none">Keine Kategorie</string>
     <string name="category_all">Alle Kategorien</string>
     <string name="category_all_except_reimbursement">Alle außer Rückerstattung</string>
@@ -122,9 +122,9 @@
     <string name="fab_add_member">Mitglied hinzufügen</string>
     <string name="fab_rm_project">Aktuelles Projekt entfernen</string>
     <string name="fab_edit_member">Mitglied bearbeiten</string>
-    <string name="fab_export_project">Export project</string>
-    <string name="import_error_owers">Malformed CSV, bad owers on line %1$d</string>
-    <string name="import_error_header">Malformed CSV, bad column names on line %1$d</string>
+    <string name="fab_export_project">Projekt exportieren</string>
+    <string name="import_error_owers">Deformierte CSV, inkorrekte Schuldner in Zeile %1$d</string>
+    <string name="import_error_header">Deformierte CSV, inkorrekte Spaltennamen in Zeile %1$d</string>
     <string name="choose_member_to_edit">Ein Mitglied zum Bearbeiten auswählen</string>
     <string name="member_already_exists">Dieser Nutzer ist bereits Projektmitglied</string>
     <string name="search_help_dialog_title">Anleitung Suche</string>
@@ -143,12 +143,12 @@
     <string name="welcome_dialog_title">Willkommen bei MoneyBuster v%s</string>
     <string name="welcome_dialog_content_v12">Was ist neu?\n\n* QRCode scanning\n* Bessere Schnittstelle\n* Nextcloud-Account-Projekt Import\n* Verbesserte Statistiken\n* Und vieles mehr :-)</string>
     <string name="welcome_dialog_content_v13">Was ist neu?\n\n* Filter in Statistiken\n* Automatische Abrechnungen erstellen\n* Suche nach einem Namen\n* Und vieles mehr :-)</string>
-    <string name="first_welcome_dialog_content">First, configure Nextcloud account or create/join a project (IHateMoney or Nextcloud Cospend), then add some members and/or create some bills!\n\nOther main actions:\n* Settle the project to generate a global repayment plan\n* Show project statistics\n* Share: generate a QRCode that others can scan to join the project\n\nOn Android &gt;= 8.0 you can long press the action buttons to display help.</string>
+    <string name="first_welcome_dialog_content">Konfiguriere zuerst ein Nextcloud-Konto, oder erstelle ein Projekt oder trete einem Projekt bei (mit IHateMoney oder Nextcloud Cospend). Füge dann Mitglieder hinzu und/oder erstelle Abrechnungen!\n\nWeitere wichtige Aktionen:\n* Rechne das Projekt ab, um einen Gesamt-Rückzahlungsplan zu generieren\n* Projektstatistiken anzeigen\n* Teilen: Generiere einen QR-Code, den andere scannen können, um dem Projekt beizutreten\n\nAuf Android &gt;= 8.0 kannst Du lange auf die Aktionsbuttons drücken, um die Hilfe anzuzeigen.</string>
     <string name="changelog">Änderungsprotokoll</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Aussehen</string>
     <string name="settings_network_category">Netzwerk</string>
-    <string name="settings_sync_category">Synchronisation</string>
+    <string name="settings_sync_category">Synchronisierung</string>
     <string name="settings_server_settings">Nextcloud Konto</string>
     <string name="settings_url">Server-Adresse</string>
     <string name="settings_url_warn_http">WARNUNG: \"http\" ist unsicher. Bitte \"https\" benutzen.</string>
@@ -172,20 +172,20 @@
     <string name="settings_cert_reset">(Nicht) vertrauenswürdige Zertifikaten zurücksetzen</string>
     <string name="settings_cert_reset_summary">Vertrauen für alle benutzerdefinierten Zertifikate zurücksetzen</string>
     <string name="settings_cert_reset_toast">Alle benutzerdefinierten Zertifikate wurden gelöscht</string>
-    <string name="settings_use_server_color_title">Use server color</string>
-    <string name="settings_use_server_color_subtitle">Get server color when syncing and use it as main app color</string>
-    <string name="settings_periodical_sync_summary">Synchronize all projects periodically</string>
-    <string name="settings_periodical_sync_title">Background sync</string>
-    <string name="settings_sync_interval_long">How often is the background sync triggered (minutes)</string>
-    <string name="settings_sync_interval_title">Background sync interval</string>
-    <string name="settings_autostart_title">Start on boot</string>
-    <string name="settings_autostart_summary">Start periodical sync service on boot</string>
-    <string name="settings_notify_new">Notification on bill creations</string>
-    <string name="settings_notify_updated">Notification on bill changes</string>
-    <string name="settings_notify_deleted">Notification on bill deletions</string>
+    <string name="settings_use_server_color_title">Server-Farbe nutzen</string>
+    <string name="settings_use_server_color_subtitle">Farbe beim Synchronisieren vom Server abrufen und als Hauptfarbe der App nutzen</string>
+    <string name="settings_periodical_sync_summary">Regelmäßig alle Projekte synchronisieren</string>
+    <string name="settings_periodical_sync_title">Hintergrund-Sync</string>
+    <string name="settings_sync_interval_long">Wie oft findet die Hintergrund-Synchronisierung statt (Minuten)</string>
+    <string name="settings_sync_interval_title">Hintergrund-Sync Interval</string>
+    <string name="settings_autostart_title">App beim Booten starten</string>
+    <string name="settings_autostart_summary">Starte den regelmäßigen Sync-Dienst beim Booten</string>
+    <string name="settings_notify_new">Benachrichtigen bei Rechnungserstellung</string>
+    <string name="settings_notify_updated">Benachrichtigen bei Rechnungsänderungen</string>
+    <string name="settings_notify_deleted">Benachrichtigen bei Rechnungslöschung</string>
     <string name="project_sync_success">Projekt %s synchronisiert</string>
-    <string name="file_saved_success">Project saved in %s</string>
-    <string name="write_permission_refused">Write permission refused, impossible to write file</string>
+    <string name="file_saved_success">Projekt gespeichert in %s</string>
+    <string name="write_permission_refused">Schreibberechtigung verweigert, Datei kann nicht geschrieben werden</string>
     <string name="add_member_dialog_title">Neuer Mitgliedsname</string>
     <string name="edit_member_dialog_title">Mitglied bearbeiten</string>
     <string name="member_edit_empty_name">Mitgliedsname kann nicht leer sein</string>
@@ -202,10 +202,10 @@
     <string name="stats_balance">Balance</string>
     <string name="fab_statistics">Projektstatistik</string>
     <string name="fab_settle">Abrechnen</string>
-    <string name="project_add_success">Project %1$s was successfully created</string>
-    <string name="project_add_success_title">Project added</string>
+    <string name="project_add_success">Projekt %1$s wurde erfolgreich erstellt</string>
+    <string name="project_add_success_title">Projekt hinzugefügt</string>
     <string name="import_bad_url">Falscher MoneyBuster Link, import unmöglich</string>
-    <string name="import_no_data">Something went wrong when adding a new project</string>
+    <string name="import_no_data">Beim Hinzufügen des Projektes ist ein Fehler aufgetreten</string>
     <string name="fab_scan_qrcode_import">MB QRCode importieren</string>
     <string name="statistic_dialog_title">Projektstatistik</string>
     <string name="settle_dialog_title">Projekt abrechnen</string>
@@ -229,10 +229,10 @@
     <string name="edit_project_local_impossible">Für lokale Projekte nicht möglich</string>
     <string name="choose_account_project_dialog_title">Wählen Sie ein Projekt aus Ihrem Nextcloud Konto</string>
     <string name="choose_account_project_dialog_impossible">Es gibt kein Cospend-Projekt in Ihrem Nextcloud Konto</string>
-    <string name="is_running">Sync every %1$d min, last sync %2$s</string>
-    <string name="error_invalid_sync_interval">Sync interval must be between 5 and 1440 (24h)</string>
-    <string name="project_activity_notification">Project %1$s</string>
-    <string name="activity_dialog_title">Activity in project %1$s</string>
+    <string name="is_running">Sync alle %1$d min, letzte Sync %2$s</string>
+    <string name="error_invalid_sync_interval">Sync-Intervall muss zwischen 5 und 1440 (24h) liegen</string>
+    <string name="project_activity_notification">Projekt %1$s</string>
+    <string name="activity_dialog_title">Aktivität im Projekt %1$s</string>
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Verbindungssicherheit</string>
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster hat ein unbekanntes Zertifikat erkannt. Möchtest du diesem vertrauen?</string>

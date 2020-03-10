@@ -5,6 +5,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## 0.0.18 – 2020-03-10
+### Added
+- optional periodical sync service with otpional notifications
+- bank transfer payment mode
+- ability to export projects to CSV files
+- ability to import CSV files to local project
+
+### Changed
+- local projects can now use category and payment mode
+- min Android version is now 5 (API 21, Lollipop)
+
+### Fixed
+- balance check when adding member to sidebar
+- gplay complaints
+[#32](https://gitlab.com/eneiluj/moneybuster/issues/32) @AndyScherzinger
+[#33](https://gitlab.com/eneiluj/moneybuster/issues/33) @AndyScherzinger
+
 ## 0.0.17 – 2020-01-23
 ### Added
 - custom currencies support

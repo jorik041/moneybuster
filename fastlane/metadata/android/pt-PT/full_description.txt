@@ -1,0 +1,37 @@
+Moneybuster é um gestor de orçamento partilhado capaz de sincronizar com o IHateMoney e o Nextcloud Cospend.
+
+O que o difere dos outros gestores de orçamentos partilhados?
+
+Pode manter seu projecto local ou fazer com que ele sincronize com projectos IHateMoney e Nextcloud Cospend.
+Isso significa que pode escolher para onde seus dados vão e preservar a sua privacidade.
+
+# Funcionalidades
+
+* gerir projectos (adicionar/remover/criar/eliminar/editar)
+* gerir membros (adicionar/remover/editar)
+* gerir facturas (adicionar/remover/editar)
+* pesquisar facturas (por pagador, nome, valor, data)
+* estatísticas do projecto
+* plano de liquidação do projecto
+* partilhar estatísticas e plano de liquidação
+* tema escuro e cor principal da aplicação personalizável
+* partilhar/importar projectos com ligação/código-QR
+* interface de utilizador multilingue (traduzida no Crowdin: https://crowdin.com/project/moneybuster)
+
+# Requisitos
+
+Se quiser criar um projecto no IHateMoney:
+
+* instância IHateMoney em execução
+
+Se quiser criar um projecto no Cospend do Nextcloud:
+
+* instância Nextcloud em execução com a aplicação Cospend instalada
+
+Se quiser ter a possibilidade de criar projectos remotos do MoneyBuster: active a criação de projectos públicos na sua instância IHateMoney ou Nextcloud Cospend.
+
+The app runs on Android>=5
+
+# Alternativas
+
+Tricount, Cospender, Splitwise, etc... que não são FOSS (software livre e de código-aberto) e o obrigam a ceder os seus dados privados.

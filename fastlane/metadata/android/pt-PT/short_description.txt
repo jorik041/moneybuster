@@ -1,0 +1,1 @@
+Gestor de orçamentos partilhados multi-projecto capaz de sincronizar com serviços FOSS (software livre e de código-aberto) auto-hospedados

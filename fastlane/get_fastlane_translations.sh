@@ -28,7 +28,7 @@ for path in `find ../app/src/main/res -name "full_description.txt"`; do
         test -d $outFolder || mkdir $outFolder
         cp $inFolder/full_description.txt $outFolder/
         cp $inFolder/short_description.txt $outFolder/
-        echo 'PhoneTrack' > $outFolder/title.txt
+        echo 'MoneyBuster' > $outFolder/title.txt
     else
         echo "check $inLang language code!!!"
     fi

@@ -1,1 +1,1 @@
-Multi-project shared budget manager able to sync with self hosted FOSS services
+Gestor de orçamentos compartilhados multi projeto capaz de sincronizar com serviços Software Livre auto hospedados

@@ -30,7 +30,7 @@ Wenn du ein Projekt bei Nextcloud Cospend speichern möchtest :
 
 Wenn du Projekte bei MoneyBuster erstellen möchtest: Aktiviere Öffentliche Projekterstellung in deiner IHateMoney oder Nextcloud Cospend Instanz.
 
-Die App läuft auf Android>=4.1
+Die App läuft auf Android>=5
 
 # Alternativen
 

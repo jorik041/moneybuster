@@ -30,7 +30,7 @@ Si vous voulez héberger un projet sur Nextcloud Cospend :
 
 Si vous voulez pouvoir créer des projets distants depuis MoneyBuster : activez la création publique de projet sur votre instance IHateMoney ou Nextcloud Cospend.
 
-L'appli fonctionne sur Android>=4.1
+L'appli fonctionne sur Android>=5
 
 # Alternatives
 

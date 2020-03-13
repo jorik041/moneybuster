@@ -233,6 +233,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         try {
             Date date = sdf.parse(stringDate);
             java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(db.getContext());
+            Log.v(TAG, "set formatted date item orig "+stringDate+" transformed to "+dateFormat.format(date));
             billDate.setText(Html.fromHtml(dateFormat.format(date)));
         } catch (Exception e) {
             billDate.setText(Html.fromHtml(stringDate));

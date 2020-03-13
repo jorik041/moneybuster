@@ -240,7 +240,7 @@ public class EditBillFragment extends Fragment {
 
             @Override
             public void onTimeSet(TimePicker view, int hour, int minute) {
-                calendar.set(Calendar.HOUR, hour);
+                calendar.set(Calendar.HOUR_OF_DAY, hour);
                 calendar.set(Calendar.MINUTE, minute);
                 updateTimeLabel();
             }
@@ -248,13 +248,13 @@ public class EditBillFragment extends Fragment {
         };
 
         timePickerDialog = new TimePickerDialog(EditBillFragment.this.getContext(), time, calendar
-                .get(Calendar.HOUR), calendar.get(Calendar.MINUTE), true) {
+                .get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true) {
 
             @Override
             public void onTimeChanged(TimePicker view,
                                       int hour,
                                       int minute) {
-                calendar.set(Calendar.HOUR, hour);
+                calendar.set(Calendar.HOUR_OF_DAY, hour);
                 calendar.set(Calendar.MINUTE, minute);
                 updateTimeLabel();
                 // to make sure we don't get out of old-style date picker dialogs
@@ -456,7 +456,7 @@ public class EditBillFragment extends Fragment {
 
     private void updateTimeLabel() {
         editTime.setText(sdfTime.format(calendar.getTime()));
-        Log.d(TAG, "TIMEUU");
+        Log.d(TAG, "TIMEUU ts "+(calendar.getTimeInMillis()/1000)+" hour "+calendar.get(Calendar.HOUR_OF_DAY));
         showHideValidationButtons();
     }
 
@@ -485,7 +485,7 @@ public class EditBillFragment extends Fragment {
 
     private boolean hideSaveButton() {
         return getWhat() == null || getWhat().equals("") ||
-                getDate() == null || getDate().equals("") ||
+                getTimestamp() == null || getTimestamp() == 0 ||
                 getAmount() == 0.0 ||
                 getPayerId() == 0 ||
                 getOwersIds().size() == 0;
@@ -600,7 +600,7 @@ public class EditBillFragment extends Fragment {
     private void saveBillAsked() {
         if (getWhat() == null || getWhat().equals("")) {
             showToast(getString(R.string.error_invalid_bill_what), Toast.LENGTH_LONG);
-        } else if (getDate() == null || getDate().equals("")) {
+        } else if (getTimestamp() == null || getTimestamp() == 0) {
             showToast(getString(R.string.error_invalid_bill_date), Toast.LENGTH_LONG);
         } else if (getAmount() == 0.0) {
             showToast(getString(R.string.error_invalid_bill_amount), Toast.LENGTH_LONG);
@@ -647,7 +647,7 @@ public class EditBillFragment extends Fragment {
     protected void saveBill(@Nullable ICallback callback) {
         Log.d(getClass().getSimpleName(), "CUSTOM saveData()");
         String newWhat = getWhat();
-        String newDate = getDate();
+        long newTimestamp = getTimestamp();
         double newAmount = getAmount();
         long newPayerId = getPayerId();
         String newRepeat = DBBill.NON_REPEATED;
@@ -682,7 +682,7 @@ public class EditBillFragment extends Fragment {
         // if this is an existing bill
         if (bill.getId() != 0) {
             if (bill.getWhat().equals(newWhat) &&
-                    bill.getDate().equals(newDate) &&
+                    bill.getTimestamp() == newTimestamp &&
                     bill.getAmount() == newAmount &&
                     bill.getPayerId() == newPayerId &&
                     newRepeat.equals(bill.getRepeat()) &&
@@ -693,7 +693,7 @@ public class EditBillFragment extends Fragment {
                 Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed " + bill.getWhat() + " " + newWhat);
             } else {
                 Log.d(TAG, "====== update bill");
-                db.updateBillAndSync(bill, newPayerId, newAmount, newDate, newWhat, newOwersIds,
+                db.updateBillAndSync(bill, newPayerId, newAmount, newTimestamp, newWhat, newOwersIds,
                                      newRepeat, newPaymentMode, newCategoryId);
                 //listener.onBillUpdated(bill);
                 //listener.close();
@@ -703,7 +703,7 @@ public class EditBillFragment extends Fragment {
         else {
             // add the bill
             DBBill newBill = new DBBill(0, 0, bill.getProjectId(), newPayerId, newAmount,
-                    newDate, newWhat, DBBill.STATE_ADDED, newRepeat, newPaymentMode, newCategoryId);
+                    newTimestamp, newWhat, DBBill.STATE_ADDED, newRepeat, newPaymentMode, newCategoryId);
             for (long newOwerId : newOwersIds) {
                 newBill.getBillOwers().add(new DBBillOwer(0, 0, newOwerId));
             }
@@ -871,19 +871,17 @@ public class EditBillFragment extends Fragment {
             editWhat.setText(bill.getWhat());
         }
 
-
-        try {
-            Date d = sdfDate.parse(bill.getDate());
-            calendar.setTime(d);
-            updateDateLabel();
-            datePickerDialog.getDatePicker().updateDate(
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH)
-            );
-        } catch (ParseException e) {
-            Log.d(getClass().getSimpleName(), "bad date " + bill.getDate());
-        }
+        Log.v(TAG, "BEFORE TIME INIT");
+        calendar.setTimeInMillis(bill.getTimestamp() * 1000);
+        //updateDateLabel();
+        //updateTimeLabel();
+        datePickerDialog.getDatePicker().updateDate(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+        timePickerDialog.updateTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+        Log.v(TAG, "AFTER TIME INIT");
 
         editAmount.setText(String.valueOf(bill.getAmount()));
 
@@ -1032,8 +1030,9 @@ public class EditBillFragment extends Fragment {
         return editWhat.getText().toString();
     }
 
-    protected String getDate() {
-        return isoDate;
+    protected Long getTimestamp() {
+        Log.v(TAG, "get timestamp "+(calendar.getTimeInMillis() / 1000));
+        return calendar.getTimeInMillis() / 1000;
     }
 
     protected void setDateFromIso(String isoDate) {

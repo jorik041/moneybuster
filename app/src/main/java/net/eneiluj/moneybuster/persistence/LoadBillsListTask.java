@@ -77,27 +77,6 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
             }
 
             dbBill.setWhat(Html.toHtml(spannableString));
-
-            String formattedDate;
-            try {
-                Date date = sdf.parse(dbBill.getDate());
-                formattedDate = dateFormat.format(date);
-            } catch (Exception e) {
-                formattedDate = dbBill.getDate();
-            }
-            spannableString = new SpannableString(formattedDate);
-            matcher = Pattern.compile("(" + searchQuery + ")", Pattern.CASE_INSENSITIVE).matcher(spannableString);
-            while (matcher.find()) {
-                spannableString.setSpan(
-                        new ForegroundColorSpan(
-                                //context.getResources().getColor(R.color.primary_dark)
-                                ContextCompat.getColor(context, R.color.bg_attention)
-                        ),
-                        matcher.start(), matcher.end(), 0);
-            }
-
-            dbBill.setDate(Html.toHtml(spannableString));
-
         }
 
         return dbBill;

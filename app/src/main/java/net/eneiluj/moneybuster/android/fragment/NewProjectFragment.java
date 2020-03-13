@@ -70,9 +70,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class NewProjectFragment extends Fragment {
@@ -1046,7 +1049,11 @@ public class NewProjectFragment extends Fragment {
                 int row = 0;
                 int nbCols;
                 String icon, color, categoryname, categoryid, currencyname, exchangeRate,
-                    what, date, payer_name, owersStr, paymentmode;
+                    what, payer_name, owersStr, paymentmode;
+                long timestamp;
+                String dateStr;
+                Date date;
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
                 String mainCurrencyName = null;
                 boolean payer_active;
                 double amount, payer_weight;
@@ -1079,7 +1086,7 @@ public class NewProjectFragment extends Fragment {
                         }
                         if (columns.containsKey("what") &&
                                 columns.containsKey("amount") &&
-                                columns.containsKey("date") &&
+                                (columns.containsKey("date") || columns.containsKey("timestamp")) &&
                                 columns.containsKey("payer_name") &&
                                 columns.containsKey("payer_weight") &&
                                 columns.containsKey("owers")
@@ -1118,7 +1125,22 @@ public class NewProjectFragment extends Fragment {
                         } else if (currentSection == "bills") {
                             what = nextLine[columns.get("what")];
                             amount = Double.parseDouble(nextLine[columns.get("amount")]);
-                            date = nextLine[columns.get("date")];
+                            // get timestamp in priority
+                            if (columns.containsKey("timestamp")) {
+                                timestamp = Long.valueOf(nextLine[columns.get("timestamp")]);
+                            } else if (columns.containsKey("date")) {
+                                dateStr = nextLine[columns.get("date")];
+                                try {
+                                    date = sdf.parse(dateStr);
+                                    timestamp = date.getTime() / 1000;
+                                } catch (Exception e) {
+                                    showToast(getString(R.string.import_error_date, row), Toast.LENGTH_LONG);
+                                    return;
+                                }
+                            } else {
+                                timestamp = 0;
+                            }
+
                             payer_name = nextLine[columns.get("payer_name")];
                             payer_weight = Double.parseDouble(nextLine[columns.get("payer_weight")]);
                             owersStr = nextLine[columns.get("owers")];
@@ -1148,7 +1170,7 @@ public class NewProjectFragment extends Fragment {
                                     }
                                 }
                                 bills.add(
-                                        new DBBill(0, row, 0, 0, amount, date, what,
+                                        new DBBill(0, row, 0, 0, amount, timestamp, what,
                                                 DBBill.STATE_OK, "n", paymentmode, Integer.parseInt(categoryid)
                                         )
                                 );
@@ -1192,7 +1214,7 @@ public class NewProjectFragment extends Fragment {
                     for (int i = 0; i < owersArray.length; i++) {
                         owerIds.add(memberNameToId.get(owersArray[i]));
                     }
-                    long billDbId = db.addBill(new DBBill(0, 0, pid, payerId, b.getAmount(), b.getDate(),
+                    long billDbId = db.addBill(new DBBill(0, 0, pid, payerId, b.getAmount(), b.getTimestamp(),
                             b.getWhat(), DBBill.STATE_OK, "n", b.getPaymentMode(), b.getCategoryRemoteId()));
                     // add bill owers
                     for (Long owerId: owerIds) {

@@ -21,9 +21,12 @@ import org.xml.sax.SAXException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -35,6 +38,8 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class ServerResponse {
     private static final String TAG = ServerResponse.class.getSimpleName();
+
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
 
     public static class NotModifiedException extends IOException {
     }
@@ -440,7 +445,9 @@ public class ServerResponse {
         long payerRemoteId = 0;
         long payerId = 0;
         double amount = 0;
-        String date = "";
+        String dateStr = "";
+        Date date;
+        long timestamp = 0;
         String what = "";
         String repeat = DBBill.NON_REPEATED;
         String paymentMode = DBBill.PAYMODE_NONE;
@@ -456,8 +463,17 @@ public class ServerResponse {
         if (!json.isNull("amount")) {
             amount = json.getDouble("amount");
         }
-        if (!json.isNull("date")) {
-            date = json.getString("date");
+        // get timestamp in priority
+        if (!json.isNull("timestamp")) {
+            timestamp = json.getLong("timestamp");
+        } else if (!json.isNull("date")) {
+            dateStr = json.getString("date");
+            try {
+                date = sdf.parse(dateStr);
+                timestamp = date.getTime() / 1000;
+            } catch (Exception e) {
+                timestamp = 0;
+            }
         }
         if (!json.isNull("what")) {
             what = json.getString("what");
@@ -472,7 +488,7 @@ public class ServerResponse {
             categoryId = json.getInt("categoryid");
             Log.d("PLOP", "LOADED CATTTTTTTTTTTT " + categoryId);
         }
-        DBBill bill = new DBBill(0, remoteId, projId, payerId, amount, date, what,
+        DBBill bill = new DBBill(0, remoteId, projId, payerId, amount, timestamp, what,
                 DBBill.STATE_OK, repeat, paymentMode, categoryId);
         bill.setBillOwers(getBillOwersFromJson(json, memberRemoteIdToId));
         return bill;

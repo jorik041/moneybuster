@@ -26,9 +26,12 @@ import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.util.SupportUtil;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 //import android.util.ArrayMap;
@@ -40,7 +43,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String TAG = MoneyBusterSQLiteOpenHelper.class.getSimpleName();
 
-    private static final int database_version = 10;
+    private static final int database_version = 11;
     private static final String database_name = "IHATEMONEY";
 
     private static final String table_members = "MEMBERS";
@@ -73,7 +76,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     //private static final String key_projectId = "PROJECTID";
     private static final String key_payer_id = "PAYERID";
     private static final String key_amount = "AMOUNT";
-    private static final String key_date = "DATE";
+    private static final String key_timestamp = "TIMESTAMP";
     private static final String key_what = "WHAT";
     //private static final String key_state = "STATE";
     private static final String key_repeat = "REPEAT";
@@ -121,7 +124,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String[] columnsBills = {
             key_id, key_remoteId, key_projectid, key_payer_id, key_amount,
-            key_date, key_what, key_state, key_repeat, key_payment_mode, key_category_id
+            key_timestamp, key_what, key_state, key_repeat, key_payment_mode, key_category_id
     };
 
     private static final String[] columnsBillowers = {
@@ -211,7 +214,6 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 key_type + " TEXT)");
     }
 
-    //key_id, key_remoteId, key_projectid, key_payerid, key_amount, key_date, key_what
     private void createTableBills(SQLiteDatabase db, String tableName) {
         db.execSQL("CREATE TABLE " + tableName + " ( " +
                 key_id + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -221,7 +223,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 key_amount + " FLOAT, " +
                 key_what + " TEXT, " +
                 key_state + " INTEGER, " +
-                key_date + " TEXT, " +
+                key_timestamp + " INTEGER, " +
                 key_payment_mode + " TEXT DEFAULT \"n\", " +
                 key_category_id + " INTEGER DEFAULT 0, " +
                 key_repeat + " TEXT)");
@@ -319,6 +321,41 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + table_projects + " ADD COLUMN " + key_currencyName + " TEXT");
             createTableCurrencies(db, table_currencies);
             createIndex(db, table_currencies, key_id);
+        }
+        if (oldVersion < 11) {
+            db.execSQL("ALTER TABLE " + table_bills + " ADD COLUMN " + key_timestamp + " INTEGER");
+            // convert all string dates to timestamps
+            Map<Long, Long> idToTs = new HashMap<>();
+            SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+            Cursor cursor = db.query(table_bills, new String[]{key_id, "DATE"}, "", new String[]{}, null, null, null);
+            long id;
+            String dateStr;
+            long timestamp;
+            Date date;
+            Date dateNow = new Date();
+            while (cursor.moveToNext()) {
+                id = cursor.getLong(0);
+                dateStr = cursor.getString(1);
+                try {
+                    date = sdfDate.parse(dateStr);
+                } catch (Exception e) {
+                    date = dateNow;
+                }
+                timestamp = date.getTime() / 1000;
+                idToTs.put(id, timestamp);
+            }
+            cursor.close();
+
+            ContentValues values;
+            for (Long billId: idToTs.keySet()) {
+                timestamp = idToTs.get(billId);
+                values = new ContentValues();
+                values.put(key_timestamp, timestamp);
+                db.update(table_bills, values, key_id + " = ?",  new String[]{String.valueOf(billId)});
+            }
+
+            // we should get rid of DATE column but...
+            // a bit annoying to drop a column in SQLITE... leave it there
         }
     }
 
@@ -1005,7 +1042,6 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     public long addBill(DBBill b) {
-        // key_id, key_remoteId, key_projectid, key_payer_id, key_amount, key_date, key_what, key_state
         if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[add bill]"); }
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -1013,7 +1049,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_projectid, b.getProjectId());
         values.put(key_payer_id, b.getPayerId());
         values.put(key_amount, b.getAmount());
-        values.put(key_date, b.getDate());
+        values.put(key_timestamp, b.getTimestamp());
         values.put(key_what, b.getWhat());
         values.put(key_state, b.getState());
         values.put(key_repeat, b.getRepeat());
@@ -1029,13 +1065,13 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     public void updateBill(long remoteId, long projId, long newPayerId, double newAmount,
-                           @Nullable String newDate, @Nullable String newWhat, int newState,
+                           @Nullable Long newTimestamp, @Nullable String newWhat, int newState,
                            @Nullable String newRepeat, @Nullable String newPaymentMode, int newCategoryId) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        if (newDate != null) {
-            values.put(key_date, newDate);
+        if (newTimestamp != null) {
+            values.put(key_timestamp, newTimestamp);
         }
         if (newWhat != null) {
             values.put(key_what, newWhat);
@@ -1061,15 +1097,15 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     public void updateBill(long billId, @Nullable Long newRemoteId, @Nullable Long newPayerId,
-                           @Nullable Double newAmount, @Nullable String newDate,
+                           @Nullable Double newAmount, @Nullable Long newTimestamp,
                            @Nullable String newWhat, @Nullable Integer newState,
                            @Nullable String newRepeat, @Nullable String newPaymentMode,
                            @Nullable Integer newCategoryId) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        if (newDate != null) {
-            values.put(key_date, newDate);
+        if (newTimestamp != null) {
+            values.put(key_timestamp, newTimestamp);
         }
         if (newWhat != null) {
             values.put(key_what, newWhat);
@@ -1102,7 +1138,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     public void updateBillAndSync(DBBill bill, long newPayerId, double newAmount,
-                                  @Nullable String newDate, @Nullable String newWhat,
+                                  @Nullable Long newTimestamp, @Nullable String newWhat,
                                   @Nullable List<Long> newOwersIds, @Nullable String newRepeat,
                                   @Nullable String newPaymentMode, @Nullable Integer newCategoryId) {
         // bill values
@@ -1111,7 +1147,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         if (bill.getState() == DBBill.STATE_ADDED) {
             newState = DBBill.STATE_ADDED;
         }
-        updateBill(bill.getId(), null, newPayerId, newAmount, newDate, newWhat, newState,
+        updateBill(bill.getId(), null, newPayerId, newAmount, newTimestamp, newWhat, newState,
                    newRepeat, newPaymentMode, newCategoryId);
 
         // bill owers
@@ -1147,7 +1183,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
      *
      */
     public List<DBBill> getBillsOfProject(long projId) {
-        List<DBBill> bills = getBillsCustom(key_projectid + " = ?", new String[]{String.valueOf(projId)}, key_date + " ASC");
+        List<DBBill> bills = getBillsCustom(key_projectid + " = ?", new String[]{String.valueOf(projId)}, key_timestamp + " ASC");
         return bills;
     }
 
@@ -1155,12 +1191,12 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         List<DBBill> bills = getBillsCustom(
                 key_projectid + " = ? AND " + key_state + " = ?",
                 new String[]{String.valueOf(projId), String.valueOf(state)},
-                key_date + " ASC");
+                key_timestamp + " ASC");
         return bills;
     }
 
     public List<DBBill> getBillsOfMember(long memberId) {
-        List<DBBill> bills = getBillsCustom(key_payer_id + " = ?", new String[]{String.valueOf(memberId)}, key_date + " ASC");
+        List<DBBill> bills = getBillsCustom(key_payer_id + " = ?", new String[]{String.valueOf(memberId)}, key_timestamp + " ASC");
         return bills;
     }
 
@@ -1192,8 +1228,11 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         andWhere.add("(" + key_state + " != " + DBBill.STATE_DELETED + ")");
         if (query != null) {
             args.add("%" + query + "%");
-            args.add("%" + query + "%");
-            String whereStr = "(" + key_what + " LIKE ? OR " + key_date + " LIKE ?";
+            String whereStr = "(" + key_what + " LIKE ?";
+
+            //whereStr += " OR " + key_date + " LIKE ?";
+            //args.add("%" + query + "%");
+
             if (SupportUtil.isDouble(query.toString())) {
                 whereStr += " OR (" + key_amount + " <= (? + 10) AND " + key_amount + " >= (? - 10))";
                 args.add(query.toString());
@@ -1269,7 +1308,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
             andWhere.add(whereStr);
         }
 
-        String order = key_date + " DESC";
+        String order = key_timestamp + " DESC";
         return getBillsCustom(TextUtils.join(" AND ", andWhere), args.toArray(new String[]{}), order);
     }
 
@@ -1307,7 +1346,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 cursor.getLong(2),
                 cursor.getLong(3),
                 cursor.getDouble(4),
-                cursor.getString(5),
+                cursor.getLong(5),
                 cursor.getString(6),
                 cursor.getInt(7),
                 cursor.getString(8),

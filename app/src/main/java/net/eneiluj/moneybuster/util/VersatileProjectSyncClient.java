@@ -228,6 +228,7 @@ public class VersatileProjectSyncClient {
     public ServerResponse.EditRemoteBillResponse editRemoteBill(CustomCertManager ccm, DBProject project, DBBill bill, Map<Long, Long> memberIdToRemoteId) throws IOException, TokenMismatchException {
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
+        // we keep sending date for IHateMoney and old Cospend versions
         paramKeys.add("date");
         paramValues.add(bill.getDate());
         paramKeys.add("what");
@@ -245,6 +246,8 @@ public class VersatileProjectSyncClient {
         String username = null;
         String password = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
+            paramKeys.add("timestamp");
+            paramValues.add(String.valueOf(bill.getTimestamp()));
             paramKeys.add("payed_for");
             String payedFor = "";
             for (long boId : bill.getBillOwersIds()) {
@@ -372,6 +375,7 @@ public class VersatileProjectSyncClient {
     public ServerResponse.CreateRemoteBillResponse createRemoteBill(CustomCertManager ccm, DBProject project, DBBill bill, Map<Long, Long> memberIdToRemoteId) throws IOException, TokenMismatchException {
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
+        // we keep sending date for IHateMoney and old Cospend versions
         paramKeys.add("date");
         paramValues.add(bill.getDate());
         paramKeys.add("what");
@@ -389,6 +393,8 @@ public class VersatileProjectSyncClient {
         String username = null;
         String password = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
+            paramKeys.add("timestamp");
+            paramValues.add(String.valueOf(bill.getTimestamp()));
             paramKeys.add("payed_for");
             String payedFor = "";
             for (long boId : bill.getBillOwersIds()) {

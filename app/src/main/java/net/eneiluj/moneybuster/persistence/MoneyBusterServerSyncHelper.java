@@ -699,7 +699,7 @@ public class MoneyBusterServerSyncHelper {
                         if (hasChanged(localBill, remoteBill)) {
                             dbHelper.updateBill(
                                     localBill.getId(), null, remoteBill.getPayerId(),
-                                    remoteBill.getAmount(), remoteBill.getDate(),
+                                    remoteBill.getAmount(), remoteBill.getTimestamp(),
                                     remoteBill.getWhat(), DBBill.STATE_OK, remoteBill.getRepeat(),
                                     remoteBill.getPaymentMode(), remoteBill.getCategoryRemoteId()
                             );
@@ -1200,7 +1200,7 @@ public class MoneyBusterServerSyncHelper {
         if (
                 localBill.getPayerId() == remoteBill.getPayerId() &&
                         localBill.getAmount() == remoteBill.getAmount() &&
-                        localBill.getDate().equals(remoteBill.getDate()) &&
+                        localBill.getTimestamp() == remoteBill.getTimestamp() &&
                         localBill.getWhat().equals(remoteBill.getWhat()) &&
                         localBill.getPaymentMode().equals(remoteBill.getPaymentMode()) &&
                         localBill.getCategoryRemoteId() == remoteBill.getCategoryRemoteId()

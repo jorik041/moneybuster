@@ -1,8 +1,13 @@
 package net.eneiluj.moneybuster.model;
 
+import android.util.Log;
+
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class DBBill implements Item, Serializable {
 
@@ -12,7 +17,7 @@ public class DBBill implements Item, Serializable {
     private long projectId;
     private long payerId;
     private double amount;
-    private String date;
+    private long timestamp;
     private String what;
     // OK, ADDED, EDITED, DELETED
     private int state;
@@ -50,13 +55,13 @@ public class DBBill implements Item, Serializable {
     public static final String NON_REPEATED = "n";
 
     public DBBill(long id, long remoteId, long projectId, long payerId, double amount,
-                  String date, String what, int state, String repeat, String paymentMode, int categoryRemoteId) {
+                  long timestamp, String what, int state, String repeat, String paymentMode, int categoryRemoteId) {
         this.id = id;
         this.remoteId = remoteId;
         this.projectId = projectId;
         this.payerId = payerId;
         this.amount = amount;
-        this.date = date;
+        this.timestamp = timestamp;
         this.what = what;
         this.repeat = repeat;
         this.paymentMode = paymentMode;
@@ -131,12 +136,19 @@ public class DBBill implements Item, Serializable {
         this.amount = amount;
     }
 
-    public String getDate() {
-        return date;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getDate() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timestamp * 1000);
+        Log.v("ll", "["+what+"] get date ts "+timestamp+" year "+cal.get(Calendar.YEAR));
+        return cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DAY_OF_MONTH);
     }
 
     public String getWhat() {
@@ -175,7 +187,7 @@ public class DBBill implements Item, Serializable {
     public String toString() {
         // key_id, key_remoteId, key_projectid, key_payer_remoteId, key_amount, key_date, key_what, key_repeat
         return "#DBBill" + getId() + "/" + this.remoteId + "," + this.projectId
-                + ", " + this.payerId + ", " + this.amount + ", " + this.date + ", "
+                + ", " + this.payerId + ", " + this.amount + ", " + this.timestamp + ", "
                 + this.what + ", " + this.state + ", " + this.repeat + ", " + this.paymentMode + ", " + this.categoryRemoteId;
     }
 

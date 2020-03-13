@@ -1508,7 +1508,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     private void createBillsFromTransactions(long projectId, List<Transaction> transactions) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String dateNowStr = sdf.format(new Date());
+        long timestamp = System.currentTimeMillis() / 1000;
 
         for (Transaction t : transactions) {
             long owerId = t.getOwerMemberId();
@@ -1517,7 +1517,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             double amount = t.getAmount();
             DBBill bill = new DBBill(
                     0, 0, projectId, owerId, amount,
-                    dateNowStr, getString(R.string.settle_bill_what),
+                    timestamp, getString(R.string.settle_bill_what),
                     DBBill.STATE_ADDED, DBBill.NON_REPEATED, DBBill.PAYMODE_NONE, DBBill.CATEGORY_NONE);
             bill.getBillOwers().add(new DBBillOwer(0, 0, receiverId));
             db.addBill(bill);
@@ -1679,7 +1679,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         Long payerId;
         String owersTxt;
         // write bills
-        fileContent += "what,amount,date,payer_name,payer_weight,payer_active,owers,repeat,categoryid,paymentmode\n";
+        fileContent += "what,amount,date,timestamp,payer_name,payer_weight,payer_active,owers,repeat,categoryid,paymentmode\n";
         // just a way to write all members
         for (DBMember m : members) {
             payerActive = m.isActivated() ? 1 : 0;
@@ -1697,7 +1697,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 owersTxt += membersById.get(bo.getMemberId()).getName() + ", ";
             }
             owersTxt = owersTxt.replaceAll(", $", "");
-            fileContent += "\"" + b.getWhat() + "\"," + b.getAmount() + "," + b.getDate() + ",\"" + payerName + "\"," +
+            fileContent += "\"" + b.getWhat() + "\"," + b.getAmount() + "," + b.getDate() + "," + b.getTimestamp() + ",\"" + payerName + "\"," +
                     payerWeight + "," + payerActive + ",\"" + owersTxt + "\"," + b.getRepeat() + "," + b.getCategoryRemoteId() +
                     "," + b.getPaymentMode() + "\n";
         }

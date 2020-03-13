@@ -1,6 +1,7 @@
 package net.eneiluj.moneybuster.android.fragment;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
@@ -29,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -97,6 +99,7 @@ public class EditBillFragment extends Fragment {
 
     private EditText editWhat;
     private EditText editDate;
+    private EditText editTime;
     private String isoDate;
     private Spinner editPayer;
     private EditText editAmount;
@@ -114,13 +117,15 @@ public class EditBillFragment extends Fragment {
 
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
+    private TimePickerDialog timePickerDialog;
 
     private Map<Long, CheckBox> owerCheckboxes;
 
     private DialogInterface.OnClickListener deleteDialogClickListener;
     private AlertDialog.Builder confirmDeleteAlertBuilder;
 
-    private SimpleDateFormat sdf;
+    private SimpleDateFormat sdfDate;
+    private SimpleDateFormat sdfTime;
 
     private boolean isSpinnerUserAction = false;
     private boolean isSpinnerRepeatAction = false;
@@ -135,6 +140,8 @@ public class EditBillFragment extends Fragment {
         currencyIcon = view.findViewById(R.id.currencyIcon);
         editDate = view.findViewById(R.id.editDate);
         editDate.setFocusable(false);
+        editTime = view.findViewById(R.id.editTime);
+        editTime.setFocusable(false);
         editPayer = view.findViewById(R.id.editPayerSpinner);
         owersLayout = view.findViewById(R.id.owerListLayout);
         editRepeat = view.findViewById(R.id.editRepeatSpinner);
@@ -197,7 +204,7 @@ public class EditBillFragment extends Fragment {
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, monthOfYear);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel();
+                updateDateLabel();
             }
 
         };
@@ -214,7 +221,7 @@ public class EditBillFragment extends Fragment {
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, month);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel();
+                updateDateLabel();
                 // to make sure we don't get out of old-style date picker dialogs
                 //datePickerDialog.dismiss();
             }
@@ -226,6 +233,41 @@ public class EditBillFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 datePickerDialog.show();
+            }
+        });
+
+        final TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener() {
+
+            @Override
+            public void onTimeSet(TimePicker view, int hour, int minute) {
+                calendar.set(Calendar.HOUR, hour);
+                calendar.set(Calendar.MINUTE, minute);
+                updateTimeLabel();
+            }
+
+        };
+
+        timePickerDialog = new TimePickerDialog(EditBillFragment.this.getContext(), time, calendar
+                .get(Calendar.HOUR), calendar.get(Calendar.MINUTE), true) {
+
+            @Override
+            public void onTimeChanged(TimePicker view,
+                                      int hour,
+                                      int minute) {
+                calendar.set(Calendar.HOUR, hour);
+                calendar.set(Calendar.MINUTE, minute);
+                updateTimeLabel();
+                // to make sure we don't get out of old-style date picker dialogs
+                //datePickerDialog.dismiss();
+            }
+        };
+
+
+        editTime.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                timePickerDialog.show();
             }
         });
 
@@ -406,9 +448,15 @@ public class EditBillFragment extends Fragment {
         editWhat.setText(what);
     }
 
-    private void updateLabel() {
-        setDateFromIso(sdf.format(calendar.getTime()));
+    private void updateDateLabel() {
+        setDateFromIso(sdfDate.format(calendar.getTime()));
         Log.d(TAG, "DATEUUUU");
+        showHideValidationButtons();
+    }
+
+    private void updateTimeLabel() {
+        editTime.setText(sdfTime.format(calendar.getTime()));
+        Log.d(TAG, "TIMEUU");
         showHideValidationButtons();
     }
 
@@ -447,7 +495,8 @@ public class EditBillFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+        sdfDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+        sdfTime = new SimpleDateFormat("HH:mm", Locale.ROOT);
 
         if (savedInstanceState == null) {
             long id = getArguments().getLong(PARAM_BILL_ID);
@@ -824,9 +873,9 @@ public class EditBillFragment extends Fragment {
 
 
         try {
-            Date d = sdf.parse(bill.getDate());
+            Date d = sdfDate.parse(bill.getDate());
             calendar.setTime(d);
-            updateLabel();
+            updateDateLabel();
             datePickerDialog.getDatePicker().updateDate(
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH),
@@ -990,7 +1039,7 @@ public class EditBillFragment extends Fragment {
     protected void setDateFromIso(String isoDate) {
         this.isoDate = isoDate;
         try {
-            Date date = sdf.parse(isoDate);
+            Date date = sdfDate.parse(isoDate);
             java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(db.getContext());
             editDate.setText(dateFormat.format(date));
         } catch (Exception e) {

@@ -14,6 +14,7 @@
     <string name="setting_what">What?</string>
     <string name="setting_what_long">Paid for what?</string>
     <string name="setting_date">When was it?</string>
+    <string name="setting_time">What time was it?</string>
     <string name="setting_date_long">The day it was paid</string>
     <string name="setting_payer">Who paid?</string>
     <string name="setting_all">All</string>

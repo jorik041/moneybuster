@@ -13,6 +13,7 @@
     <string name="setting_what">Ne?</string>
     <string name="setting_what_long">Ne için ödendi?</string>
     <string name="setting_date">Ne zamandı?</string>
+    <string name="setting_time">What time was it?</string>
     <string name="setting_date_long">Ödendiği gün</string>
     <string name="setting_payer">Kim ödedi?</string>
     <string name="setting_all">Hepsi</string>
@@ -124,6 +125,7 @@
     <string name="fab_edit_member">Üyeyi düzenle</string>
     <string name="fab_export_project">Export project</string>
     <string name="import_error_owers">Malformed CSV, bad owers on line %1$d</string>
+    <string name="import_error_date">Malformed CSV, bad date on line %1$d</string>
     <string name="import_error_header">Malformed CSV, bad column names on line %1$d</string>
     <string name="choose_member_to_edit">Düzenlemek için üye seçin</string>
     <string name="member_already_exists">Bu üye zaten bu projede</string>

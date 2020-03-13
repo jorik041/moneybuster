@@ -13,6 +13,7 @@
     <string name="setting_what">Che cosa?</string>
     <string name="setting_what_long">Pagato per cosa?</string>
     <string name="setting_date">Quando?</string>
+    <string name="setting_time">What time was it?</string>
     <string name="setting_date_long">Il giorno in cui è stato pagato</string>
     <string name="setting_payer">Chi ha pagato?</string>
     <string name="setting_all">Tutti</string>
@@ -124,6 +125,7 @@
     <string name="fab_edit_member">Modifica un membro</string>
     <string name="fab_export_project">Export project</string>
     <string name="import_error_owers">Malformed CSV, bad owers on line %1$d</string>
+    <string name="import_error_date">Malformed CSV, bad date on line %1$d</string>
     <string name="import_error_header">Malformed CSV, bad column names on line %1$d</string>
     <string name="choose_member_to_edit">Scegli un membro da modificare</string>
     <string name="member_already_exists">Questo membro esiste già in questo progetto</string>

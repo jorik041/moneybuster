@@ -13,6 +13,7 @@
     <string name="setting_what">Wat?</string>
     <string name="setting_what_long">Betaald voor wat?</string>
     <string name="setting_date">Wanneer?</string>
+    <string name="setting_time">What time was it?</string>
     <string name="setting_date_long">De dag van betaling</string>
     <string name="setting_payer">Wie heeft er betaald?</string>
     <string name="setting_all">Alle</string>
@@ -124,6 +125,7 @@
     <string name="fab_edit_member">Deelnemer bewerken</string>
     <string name="fab_export_project">Export project</string>
     <string name="import_error_owers">Malformed CSV, bad owers on line %1$d</string>
+    <string name="import_error_date">Malformed CSV, bad date on line %1$d</string>
     <string name="import_error_header">Malformed CSV, bad column names on line %1$d</string>
     <string name="choose_member_to_edit">Kies een te bewerken deelnemer</string>
     <string name="member_already_exists">Deze deelnemer is al lid van het project</string>

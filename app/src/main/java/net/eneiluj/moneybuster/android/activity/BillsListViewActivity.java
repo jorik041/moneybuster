@@ -2606,13 +2606,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             if (DEBUG) { Log.d(TAG, "BILLS request code : addproject " + pid); }
             if (pid != 0) {
                 setSelectedProject(pid);
+                Log.d(TAG, "CREATED project id: " + pid);
+                DBProject addedProj = db.getProject(pid);
+                showDialog(
+                        getString(R.string.project_add_success, addedProj.getRemoteId()),
+                        getString(R.string.project_add_success_title),
+                        R.drawable.ic_add_circle_white_24dp
+                );
             }
-            DBProject addedProj = db.getProject(pid);
-            showDialog(
-                    getString(R.string.project_add_success, addedProj.getRemoteId()),
-                    getString(R.string.project_add_success_title),
-                    R.drawable.ic_add_circle_white_24dp
-            );
         } else if (requestCode == editproject) {
             if (data != null) {
                 // adapt after project has been deleted

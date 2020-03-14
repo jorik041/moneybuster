@@ -212,7 +212,7 @@ public class SyncService extends Service {
         List<DBProject> projs = db.getProjects();
         for (DBProject proj: projs) {
             Log.v(TAG, "request sync of project "+proj.getRemoteId());
-            if (!proj.getType().equals(DBProject.TYPE_LOCAL)) {
+            if (!proj.isLocal()) {
                 db.getMoneyBusterServerSyncHelper().scheduleSync(false, proj.getId());
             }
         }

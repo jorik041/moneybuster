@@ -5,9 +5,6 @@ import androidx.annotation.Nullable;
 import java.io.Serializable;
 
 public class DBProject implements Serializable {
-    public static final String TYPE_LOCAL = "l";
-    public static final String TYPE_COSPEND = "c";
-    public static final String TYPE_IHATEMONEY = "i";
 
     private long id;
     private String remoteId;
@@ -60,7 +57,7 @@ public class DBProject implements Serializable {
     }
 
     public boolean isLocal() {
-        return (serverUrl == null || serverUrl.equals(""));
+        return ProjectType.LOCAL.equals(type);
     }
 
     public String getPassword() {

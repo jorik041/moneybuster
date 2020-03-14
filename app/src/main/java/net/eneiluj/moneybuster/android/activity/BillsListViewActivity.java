@@ -1847,7 +1847,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         List<String> projectNames = new ArrayList<>();
         List<Long> projectIds = new ArrayList<>();
         for (DBProject p : dbProjects) {
-            if (p.getName() == null || p.getServerUrl() == null || p.getType().equals(DBProject.TYPE_LOCAL)) {
+            if (p.getName() == null || p.getServerUrl() == null || p.isLocal()) {
                 projectNames.add(p.getRemoteId());
             }
             else {

@@ -1,6 +1,5 @@
 package net.eneiluj.moneybuster.persistence;
 
-import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,10 +11,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
-import android.net.NetworkRequest;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
@@ -946,6 +942,35 @@ public class MoneyBusterServerSyncHelper {
         }
     }
 
+    // if this is a cospend project and the server URL is the same as the configured account
+    // => authenticated creation is possible
+    private boolean canCreateAuthenticatedProject(DBProject project) {
+        boolean isCospend = ProjectType.COSPEND.equals(project.getType());
+        String projUrl = project.getIhmUrl().replaceAll("/index.php/apps/cospend", "");
+
+        String accountUrl = "";
+
+        boolean useSSO = preferences.getBoolean(SettingsActivity.SETTINGS_USE_SSO, false);
+        if (useSSO) {
+            try {
+                SingleSignOnAccount ssoAccount = SingleAccountHelper.getCurrentSingleSignOnAccount(appContext.getApplicationContext());
+                accountUrl = ssoAccount.url.replaceAll("/$", "");
+            }
+            catch (NextcloudFilesAppAccountNotFoundException e) {
+                return false;
+            }
+            catch (NoCurrentAccountSelectedException e) {
+                return false;
+            }
+        }
+        else {
+            accountUrl = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS).replaceAll("/$", "");
+        }
+
+        Log.v(TAG, "proj url : "+projUrl+" ; account url : "+accountUrl);
+        return (isCospend && projUrl.equals(accountUrl));
+    }
+
     public boolean editRemoteProject(long projId, String newName, String newEmail, String newPassword, ICallback callback) {
         updateNetworkStatus();
         if (isSyncPossible()) {
@@ -1159,11 +1184,23 @@ public class MoneyBusterServerSyncHelper {
             }
             LoginStatus status = LoginStatus.OK;
             try {
-                ServerResponse.CreateRemoteProjectResponse response = client.createRemoteProject(customCertManager, project);
+                ServerResponse.CreateRemoteProjectResponse response;
+                // determine if we can create authenticated of just anonymous remote project
+                if (canCreateAuthenticatedProject(project)) {
+                    response = client.createAuthenticatedRemoteProject(customCertManager, project);
+                } else {
+                    response = client.createAnonymousRemoteProject(customCertManager, project);
+                }
                 if (BillsListViewActivity.DEBUG) {
                     Log.i(getClass().getSimpleName(), "RESPONSE create remote project : " + response.getStringContent());
                 }
             } catch (IOException e) {
+                if (BillsListViewActivity.DEBUG) {
+                    Log.e(getClass().getSimpleName(), "Exception", e);
+                }
+                exceptions.add(e);
+                status = LoginStatus.CONNECTION_FAILED;
+            } catch (TokenMismatchException e) {
                 if (BillsListViewActivity.DEBUG) {
                     Log.e(getClass().getSimpleName(), "Exception", e);
                 }

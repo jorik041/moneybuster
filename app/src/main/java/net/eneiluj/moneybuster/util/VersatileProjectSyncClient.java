@@ -356,7 +356,7 @@ public class VersatileProjectSyncClient {
         return new ServerResponse.DeleteRemoteBillResponse(requestServer(ccm, target, METHOD_DELETE, null,null, null, username, password));
     }
 
-    public ServerResponse.CreateRemoteProjectResponse createRemoteProject(CustomCertManager ccm, DBProject project) throws IOException {
+    public ServerResponse.CreateRemoteProjectResponse createAnonymousRemoteProject(CustomCertManager ccm, DBProject project) throws IOException {
         String target = project.getIhmUrl().replaceAll("/+$", "")
                 + "/api/projects";
         List<String> paramKeys = new ArrayList<>();
@@ -370,6 +370,36 @@ public class VersatileProjectSyncClient {
         paramKeys.add("id");
         paramValues.add(project.getRemoteId() == null ? "" : project.getRemoteId());
         return new ServerResponse.CreateRemoteProjectResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, null, null));
+    }
+
+    public ServerResponse.CreateRemoteProjectResponse createAuthenticatedRemoteProject(CustomCertManager ccm, DBProject project) throws IOException, TokenMismatchException {
+        // request values
+        List<String> paramKeys = new ArrayList<>();
+        List<String> paramValues = new ArrayList<>();
+        paramKeys.add("name");
+        paramValues.add(project.getName() == null ? "" : project.getName());
+        paramKeys.add("contact_email");
+        paramValues.add(project.getEmail() == null ? "" : project.getEmail());
+        paramKeys.add("password");
+        paramValues.add(project.getPassword() == null ? "" : project.getPassword());
+        paramKeys.add("id");
+        paramValues.add(project.getRemoteId() == null ? "" : project.getRemoteId());
+
+        String target;
+        String username = null;
+        String password = null;
+        // use SSO
+        if (ssoAccount != null) {
+            target = "/index.php/apps/cospend/api-priv/projects";
+            return new ServerResponse.CreateRemoteProjectResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_POST, paramKeys, paramValues));
+        } else {
+            // use NC login/passwd
+            username = this.username;
+            password = this.password;
+            target = project.getIhmUrl().replaceAll("/+$", "")
+                    + "/api-priv/projects";
+            return new ServerResponse.CreateRemoteProjectResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, username, password));
+        }
     }
 
     public ServerResponse.CreateRemoteBillResponse createRemoteBill(CustomCertManager ccm, DBProject project, DBBill bill, Map<Long, Long> memberIdToRemoteId) throws IOException, TokenMismatchException {

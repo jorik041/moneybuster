@@ -111,6 +111,7 @@ public class EditBillFragment extends Fragment {
     private FloatingActionButton fabSaveBill;
     private Button bAll;
     private Button bNone;
+    private LinearLayout editTimeLayout;
     private LinearLayout editRepeatLayout;
     private LinearLayout editPaymentModeLayout;
     private LinearLayout editCategoryLayout;
@@ -147,6 +148,7 @@ public class EditBillFragment extends Fragment {
         editRepeat = view.findViewById(R.id.editRepeatSpinner);
         editPaymentMode = view.findViewById(R.id.editPaymentModeSpinner);
         editCategory = view.findViewById(R.id.editCategorySpinner);
+        editTimeLayout = view.findViewById(R.id.editTimeLayout);
         editRepeatLayout = view.findViewById(R.id.editRepeatLayout);
         editPaymentModeLayout = view.findViewById(R.id.editPaymentModeLayout);
         editCategoryLayout = view.findViewById(R.id.editCategoryLayout);
@@ -880,7 +882,9 @@ public class EditBillFragment extends Fragment {
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
         );
-        timePickerDialog.updateTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+        if (!ProjectType.IHATEMONEY.equals(projectType)) {
+            timePickerDialog.updateTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+        }
         Log.v(TAG, "AFTER TIME INIT");
 
         editAmount.setText(String.valueOf(bill.getAmount()));
@@ -1018,6 +1022,7 @@ public class EditBillFragment extends Fragment {
         }
 
         if (ProjectType.IHATEMONEY.equals(projectType)) {
+            editTimeLayout.setVisibility(View.GONE);
             editRepeatLayout.setVisibility(View.GONE);
             editPaymentModeLayout.setVisibility(View.GONE);
             editCategoryLayout.setVisibility(View.GONE);

@@ -81,6 +81,11 @@
     <string name="setting_project_name_long">Nome visualizzato nell\'interfaccia utente</string>
     <string name="setting_password_long">Password da usare per connettersi al progetto</string>
     <string name="setting_password">Password (locale)</string>
+    <string name="setting_new_project_password">Password</string>
+    <string name="setting_new_project_name">Project name</string>
+    <string name="setting_new_project_email">E-mail</string>
+    <string name="warning_auth_project_creation">Warning: creating a Cospend project using Nextcloud account works with Cospend v0.3.4 and higher.</string>
+    <string name="auth_project_creation_title">Authenticated project creation</string>
     <string name="project_edition_no_change">Non è stato cambiato niente</string>
     <string name="setting_new_password_long">Cambia la password del progetto remoto (dillo agli altri utenti del progetto)</string>
     <string name="setting_new_password">Nuova password (remoto)</string>

@@ -81,6 +81,11 @@
     <string name="setting_project_name_long">Nom affiché dans l\'interface utilisateur</string>
     <string name="setting_password_long">Mot de passe que vous utilisez pour vous connecter au projet</string>
     <string name="setting_password">Mot de passe (local)</string>
+    <string name="setting_new_project_password">Mot de passe</string>
+    <string name="setting_new_project_name">Nom du projet</string>
+    <string name="setting_new_project_email">E-mail</string>
+    <string name="warning_auth_project_creation">Attention : la création d\'un projet Cospend en utilisant un compte Nextcloud fonctionne avec Cospend v0.3.4 et supérieur.</string>
+    <string name="auth_project_creation_title">Création authentifiée du projet</string>
     <string name="project_edition_no_change">Rien n\'a été modifié</string>
     <string name="setting_new_password_long">Changer le mot de passe du projet distant (signalez le aux autres utilisateurs du projet)</string>
     <string name="setting_new_password">Nouveau mot de passe (distant)</string>

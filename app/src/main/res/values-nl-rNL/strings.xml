@@ -81,6 +81,11 @@
     <string name="setting_project_name_long">De getoonde naam in gebruikersomgeving</string>
     <string name="setting_password_long">Wachtwoord gebruikt om verbinding te maken met het project</string>
     <string name="setting_password">Wachtwoord (lokaal)</string>
+    <string name="setting_new_project_password">Password</string>
+    <string name="setting_new_project_name">Project name</string>
+    <string name="setting_new_project_email">E-mail</string>
+    <string name="warning_auth_project_creation">Warning: creating a Cospend project using Nextcloud account works with Cospend v0.3.4 and higher.</string>
+    <string name="auth_project_creation_title">Authenticated project creation</string>
     <string name="project_edition_no_change">Er werd niets veranderd</string>
     <string name="setting_new_password_long">Het wachtwoord van het extern project wijzigen (vertel dit aan de andere projectgebruikers)</string>
     <string name="setting_new_password">Nieuw wachtwoord (op afstand)</string>

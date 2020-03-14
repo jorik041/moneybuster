@@ -81,6 +81,11 @@
     <string name="setting_project_name_long">Όνομα που εμφανίζεται στη διεπαφή χρήστη</string>
     <string name="setting_password_long">Ο κωδικός πρόσβασης που χρησιμοποιείτε για τη σύνδεση στο έργο</string>
     <string name="setting_password">Συνθηματικό (τοπικό)</string>
+    <string name="setting_new_project_password">Password</string>
+    <string name="setting_new_project_name">Project name</string>
+    <string name="setting_new_project_email">E-mail</string>
+    <string name="warning_auth_project_creation">Warning: creating a Cospend project using Nextcloud account works with Cospend v0.3.4 and higher.</string>
+    <string name="auth_project_creation_title">Authenticated project creation</string>
     <string name="project_edition_no_change">Τίποτα δεν άλλαξε</string>
     <string name="setting_new_password_long">Αλλάξτε τον κωδικό απομακρυσμένου έργου (ενημερώστε τους άλλους χρήστες του έργου)</string>
     <string name="setting_new_password">Νέος κωδικός πρόσβασης (απομακρυσμένο)</string>

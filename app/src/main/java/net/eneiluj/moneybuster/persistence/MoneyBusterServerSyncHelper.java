@@ -176,6 +176,20 @@ public class MoneyBusterServerSyncHelper {
                 preferences.getBoolean(SettingsActivity.SETTINGS_USE_SSO, false);
     }
 
+    public static String getNextcloudAccountServerUrl(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (preferences.getBoolean(SettingsActivity.SETTINGS_USE_SSO, false)) {
+            try {
+                SingleSignOnAccount ssoAccount = SingleAccountHelper.getCurrentSingleSignOnAccount(context.getApplicationContext());
+                return ssoAccount.url.replaceAll("/+$", "");
+            } catch (NextcloudFilesAppAccountNotFoundException | NoCurrentAccountSelectedException e) {
+                return "";
+            }
+        } else {
+            return preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS).replaceAll("/+$", "");
+        }
+    }
+
     /**
      * Synchronization is only possible, if there is an active network connection and
      * Cert4Android service is available.
@@ -946,7 +960,7 @@ public class MoneyBusterServerSyncHelper {
     // => authenticated creation is possible
     private boolean canCreateAuthenticatedProject(DBProject project) {
         boolean isCospend = ProjectType.COSPEND.equals(project.getType());
-        String projUrl = project.getIhmUrl().replaceAll("/index.php/apps/cospend", "");
+        String projUrl = project.getIhmUrl().replaceAll("/index.php/apps/cospend", "").replaceAll("/+$", "");
 
         String accountUrl = "";
 
@@ -954,12 +968,8 @@ public class MoneyBusterServerSyncHelper {
         if (useSSO) {
             try {
                 SingleSignOnAccount ssoAccount = SingleAccountHelper.getCurrentSingleSignOnAccount(appContext.getApplicationContext());
-                accountUrl = ssoAccount.url.replaceAll("/$", "");
-            }
-            catch (NextcloudFilesAppAccountNotFoundException e) {
-                return false;
-            }
-            catch (NoCurrentAccountSelectedException e) {
+                accountUrl = ssoAccount.url.replaceAll("/+$", "");
+            } catch (NextcloudFilesAppAccountNotFoundException | NoCurrentAccountSelectedException e) {
                 return false;
             }
         }

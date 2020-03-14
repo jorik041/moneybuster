@@ -128,6 +128,7 @@ public class NewProjectFragment extends Fragment {
 
     protected ImageView scanButton;
     protected ImageView nextcloudButton;
+    protected ImageView nextcloudCreateButton;
     protected ImageView importButton;
 
     protected FloatingActionButton fabOk;
@@ -192,6 +193,7 @@ public class NewProjectFragment extends Fragment {
 
         scanButton = view.findViewById(R.id.scanButton);
         nextcloudButton = view.findViewById(R.id.nextcloudButton);
+        nextcloudCreateButton = view.findViewById(R.id.nextcloudCreateButton);
         importButton = view.findViewById(R.id.importButton);
 
         fabOk = view.findViewById(R.id.fab_new_ok);
@@ -347,6 +349,18 @@ public class NewProjectFragment extends Fragment {
             }
         });
 
+        nextcloudCreateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialog(
+                        getString(R.string.warning_auth_project_creation),
+                        getString(R.string.auth_project_creation_title),
+                        R.drawable.ic_nextcloud_logo_grey
+                );
+                newProjectUrl.setText(MoneyBusterServerSyncHelper.getNextcloudAccountServerUrl(view.getContext()));
+            }
+        });
+
         newProjectId.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 Log.d(TAG, "project id change");
@@ -411,6 +425,20 @@ public class NewProjectFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void showDialog(String msg, String title, int icon) {
+        android.app.AlertDialog.Builder builder;
+        builder = new android.app.AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AppThemeDialog));
+        builder.setTitle(title)
+                .setMessage(msg)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setIcon(icon)
+                .show();
     }
 
     private void showHideValidationButtons() {
@@ -541,6 +569,7 @@ public class NewProjectFragment extends Fragment {
             whereIcon.setLayoutParams(params);
 
             nextcloudButton.setVisibility(View.GONE);
+            nextcloudCreateButton.setVisibility(View.GONE);
             importButton.setVisibility(View.VISIBLE);
         }
         else if (type.equals(ProjectType.IHATEMONEY)) {
@@ -562,6 +591,7 @@ public class NewProjectFragment extends Fragment {
             }
             newProjectUrlInputLayout.setHint(getString(R.string.setting_ihm_project_url));
             nextcloudButton.setVisibility(View.GONE);
+            nextcloudCreateButton.setVisibility(View.GONE);
             importButton.setVisibility(View.GONE);
         }
         else if (type.equals(ProjectType.COSPEND)) {
@@ -584,6 +614,7 @@ public class NewProjectFragment extends Fragment {
             boolean isNCC = MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(getContext());
             List<DBAccountProject> accProjs = db.getAccountProjects();
             nextcloudButton.setVisibility((!todoCreate && isNCC && accProjs.size() > 0) ? View.VISIBLE : View.GONE);
+            nextcloudCreateButton.setVisibility((todoCreate && isNCC) ? View.VISIBLE : View.GONE);
             importButton.setVisibility(View.GONE);
         }
     }

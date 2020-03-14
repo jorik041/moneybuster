@@ -313,7 +313,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="@string/setting_password">
+                    android:hint="@string/setting_new_project_password">
 
                     <EditText
                         android:id="@+id/editProjectPassword"
@@ -350,7 +350,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="@string/setting_project_name">
+                    android:hint="@string/setting_new_project_name">
 
                     <EditText
                         android:id="@+id/editProjectName"
@@ -386,7 +386,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="@string/setting_email">
+                    android:hint="@string/setting_new_project_email">
 
                     <EditText
                         android:id="@+id/editProjectEmail"

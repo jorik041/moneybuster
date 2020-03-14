@@ -2416,10 +2416,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         long selectedProjectId = preferences.getLong("selected_project", 0);
 
-        boolean local = false;
+        ProjectType type = ProjectType.LOCAL;
         if (selectedProjectId != 0) {
             DBProject proj = db.getProject(selectedProjectId);
-            local = proj.isLocal();
+            type = proj.getType();
             if (proj != null) {
                 projId = proj.getId();
                 if (proj.isLocal()) {
@@ -2430,7 +2430,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 }
             }
         }
-        final boolean isProjectLocal = local;
+        final ProjectType projectType = type;
 
         String subtitle;
         if (selectedProjectId != 0) {
@@ -2455,7 +2455,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         LoadBillsListTask.BillsLoadedListener callback = new LoadBillsListTask.BillsLoadedListener() {
             @Override
             public void onBillsLoaded(List<Item> billItems, boolean showCategory) {
-                adapter.setProjectLocal(isProjectLocal);
+                adapter.setProjectType(projectType);
                 adapter.setItemList(billItems);
                 if(scrollToTop) {
                     listView.scrollToPosition(0);

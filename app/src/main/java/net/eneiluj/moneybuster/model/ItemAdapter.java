@@ -44,7 +44,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private MoneyBusterSQLiteOpenHelper db;
     private float avatarRadius;
     private SharedPreferences prefs;
-    private boolean isProjectLocal;
+    private ProjectType projectType;
 
     public ItemAdapter(@NonNull BillClickListener billClickListener, MoneyBusterSQLiteOpenHelper db) {
         this.itemList = new ArrayList<>();
@@ -55,8 +55,8 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.avatarRadius = db.getContext().getResources().getDimension(R.dimen.avatar_radius);
     }
 
-    public void setProjectLocal(boolean loc) {
-        this.isProjectLocal = loc;
+    public void setProjectType(ProjectType type) {
+        this.projectType = type;
     }
 
     /**
@@ -199,7 +199,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             }
 
-            setFormattedDate(nvHolder.billDate, bill.getDate());
+            setFormattedDatetime(nvHolder.billDate, nvHolder.billTime, bill);
 
             Log.d(TAG, "[get member of project " + bill.getProjectId() + " with remoteid : "+bill.getPayerId()+"]");
             double rAmount = Math.round(bill.getAmount() * 100.0 ) / 100.0;
@@ -215,6 +215,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             nvHolder.billSubtitle.setText(Html.fromHtml(subtitle));
 
+            boolean isProjectLocal = ProjectType.LOCAL.equals(projectType);
             nvHolder.syncIcon.setVisibility((isProjectLocal || bill.getState() == DBBill.STATE_OK) ? View.INVISIBLE : View.VISIBLE);
 
             String repeat = bill.getRepeat() == null ? DBBill.NON_REPEATED : bill.getRepeat();
@@ -229,7 +230,8 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    private void setFormattedDate(TextView billDate, String stringDate) {
+    private void setFormattedDatetime(TextView billDate, TextView billTime, DBBill bill) {
+        String stringDate = bill.getDate();
         try {
             Date date = sdf.parse(stringDate);
             java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(db.getContext());
@@ -237,6 +239,9 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             billDate.setText(Html.fromHtml(dateFormat.format(date)));
         } catch (Exception e) {
             billDate.setText(Html.fromHtml(stringDate));
+        }
+        if (!projectType.equals(ProjectType.IHATEMONEY)) {
+            billTime.setText(bill.getTime());
         }
     }
 
@@ -304,6 +309,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ImageView billDeleteRight;
         TextView billTitle;
         TextView billDate;
+        TextView billTime;
         TextView billSubtitle;
         ImageView syncIcon;
         ImageView repeatIcon;
@@ -317,6 +323,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             this.avatar = v.findViewById(R.id.avatar);
             this.billTitle = v.findViewById(R.id.billTitle);
             this.billDate = v.findViewById(R.id.billDate);
+            this.billTime = v.findViewById(R.id.billTime);
             this.billSubtitle = v.findViewById(R.id.billExcerpt);
             this.syncIcon = v.findViewById(R.id.syncIcon);
             this.repeatIcon = v.findViewById(R.id.repeatIcon);

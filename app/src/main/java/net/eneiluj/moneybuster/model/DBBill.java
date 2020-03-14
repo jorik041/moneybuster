@@ -151,6 +151,13 @@ public class DBBill implements Item, Serializable {
         return cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DAY_OF_MONTH);
     }
 
+    public String getTime() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timestamp * 1000);
+        return String.format(Locale.ROOT, "%02d", cal.get(Calendar.HOUR_OF_DAY))+
+                ":"+String.format(Locale.ROOT, "%02d", cal.get(Calendar.MINUTE));
+    }
+
     public String getWhat() {
         return what;
     }

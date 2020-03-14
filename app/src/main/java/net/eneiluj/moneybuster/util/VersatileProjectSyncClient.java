@@ -93,7 +93,7 @@ public class VersatileProjectSyncClient {
     public boolean canAccessProjectWithNCLogin(DBProject project) {
         return (project.getPassword().equals("")
                 && !url.replaceAll("/+$", "").equals("")
-                && project.getIhmUrl()
+                && project.getServerUrl()
                     .replace("/index.php/apps/cospend", "")
                     .equals(url.replaceAll("/+$", ""))
         );
@@ -102,7 +102,7 @@ public class VersatileProjectSyncClient {
     public boolean canAccessProjectWithSSO(DBProject project) {
         return (project.getPassword().equals("")
                 && ssoAccount != null
-                && project.getIhmUrl().replace("/index.php/apps/cospend", "").equals(ssoAccount.url)
+                && project.getServerUrl().replace("/index.php/apps/cospend", "").equals(ssoAccount.url)
         );
     }
 
@@ -114,7 +114,7 @@ public class VersatileProjectSyncClient {
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
                 password = this.password;
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api-priv/projects/" + project.getRemoteId();
             }
             else if (canAccessProjectWithSSO(project)) {
@@ -122,12 +122,12 @@ public class VersatileProjectSyncClient {
                 return new ServerResponse.ProjectResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_GET, null, null));
             }
             else {
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api/projects/" + project.getRemoteId() + "/" + project.getPassword();
             }
         }
         else {
-            target = project.getIhmUrl().replaceAll("/+$", "")
+            target = project.getServerUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId();
             username = project.getRemoteId();
             password = project.getPassword();
@@ -153,7 +153,7 @@ public class VersatileProjectSyncClient {
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
                 password = this.password;
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api-priv/projects/" + project.getRemoteId();
             }
             else if (canAccessProjectWithSSO(project)) {
@@ -161,12 +161,12 @@ public class VersatileProjectSyncClient {
                 return new ServerResponse.EditRemoteProjectResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_PUT, paramKeys, paramValues));
             }
             else {
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api/projects/" + project.getRemoteId() + "/" + project.getPassword();
             }
         }
         else {
-            target = project.getIhmUrl().replaceAll("/+$", "")
+            target = project.getServerUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId();
             //https://ihatemoney.org/api/projects/demo
             username = project.getRemoteId();
@@ -202,7 +202,7 @@ public class VersatileProjectSyncClient {
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
                 password = this.password;
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api-priv/projects/" + project.getRemoteId() + "/members/" + member.getRemoteId();
             }
             else if (canAccessProjectWithSSO(project)) {
@@ -210,13 +210,13 @@ public class VersatileProjectSyncClient {
                 return new ServerResponse.EditRemoteMemberResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_PUT, paramKeys, paramValues));
             }
             else {
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api/projects/" + project.getRemoteId() + "/"
                         + project.getPassword() + "/members/" + member.getRemoteId();
             }
         }
         else {
-            target = project.getIhmUrl().replaceAll("/+$", "")
+            target = project.getServerUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/members/" + member.getRemoteId();
             username = project.getRemoteId();
             password = project.getPassword();
@@ -266,7 +266,7 @@ public class VersatileProjectSyncClient {
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
                 password = this.password;
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api-priv/projects/" + project.getRemoteId() + "/bills/" + bill.getRemoteId();
             }
             else if (canAccessProjectWithSSO(project)) {
@@ -274,13 +274,13 @@ public class VersatileProjectSyncClient {
                 return new ServerResponse.EditRemoteBillResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_PUT, paramKeys, paramValues));
             }
             else {
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api/projects/" + project.getRemoteId() + "/"
                         + project.getPassword() + "/bills/" + bill.getRemoteId();
             }
         }
         else {
-            target = project.getIhmUrl().replaceAll("/+$", "")
+            target = project.getServerUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/bills/" + bill.getRemoteId();
             username = project.getRemoteId();
             password = project.getPassword();
@@ -305,7 +305,7 @@ public class VersatileProjectSyncClient {
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
                 password = this.password;
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api-priv/projects/" + project.getRemoteId();
             }
             else if (canAccessProjectWithSSO(project)) {
@@ -313,12 +313,12 @@ public class VersatileProjectSyncClient {
                 return new ServerResponse.DeleteRemoteProjectResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_DELETE, null, null));
             }
             else {
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api/projects/" + project.getRemoteId() + "/" + project.getPassword();
             }
         }
         else {
-            target = project.getIhmUrl().replaceAll("/+$", "")
+            target = project.getServerUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId();
             username = project.getRemoteId();
             password = project.getPassword();
@@ -334,7 +334,7 @@ public class VersatileProjectSyncClient {
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
                 password = this.password;
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api-priv/projects/" + project.getRemoteId() + "/bills/" + billRemoteId;
             }
             else if (canAccessProjectWithSSO(project)) {
@@ -342,13 +342,13 @@ public class VersatileProjectSyncClient {
                 return new ServerResponse.DeleteRemoteBillResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_DELETE, null, null));
             }
             else {
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api/projects/" + project.getRemoteId() + "/"
                         + project.getPassword() + "/bills/" + billRemoteId;
             }
         }
         else {
-            target = project.getIhmUrl().replaceAll("/+$", "")
+            target = project.getServerUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/bills/" + billRemoteId;
             username = project.getRemoteId();
             password = project.getPassword();
@@ -357,7 +357,7 @@ public class VersatileProjectSyncClient {
     }
 
     public ServerResponse.CreateRemoteProjectResponse createAnonymousRemoteProject(CustomCertManager ccm, DBProject project) throws IOException {
-        String target = project.getIhmUrl().replaceAll("/+$", "")
+        String target = project.getServerUrl().replaceAll("/+$", "")
                 + "/api/projects";
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
@@ -396,7 +396,7 @@ public class VersatileProjectSyncClient {
             // use NC login/passwd
             username = this.username;
             password = this.password;
-            target = project.getIhmUrl().replaceAll("/+$", "")
+            target = project.getServerUrl().replaceAll("/+$", "")
                     + "/api-priv/projects";
             return new ServerResponse.CreateRemoteProjectResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, username, password));
         }
@@ -443,7 +443,7 @@ public class VersatileProjectSyncClient {
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
                 password = this.password;
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api-priv/projects/" + project.getRemoteId() + "/bills";
             }
             else if (canAccessProjectWithSSO(project)) {
@@ -451,13 +451,13 @@ public class VersatileProjectSyncClient {
                 return new ServerResponse.CreateRemoteBillResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_POST, paramKeys, paramValues));
             }
             else {
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api/projects/" + project.getRemoteId() + "/"
                         + project.getPassword() + "/bills";
             }
         }
         else {
-            target = project.getIhmUrl().replaceAll("/+$", "")
+            target = project.getServerUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/bills";
             username = project.getRemoteId();
             password = project.getPassword();
@@ -498,7 +498,7 @@ public class VersatileProjectSyncClient {
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
                 password = this.password;
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api-priv/projects/" + project.getRemoteId() + "/members";
             }
             else if (canAccessProjectWithSSO(project)) {
@@ -506,13 +506,13 @@ public class VersatileProjectSyncClient {
                 return new ServerResponse.CreateRemoteMemberResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_POST, paramKeys, paramValues));
             }
             else {
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api/projects/" + project.getRemoteId() + "/"
                         + project.getPassword() + "/members";
             }
         }
         else {
-            target = project.getIhmUrl().replaceAll("/+$", "")
+            target = project.getServerUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/members";
             username = project.getRemoteId();
             password = project.getPassword();
@@ -530,7 +530,7 @@ public class VersatileProjectSyncClient {
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
                 password = this.password;
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api-priv/projects/" + project.getRemoteId() + "/bills?lastchanged=" + tsLastSync;
                 return new ServerResponse.BillsResponse(requestServer(ccm, target, METHOD_GET, null, null,null, username, password), true);
             }
@@ -544,12 +544,12 @@ public class VersatileProjectSyncClient {
             }
             else {
                 if (cospendSmartSync) {
-                    target = project.getIhmUrl().replaceAll("/+$", "")
+                    target = project.getServerUrl().replaceAll("/+$", "")
                             + "/apiv2/projects/" + project.getRemoteId() + "/"
                             + project.getPassword() + "/bills?lastchanged=" + tsLastSync;
                     return new ServerResponse.BillsResponse(requestServer(ccm, target, METHOD_GET, null, null,null, username, password), true);
                 } else {
-                    target = project.getIhmUrl().replaceAll("/+$", "")
+                    target = project.getServerUrl().replaceAll("/+$", "")
                             + "/api/projects/" + project.getRemoteId() + "/"
                             + project.getPassword() + "/bills";
                     return new ServerResponse.BillsResponse(requestServer(ccm, target, METHOD_GET, null, null,null, username, password), false);
@@ -557,7 +557,7 @@ public class VersatileProjectSyncClient {
             }
         }
         else {
-            target = project.getIhmUrl().replaceAll("/+$", "")
+            target = project.getServerUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/bills";
             username = project.getRemoteId();
             password = project.getPassword();
@@ -573,7 +573,7 @@ public class VersatileProjectSyncClient {
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
                 password = this.password;
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api-priv/projects/" + project.getRemoteId() + "/members";
             }
             else if (canAccessProjectWithSSO(project)) {
@@ -582,13 +582,13 @@ public class VersatileProjectSyncClient {
                 return new ServerResponse.MembersResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_GET, null, null));
             }
             else {
-                target = project.getIhmUrl().replaceAll("/+$", "")
+                target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api/projects/" + project.getRemoteId() + "/"
                         + project.getPassword() + "/members";
             }
         }
         else {
-            target = project.getIhmUrl().replaceAll("/+$", "")
+            target = project.getServerUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/members";
             username = project.getRemoteId();
             password = project.getPassword();

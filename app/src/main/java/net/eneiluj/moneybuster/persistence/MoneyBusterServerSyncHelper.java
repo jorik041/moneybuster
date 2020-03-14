@@ -960,7 +960,7 @@ public class MoneyBusterServerSyncHelper {
     // => authenticated creation is possible
     private boolean canCreateAuthenticatedProject(DBProject project) {
         boolean isCospend = ProjectType.COSPEND.equals(project.getType());
-        String projUrl = project.getIhmUrl().replaceAll("/index.php/apps/cospend", "").replaceAll("/+$", "");
+        String projUrl = project.getServerUrl().replaceAll("/index.php/apps/cospend", "").replaceAll("/+$", "");
 
         String accountUrl = "";
 
@@ -1388,7 +1388,7 @@ public class MoneyBusterServerSyncHelper {
                     boolean found = false;
                     for (DBProject localProject : localProjects) {
                         if (localProject.getRemoteId().equals(remoteAccountProject.getRemoteId())
-                                && localProject.getIhmUrl().replaceAll("/+$", "")
+                                && localProject.getServerUrl().replaceAll("/+$", "")
                                     .equals(remoteAccountProject.getncUrl().replaceAll("/+$", "") + "/index.php/apps/cospend")
                         ) {
                             found = true;

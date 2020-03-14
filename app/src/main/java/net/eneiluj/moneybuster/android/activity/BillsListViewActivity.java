@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -74,12 +73,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.zxing.WriterException;
-import com.kizitonwose.colorpreferencecompat.ColorPreferenceCompat;
 import com.larswerkman.lobsterpicker.LobsterPicker;
 import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider;
 
 import net.eneiluj.moneybuster.R;
-import net.eneiluj.moneybuster.android.fragment.EditBillFragment;
 import net.eneiluj.moneybuster.android.fragment.NewProjectFragment;
 import net.eneiluj.moneybuster.android.ui.TextDrawable;
 import net.eneiluj.moneybuster.model.Category;
@@ -113,7 +110,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -122,7 +118,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import static net.eneiluj.moneybuster.android.activity.EditProjectActivity.PARAM_PROJECT_ID;
-import static net.eneiluj.moneybuster.util.SupportUtil.getVersionCode;
 import static net.eneiluj.moneybuster.util.SupportUtil.getVersionName;
 import static net.eneiluj.moneybuster.util.SupportUtil.settleBills;
 
@@ -1301,10 +1296,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                 final DBProject proj = db.getProject(selectedProjectId);
 
-                if (selectedProjectId != 0 && proj.getIhmUrl() != null && !proj.getIhmUrl().equals("")) {
+                if (selectedProjectId != 0 && proj.getServerUrl() != null && !proj.getServerUrl().equals("")) {
                     // get url, id and password
                     String projId = proj.getRemoteId();
-                    String url = proj.getIhmUrl()
+                    String url = proj.getServerUrl()
                             .replace("https://", "")
                             .replace("http://", "")
                             .replace("/index.php/apps/cospend", "");
@@ -1313,13 +1308,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     String hostEnd;
                     final String publicWebUrl;
                     String publicWebLink;
-                    if (proj.getIhmUrl().contains("index.php/apps/cospend")) {
+                    if (proj.getServerUrl().contains("index.php/apps/cospend")) {
                         hostEnd = "cospend";
-                        publicWebUrl = proj.getIhmUrl() + "/loginproject/" + proj.getRemoteId();
+                        publicWebUrl = proj.getServerUrl() + "/loginproject/" + proj.getRemoteId();
                     }
                     else {
                         hostEnd = "ihatemoney";
-                        publicWebUrl = proj.getIhmUrl() + "/" + proj.getRemoteId();
+                        publicWebUrl = proj.getServerUrl() + "/" + proj.getRemoteId();
                     }
                     publicWebLink = "<a href=\"" + publicWebUrl + "\">" + publicWebUrl + "</a>";
 
@@ -1820,7 +1815,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         String url;
         // look for a default NC url in existing projects
         for (DBProject project : projects) {
-            url = project.getIhmUrl();
+            url = project.getServerUrl();
             if (url != null && !url.equals("")) {
                 if (url.contains("/index.php/apps/cospend")) {
                     defaultNcUrl = url.replace("/index.php/apps/cospend", "");
@@ -1830,7 +1825,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         }
         // look for a default IHM url in existing projects
         for (DBProject project : projects) {
-            url = project.getIhmUrl();
+            url = project.getServerUrl();
             if (url != null && !url.equals("")) {
                 if (!url.contains("/index.php/apps/cospend")) {
                     defaultIhmUrl = url;
@@ -1852,14 +1847,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         List<String> projectNames = new ArrayList<>();
         List<Long> projectIds = new ArrayList<>();
         for (DBProject p : dbProjects) {
-            if (p.getName() == null || p.getIhmUrl() == null || p.getType().equals(DBProject.TYPE_LOCAL)) {
+            if (p.getName() == null || p.getServerUrl() == null || p.getType().equals(DBProject.TYPE_LOCAL)) {
                 projectNames.add(p.getRemoteId());
             }
             else {
                 projectNames.add(
                         p.getName()
                                 + "\n(" + p.getRemoteId() + "@"
-                                + p.getIhmUrl()
+                                + p.getServerUrl()
                                 .replace("https://", "")
                                 .replace("http://", "")
                                 .replace("/index.php/apps/cospend", "")
@@ -1938,7 +1933,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             selText = (proj.getName() == null) ? "???" : proj.getName();
             selText += "\n";
             selText += proj.getRemoteId() + "@";
-            selText += proj.getIhmUrl()
+            selText += proj.getServerUrl()
                     .replace("https://", "")
                     .replace("http://", "")
                     .replace("/index.php/apps/cospend", "");

@@ -123,7 +123,7 @@ public class EditProjectActivity extends AppCompatActivity implements EditProjec
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(project.getName());
-            actionBar.setSubtitle(project.getIhmUrl());
+            actionBar.setSubtitle(project.getServerUrl());
         }
     }
 

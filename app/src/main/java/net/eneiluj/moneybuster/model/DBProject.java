@@ -12,7 +12,7 @@ public class DBProject implements Serializable {
     private long id;
     private String remoteId;
     private String name;
-    private String ihmUrl;
+    private String serverUrl;
     private String email;
     private String password;
     private Long lastPayerId;
@@ -20,13 +20,13 @@ public class DBProject implements Serializable {
     private Long lastSyncedTimestamp;
     private String currencyName;
 
-    public DBProject(long id, String remoteId, String password, String name, String ihmUrl,
+    public DBProject(long id, String remoteId, String password, String name, String serverUrl,
                      String email, Long lastPayerId, ProjectType type, Long lastSyncedTimestamp,
                      @Nullable String currencyName) {
         this.id = id;
         this.remoteId = remoteId;
         this.name = name;
-        this.ihmUrl = ihmUrl;
+        this.serverUrl = serverUrl;
         this.email = email;
         this.password = password;
         this.lastPayerId = lastPayerId;
@@ -60,7 +60,7 @@ public class DBProject implements Serializable {
     }
 
     public boolean isLocal() {
-        return (ihmUrl == null || ihmUrl.equals(""));
+        return (serverUrl == null || serverUrl.equals(""));
     }
 
     public String getPassword() {
@@ -83,12 +83,12 @@ public class DBProject implements Serializable {
         this.remoteId = remoteId;
     }
 
-    public String getIhmUrl() {
-        return ihmUrl;
+    public String getServerUrl() {
+        return serverUrl;
     }
 
-    public void setIhmUrl(String ihmUrl) {
-        this.ihmUrl = ihmUrl;
+    public void setServerUrl(String serverUrl) {
+        this.serverUrl = serverUrl;
     }
 
     public String getEmail() {
@@ -121,6 +121,6 @@ public class DBProject implements Serializable {
 
     @Override
     public String toString() {
-        return "#DBProject" + getId() + "/" + this.remoteId + "," + this.name + ", " + this.ihmUrl + ", " + this.email;
+        return "#DBProject" + getId() + "/" + this.remoteId + "," + this.name + ", " + this.serverUrl + ", " + this.email;
     }
 }

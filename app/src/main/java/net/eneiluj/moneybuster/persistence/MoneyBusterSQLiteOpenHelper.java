@@ -280,7 +280,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
             String url;
             for (DBProject project : projects) {
-                url = project.getIhmUrl();
+                url = project.getServerUrl();
                 if (url == null) {
                     project.setType(ProjectType.LOCAL);
                 } else if (url.contains("index.php/apps/cospend")) {
@@ -671,7 +671,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_password, project.getPassword());
         values.put(key_email, project.getEmail());
         values.put(key_name, project.getName());
-        values.put(key_ihmUrl, project.getIhmUrl());
+        values.put(key_ihmUrl, project.getServerUrl());
         values.put(key_type, project.getType().getId());
         return db.insert(table_projects, null, values);
     }

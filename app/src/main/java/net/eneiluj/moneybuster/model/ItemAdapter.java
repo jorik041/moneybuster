@@ -243,6 +243,9 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (!projectType.equals(ProjectType.IHATEMONEY)) {
             billTime.setText(bill.getTime());
         }
+        else {
+            billTime.setText("");
+        }
     }
 
     public boolean select(Integer position) {

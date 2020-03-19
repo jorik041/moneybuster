@@ -958,7 +958,7 @@ public class MoneyBusterServerSyncHelper {
 
     // if this is a cospend project and the server URL is the same as the configured account
     // => authenticated creation is possible
-    private boolean canCreateAuthenticatedProject(DBProject project) {
+    public boolean canCreateAuthenticatedProject(DBProject project) {
         boolean isCospend = ProjectType.COSPEND.equals(project.getType());
         String projUrl = project.getServerUrl().replaceAll("/index.php/apps/cospend", "").replaceAll("/+$", "");
 

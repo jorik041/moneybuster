@@ -352,11 +352,6 @@ public class NewProjectFragment extends Fragment {
         nextcloudCreateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDialog(
-                        getString(R.string.warning_auth_project_creation),
-                        getString(R.string.auth_project_creation_title),
-                        R.drawable.ic_nextcloud_logo_grey
-                );
                 newProjectUrl.setText(MoneyBusterServerSyncHelper.getNextcloudAccountServerUrl(view.getContext()));
             }
         });
@@ -425,20 +420,6 @@ public class NewProjectFragment extends Fragment {
         });
 
         return view;
-    }
-
-    private void showDialog(String msg, String title, int icon) {
-        android.app.AlertDialog.Builder builder;
-        builder = new android.app.AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AppThemeDialog));
-        builder.setTitle(title)
-                .setMessage(msg)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setIcon(icon)
-                .show();
     }
 
     private void showHideValidationButtons() {
@@ -763,7 +744,38 @@ public class NewProjectFragment extends Fragment {
         }
     }
 
+    // we check if we should show warning about cospend compat with authenticated project creation
     private void onPressOk() {
+        ProjectType type = getProjectType();
+        boolean todoCreate = getTodoCreate();
+        String url = getUrl();
+        DBProject fakeProj = new DBProject(0, "", "", "", url,
+                "", 0L, ProjectType.COSPEND, 0L, null);
+        if (isValidUrl(url) && todoCreate && ProjectType.COSPEND.equals(type) &&
+                db.getMoneyBusterServerSyncHelper().canCreateAuthenticatedProject(fakeProj)) {
+            android.app.AlertDialog.Builder builder;
+            builder = new android.app.AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AppThemeDialog));
+            builder.setTitle(getString(R.string.auth_project_creation_title))
+                    .setMessage(getString(R.string.warning_auth_project_creation))
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            createProject();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .setIcon(R.drawable.ic_nextcloud_logo_grey)
+                    .show();
+
+        } else {
+            createProject();
+        }
+    }
+
+    private void createProject() {
         String rid = getRemoteId();
         if (rid == null || rid.equals("")) {
             //showToast(getString(R.string.error_invalid_project_remote_id), Toast.LENGTH_LONG);
@@ -809,7 +821,8 @@ public class NewProjectFragment extends Fragment {
             progress.setMessage(getString(R.string.creating_remote_project));
             progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
             progress.show();
-            if (!db.getMoneyBusterServerSyncHelper().createRemoteProject(getRemoteId(), getName(), getEmail(), getPassword(), getUrl(), getProjectType(), createRemoteCallBack)) {
+            if (!db.getMoneyBusterServerSyncHelper().createRemoteProject(getRemoteId(), getName(),
+                    getEmail(), getPassword(), getUrl(), getProjectType(), createRemoteCallBack)) {
                 //showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
                 progress.dismiss();
             }

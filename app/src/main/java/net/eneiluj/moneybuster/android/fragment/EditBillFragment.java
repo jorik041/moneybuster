@@ -131,7 +131,6 @@ public class EditBillFragment extends Fragment {
     private boolean isSpinnerRepeatAction = false;
     private boolean isSpinnerPaymentModeAction = false;
     private boolean isSpinnerCategoryAction = false;
-    private boolean duringInit = true;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -190,6 +189,7 @@ public class EditBillFragment extends Fragment {
                     entry.getValue().setChecked(false);
                 }
             }
+
         });
         if (darkTheme) {
             bAll.setTextColor(ColorStateList.valueOf(Color.BLACK));
@@ -198,7 +198,36 @@ public class EditBillFragment extends Fragment {
 
         calendar = Calendar.getInstance();
 
-        final TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener() {
+        final DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, monthOfYear);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateDateLabel();
+
+                calendar.set(Calendar.HOUR_OF_DAY, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                updateTimeLabel();
+            }
+
+        };
+
+        editDate.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                datePickerDialog = new DatePickerDialog(EditBillFragment.this.getContext(), dateSetListener, calendar
+                        .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.show();
+            }
+
+        });
+
+        final TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
 
             @Override
             public void onTimeSet(TimePicker view, int hour, int minute) {
@@ -209,71 +238,13 @@ public class EditBillFragment extends Fragment {
 
         };
 
-        timePickerDialog = new TimePickerDialog(EditBillFragment.this.getContext(), time, calendar
-                .get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true) {
-
-            @Override
-            public void onTimeChanged(TimePicker view,
-                                      int hour,
-                                      int minute) {
-                calendar.set(Calendar.HOUR_OF_DAY, hour);
-                calendar.set(Calendar.MINUTE, minute);
-                updateTimeLabel();
-                // to make sure we don't get out of old-style date picker dialogs
-                //datePickerDialog.dismiss();
-            }
-        };
-
-
         editTime.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
+                timePickerDialog = new TimePickerDialog(EditBillFragment.this.getContext(), timeSetListener, calendar
+                        .get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
                 timePickerDialog.show();
-            }
-        });
-
-        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, monthOfYear);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateDateLabel();
-            }
-
-        };
-
-        datePickerDialog = new DatePickerDialog(EditBillFragment.this.getContext(), date, calendar
-                .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)) {
-
-            @Override
-            public void onDateChanged(DatePicker view,
-                                      int year,
-                                      int month,
-                                      int dayOfMonth) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateDateLabel();
-
-                if (!duringInit) {
-                    timePickerDialog.updateTime(0, 0);
-                }
-                // to make sure we don't get out of old-style date picker dialogs
-                //datePickerDialog.dismiss();
-            }
-        };
-
-
-        editDate.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                datePickerDialog.show();
             }
         });
 
@@ -879,16 +850,8 @@ public class EditBillFragment extends Fragment {
 
         Log.v(TAG, "BEFORE TIME INIT");
         calendar.setTimeInMillis(bill.getTimestamp() * 1000);
-        //updateDateLabel();
-        //updateTimeLabel();
-        datePickerDialog.getDatePicker().updateDate(
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-        );
-        if (!ProjectType.IHATEMONEY.equals(projectType)) {
-            timePickerDialog.updateTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
-        }
+        updateDateLabel();
+        updateTimeLabel();
         Log.v(TAG, "AFTER TIME INIT");
 
         editAmount.setText(String.valueOf(bill.getAmount()));
@@ -1022,8 +985,6 @@ public class EditBillFragment extends Fragment {
             } else {
                 editCategory.setSelection(0);
             }
-            // to avoid date/time chain reaction during init
-            duringInit = false;
         }
 
         if (ProjectType.IHATEMONEY.equals(projectType)) {

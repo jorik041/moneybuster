@@ -14,7 +14,7 @@ langCodes=(
     ["no"]="no-NO" ["ko"]="ko-KR" ["te"]="te-IN" ["en-US"]="en-US"
     ["sl"]="sl-SI" ["bn"]="bn-BD" ["zh-TW"]="zh-TW" ["bg"]="bg-BG"
     ["af"]="af-ZA" ["uk"]="uk-UA" ["ja"]="ja-JP" ["da"]="da-DK"
-    ["he"]="he-IL" ["id"]="id-ID"
+    ["he"]="he-IL" ["id"]="id-ID" ["sq"]="sq-AL"
 )
 
 for path in `find ../app/src/main/res -name "full_description.txt"`; do

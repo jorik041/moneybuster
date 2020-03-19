@@ -76,7 +76,7 @@
     <string name="setting_ihm_project_url_long">Endereço de instância IHateMoney hospedando o projeto</string>
     <string name="setting_ihm_project_url">Endereço IHateMoney</string>
     <string name="setting_cospend_project_url_long">Endereço da instância de Nextcloud hospedando o projeto Cospend</string>
-    <string name="setting_cospend_project_url">Endereço Cospend do Nextcloud</string>
+    <string name="setting_cospend_project_url">Endereço do Nextcloud com Cospend</string>
     <string name="setting_project_name">Nome do projeto (remoto)</string>
     <string name="setting_project_name_long">Nome exibido na interface do usuário</string>
     <string name="setting_password_long">Senha que usa para se conectar ao projeto</string>
@@ -112,7 +112,7 @@
     <string name="simple_create_bills">Criar despesas</string>
     <string name="settle_bill_what">Quitação</string>
     <string name="simple_stats_share">Compartilhar estatísticas</string>
-    <string name="simple_share_share">Compartilhar link do MoneyBuster</string>
+    <string name="simple_share_share">Compartilhar link</string>
     <string name="action_bill_deleted">Despesa excluída</string>
     <string name="action_bill_restored">Despesa restaurada</string>
     <string name="action_undo">Desfazer</string>
@@ -135,7 +135,7 @@
     <string name="choose_member_to_edit">Escolha um membro para editar</string>
     <string name="member_already_exists">Este membro já existe neste projeto</string>
     <string name="search_help_dialog_title">Como pesquisar</string>
-    <string name="search_help_dialog_content">Pode pesquisar por título e quantidade da despesa.\n\nTambém pode pesquisar por:\n* pagador com +NOME\n* dono com -NOME\n* pagador ou dono com @NOME\n\nExemplo 1: \"@julia -roberto\" irá apresentar despesas envolvendo Júlia (como pagadora ou dona) e Roberto como dono.\n\nExemplo 2: \"+julia -julia -roberto\" irá apresentar as despesas pagas por Júlia pelo menos para Júlia e para Roberto.</string>
+    <string name="search_help_dialog_content">Você pode pesquisar por título e quantidade da despesa.\n\nTambém pode-se pesquisar por:\n* pagador com +NOME\n* dono com -NOME\n* pagador ou dono com @NOME\n\nExemplo 1: \"@julia -roberto\" apresentará as despesas envolvendo Júlia (como pagadora ou dona) e Roberto como dono.\n\nExemplo 2: \"+julia -julia -roberto\" apresentará as despesas pagas por Júlia para ela e para Roberto.</string>
     <string name="confirm_remove_project_dialog_title">Tem a certeza?</string>
     <string name="confirm_delete_bill_dialog_title">Tem certeza de que deseja excluir esta despesa?</string>
     <string name="confirm_delete_project_dialog_title">Tem certeza que deseja excluir o projeto remoto?</string>

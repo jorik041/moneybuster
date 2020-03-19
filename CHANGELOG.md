@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## 0.0.19 – 2020-03-19
+### Added
+- support for time in bills (Cospend and local projects)
+- ability to create projects with configured Nextcloud account authentication (Cospend >= 3.4.0)
+
 ## 0.0.18 – 2020-03-10
 ### Added
 - optional periodical sync service with otpional notifications

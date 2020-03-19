@@ -59,7 +59,6 @@ import net.eneiluj.moneybuster.util.MoneyBuster;
 import net.eneiluj.moneybuster.util.ThemeUtils;
 
 import java.security.NoSuchAlgorithmException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -132,6 +131,7 @@ public class EditBillFragment extends Fragment {
     private boolean isSpinnerRepeatAction = false;
     private boolean isSpinnerPaymentModeAction = false;
     private boolean isSpinnerCategoryAction = false;
+    private boolean duringInit = true;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -198,46 +198,6 @@ public class EditBillFragment extends Fragment {
 
         calendar = Calendar.getInstance();
 
-        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, monthOfYear);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateDateLabel();
-            }
-
-        };
-
-        datePickerDialog = new DatePickerDialog(EditBillFragment.this.getContext(), date, calendar
-                .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)) {
-
-            @Override
-            public void onDateChanged(DatePicker view,
-                                      int year,
-                                      int month,
-                                      int dayOfMonth) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateDateLabel();
-                // to make sure we don't get out of old-style date picker dialogs
-                //datePickerDialog.dismiss();
-            }
-        };
-
-
-        editDate.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                datePickerDialog.show();
-            }
-        });
-
         final TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener() {
 
             @Override
@@ -270,6 +230,50 @@ public class EditBillFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 timePickerDialog.show();
+            }
+        });
+
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, monthOfYear);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateDateLabel();
+            }
+
+        };
+
+        datePickerDialog = new DatePickerDialog(EditBillFragment.this.getContext(), date, calendar
+                .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)) {
+
+            @Override
+            public void onDateChanged(DatePicker view,
+                                      int year,
+                                      int month,
+                                      int dayOfMonth) {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateDateLabel();
+
+                if (!duringInit) {
+                    timePickerDialog.updateTime(0, 0);
+                }
+                // to make sure we don't get out of old-style date picker dialogs
+                //datePickerDialog.dismiss();
+            }
+        };
+
+
+        editDate.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                datePickerDialog.show();
             }
         });
 
@@ -451,7 +455,7 @@ public class EditBillFragment extends Fragment {
     }
 
     private void updateDateLabel() {
-        setDateFromIso(sdfDate.format(calendar.getTime()));
+        setDateLabelFromIso(sdfDate.format(calendar.getTime()));
         Log.d(TAG, "DATEUUUU");
         showHideValidationButtons();
     }
@@ -1018,7 +1022,8 @@ public class EditBillFragment extends Fragment {
             } else {
                 editCategory.setSelection(0);
             }
-
+            // to avoid date/time chain reaction during init
+            duringInit = false;
         }
 
         if (ProjectType.IHATEMONEY.equals(projectType)) {
@@ -1040,7 +1045,7 @@ public class EditBillFragment extends Fragment {
         return calendar.getTimeInMillis() / 1000;
     }
 
-    protected void setDateFromIso(String isoDate) {
+    protected void setDateLabelFromIso(String isoDate) {
         this.isoDate = isoDate;
         try {
             Date date = sdfDate.parse(isoDate);

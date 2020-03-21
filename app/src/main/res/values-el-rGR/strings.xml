@@ -3,7 +3,7 @@
     <string name="swipe_left">Τίποτα ακόμη</string>
     <string name="label_all_bills">Όλοι οι λογαριασμοί</string>
     <string name="action_create_bill">Νέος λογαριασμός</string>
-    <string name="action_settings">Ρυθμίσεις</string>
+    <string name="action_settings">App settings</string>
     <string name="action_scan_qrcode">Σαρώστε το QRCode του Cospend/MoneyBuster</string>
     <string name="action_add_project">Προσθήκη έργου</string>
     <string name="action_save_bill">Αποθήκευση λογαριασμού</string>
@@ -108,6 +108,7 @@
     <string name="simple_add_project">Προσθήκη έργου στο MoneyBuster</string>
     <string name="simple_edit_project">Επεξεργασία έργου</string>
     <string name="simple_about">Σχετικά</string>
+    <string name="share_impossible">Impossible to share this project</string>
     <string name="simple_settle_share">Κοινοποίηση εξόφλησης</string>
     <string name="simple_create_bills">Δημιουργία λογαριασμών</string>
     <string name="settle_bill_what">Λογαριασμός διακανονισμού</string>
@@ -128,6 +129,8 @@
     <string name="fab_add_member">Προσθήκη μέλους</string>
     <string name="fab_rm_project">Αφαίρεση τρέχοντος έργου</string>
     <string name="fab_edit_member">Επεξεργασία μέλους</string>
+    <string name="choose_member_management_action">Manage members</string>
+    <string name="fab_manage_members">Manage members</string>
     <string name="fab_export_project">Export project</string>
     <string name="import_error_owers">Malformed CSV, bad owers on line %1$d</string>
     <string name="import_error_date">Malformed CSV, bad date on line %1$d</string>
@@ -156,6 +159,8 @@
     <string name="settings_appearance_category">Εμφάνιση</string>
     <string name="settings_network_category">Δίκτυο</string>
     <string name="settings_sync_category">Synchronisation</string>
+    <string name="settings_other_category">Other</string>
+    <string name="settings_about">About MoneyBuster</string>
     <string name="settings_server_settings">Λογαριασμός Nextcloud</string>
     <string name="settings_url">Διεύθυνση διακομιστή</string>
     <string name="settings_url_warn_http">ΠΡΟΣΟΧΗ: Το \"http\" δεν είναι ασφαλές. Παρακαλώ χρησιμοποιήστε το \"https\".</string>
@@ -231,6 +236,7 @@
     <string name="share_stats_title">Κοινοποίηση στατιστικών έργου %1$s</string>
     <string name="share_stats_header">ΟΝΟΜΑ_ΜΕΛΟΥΣ (ΠΛΗΡΩΘΗΚΑΝ | ΞΟΔΕΥΤΗΚΑΝ | ΥΠΟΛΟΙΠΟ)</string>
     <string name="drawer_no_project">Δεν υπάρχει έργο.\nΠατήστε εδώ για να δημιουργήσετε/προσθέσετε ένα</string>
+    <string name="drawer_no_account">Click here to connect to a Nextcloud account</string>
     <string name="choose_project_to_select">Επιλογή έργου</string>
     <string name="edit_bill_impossible_no_member">Για την προσθήκη ενός λογαριασμού απαιτούνται τουλάχιστον δύο ενεργοποιημένα μέλη</string>
     <string name="edit_project_local_impossible">Αδύνατο για τοπικά έργα</string>

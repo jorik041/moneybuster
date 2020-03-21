@@ -3,7 +3,7 @@
     <string name="swipe_left">Noch keine Einträge</string>
     <string name="label_all_bills">Alle Ausgaben</string>
     <string name="action_create_bill">Neue Ausgabe</string>
-    <string name="action_settings">Einstellungen</string>
+    <string name="action_settings">App settings</string>
     <string name="action_scan_qrcode">QRCode von Cospend/MoneyBuster scannen</string>
     <string name="action_add_project">Neues Projekt</string>
     <string name="action_save_bill">Ausgabe speichern</string>
@@ -108,6 +108,7 @@
     <string name="simple_add_project">Projekt in MoneyBuster hinzufügen</string>
     <string name="simple_edit_project">Projekt bearbeiten</string>
     <string name="simple_about">Über</string>
+    <string name="share_impossible">Impossible to share this project</string>
     <string name="simple_settle_share">Abrechnung teilen</string>
     <string name="simple_create_bills">Abrechnung erstellen</string>
     <string name="settle_bill_what">Abrechnung</string>
@@ -128,6 +129,8 @@
     <string name="fab_add_member">Mitglied hinzufügen</string>
     <string name="fab_rm_project">Aktuelles Projekt entfernen</string>
     <string name="fab_edit_member">Mitglied bearbeiten</string>
+    <string name="choose_member_management_action">Manage members</string>
+    <string name="fab_manage_members">Manage members</string>
     <string name="fab_export_project">Projekt exportieren</string>
     <string name="import_error_owers">Deformierte CSV, inkorrekte Schuldner in Zeile %1$d</string>
     <string name="import_error_date">Malformed CSV, bad date on line %1$d</string>
@@ -156,6 +159,8 @@
     <string name="settings_appearance_category">Aussehen</string>
     <string name="settings_network_category">Netzwerk</string>
     <string name="settings_sync_category">Synchronisierung</string>
+    <string name="settings_other_category">Other</string>
+    <string name="settings_about">About MoneyBuster</string>
     <string name="settings_server_settings">Nextcloud Konto</string>
     <string name="settings_url">Server-Adresse</string>
     <string name="settings_url_warn_http">WARNUNG: \"http\" ist unsicher. Bitte \"https\" benutzen.</string>
@@ -231,6 +236,7 @@
     <string name="share_stats_title">Statistik für Projekt %1$s teilen</string>
     <string name="share_stats_header">Mitgliedsname (Bezahlt | Ausgegeben | Bilanz)</string>
     <string name="drawer_no_project">Es gibt kein Projekt.\nTippe hier um ein zu erstellen/hinzuzufügen</string>
+    <string name="drawer_no_account">Click here to connect to a Nextcloud account</string>
     <string name="choose_project_to_select">Projekt auswählen</string>
     <string name="edit_bill_impossible_no_member">Mindestens zwei aktivierte Mitglieder sind erforderlich, um eine Ausgabe hinzuzufügen</string>
     <string name="edit_project_local_impossible">Für lokale Projekte nicht möglich</string>

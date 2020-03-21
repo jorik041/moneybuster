@@ -3,7 +3,7 @@
     <string name="swipe_left">Rien</string>
     <string name="label_all_bills">Toutes les factures</string>
     <string name="action_create_bill">Nouvelle facture</string>
-    <string name="action_settings">Paramètres</string>
+    <string name="action_settings">Paramètres de l\'application</string>
     <string name="action_scan_qrcode">Scanner le QRCode provenant de Cospend/MoneyBuster</string>
     <string name="action_add_project">Ajouter un projet</string>
     <string name="action_save_bill">Enregistrer la facture</string>
@@ -108,6 +108,7 @@
     <string name="simple_add_project">Ajouter un projet dans MoneyBuster</string>
     <string name="simple_edit_project">Éditer le projet</string>
     <string name="simple_about">À propos</string>
+    <string name="share_impossible">Impossible de partager ce projet</string>
     <string name="simple_settle_share">Partager les remboursements</string>
     <string name="simple_create_bills">Créer les factures</string>
     <string name="settle_bill_what">Facture de remboursement</string>
@@ -128,6 +129,8 @@
     <string name="fab_add_member">Ajouter un membre</string>
     <string name="fab_rm_project">Enlever le projet courant</string>
     <string name="fab_edit_member">Éditer un membre</string>
+    <string name="choose_member_management_action">Gérer les membres</string>
+    <string name="fab_manage_members">Gérer les membres</string>
     <string name="fab_export_project">Exporter le projet</string>
     <string name="import_error_owers">CSV mal formé, mauvais débiteur à la ligne %1$d</string>
     <string name="import_error_date">CSV mal formé, mauvaise date à la ligne %1$d</string>
@@ -156,6 +159,8 @@
     <string name="settings_appearance_category">Apparence</string>
     <string name="settings_network_category">Réseau</string>
     <string name="settings_sync_category">Synchronisation</string>
+    <string name="settings_other_category">Autres</string>
+    <string name="settings_about">À propos de MoneyBuster</string>
     <string name="settings_server_settings">Compte Nextcloud</string>
     <string name="settings_url">Adresse du serveur</string>
     <string name="settings_url_warn_http">AVERTISSEMENT: \"http\" n\'est pas sur. Veuillez utiliser \"https\" s\'il vous plait.</string>
@@ -231,6 +236,7 @@
     <string name="share_stats_title">Partager les statistiques du projet %1$s</string>
     <string name="share_stats_header">NOM_DU_MEMBRE (A_PAYÉ | A_DÉPENSÉ | SOLDE)</string>
     <string name="drawer_no_project">Aucun projet trouvé.\nAppuyez ici pour en créer/ajouter un</string>
+    <string name="drawer_no_account">Cliquez ici pour vous connecter à un compte Nextcloud</string>
     <string name="choose_project_to_select">Sélectionnez un projet</string>
     <string name="edit_bill_impossible_no_member">Au moins deux membres actifs sont nécessaires pour ajouter une facture</string>
     <string name="edit_project_local_impossible">Impossible pour les projets locaux</string>

@@ -173,25 +173,21 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     private static boolean activityVisible = false;
 
-    //private HashMap<Long, Double> membersBalance;
-
-
     Toolbar toolbar;
     DrawerLayout drawerLayout;
     TextView configuredAccount;
     SwipeRefreshLayout swipeRefreshLayout;
     com.github.clans.fab.FloatingActionMenu fabMenuDrawerEdit;
-    com.github.clans.fab.FloatingActionButton fabEditMember;
+    com.github.clans.fab.FloatingActionButton fabManageMembers;
     com.github.clans.fab.FloatingActionButton fabExportProject;
     com.github.clans.fab.FloatingActionButton fabEditProject;
     com.github.clans.fab.FloatingActionButton fabRemoveProject;
     FloatingActionButton fabAddBill;
-    FloatingActionButton fabAddMember;
     FloatingActionButton fabSidebarAddProject;
     FloatingActionButton fabBillListAddProject;
-    FloatingActionButton fabStatistics;
-    FloatingActionButton fabSettle;
-    FloatingActionButton fabShareProject;
+    com.github.clans.fab.FloatingActionButton fabStatistics;
+    com.github.clans.fab.FloatingActionButton fabSettle;
+    com.github.clans.fab.FloatingActionButton fabShareProject;
     FloatingActionButton fabSelectProject;
     RecyclerView listNavigationMembers;
     RecyclerView listNavigationMenu;
@@ -252,7 +248,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         configuredAccount = findViewById(R.id.configuredAccount);
         swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         fabMenuDrawerEdit = findViewById(R.id.floatingMenuDrawerEdit);
-        fabEditMember = findViewById(R.id.fabDrawer_edit_member);
+        fabManageMembers = findViewById(R.id.fabDrawer_manage_members);
         fabExportProject = findViewById(R.id.fabDrawer_export_project);
         fabStatistics = findViewById(R.id.fab_statistics);
         fabSettle = findViewById(R.id.fab_settle);
@@ -260,7 +256,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabShareProject = findViewById(R.id.fab_share);
         fabRemoveProject = findViewById(R.id.fabDrawer_remove_project);
         fabAddBill = findViewById(R.id.fab_add_bill);
-        fabAddMember = findViewById(R.id.fab_add_member);
         fabSidebarAddProject = findViewById(R.id.fab_add_project);
         fabBillListAddProject = findViewById(R.id.fab_bill_list_add_project);
         fabSelectProject = findViewById(R.id.fab_select_project);
@@ -574,80 +569,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         });
 
-        fabAddMember.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                final long selectedProjectId = preferences.getLong("selected_project", 0);
-
-                if (selectedProjectId != 0) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(
-                            new ContextThemeWrapper(
-                                    view.getContext(),
-                                    R.style.AppThemeDialog
-                            )
-                    );
-                    builder.setTitle(getString(R.string.add_member_dialog_title));
-
-                    // Set up the input
-                    final EditText input = new EditText(new ContextThemeWrapper(
-                            view.getContext(),
-                            R.style.AppThemeDialog
-                    ));
-                    input.setInputType(InputType.TYPE_CLASS_TEXT);
-                    input.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
-                    builder.setView(input);
-
-                    // Set up the buttons
-                    builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String memberName = input.getText().toString();
-
-                            if (!memberName.equals("")) {
-                                List<DBMember> members = db.getMembersOfProject(selectedProjectId, null);
-                                List<String> memberNames = new ArrayList<>();
-                                for (DBMember m : members) {
-                                    memberNames.add(m.getName());
-                                }
-                                if (!memberNames.contains(memberName)) {
-                                    db.addMemberAndSync(
-                                            new DBMember(0, 0, selectedProjectId, memberName,
-                                                    true, 1, DBBill.STATE_ADDED,
-                                                    null, null, null)
-                                    );
-                                    refreshLists();
-                                } else {
-                                    showToast(getString(R.string.member_already_exists));
-                                }
-                            } else {
-                                showToast(getString(R.string.member_edit_empty_name));
-                            }
-
-                            //new LoadCategoryListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                            InputMethodManager inputMethodManager = (InputMethodManager) input.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                            inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                        }
-                    });
-                    builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                            InputMethodManager inputMethodManager = (InputMethodManager) input.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                            inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                        }
-                    });
-
-                    builder.show();
-                    input.setSelectAllOnFocus(true);
-                    input.requestFocus();
-                    // show keyboard
-                    InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                }
-            }
-        });
-
         fabAddBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -763,50 +684,38 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         });
 
-        fabEditMember.setOnClickListener(new View.OnClickListener() {
+        fabManageMembers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                // it was like that before...
-                /*final String selectedMemberIdStr = adapterMembers.getSelectedItem();
+                CharSequence[] choices = new CharSequence[]{
+                        getString(R.string.fab_add_member),
+                        getString(R.string.fab_edit_member)
+                };
 
-                if (selectedMemberIdStr != null && !selectedMemberIdStr.equals("all")) {
-
-                    long selectedMemberId = Long.valueOf(selectedMemberIdStr);
-                    editMember(view, selectedMemberId);
-                }*/
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                long selectedProjectId = preferences.getLong("selected_project", 0);
-
-                if (selectedProjectId != 0) {
-                    final List<DBMember> members = db.getMembersOfProject(selectedProjectId, null);
-                    List<String> memberNames = new ArrayList<>();
-                    for (DBMember m : members) {
-                        memberNames.add(m.getName());
+                AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(BillsListViewActivity.this, R.style.AppThemeDialog));
+                selectBuilder.setTitle(getString(R.string.choose_member_management_action));
+                selectBuilder.setSingleChoiceItems(choices, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            addMember();
+                        } else {
+                            fabEditMember();
+                        }
+                        dialog.dismiss();
                     }
-                    CharSequence[] namescs = memberNames.toArray(new CharSequence[memberNames.size()]);
+                });
 
-                    AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(view.getContext(), R.style.AppThemeDialog));
-                    selectBuilder.setTitle(getString(R.string.choose_member_to_edit));
-                    selectBuilder.setSingleChoiceItems(namescs, -1, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // user checked an item
-                            editMember(view, members.get(which).getId());
-                            dialog.dismiss();
-                        }
-                    });
+                // add OK and Cancel buttons
+                selectBuilder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                selectBuilder.setNegativeButton(getString(R.string.simple_cancel), null);
 
-                    // add OK and Cancel buttons
-                    selectBuilder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    });
-                    selectBuilder.setNegativeButton(getString(R.string.simple_cancel), null);
-
-                    AlertDialog selectDialog = selectBuilder.create();
-                    selectDialog.show();
-                }
+                AlertDialog selectDialog = selectBuilder.create();
+                selectDialog.show();
             }
         });
 
@@ -1383,6 +1292,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     });
                     builder.show();
                     fabMenuDrawerEdit.close(false);
+                } else {
+                    showToast(getString(R.string.share_impossible), Toast.LENGTH_LONG);
                 }
             }
         });
@@ -1410,45 +1321,38 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         if (darkTheme && ThemeUtils.primaryColor(this) == Color.BLACK) {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabBillListAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
-            fabStatistics.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
-            fabSettle.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
-            fabShareProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
-            fabAddMember.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabMenuDrawerEdit.setMenuButtonColorNormal(Color.DKGRAY);
-            fabSelectProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabSidebarAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
         }
         else {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabBillListAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
-            fabStatistics.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
-            fabSettle.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
-            fabShareProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
-            fabAddMember.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabSidebarAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryDarkColor(this)));
             fabMenuDrawerEdit.setMenuButtonColorNormal(ThemeUtils.primaryColor(this));
-            fabSelectProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
         }
         fabAddBill.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabBillListAddProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
-        fabStatistics.setRippleColor(ThemeUtils.primaryDarkColor(this));
-        fabSettle.setRippleColor(ThemeUtils.primaryDarkColor(this));
-        fabShareProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
-        fabAddMember.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabSidebarAddProject.setRippleColor(ThemeUtils.primaryColor(this));
 
-        fabSelectProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
+        //fabSelectProject.setBackgroundColor(getResources().getColor(R.color.bg_normal));
+        fabSelectProject.setRippleColor(ColorStateList.valueOf(Color.TRANSPARENT));
 
         fabMenuDrawerEdit.setMenuButtonColorPressed(ThemeUtils.primaryColor(this));
 
-        fabEditMember.setColorNormal(ThemeUtils.primaryColor(this));
-        fabEditMember.setColorPressed(ThemeUtils.primaryColor(this));
+        fabManageMembers.setColorNormal(ThemeUtils.primaryColor(this));
+        fabManageMembers.setColorPressed(ThemeUtils.primaryColor(this));
         fabExportProject.setColorNormal(ThemeUtils.primaryColor(this));
         fabExportProject.setColorPressed(ThemeUtils.primaryColor(this));
         fabEditProject.setColorNormal(ThemeUtils.primaryColor(this));
         fabEditProject.setColorPressed(ThemeUtils.primaryColor(this));
         fabRemoveProject.setColorNormal(ThemeUtils.primaryColor(this));
         fabRemoveProject.setColorPressed(ThemeUtils.primaryColor(this));
+        fabStatistics.setColorNormal(ThemeUtils.primaryColor(this));
+        fabStatistics.setColorPressed(ThemeUtils.primaryColor(this));
+        fabSettle.setColorNormal(ThemeUtils.primaryColor(this));
+        fabSettle.setColorPressed(ThemeUtils.primaryColor(this));
+        fabShareProject.setColorNormal(ThemeUtils.primaryColor(this));
+        fabShareProject.setColorPressed(ThemeUtils.primaryColor(this));
     }
 
     private void showHideButtons() {
@@ -1457,26 +1361,128 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         if (selectedProjectId == 0) {
             fabAddBill.hide();
-            fabAddMember.hide();
-            fabStatistics.hide();
-            fabSettle.hide();
-            fabShareProject.hide();
             fabMenuDrawerEdit.setVisibility(View.GONE);
             fabBillListAddProject.show();
         }
         else {
             fabAddBill.show();
-            fabAddMember.show();
-            fabStatistics.show();
-            fabSettle.show();
-            if (db.getProject(selectedProjectId).isLocal()) {
-                fabShareProject.hide();
-            }
-            else {
-                fabShareProject.show();
-            }
             fabMenuDrawerEdit.setVisibility(View.VISIBLE);
             fabBillListAddProject.hide();
+        }
+    }
+
+    private void fabEditMember() {
+        // it was like that before...
+                /*final String selectedMemberIdStr = adapterMembers.getSelectedItem();
+
+                if (selectedMemberIdStr != null && !selectedMemberIdStr.equals("all")) {
+
+                    long selectedMemberId = Long.valueOf(selectedMemberIdStr);
+                    editMember(view, selectedMemberId);
+                }*/
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        long selectedProjectId = preferences.getLong("selected_project", 0);
+
+        if (selectedProjectId != 0) {
+            final List<DBMember> members = db.getMembersOfProject(selectedProjectId, null);
+            List<String> memberNames = new ArrayList<>();
+            for (DBMember m : members) {
+                memberNames.add(m.getName());
+            }
+            CharSequence[] namescs = memberNames.toArray(new CharSequence[memberNames.size()]);
+
+            AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(BillsListViewActivity.this, R.style.AppThemeDialog));
+            selectBuilder.setTitle(getString(R.string.choose_member_to_edit));
+            selectBuilder.setSingleChoiceItems(namescs, -1, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // user checked an item
+                    editMember(members.get(which).getId());
+                    dialog.dismiss();
+                }
+            });
+
+            // add OK and Cancel buttons
+            selectBuilder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            selectBuilder.setNegativeButton(getString(R.string.simple_cancel), null);
+
+            AlertDialog selectDialog = selectBuilder.create();
+            selectDialog.show();
+        }
+    }
+
+    private void addMember() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        final long selectedProjectId = preferences.getLong("selected_project", 0);
+
+        if (selectedProjectId != 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(
+                    new ContextThemeWrapper(
+                            BillsListViewActivity.this,
+                            R.style.AppThemeDialog
+                    )
+            );
+            builder.setTitle(getString(R.string.add_member_dialog_title));
+
+            // Set up the input
+            final EditText input = new EditText(new ContextThemeWrapper(
+                    BillsListViewActivity.this,
+                    R.style.AppThemeDialog
+            ));
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            input.setTextColor(ContextCompat.getColor(BillsListViewActivity.this, R.color.fg_default));
+            builder.setView(input);
+
+            // Set up the buttons
+            builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String memberName = input.getText().toString();
+
+                    if (!memberName.equals("")) {
+                        List<DBMember> members = db.getMembersOfProject(selectedProjectId, null);
+                        List<String> memberNames = new ArrayList<>();
+                        for (DBMember m : members) {
+                            memberNames.add(m.getName());
+                        }
+                        if (!memberNames.contains(memberName)) {
+                            db.addMemberAndSync(
+                                    new DBMember(0, 0, selectedProjectId, memberName,
+                                            true, 1, DBBill.STATE_ADDED,
+                                            null, null, null)
+                            );
+                            refreshLists();
+                        } else {
+                            showToast(getString(R.string.member_already_exists));
+                        }
+                    } else {
+                        showToast(getString(R.string.member_edit_empty_name));
+                    }
+
+                    //new LoadCategoryListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    InputMethodManager inputMethodManager = (InputMethodManager) input.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                }
+            });
+            builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                    InputMethodManager inputMethodManager = (InputMethodManager) input.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                }
+            });
+
+            builder.show();
+            input.setSelectAllOnFocus(true);
+            input.requestFocus();
+            // show keyboard
+            InputMethodManager inputMethodManager = (InputMethodManager) BillsListViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         }
     }
 
@@ -1907,18 +1913,20 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         int icon;
         // local project
         if (proj.isLocal()) {
-            selText = proj.getRemoteId() + "@local";
+            selText = proj.getRemoteId();
+            //+ "@local";
             icon = R.drawable.ic_phone_android_grey_24dp;
         }
         // remote project
         else {
-            //selText = (proj.getName() == null) ? "???" : proj.getName();
-            //selText += "\n";
-            selText = proj.getRemoteId() + "@";
+            selText = (proj.getName() == null) ? "???" : proj.getName();
+            //selText += "";
+            /*selText = proj.getRemoteId() + "@";
             selText += proj.getServerUrl()
                     .replace("https://", "")
                     .replace("http://", "")
                     .replace("/index.php/apps/cospend", "");
+             */
             if (ProjectType.COSPEND.equals(proj.getType())) {
                 icon = R.drawable.ic_cospend_grey_24dp;
             } else {
@@ -1930,7 +1938,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         listNavigationMenu.getAdapter().notifyItemChanged(0);
     }
 
-    private void editMember(View view, long memberId) {
+    private void editMember(long memberId) {
         final DBMember memberToEdit = db.getMember(memberId);
         Integer r = memberToEdit.getR();
         Integer g = memberToEdit.getG();
@@ -1948,7 +1956,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         AlertDialog.Builder builder = new AlertDialog.Builder(
                 new ContextThemeWrapper(
-                        view.getContext(),
+                        BillsListViewActivity.this,
                         R.style.AppThemeDialog
                 )
         );
@@ -1959,21 +1967,21 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         EditText nv = iView.findViewById(R.id.editMemberName);
         nv.setText(memberToEdit.getName());
         nv.setInputType(InputType.TYPE_CLASS_TEXT);
-        nv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+        nv.setTextColor(ContextCompat.getColor(BillsListViewActivity.this, R.color.fg_default));
         EditText we = iView.findViewById(R.id.editMemberWeight);
         we.setText(String.valueOf(memberToEdit.getWeight()));
-        we.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+        we.setTextColor(ContextCompat.getColor(BillsListViewActivity.this, R.color.fg_default));
 
         TextView tv = iView.findViewById(R.id.editMemberNameLabel);
-        tv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+        tv.setTextColor(ContextCompat.getColor(BillsListViewActivity.this, R.color.fg_default));
         TextView wv = iView.findViewById(R.id.editMemberWeightLabel);
-        wv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+        wv.setTextColor(ContextCompat.getColor(BillsListViewActivity.this, R.color.fg_default));
         CheckBox ch = iView.findViewById(R.id.editMemberActivated);
-        ch.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+        ch.setTextColor(ContextCompat.getColor(BillsListViewActivity.this, R.color.fg_default));
         ch.setChecked(memberToEdit.isActivated());
 
         TextView tvCol = iView.findViewById(R.id.editMemberColorLabel);
-        tvCol.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+        tvCol.setTextColor(ContextCompat.getColor(BillsListViewActivity.this, R.color.fg_default));
         Button bu = iView.findViewById(R.id.editMemberColor);
         bu.setBackgroundColor(color);
         bu.setText("");
@@ -1982,7 +1990,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             @Override
             public void onClick(View buview) {
                 LayoutInflater inflater = getLayoutInflater();
-                View colorView = inflater.inflate(R.layout.dialog_color, new LinearLayout(view.getContext()));
+                View colorView = inflater.inflate(R.layout.dialog_color, new LinearLayout(BillsListViewActivity.this));
 
                 final LobsterPicker lobsterPicker = colorView.findViewById(R.id.lobsterPicker);
                 LobsterShadeSlider shadeSlider = colorView.findViewById(R.id.shadeSlider);
@@ -1993,7 +2001,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 lobsterPicker.setColor(color);
 
                 new AlertDialog.Builder(new ContextThemeWrapper(
-                        view.getContext(),
+                        BillsListViewActivity.this,
                         R.style.AppThemeDialog
                 ))
                         .setView(colorView)
@@ -2217,7 +2225,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         //final NavigationAdapter.NavigationItem itemEditProject = new NavigationAdapter.NavigationItem("editproject", getString(R.string.action_edit_project), null, android.R.drawable.ic_menu_edit);
         //final NavigationAdapter.NavigationItem itemRemoveProject = new NavigationAdapter.NavigationItem("removeproject", getString(R.string.action_remove_project), null, android.R.drawable.ic_menu_delete);
         final NavigationAdapter.NavigationItem itemProject = new NavigationAdapter.NavigationItem("project", "", null, R.drawable.ic_folder_grey600_24dp, false);
-        final NavigationAdapter.NavigationItem itemAbout = new NavigationAdapter.NavigationItem("about", "", null, -1, false);
+        //final NavigationAdapter.NavigationItem itemAbout = new NavigationAdapter.NavigationItem("about", "", null, -1, false);
         final NavigationAdapter.NavigationItem itemSettings = new NavigationAdapter.NavigationItem("settings", getString(R.string.action_settings), null, R.drawable.ic_settings_grey600_24dp, false);
 
         itemsMenu = new ArrayList<>();
@@ -2225,7 +2233,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         //itemsMenu.add(itemEditProject);
         //itemsMenu.add(itemRemoveProject);
         itemsMenu.add(itemProject);
-        itemsMenu.add(itemAbout);
+        //itemsMenu.add(itemAbout);
         itemsMenu.add(itemSettings);
 
         NavigationAdapter adapterMenu = new NavigationAdapter(new NavigationAdapter.ClickListener() {
@@ -2234,8 +2242,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 if (item == itemSettings) {
                     Intent settingsIntent = new Intent(getApplicationContext(), PreferencesActivity.class);
                     startActivityForResult(settingsIntent, server_settings);
-                } else if (item == itemAbout) {
-                    // about is now triggered by a fab
                 } else if (item.id.equals("project")) {
                     if (db.getProjects().size() > 0) {
                         showProjectSelectionDialog();

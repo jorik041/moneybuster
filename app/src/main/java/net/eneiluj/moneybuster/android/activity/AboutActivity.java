@@ -3,10 +3,13 @@ package net.eneiluj.moneybuster.android.activity;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.Window;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -59,6 +62,23 @@ public class AboutActivity extends AppCompatActivity {
                 window.setStatusBarColor(colorDark);
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        //NavUtils.navigateUpFromSameTask(this);
+        finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Toast.makeText(getApplicationContext(),"Back button clicked", Toast.LENGTH_LONG).show();
+                finish();
+                break;
+        }
+        return true;
     }
 
     private class TabsPagerAdapter extends FragmentPagerAdapter {

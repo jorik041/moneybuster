@@ -185,7 +185,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     FloatingActionButton fabAddMember;
     FloatingActionButton fabSidebarAddProject;
     FloatingActionButton fabBillListAddProject;
-    FloatingActionButton fabAbout;
     FloatingActionButton fabStatistics;
     FloatingActionButton fabSettle;
     FloatingActionButton fabShareProject;
@@ -258,7 +257,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabRemoveProject = findViewById(R.id.fabDrawer_remove_project);
         fabAddBill = findViewById(R.id.fab_add_bill);
         fabAddMember = findViewById(R.id.fab_add_member);
-        fabAbout = findViewById(R.id.fab_about);
         fabSidebarAddProject = findViewById(R.id.fab_add_project);
         fabBillListAddProject = findViewById(R.id.fab_bill_list_add_project);
         fabSelectProject = findViewById(R.id.fab_select_project);
@@ -641,24 +639,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 }
-            }
-        });
-        /*fabScanQrcodeImport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent createIntent = new Intent(getApplicationContext(), QrCodeScanner.class);
-                startActivityForResult(createIntent, scan_qrcode_import_cmd);
-
-                drawerLayout.closeDrawers();
-            }
-        });*/
-        fabAbout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent aboutIntent = new Intent(getApplicationContext(), AboutActivity.class);
-                startActivityForResult(aboutIntent, about);
-
-                drawerLayout.closeDrawers();
             }
         });
 
@@ -1433,7 +1413,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             fabSettle.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabShareProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabAddMember.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
-            fabAbout.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabMenuDrawerEdit.setMenuButtonColorNormal(Color.DKGRAY);
             fabSelectProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabSidebarAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
@@ -1445,21 +1424,19 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             fabSettle.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabShareProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabAddMember.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
-            fabAbout.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabSidebarAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryDarkColor(this)));
             fabMenuDrawerEdit.setMenuButtonColorNormal(ThemeUtils.primaryColor(this));
-            fabSelectProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryDarkColor(this)));
+            fabSelectProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
         }
         fabAddBill.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabBillListAddProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabStatistics.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabSettle.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabShareProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
-        fabAbout.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabAddMember.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabSidebarAddProject.setRippleColor(ThemeUtils.primaryColor(this));
 
-        fabSelectProject.setRippleColor(ThemeUtils.primaryColor(this));
+        fabSelectProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
 
         fabMenuDrawerEdit.setMenuButtonColorPressed(ThemeUtils.primaryColor(this));
 

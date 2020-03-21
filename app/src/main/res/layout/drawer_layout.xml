@@ -107,25 +107,7 @@
                             android:layout_gravity="center_vertical"
                             android:textSize="14sp" />
 
-                        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                            android:id="@+id/fab_select_project"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginTop="1dp"
-                            android:layout_marginEnd="2dp"
-                            android:layout_marginRight="2dp"
-                            android:layout_marginBottom="0dp"
-                            android:padding="0dp"
-                            android:src="@drawable/ic_arrow_down_grey_24dp"
-                            android:tint="#ffffff"
-                            android:tooltipText="@string/action_select_project"
-                            app:backgroundTint="@color/primary_dark"
-                            app:fabCustomSize="40dp"
-                            app:rippleColor="@color/bg_highlighted"
-                            app:elevation="0dp"
-                            app:pressedTranslationZ="0dp"
-                            app:useCompatPadding="true" />
+
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -193,7 +175,7 @@
                     android:paddingLeft="0dp"
                     android:paddingStart="0dp"
                     android:paddingTop="0dp"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginTop="55dp"
                     android:layout_marginRight="0dp"
                     android:layout_marginEnd="0dp"
                     android:layout_marginLeft="10dp"
@@ -215,7 +197,7 @@
                     android:paddingLeft="0dp"
                     android:paddingStart="0dp"
                     android:paddingTop="0dp"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginTop="55dp"
                     android:layout_marginRight="0dp"
                     android:layout_marginEnd="0dp"
                     android:layout_marginLeft="60dp"
@@ -237,7 +219,7 @@
                     android:paddingLeft="0dp"
                     android:paddingStart="0dp"
                     android:paddingTop="0dp"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginTop="55dp"
                     android:layout_marginRight="0dp"
                     android:layout_marginEnd="0dp"
                     android:layout_marginLeft="110dp"
@@ -259,7 +241,7 @@
                     android:paddingLeft="0dp"
                     android:paddingStart="0dp"
                     android:paddingTop="0dp"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginTop="55dp"
                     android:layout_marginRight="0dp"
                     android:layout_marginEnd="0dp"
                     android:layout_marginLeft="160dp"
@@ -271,7 +253,7 @@
                     app:backgroundTint="@color/primary"
                     app:rippleColor="@color/primary_dark" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                <!--com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/fab_about"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -291,7 +273,30 @@
                     android:tint="#ffffff"
                     android:tooltipText="@string/simple_about"
                     app:backgroundTint="@color/primary"
-                    app:rippleColor="@color/primary_dark" />
+                    app:rippleColor="@color/primary_dark" /-->
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab_select_project"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="13dp"
+                    android:layout_marginRight="13dp"
+                    android:layout_marginEnd="13dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:paddingRight="0dp"
+                    android:paddingEnd="0dp"
+                    android:paddingLeft="0dp"
+                    android:paddingStart="0dp"
+                    android:paddingTop="0dp"
+                    android:src="@drawable/ic_arrow_down_grey_24dp"
+                    android:tint="#ffffff"
+                    android:tooltipText="@string/action_select_project"
+                    app:backgroundTint="@color/primary"
+                    app:fabCustomSize="30dp"
+                    app:rippleColor="@color/primary_dark"
+                     />
 
 
                 <com.github.clans.fab.FloatingActionMenu
@@ -300,7 +305,7 @@
                     android:layout_height="match_parent"
                     fab:menu_icon="@drawable/ic_more_vert_white_24dp"
                     android:layout_gravity="top|end"
-                    android:layout_marginTop="53dp"
+                    android:layout_marginTop="48dp"
                     android:layout_marginRight="3dp"
                     android:layout_marginEnd="3dp"
                     android:paddingRight="0dp"
@@ -337,8 +342,8 @@
                         android:src="@drawable/ic_save_white_24dp"
                         app:fab_colorNormal="@color/primary"
                         app:fab_colorPressed="@color/primary"
-                        app:fab_hideAnimation="@anim/fab_slide_out_to_left"
-                        app:fab_showAnimation="@anim/fab_slide_in_from_left"
+                        app:fab_hideAnimation="@anim/fab_slide_out_to_right"
+                        app:fab_showAnimation="@anim/fab_slide_in_from_right"
                         fab:fab_label="@string/fab_export_project"
                         fab:fab_size="mini" />
 

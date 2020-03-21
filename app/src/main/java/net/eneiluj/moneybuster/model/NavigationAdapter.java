@@ -127,7 +127,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
             view.setBackgroundColor(isSelected ? ContextCompat.getColor(view.getContext(), R.color.bg_highlighted) : Color.TRANSPARENT);
             //int textColor = view.getResources().getColor(isSelected ? R.color.primary_dark : R.color.fg_default);
             //int textColor = ContextCompat.getColor(view.getContext(), isSelected ? R.color.primary : R.color.fg_default);
-            
+
             SpannableString spannableString = new SpannableString(item.label);
             Matcher matcher = Pattern.compile("\\((\\+\\d*\\.?\\d*)\\)", Pattern.CASE_INSENSITIVE).matcher(spannableString);
             while (matcher.find()) {

@@ -716,6 +716,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                 AlertDialog selectDialog = selectBuilder.create();
                 selectDialog.show();
+
+                fabMenuDrawerEdit.close(true);
             }
         });
 
@@ -1321,15 +1323,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         if (darkTheme && ThemeUtils.primaryColor(this) == Color.BLACK) {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabBillListAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
-            fabMenuDrawerEdit.setMenuButtonColorNormal(Color.DKGRAY);
             fabSidebarAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
         }
         else {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabBillListAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabSidebarAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryDarkColor(this)));
-            fabMenuDrawerEdit.setMenuButtonColorNormal(ThemeUtils.primaryColor(this));
         }
+        //fabMenuDrawerEdit.setMenuButtonColorNormal(Color.TRANSPARENT);
+        //fabMenuDrawerEdit.setForegroundTintList(ColorStateList.valueOf(Color.DKGRAY));
         fabAddBill.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabBillListAddProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabSidebarAddProject.setRippleColor(ThemeUtils.primaryColor(this));

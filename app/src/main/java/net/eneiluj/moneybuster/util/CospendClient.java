@@ -1,5 +1,7 @@
 package net.eneiluj.moneybuster.util;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
 
@@ -16,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -77,6 +80,18 @@ public class CospendClient {
         }
     }
 
+    public ServerResponse.AvatarResponse getAvatar(CustomCertManager ccm) throws JSONException, IOException, TokenMismatchException {
+        String target = "/index.php/avatar/" + username + "/45";
+        if (nextcloudAPI != null) {
+            Log.d(getClass().getSimpleName(), "using SSO to get avatar");
+            //return new ServerResponse.SessionsResponse(new ResponseData("[]", lastETag, lastModified));
+            return new ServerResponse.AvatarResponse(imageRequestServerWithSSO(nextcloudAPI, target, METHOD_GET, null));
+        }
+        else {
+            return new ServerResponse.AvatarResponse(imageRequestServer(ccm, target, METHOD_GET, null, null, true, false));
+        }
+    }
+
     private VersatileProjectSyncClient.ResponseData requestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, Map<String, String> params) throws TokenMismatchException{
         StringBuffer result = new StringBuffer();
 
@@ -125,6 +140,48 @@ public class CospendClient {
 
         return new VersatileProjectSyncClient.ResponseData(result.toString(), "", 0);
     }
+
+    private VersatileProjectSyncClient.ResponseData imageRequestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, Map<String, String> params) throws TokenMismatchException{
+        StringBuffer result = new StringBuffer();
+        String strBase64 = "";
+
+        NextcloudRequest nextcloudRequest;
+        if (params == null) {
+            nextcloudRequest = new NextcloudRequest.Builder()
+                    .setMethod(method)
+                    .setUrl(target).build();
+        }
+        else {
+            nextcloudRequest = new NextcloudRequest.Builder()
+                    .setMethod(method)
+                    .setUrl(target)
+                    .setParameter(params)
+                    .build();
+        }
+
+        try {
+            InputStream inputStream = nextcloudAPI.performNetworkRequest(nextcloudRequest);
+
+            Bitmap selectedImage = BitmapFactory.decodeStream(inputStream);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            selectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+            strBase64 = Base64.encodeToString(byteArray, 0);
+
+
+            inputStream.close();
+        } catch (TokenMismatchException e) {
+            Log.d(getClass().getSimpleName(), "Mismatcho SSO server request error "+e.toString());
+            throw e;
+
+        } catch (Exception e) {
+            // TODO handle errors
+            Log.d(getClass().getSimpleName(), "SSO server request error "+e.toString());
+        }
+
+        return new VersatileProjectSyncClient.ResponseData(strBase64, "", 0);
+    }
+
     /**
      * Request-Method for POST, PUT with or without JSON-Object-Parameter
      *
@@ -135,7 +192,8 @@ public class CospendClient {
      * @throws MalformedURLException
      * @throws IOException
      */
-    private VersatileProjectSyncClient.ResponseData requestServer(CustomCertManager ccm, String target, String method, JSONObject params, String lastETag, boolean needLogin, boolean isOCSRequest)
+    private VersatileProjectSyncClient.ResponseData requestServer(CustomCertManager ccm, String target,
+                                                                  String method, JSONObject params, String lastETag, boolean needLogin, boolean isOCSRequest)
             throws IOException {
         StringBuffer result = new StringBuffer();
         // setup connection
@@ -192,5 +250,62 @@ public class CospendClient {
         Log.d(getClass().getSimpleName(), "ETag: " + etag + "; Last-Modified: " + lastModified + " (" + con.getHeaderField("Last-Modified") + ")");
         // return these header fields since they should only be saved after successful processing the result!
         return new VersatileProjectSyncClient.ResponseData(result.toString(), "", 0);
+    }
+
+    private VersatileProjectSyncClient.ResponseData imageRequestServer(CustomCertManager ccm, String target,
+                                                                  String method, JSONObject params, String lastETag, boolean needLogin, boolean isOCSRequest)
+            throws IOException {
+        StringBuffer result = new StringBuffer();
+        String strBase64 = "";
+        // setup connection
+        String targetURL = url + target.replaceAll("^/", "");
+        HttpURLConnection con = SupportUtil.getHttpURLConnection(ccm, targetURL);
+        con.setRequestMethod(method);
+        if (needLogin) {
+            con.setRequestProperty(
+                    "Authorization",
+                    "Basic " + Base64.encodeToString((username + ":" + password).getBytes(), Base64.NO_WRAP));
+        }
+        // https://github.com/square/retrofit/issues/805#issuecomment-93426183
+        con.setRequestProperty( "Connection", "Close");
+        con.setRequestProperty("User-Agent", "phonetrack-android/" + BuildConfig.VERSION_NAME);
+        if (lastETag != null && METHOD_GET.equals(method)) {
+            con.setRequestProperty("If-None-Match", lastETag);
+        }
+        if (isOCSRequest) {
+            con.setRequestProperty("OCS-APIRequest", "true");
+        }
+        con.setConnectTimeout(10 * 1000); // 10 seconds
+        Log.d(getClass().getSimpleName(), method + " " + targetURL);
+        // send request data (optional)
+        byte[] paramData = null;
+        if (params != null) {
+            paramData = params.toString().getBytes();
+            Log.d(getClass().getSimpleName(), "Params: " + params);
+            con.setFixedLengthStreamingMode(paramData.length);
+            con.setRequestProperty("Content-Type", application_json);
+            con.setDoOutput(true);
+            OutputStream os = con.getOutputStream();
+            os.write(paramData);
+            os.flush();
+            os.close();
+        }
+        // read response data
+        int responseCode = con.getResponseCode();
+        Log.d(getClass().getSimpleName(), "HTTP response code: " + responseCode);
+
+        if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) {
+            throw new ServerResponse.NotModifiedException();
+        }
+
+        Log.i(TAG, "METHOD : "+method);
+
+        Bitmap selectedImage = BitmapFactory.decodeStream(con.getInputStream());
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        selectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        strBase64 = Base64.encodeToString(byteArray, 0);
+
+        return new VersatileProjectSyncClient.ResponseData(strBase64, "", 0);
     }
 }

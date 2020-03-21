@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -26,6 +27,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.text.Html;
 import android.text.InputType;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -57,6 +59,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -125,9 +128,6 @@ import static net.eneiluj.moneybuster.android.activity.EditProjectActivity.PARAM
 import static net.eneiluj.moneybuster.util.SupportUtil.getVersionName;
 import static net.eneiluj.moneybuster.util.SupportUtil.settleBills;
 
-//import android.support.v4.widget.DrawerLayout;
-//import android.support.v4.widget.SwipeRefreshLayout;
-
 public class BillsListViewActivity extends AppCompatActivity implements ItemAdapter.BillClickListener {
 
     private final static int PERMISSION_FOREGROUND = 1;
@@ -193,6 +193,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     RecyclerView listNavigationMenu;
     RecyclerView listView;
     ArrayList<NavigationAdapter.NavigationItem> itemsMenu;
+    ImageView avatarView;
 
     private String statsTextToShare;
 
@@ -262,6 +263,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         listNavigationMembers = findViewById(R.id.navigationList);
         listNavigationMenu = findViewById(R.id.navigationMenu);
         listView = findViewById(R.id.recycler_view);
+        avatarView = findViewById(R.id.drawer_nc_logo);
 
         //ButterKnife.bind(this);
 
@@ -273,6 +275,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         setupMembersNavigationList(categoryAdapterSelectedItem);
 
         updateUsernameInDrawer();
+        updateAvatarInDrawer();
 
         // ask user what to do if no project an no account configured
         if (db.getProjects().isEmpty() && !MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(this)) {
@@ -2650,7 +2653,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         }
         else if (requestCode == server_settings) {
-            this.updateUsernameInDrawer();
+            updateUsernameInDrawer();
+            updateAvatarInDrawer();
             db = MoneyBusterSQLiteOpenHelper.getInstance(this);
             if (db.getMoneyBusterServerSyncHelper().isSyncPossible()) {
                 /*adapter.removeAll();
@@ -2700,6 +2704,33 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 accountUser = preferences.getString(SettingsActivity.SETTINGS_USERNAME, SettingsActivity.DEFAULT_SETTINGS);
             }
             configuredAccount.setText(accountUser + "@" + accountServerUrl);
+        }
+    }
+
+    private void updateAvatarInDrawer() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String avatarB64 = preferences.getString(getString(R.string.pref_key_avatar), "");
+        if (!"".equals(avatarB64)) {
+            try {
+                byte[] decodedString = Base64.decode(avatarB64, Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                Bitmap rounded = ThemeUtils.getRoundedBitmap(decodedByte, decodedByte.getWidth() / 2);
+                avatarView.setImageBitmap(rounded);
+            } catch (Exception e) {
+                avatarView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_nextcloud_logo_white));
+                LinearLayoutCompat.LayoutParams params = new LinearLayoutCompat.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.topMargin = 10;
+                params.leftMargin = 7;
+                params.rightMargin = 12;
+                avatarView.setLayoutParams(params);
+            }
+        } else {
+            avatarView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_nextcloud_logo_white));
+            LinearLayoutCompat.LayoutParams params = new LinearLayoutCompat.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.topMargin = 10;
+            params.leftMargin = 7;
+            params.rightMargin = 12;
+            avatarView.setLayoutParams(params);
         }
     }
 
@@ -2911,6 +2942,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_SYNC_PROJECT);
         filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_NETWORK_AVAILABLE);
         filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_NETWORK_UNAVAILABLE);
+        filter.addAction(MoneyBusterServerSyncHelper.BROADCAST_AVATAR_UPDATED);
         filter.addAction(BROADCAST_ACCOUNT_PROJECTS_SYNC_FAILED);
         filter.addAction(BROADCAST_ACCOUNT_PROJECTS_SYNCED);
         registerReceiver(mBroadcastReceiver, filter);
@@ -2966,6 +2998,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     break;
                 case MoneyBusterServerSyncHelper.BROADCAST_NETWORK_UNAVAILABLE:
                     swipeRefreshLayout.setEnabled(false);
+                    break;
+                case MoneyBusterServerSyncHelper.BROADCAST_AVATAR_UPDATED:
+                    Log.v("AAA", "BROAD AVATAR received");
+                    updateAvatarInDrawer();
                     break;
                 case BROADCAST_ACCOUNT_PROJECTS_SYNCED:
                     // show account projects sync success toast

@@ -326,6 +326,7 @@
     <string name="pref_key_reset_trust" translatable="false">resetTrust</string>
     <string name="pref_key_theme" translatable="false">darkTheme</string>
     <string name="pref_key_color" translatable="false">appColor</string>
+    <string name="pref_key_avatar" translatable="false">ncAvatar</string>
     <string name="pref_key_use_server_color" translatable="false">useServerColor</string>
     <string name="pref_key_offline_mode" translatable="false">offlineMode</string>
     <string name="pref_key_smart_sync" translatable="false">smartSync</string>

@@ -2,7 +2,13 @@ package net.eneiluj.moneybuster.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
@@ -67,5 +73,27 @@ public class ThemeUtils {
         Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         bitmap.setPixels(pixels, 0, 400, 0, 0, w, h);
         return bitmap;
+    }
+
+    public static Bitmap getRoundedBitmap(Bitmap input, int pixels) {
+        Bitmap rounded = Bitmap.createBitmap(input.getWidth(), input
+                .getHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(rounded);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, input.getWidth(), input.getHeight());
+        final RectF rectF = new RectF(rect);
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawRoundRect(rectF, pixels, pixels, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(input, rect, rect, paint);
+
+        return rounded;
     }
 }

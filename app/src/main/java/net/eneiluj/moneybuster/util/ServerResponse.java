@@ -2,6 +2,9 @@ package net.eneiluj.moneybuster.util;
 
 //import android.preference.PreferenceManager;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 
 import net.eneiluj.moneybuster.model.DBAccountProject;
@@ -19,8 +22,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -210,6 +215,16 @@ public class ServerResponse {
 
         public String getColor() throws IOException {
             return getColorFromContent(getContent());
+        }
+    }
+
+    public static class AvatarResponse extends ServerResponse {
+        public AvatarResponse(VersatileProjectSyncClient.ResponseData response) {
+            super(response);
+        }
+
+        public String getAvatarString() throws IOException {
+            return getContent();
         }
     }
 
@@ -540,7 +555,7 @@ public class ServerResponse {
     }
 
     protected String getColorFromContent(String content) throws IOException {
-        //Log.i(TAG, content);
+        //Log.i(TAG, "CONCON" + content);
         String result = null;
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory

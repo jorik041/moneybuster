@@ -75,6 +75,7 @@ public class MoneyBusterServerSyncHelper {
     public static final String BROADCAST_SYNC_PROJECT = "net.eneiluj.moneybuster.broadcast.sync_project";
     public static final String BROADCAST_NETWORK_AVAILABLE = "net.eneiluj.moneybuster.broadcast.network_available";
     public static final String BROADCAST_NETWORK_UNAVAILABLE = "net.eneiluj.moneybuster.broadcast.network_unavailable";
+    public static final String BROADCAST_AVATAR_UPDATED = "net.eneiluj.moneybuster.broadcast.avatar_updated";
 
     private static int NOTIFICATION_ID = 1526756699;
     private static int CHANNEL_ID = 11122;
@@ -1277,6 +1278,8 @@ public class MoneyBusterServerSyncHelper {
                 GetNCColorTask getColorTask = new GetNCColorTask();
                 getColorTask.execute();
             }
+            GetNCUserAvatarTask getAvatarTask = new GetNCUserAvatarTask();
+            getAvatarTask.execute();
         }
     }
 
@@ -1303,7 +1306,7 @@ public class MoneyBusterServerSyncHelper {
             try {
                 SingleSignOnAccount ssoAccount = SingleAccountHelper.getCurrentSingleSignOnAccount(appContext.getApplicationContext());
                 NextcloudAPI nextcloudAPI = new NextcloudAPI(appContext.getApplicationContext(), ssoAccount, new GsonBuilder().create(), apiCallback);
-                return new CospendClient(url, username, password, nextcloudAPI);
+                return new CospendClient(url, ssoAccount.userId, password, nextcloudAPI);
             }
             catch (NextcloudFilesAppAccountNotFoundException e) {
                 return null;
@@ -1550,6 +1553,97 @@ public class MoneyBusterServerSyncHelper {
         @Override
         protected void onPostExecute(LoginStatus status) {
             super.onPostExecute(status);
+        }
+    }
+
+    private class GetNCUserAvatarTask extends AsyncTask<Void, Void, LoginStatus> {
+
+        private final List<ICallback> callbacks = new ArrayList<>();
+        private CospendClient client;
+        private List<Throwable> exceptions = new ArrayList<>();
+
+        public GetNCUserAvatarTask() {
+
+        }
+
+        public void addCallbacks(List<ICallback> callbacks) {
+            this.callbacks.addAll(callbacks);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected LoginStatus doInBackground(Void... voids) {
+            client = createCospendClient();
+            Log.i(getClass().getSimpleName(), "STARTING get avatar");
+
+            LoginStatus status = LoginStatus.OK;
+
+            if (client != null) {
+                status = getNextcloudUserAvatar();
+            }
+            else {
+                status = LoginStatus.SSO_TOKEN_MISMATCH;
+            }
+
+            Log.i(getClass().getSimpleName(), "Get color FINISHED");
+            return status;
+        }
+
+        private LoginStatus getNextcloudUserAvatar() {
+            Log.d(getClass().getSimpleName(), "getNextcloudUserAvatar()");
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
+            //String lastETag = preferences.getString(SettingsActivity.SETTINGS_KEY_ETAG, null);
+            //long lastModified = preferences.getLong(SettingsActivity.SETTINGS_KEY_LAST_MODIFIED, 0);
+            LoginStatus status;
+            try {
+
+                ServerResponse.AvatarResponse response = client.getAvatar(customCertManager);
+                String avatar = response.getAvatarString();
+
+                status = LoginStatus.OK;
+
+                // update ETag and Last-Modified in order to reduce size of next response
+                SharedPreferences.Editor editor = preferences.edit();
+
+                if (avatar != null && !avatar.isEmpty()) {
+                    Log.d(getClass().getSimpleName(), "avatar from server is "+avatar);
+                    editor.putString(appContext.getString(R.string.pref_key_avatar), avatar);
+                }
+                else {
+                    //editor.remove(SettingsActivity.SETTINGS_KEY_ETAG);
+                }
+
+                editor.apply();
+            } catch (ServerResponse.NotModifiedException e) {
+                Log.d(getClass().getSimpleName(), "No changes, nothing to do.");
+                status = LoginStatus.OK;
+            } catch (IOException e) {
+                Log.e(getClass().getSimpleName(), "Exception", e);
+                exceptions.add(e);
+                status = LoginStatus.CONNECTION_FAILED;
+            } catch (JSONException e) {
+                Log.e(getClass().getSimpleName(), "Exception", e);
+                exceptions.add(e);
+                status = LoginStatus.JSON_FAILED;
+            } catch (TokenMismatchException e) {
+                Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
+                status = LoginStatus.SSO_TOKEN_MISMATCH;
+            }
+
+            return status;
+        }
+
+        @Override
+        protected void onPostExecute(LoginStatus status) {
+            super.onPostExecute(status);
+            if (status == LoginStatus.OK) {
+                Intent intent = new Intent(BROADCAST_AVATAR_UPDATED);
+                appContext.sendBroadcast(intent);
+            }
         }
     }
 }

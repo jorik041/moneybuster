@@ -239,6 +239,7 @@
     <string name="share_stats_title">Share statistics of project %1$s</string>
     <string name="share_stats_header">MEMBER_NAME (PAID | SPENT | BALANCE)</string>
     <string name="drawer_no_project">There is no project.\nTap here to create/add one</string>
+    <string name="drawer_no_account">Click here to connect to a Nextcloud account</string>
     <string name="choose_project_to_select">Select a project</string>
     <string name="edit_bill_impossible_no_member">At least two activated members are required to add a bill</string>
     <string name="edit_project_local_impossible">Impossible for local projects</string>

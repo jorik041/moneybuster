@@ -75,6 +75,10 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.zxing.WriterException;
 import com.larswerkman.lobsterpicker.LobsterPicker;
 import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider;
+import com.nextcloud.android.sso.exceptions.NextcloudFilesAppAccountNotFoundException;
+import com.nextcloud.android.sso.exceptions.NoCurrentAccountSelectedException;
+import com.nextcloud.android.sso.helper.SingleAccountHelper;
+import com.nextcloud.android.sso.model.SingleSignOnAccount;
 
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.fragment.NewProjectFragment;
@@ -174,7 +178,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     Toolbar toolbar;
     DrawerLayout drawerLayout;
-    TextView selectedProjectLabel;
+    TextView configuredAccount;
     SwipeRefreshLayout swipeRefreshLayout;
     com.github.clans.fab.FloatingActionMenu fabMenuDrawerEdit;
     com.github.clans.fab.FloatingActionButton fabEditMember;
@@ -245,7 +249,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         setContentView(R.layout.drawer_layout);
         toolbar = findViewById(R.id.billsListActivityActionBar);
         drawerLayout = findViewById(R.id.drawerLayout);
-        selectedProjectLabel = findViewById(R.id.selectedProject);
+        configuredAccount = findViewById(R.id.configuredAccount);
         swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         fabMenuDrawerEdit = findViewById(R.id.floatingMenuDrawerEdit);
         fabEditMember = findViewById(R.id.fabDrawer_edit_member);
@@ -273,6 +277,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         setupNavigationMenu();
         setupMembersNavigationList(categoryAdapterSelectedItem);
 
+        updateUsernameInDrawer();
+
         // ask user what to do if no project an no account configured
         if (db.getProjects().isEmpty() && !MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(this)) {
             AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog));
@@ -289,7 +295,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                     if (which == 0) {
                         Intent newProjectIntent = new Intent(getApplicationContext(), SettingsActivity.class);
-                        startActivity(newProjectIntent);
+                        startActivityForResult(newProjectIntent, server_settings);
                         dialog.dismiss();
                     } else if (which == 1) {
                         Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
@@ -1389,16 +1395,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         });
 
-        selectedProjectLabel.setOnClickListener(new View.OnClickListener() {
+        configuredAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                if (db.getProjects().size() > 0) {
-                    showProjectSelectionDialog();
-                }
-                else {
-                    addProject();
-                    drawerLayout.closeDrawers();
-                }
+                Intent newProjectIntent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivityForResult(newProjectIntent, server_settings);
             }
         });
 
@@ -1893,7 +1894,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 preferences.edit().putLong("selected_project", proj.getId()).apply();
             }
             else {
-                selectedProjectLabel.setText(getString(R.string.drawer_no_project));
+                itemsMenu.set(0, new NavigationAdapter.NavigationItem("project", getString(R.string.drawer_no_project), null, R.drawable.ic_folder_open_grey600_24dp, false));
+                listNavigationMenu.getAdapter().notifyItemChanged(0);
                 return;
             }
         }
@@ -1923,7 +1925,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 icon = R.drawable.ic_ihm_grey_24dp;
             }
         }
-        selectedProjectLabel.setText(selText);
 
         itemsMenu.set(0, new NavigationAdapter.NavigationItem("project", selText, null, icon, false));
         listNavigationMenu.getAdapter().notifyItemChanged(0);
@@ -2236,7 +2237,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 } else if (item == itemAbout) {
                     // about is now triggered by a fab
                 } else if (item.id.equals("project")) {
-                    showProjectSelectionDialog();
+                    if (db.getProjects().size() > 0) {
+                        showProjectSelectionDialog();
+                    }
+                    else {
+                        addProject();
+                        drawerLayout.closeDrawers();
+                    }
                 }
             }
 
@@ -2634,19 +2641,18 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 saveToFileUri(contentToExport, savedFile);
             }
         }
-        /*else if (requestCode == server_settings) {
-            // Create new Instance with new URL and credentials
+        else if (requestCode == server_settings) {
+            this.updateUsernameInDrawer();
             db = MoneyBusterSQLiteOpenHelper.getInstance(this);
             if (db.getMoneyBusterServerSyncHelper().isSyncPossible()) {
-                this.updateUsernameInDrawer();
-                adapter.removeAll();
-                synchronize();
+                /*adapter.removeAll();
+                synchronize();*/
             } else {
-                if (MoneyBusterServerSyncHelper.isConfigured(getApplicationContext())) {
+                if (MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(getApplicationContext())) {
                     Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(CospendClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
                 }
             }
-        }*/
+        }
     }
 
     private void showDialog(String msg, String title, int icon) {
@@ -2664,15 +2670,29 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     }
 
     private void updateUsernameInDrawer() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        /*String username = preferences.getString(SettingsActivity.SETTINGS_USERNAME, SettingsActivity.DEFAULT_SETTINGS);
-        String url = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS).replace("https://", "").replace("http://", "");
-        if(!SettingsActivity.DEFAULT_SETTINGS.equals(username) && !SettingsActivity.DEFAULT_SETTINGS.equals(url)) {
-            this.account.setText(username + "@" + url.substring(0, url.length() - 1));
+        if (!MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(this)) {
+            configuredAccount.setText(getString(R.string.drawer_no_account));
+        } else {
+            String accountServerUrl;
+            String accountUser;
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            if (preferences.getBoolean(SettingsActivity.SETTINGS_USE_SSO, false)) {
+                try {
+                    SingleSignOnAccount ssoAccount = SingleAccountHelper.getCurrentSingleSignOnAccount(this);
+                    accountServerUrl = ssoAccount.url.replaceAll("/+$", "").replaceAll("^https?://", "");
+                    accountUser = ssoAccount.userId;
+                } catch (NextcloudFilesAppAccountNotFoundException | NoCurrentAccountSelectedException e) {
+                    accountServerUrl = "error";
+                    accountUser = "error";
+                }
+            } else {
+                accountServerUrl = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS)
+                        .replaceAll("/+$", "")
+                        .replaceAll("^https?://", "");
+                accountUser = preferences.getString(SettingsActivity.SETTINGS_USERNAME, SettingsActivity.DEFAULT_SETTINGS);
+            }
+            configuredAccount.setText(accountUser + "@" + accountServerUrl);
         }
-        else {
-            this.account.setText("Tap here to connect");
-        }*/
     }
 
     @Override

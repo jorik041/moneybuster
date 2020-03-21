@@ -193,6 +193,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     RecyclerView listNavigationMembers;
     RecyclerView listNavigationMenu;
     RecyclerView listView;
+    ArrayList<NavigationAdapter.NavigationItem> itemsMenu;
 
     private String statsTextToShare;
 
@@ -1924,21 +1925,31 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         // we always set selected project text
         String selText;
+        int icon;
         // local project
         if (proj.isLocal()) {
             selText = proj.getRemoteId() + "@local";
+            icon = R.drawable.ic_phone_android_grey_24dp;
         }
         // remote project
         else {
-            selText = (proj.getName() == null) ? "???" : proj.getName();
-            selText += "\n";
-            selText += proj.getRemoteId() + "@";
+            //selText = (proj.getName() == null) ? "???" : proj.getName();
+            //selText += "\n";
+            selText = proj.getRemoteId() + "@";
             selText += proj.getServerUrl()
                     .replace("https://", "")
                     .replace("http://", "")
                     .replace("/index.php/apps/cospend", "");
+            if (ProjectType.COSPEND.equals(proj.getType())) {
+                icon = R.drawable.ic_cospend_grey_24dp;
+            } else {
+                icon = R.drawable.ic_ihm_grey_24dp;
+            }
         }
         selectedProjectLabel.setText(selText);
+
+        itemsMenu.set(0, new NavigationAdapter.NavigationItem("project", selText, null, icon, false));
+        listNavigationMenu.getAdapter().notifyItemChanged(0);
     }
 
     private void editMember(View view, long memberId) {
@@ -2227,15 +2238,17 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         //final NavigationAdapter.NavigationItem itemAddProject = new NavigationAdapter.NavigationItem("addproject", getString(R.string.action_add_project), null, android.R.drawable.ic_menu_add);
         //final NavigationAdapter.NavigationItem itemEditProject = new NavigationAdapter.NavigationItem("editproject", getString(R.string.action_edit_project), null, android.R.drawable.ic_menu_edit);
         //final NavigationAdapter.NavigationItem itemRemoveProject = new NavigationAdapter.NavigationItem("removeproject", getString(R.string.action_remove_project), null, android.R.drawable.ic_menu_delete);
-        final NavigationAdapter.NavigationItem itemSettings = new NavigationAdapter.NavigationItem("settings", getString(R.string.action_settings), null, R.drawable.ic_settings_grey600_24dp, false);
+        final NavigationAdapter.NavigationItem itemProject = new NavigationAdapter.NavigationItem("project", "", null, R.drawable.ic_folder_grey600_24dp, false);
         final NavigationAdapter.NavigationItem itemAbout = new NavigationAdapter.NavigationItem("about", "", null, -1, false);
+        final NavigationAdapter.NavigationItem itemSettings = new NavigationAdapter.NavigationItem("settings", getString(R.string.action_settings), null, R.drawable.ic_settings_grey600_24dp, false);
 
-        ArrayList<NavigationAdapter.NavigationItem> itemsMenu = new ArrayList<>();
+        itemsMenu = new ArrayList<>();
         //itemsMenu.add(itemAddProject);
         //itemsMenu.add(itemEditProject);
         //itemsMenu.add(itemRemoveProject);
-        itemsMenu.add(itemSettings);
+        itemsMenu.add(itemProject);
         itemsMenu.add(itemAbout);
+        itemsMenu.add(itemSettings);
 
         NavigationAdapter adapterMenu = new NavigationAdapter(new NavigationAdapter.ClickListener() {
             @Override
@@ -2245,6 +2258,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     startActivityForResult(settingsIntent, server_settings);
                 } else if (item == itemAbout) {
                     // about is now triggered by a fab
+                } else if (item.id.equals("project")) {
+                    showProjectSelectionDialog();
                 }
             }
 

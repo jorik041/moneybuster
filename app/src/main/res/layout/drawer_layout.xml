@@ -139,7 +139,7 @@
                         android:paddingStart="6dp"
                         android:paddingEnd="6dp"
                         android:layout_margin="0dp"
-                        android:gravity="right"
+                        android:gravity="left"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -192,7 +192,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
                         android:paddingTop="2dp"
-                        android:paddingBottom="2dp"
+                        android:paddingBottom="0dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                     <LinearLayout
@@ -231,7 +231,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top|end"
-                    android:layout_marginTop="11dp"
+                    android:layout_marginTop="9dp"
                     android:layout_marginRight="55dp"
                     android:layout_marginEnd="55dp"
                     android:layout_marginLeft="10dp"
@@ -260,14 +260,14 @@
                     android:layout_height="match_parent"
                     fab:menu_icon="@drawable/ic_more_vert_gray_24dp"
                     android:layout_gravity="top|end"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="3dp"
                     android:layout_marginRight="3dp"
                     android:layout_marginEnd="3dp"
                     android:paddingRight="0dp"
                     android:paddingEnd="0dp"
                     android:paddingLeft="0dp"
                     android:paddingStart="0dp"
-                    android:paddingTop="1dp"
+                    android:paddingTop="0dp"
                     fab:menu_animationDelayPerItem="0"
                     fab:menu_backgroundColor="@color/bg_fab_transparent"
                     fab:menu_showShadow="false"

@@ -180,8 +180,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     com.github.clans.fab.FloatingActionMenu fabMenuDrawerEdit;
     com.github.clans.fab.FloatingActionButton fabManageMembers;
     com.github.clans.fab.FloatingActionButton fabExportProject;
-    com.github.clans.fab.FloatingActionButton fabEditProject;
-    com.github.clans.fab.FloatingActionButton fabRemoveProject;
+    com.github.clans.fab.FloatingActionButton fabManageProject;
     FloatingActionButton fabAddBill;
     FloatingActionButton fabSidebarAddProject;
     FloatingActionButton fabBillListAddProject;
@@ -253,9 +252,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabExportProject = findViewById(R.id.fabDrawer_export_project);
         fabStatistics = findViewById(R.id.fab_statistics);
         fabSettle = findViewById(R.id.fab_settle);
-        fabEditProject = findViewById(R.id.fabDrawer_edit_project);
+        fabManageProject = findViewById(R.id.fabDrawer_manage_project);
         fabShareProject = findViewById(R.id.fab_share);
-        fabRemoveProject = findViewById(R.id.fabDrawer_remove_project);
         fabAddBill = findViewById(R.id.fab_add_bill);
         fabSidebarAddProject = findViewById(R.id.fab_add_project);
         fabBillListAddProject = findViewById(R.id.fab_bill_list_add_project);
@@ -591,75 +589,40 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         });
 
-        fabEditProject.setOnClickListener(new View.OnClickListener() {
+        fabManageProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                long selectedProjectId = preferences.getLong("selected_project", 0);
+                CharSequence[] choices = new CharSequence[]{
+                        getString(R.string.action_edit_project),
+                        getString(R.string.fab_rm_project)
+                };
 
-                if (selectedProjectId != 0) {
-                    DBProject proj = db.getProject(selectedProjectId);
-                    if (!proj.isLocal()) {
-                        Intent editProjectIntent = new Intent(getApplicationContext(), EditProjectActivity.class);
-                        editProjectIntent.putExtra(PARAM_PROJECT_ID, selectedProjectId);
-                        startActivityForResult(editProjectIntent, editproject);
-
-                        fabMenuDrawerEdit.close(false);
-                        drawerLayout.closeDrawers();
-                    }
-                    else {
-                        showToast(getString(R.string.edit_project_local_impossible));
-                    }
-                }
-            }
-        });
-
-        fabRemoveProject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                final long selectedProjectId = preferences.getLong("selected_project", 0);
-                DBProject proj = db.getProject(selectedProjectId);
-
-                if (selectedProjectId != 0) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(
-                            new ContextThemeWrapper(
-                                    view.getContext(),
-                                    R.style.AppThemeDialog
-                            )
-                    );
-                    builder.setTitle(getString(R.string.confirm_remove_project_dialog_title));
-                    if (!proj.isLocal()) {
-                        builder.setMessage(getString(R.string.confirm_remove_project_dialog_message));
-                    }
-
-                    // Set up the buttons
-                    builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            db.deleteProject(selectedProjectId);
-                            List<DBProject> dbProjects = db.getProjects();
-                            if (dbProjects.size() > 0) {
-                                setSelectedProject(dbProjects.get(0).getId());
-                                Log.v(TAG, "set selection 0");
-                            } else {
-                                setSelectedProject(0);
-                            }
-
-                            fabMenuDrawerEdit.close(false);
-                            //drawerLayout.closeDrawers();
-                            refreshLists();
+                AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(BillsListViewActivity.this, R.style.AppThemeDialog));
+                selectBuilder.setTitle(getString(R.string.choose_project_management_action));
+                selectBuilder.setSingleChoiceItems(choices, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            editProject();
+                        } else {
+                            removeProject();
                         }
-                    });
-                    builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
+                        dialog.dismiss();
+                    }
+                });
 
-                    builder.show();
-                }
+                // add OK and Cancel buttons
+                selectBuilder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                selectBuilder.setNegativeButton(getString(R.string.simple_cancel), null);
+
+                AlertDialog selectDialog = selectBuilder.create();
+                selectDialog.show();
+
+                fabMenuDrawerEdit.close(true);
             }
         });
 
@@ -1348,10 +1311,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabManageMembers.setColorPressed(ThemeUtils.primaryColor(this));
         fabExportProject.setColorNormal(ThemeUtils.primaryColor(this));
         fabExportProject.setColorPressed(ThemeUtils.primaryColor(this));
-        fabEditProject.setColorNormal(ThemeUtils.primaryColor(this));
-        fabEditProject.setColorPressed(ThemeUtils.primaryColor(this));
-        fabRemoveProject.setColorNormal(ThemeUtils.primaryColor(this));
-        fabRemoveProject.setColorPressed(ThemeUtils.primaryColor(this));
+        fabManageProject.setColorNormal(ThemeUtils.primaryColor(this));
+        fabManageProject.setColorPressed(ThemeUtils.primaryColor(this));
         fabStatistics.setColorNormal(ThemeUtils.primaryColor(this));
         fabStatistics.setColorPressed(ThemeUtils.primaryColor(this));
         fabSettle.setColorNormal(ThemeUtils.primaryColor(this));
@@ -1373,6 +1334,72 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             fabAddBill.show();
             fabMenuDrawerEdit.setVisibility(View.VISIBLE);
             fabBillListAddProject.hide();
+        }
+    }
+
+    private void editProject() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        long selectedProjectId = preferences.getLong("selected_project", 0);
+
+        if (selectedProjectId != 0) {
+            DBProject proj = db.getProject(selectedProjectId);
+            if (!proj.isLocal()) {
+                Intent editProjectIntent = new Intent(getApplicationContext(), EditProjectActivity.class);
+                editProjectIntent.putExtra(PARAM_PROJECT_ID, selectedProjectId);
+                startActivityForResult(editProjectIntent, editproject);
+
+                fabMenuDrawerEdit.close(false);
+                drawerLayout.closeDrawers();
+            }
+            else {
+                showToast(getString(R.string.edit_project_local_impossible));
+            }
+        }
+    }
+
+    private void removeProject() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        final long selectedProjectId = preferences.getLong("selected_project", 0);
+        DBProject proj = db.getProject(selectedProjectId);
+
+        if (selectedProjectId != 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(
+                    new ContextThemeWrapper(
+                            this,
+                            R.style.AppThemeDialog
+                    )
+            );
+            builder.setTitle(getString(R.string.confirm_remove_project_dialog_title));
+            if (!proj.isLocal()) {
+                builder.setMessage(getString(R.string.confirm_remove_project_dialog_message));
+            }
+
+            // Set up the buttons
+            builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    db.deleteProject(selectedProjectId);
+                    List<DBProject> dbProjects = db.getProjects();
+                    if (dbProjects.size() > 0) {
+                        setSelectedProject(dbProjects.get(0).getId());
+                        Log.v(TAG, "set selection 0");
+                    } else {
+                        setSelectedProject(0);
+                    }
+
+                    fabMenuDrawerEdit.close(false);
+                    //drawerLayout.closeDrawers();
+                    refreshLists();
+                }
+            });
+            builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            builder.show();
         }
     }
 
@@ -1921,6 +1948,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             selText = proj.getRemoteId();
             //+ "@local";
             icon = R.drawable.ic_phone_android_grey_24dp;
+            fabManageProject.setImageDrawable(getDrawable(R.drawable.ic_phone_android_white_24dp));
         }
         // remote project
         else {
@@ -1934,8 +1962,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
              */
             if (ProjectType.COSPEND.equals(proj.getType())) {
                 icon = R.drawable.ic_cospend_grey_24dp;
+                fabManageProject.setImageDrawable(getDrawable(R.drawable.ic_cospend_white_24dp));
             } else {
                 icon = R.drawable.ic_ihm_grey_24dp;
+                fabManageProject.setImageDrawable(getDrawable(R.drawable.ic_ihm_white_24dp));
             }
         }
 

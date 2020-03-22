@@ -29,6 +29,7 @@
                 android:id="@+id/drawer_top_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:background="?attr/colorPrimary"
                 android:orientation="horizontal"
 
@@ -38,14 +39,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_margin="6dp"
+                    android:layout_margin="0dp"
                     android:orientation="vertical"
                     >
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginRight="6dp"
+                        android:layout_marginTop="6dp"
                         android:orientation="horizontal">
 
                     <ImageView
@@ -95,7 +98,9 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingBottom="2dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginRight="6dp"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -125,7 +130,46 @@
                             android:layout_gravity="center_vertical"
                             android:textSize="14sp" />
 
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/drawer_last_sync_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="6dp"
+                        android:paddingEnd="6dp"
+                        android:layout_margin="0dp"
+                        android:gravity="right"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/drawer_sync_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="0dp"
+                            android:paddingBottom="0dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="6dp"
+                            android:layout_marginTop="0dp"
+                            android:layout_marginBottom="0dp"
+
+                            android:layout_gravity="center"
+                            android:tint="#ffffff"
+                            android:src="@drawable/ic_sync_grey_14dp" />
+
+                        <TextView
+                            android:id="@+id/last_sync_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="0dp"
+                            android:paddingBottom="0dp"
+                            android:layout_marginEnd="2dp"
+                            android:layout_marginTop="0dp"
+                            android:layout_marginBottom="0dp"
+                            android:text=""
+
+
+                            android:textSize="12sp" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -147,7 +191,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
-                        android:paddingTop="8dp"
+                        android:paddingTop="2dp"
                         android:paddingBottom="2dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
@@ -187,7 +231,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top|end"
-                    android:layout_marginTop="17dp"
+                    android:layout_marginTop="11dp"
                     android:layout_marginRight="55dp"
                     android:layout_marginEnd="55dp"
                     android:layout_marginLeft="10dp"
@@ -223,7 +267,7 @@
                     android:paddingEnd="0dp"
                     android:paddingLeft="0dp"
                     android:paddingStart="0dp"
-                    android:paddingTop="7dp"
+                    android:paddingTop="1dp"
                     fab:menu_animationDelayPerItem="0"
                     fab:menu_backgroundColor="@color/bg_fab_transparent"
                     fab:menu_showShadow="false"

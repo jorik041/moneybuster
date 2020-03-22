@@ -194,6 +194,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     RecyclerView listView;
     ArrayList<NavigationAdapter.NavigationItem> itemsMenu;
     ImageView avatarView;
+    LinearLayoutCompat lastSyncLayout;
+    TextView lastSyncText;
 
     private String statsTextToShare;
 
@@ -264,8 +266,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         listSettingMenu = findViewById(R.id.settingMenu);
         listView = findViewById(R.id.recycler_view);
         avatarView = findViewById(R.id.drawer_nc_logo);
+        lastSyncLayout = findViewById(R.id.drawer_last_sync_layout);
+        lastSyncText = findViewById(R.id.last_sync_text);
 
-        //ButterKnife.bind(this);
+        lastSyncLayout.setVisibility(View.GONE);
+        lastSyncLayout.setBackgroundColor(ThemeUtils.primaryDarkColor(this));
 
         db = MoneyBusterSQLiteOpenHelper.getInstance(this);
 
@@ -1955,6 +1960,31 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         itemsMenu.set(0, new NavigationAdapter.NavigationItem("project", selText, null, icon, false));
         listNavigationMenu.getAdapter().notifyItemChanged(0);
+
+        updateLastSyncText();
+    }
+
+    // this is just called in setSelectedProject which is called often enough
+    private void updateLastSyncText() {
+        Log.v(TAG, "updateLastSyncText called");
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        long selectedId = preferences.getLong("selected_project", 0);
+        if (selectedId == 0) {
+            lastSyncLayout.setVisibility(View.GONE);
+        } else {
+            DBProject proj = db.getProject(selectedId);
+            if (proj.isLocal()) {
+                lastSyncLayout.setVisibility(View.GONE);
+            } else {
+                long lastSyncTimestamp = proj.getLastSyncedTimestamp();
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(lastSyncTimestamp * 1000);
+                int hours = cal.get(Calendar.HOUR_OF_DAY);
+                int minutes = cal.get(Calendar.MINUTE);
+                lastSyncText.setText(getString(R.string.drawer_last_sync_text, hours, minutes));
+                lastSyncLayout.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     private void editMember(long memberId) {

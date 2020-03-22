@@ -682,6 +682,7 @@ public class MoneyBusterServerSyncHelper {
                 // IHATEMONEY => we get all bills
                 else {
                     remoteBills = billsResponse.getBillsIHM(project.getId(), memberRemoteIdToId);
+                    serverSyncTimestamp = System.currentTimeMillis() / 1000;
                 }
 
                 Map<Long, DBBill> remoteBillsByRemoteId = new HashMap<>();

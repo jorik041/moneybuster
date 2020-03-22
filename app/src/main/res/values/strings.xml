@@ -135,6 +135,7 @@
     <string name="choose_project_management_action">Manage project</string>
     <string name="fab_manage_members">Manage members</string>
     <string name="fab_export_project">Export project</string>
+    <string name="drawer_last_sync_text">Last sync: %1$02d:%2$02d</string>
     <string name="import_error_owers">Malformed CSV, bad owers on line %1$d</string>
     <string name="import_error_date">Malformed CSV, bad date on line %1$d</string>
     <string name="import_error_header">Malformed CSV, bad column names on line %1$d</string>

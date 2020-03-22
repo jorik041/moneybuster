@@ -190,6 +190,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     FloatingActionButton fabSelectProject;
     RecyclerView listNavigationMembers;
     RecyclerView listNavigationMenu;
+    RecyclerView listSettingMenu;
     RecyclerView listView;
     ArrayList<NavigationAdapter.NavigationItem> itemsMenu;
     ImageView avatarView;
@@ -260,6 +261,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabSelectProject = findViewById(R.id.fab_select_project);
         listNavigationMembers = findViewById(R.id.navigationList);
         listNavigationMenu = findViewById(R.id.navigationMenu);
+        listSettingMenu = findViewById(R.id.settingMenu);
         listView = findViewById(R.id.recycler_view);
         avatarView = findViewById(R.id.drawer_nc_logo);
 
@@ -2246,20 +2248,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         final NavigationAdapter.NavigationItem itemSettings = new NavigationAdapter.NavigationItem("settings", getString(R.string.action_settings), null, R.drawable.ic_settings_grey600_24dp, false);
 
         itemsMenu = new ArrayList<>();
-        //itemsMenu.add(itemAddProject);
-        //itemsMenu.add(itemEditProject);
-        //itemsMenu.add(itemRemoveProject);
         itemsMenu.add(itemProject);
-        //itemsMenu.add(itemAbout);
-        itemsMenu.add(itemSettings);
+
+        ArrayList<NavigationAdapter.NavigationItem> itemsSettingMenu = new ArrayList<>();
+        itemsSettingMenu.add(itemSettings);
 
         NavigationAdapter adapterMenu = new NavigationAdapter(new NavigationAdapter.ClickListener() {
             @Override
             public void onItemClick(NavigationAdapter.NavigationItem item) {
-                if (item == itemSettings) {
-                    Intent settingsIntent = new Intent(getApplicationContext(), PreferencesActivity.class);
-                    startActivityForResult(settingsIntent, server_settings);
-                } else if (item.id.equals("project")) {
+                if (item.id.equals("project")) {
                     if (db.getProjects().size() > 0) {
                         showProjectSelectionDialog();
                     }
@@ -2276,20 +2273,27 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         });
 
-
-
-        final BillsListViewActivity that = this;
-        /*this.account.setOnClickListener(new View.OnClickListener() {
+        NavigationAdapter adapterSettingMenu = new NavigationAdapter(new NavigationAdapter.ClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent settingsIntent = new Intent(that, SettingsActivity.class);
-                startActivityForResult(settingsIntent, server_settings);
+            public void onItemClick(NavigationAdapter.NavigationItem item) {
+                if (item == itemSettings) {
+                    Intent settingsIntent = new Intent(getApplicationContext(), PreferencesActivity.class);
+                    startActivityForResult(settingsIntent, server_settings);
+                }
             }
-        });*/
+
+            @Override
+            public void onIconClick(NavigationAdapter.NavigationItem item) {
+                onItemClick(item);
+            }
+        });
 
         adapterMenu.setItems(itemsMenu);
         listNavigationMenu.setAdapter(adapterMenu);
         //listNavigationMenu.setNestedScrollingEnabled(false);
+
+        adapterSettingMenu.setItems(itemsSettingMenu);
+        listSettingMenu.setAdapter(adapterSettingMenu);
 
         // projects
 
@@ -2299,8 +2303,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         Log.v(TAG, "RESTORE PROJECT SELECTION " + selectedProjectId);
         setSelectedProject(selectedProjectId);
-
-        //this.updateUsernameInDrawer();
     }
 
     public void initList() {

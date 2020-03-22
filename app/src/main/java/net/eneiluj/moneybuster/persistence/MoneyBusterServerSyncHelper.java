@@ -677,6 +677,9 @@ public class MoneyBusterServerSyncHelper {
                     if (cospendSmartSync || client.canAccessProjectWithSSO(project) || client.canAccessProjectWithNCLogin(project)) {
                         remoteAllBillIds = billsResponse.getAllBillIds();
                         serverSyncTimestamp = billsResponse.getSyncTimestamp();
+                    } else {
+                        // if smartsync is disabled, we still set last sync timestamp for the sidebar indicator
+                        serverSyncTimestamp = System.currentTimeMillis() / 1000;
                     }
                 }
                 // IHATEMONEY => we get all bills

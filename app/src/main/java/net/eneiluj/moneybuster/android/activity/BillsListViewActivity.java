@@ -1893,7 +1893,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 dialog.dismiss();
             }
         });
-        
+
         selectBuilder.setNegativeButton(getString(R.string.simple_cancel), null);
 
         AlertDialog selectDialog = selectBuilder.create();

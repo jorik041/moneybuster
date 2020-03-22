@@ -280,7 +280,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         setupMembersNavigationList(categoryAdapterSelectedItem);
 
         updateUsernameInDrawer();
-        updateAvatarInDrawer();
 
         // ask user what to do if no project an no account configured
         if (db.getProjects().isEmpty() && !MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(this)) {
@@ -2698,7 +2697,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         }
         else if (requestCode == server_settings) {
             updateUsernameInDrawer();
-            updateAvatarInDrawer();
             db = MoneyBusterSQLiteOpenHelper.getInstance(this);
             if (db.getMoneyBusterServerSyncHelper().isSyncPossible()) {
                 /*adapter.removeAll();
@@ -2728,6 +2726,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private void updateUsernameInDrawer() {
         if (!MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(this)) {
             configuredAccount.setText(getString(R.string.drawer_no_account));
+            updateAvatarInDrawer(false);
         } else {
             String accountServerUrl;
             String accountUser;
@@ -2748,33 +2747,29 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 accountUser = preferences.getString(SettingsActivity.SETTINGS_USERNAME, SettingsActivity.DEFAULT_SETTINGS);
             }
             configuredAccount.setText(accountUser + "@" + accountServerUrl);
+            updateAvatarInDrawer(true);
         }
+
     }
 
-    private void updateAvatarInDrawer() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String avatarB64 = preferences.getString(getString(R.string.pref_key_avatar), "");
-        if (!"".equals(avatarB64)) {
-            try {
-                byte[] decodedString = Base64.decode(avatarB64, Base64.DEFAULT);
-                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                Bitmap rounded = ThemeUtils.getRoundedBitmap(decodedByte, decodedByte.getWidth() / 2);
-                avatarView.setImageBitmap(rounded);
-            } catch (Exception e) {
+    private void updateAvatarInDrawer(boolean isAccountConfigured) {
+        if (isAccountConfigured) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            String avatarB64 = preferences.getString(getString(R.string.pref_key_avatar), "");
+            if (!"".equals(avatarB64)) {
+                try {
+                    byte[] decodedString = Base64.decode(avatarB64, Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    Bitmap rounded = ThemeUtils.getRoundedBitmap(decodedByte, decodedByte.getWidth() / 2);
+                    avatarView.setImageBitmap(rounded);
+                } catch (Exception e) {
+                    avatarView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_nextcloud_logo_white));
+                }
+            } else {
                 avatarView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_nextcloud_logo_white));
-                LinearLayoutCompat.LayoutParams params = new LinearLayoutCompat.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                params.topMargin = 10;
-                params.leftMargin = 7;
-                params.rightMargin = 12;
-                avatarView.setLayoutParams(params);
             }
         } else {
             avatarView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_nextcloud_logo_white));
-            LinearLayoutCompat.LayoutParams params = new LinearLayoutCompat.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.topMargin = 10;
-            params.leftMargin = 7;
-            params.rightMargin = 12;
-            avatarView.setLayoutParams(params);
         }
     }
 
@@ -3045,7 +3040,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     break;
                 case MoneyBusterServerSyncHelper.BROADCAST_AVATAR_UPDATED:
                     Log.v("AAA", "BROAD AVATAR received");
-                    updateAvatarInDrawer();
+                    updateAvatarInDrawer(true);
                     break;
                 case BROADCAST_ACCOUNT_PROJECTS_SYNCED:
                     // show account projects sync success toast

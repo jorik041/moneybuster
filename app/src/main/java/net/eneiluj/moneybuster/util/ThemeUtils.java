@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.TypedValue;
 
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
@@ -95,5 +96,14 @@ public class ThemeUtils {
         canvas.drawBitmap(input, rect, rect, paint);
 
         return rounded;
+    }
+
+    // in case we need it some day
+    public static int getPixelsFromDp(int dp, Context context) {
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                context.getResources().getDimension(dp),
+                context.getResources().getDisplayMetrics()
+        );
     }
 }

@@ -3019,7 +3019,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     text.setText("");
 
                     Toast toast = new Toast(getApplicationContext());
-                    toast.setGravity(Gravity.TOP | Gravity.LEFT, 75, 16);
+                    toast.setGravity(Gravity.TOP | Gravity.RIGHT, 55, 6);
                     toast.setDuration(Toast.LENGTH_SHORT);
                     toast.setView(layout);
                     toast.show();
@@ -3056,7 +3056,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     im.setImageResource(R.drawable.ic_nextcloud_logo_white);
 
                     Toast toast2 = new Toast(getApplicationContext());
-                    toast2.setGravity(Gravity.TOP | Gravity.LEFT, 75, 62);
+                    toast2.setGravity(Gravity.TOP | Gravity.RIGHT, 55, 62);
                     toast2.setDuration(Toast.LENGTH_SHORT);
                     toast2.setView(layout2);
                     toast2.show();

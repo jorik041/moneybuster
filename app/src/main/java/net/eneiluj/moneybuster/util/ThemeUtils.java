@@ -1,6 +1,7 @@
 package net.eneiluj.moneybuster.util;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -24,11 +25,17 @@ import net.eneiluj.moneybuster.R;
 public class ThemeUtils {
 
     public static int primaryColor(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getInt(
-                        context.getString(R.string.pref_key_color),
-                        ContextCompat.getColor(context, R.color.primary)
-                );
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean useServerColor = prefs.getBoolean(context.getString(R.string.pref_key_use_server_color), true);
+        int serverColor = prefs.getInt(context.getString(R.string.pref_key_server_color), -1);
+        if (useServerColor && serverColor != -1) {
+            return serverColor;
+        } else {
+            return prefs.getInt(
+                    context.getString(R.string.pref_key_color),
+                    ContextCompat.getColor(context, R.color.primary)
+            );
+        }
     }
 
     public static int primaryColorTransparent(Context context) {

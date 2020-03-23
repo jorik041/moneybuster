@@ -110,6 +110,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                 else {
                     findPreference(getString(R.string.pref_key_color)).setVisible(true);
                 }
+                if (getActivity() != null) {
+                    getActivity().recreate();
+                }
                 return true;
             }
         });

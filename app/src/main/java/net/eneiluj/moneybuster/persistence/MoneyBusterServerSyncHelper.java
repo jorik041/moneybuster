@@ -1528,7 +1528,7 @@ public class MoneyBusterServerSyncHelper {
                     }
                     int intColor = Color.parseColor(color);
                     Log.d(getClass().getSimpleName(), "COLOR from server is "+color);
-                    editor.putInt(appContext.getString(R.string.pref_key_color), intColor);
+                    editor.putInt(appContext.getString(R.string.pref_key_server_color), intColor);
                 }
                 else {
                     //editor.remove(SettingsActivity.SETTINGS_KEY_ETAG);

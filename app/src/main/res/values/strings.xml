@@ -5,6 +5,7 @@
     <string name="label_all_bills">All bills</string>
     <string name="action_create_bill">New bill</string>
     <string name="action_settings">App settings</string>
+    <string name="action_projects">Projects</string>
     <string name="action_scan_qrcode">Scan QRCode from Cospend/MoneyBuster</string>
     <string name="action_add_project">Add project</string>
     <string name="action_save_bill">Save bill</string>

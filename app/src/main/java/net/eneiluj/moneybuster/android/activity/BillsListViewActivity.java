@@ -1297,21 +1297,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         if (darkTheme && ThemeUtils.primaryColor(this) == Color.BLACK) {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             fabBillListAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
-            fabSidebarAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
         }
         else {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabBillListAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
-            fabSidebarAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
         }
-        //fabMenuDrawerEdit.setMenuButtonColorNormal(Color.TRANSPARENT);
-        //fabMenuDrawerEdit.setForegroundTintList(ColorStateList.valueOf(Color.DKGRAY));
         fabAddBill.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabBillListAddProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
-        fabSidebarAddProject.setRippleColor(ThemeUtils.primaryLightColor(this));
 
-        //fabSelectProject.setBackgroundColor(getResources().getColor(R.color.bg_normal));
         fabSelectProject.setRippleColor(ColorStateList.valueOf(Color.TRANSPARENT));
+        fabSidebarAddProject.setRippleColor(ColorStateList.valueOf(Color.TRANSPARENT));
 
         fabMenuDrawerEdit.setMenuButtonColorPressed(ThemeUtils.primaryColor(this));
 
@@ -1928,8 +1923,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 preferences.edit().putLong("selected_project", proj.getId()).apply();
             }
             else {
-                itemsMenu.set(0, new NavigationAdapter.NavigationItem("project", getString(R.string.drawer_no_project), null, R.drawable.ic_folder_open_grey600_24dp, false));
-                listNavigationMenu.getAdapter().notifyItemChanged(0);
+                itemsMenu.set(1, new NavigationAdapter.NavigationItem("project", getString(R.string.drawer_no_project), null, R.drawable.ic_folder_open_grey600_24dp, false));
+                listNavigationMenu.getAdapter().notifyItemChanged(1);
                 return;
             }
         }
@@ -1965,8 +1960,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         }
 
-        itemsMenu.set(0, new NavigationAdapter.NavigationItem("project", selText, null, icon, false));
-        listNavigationMenu.getAdapter().notifyItemChanged(0);
+        itemsMenu.set(1, new NavigationAdapter.NavigationItem("project", selText, null, icon, false));
+        listNavigationMenu.getAdapter().notifyItemChanged(1);
 
         updateLastSyncText();
     }
@@ -2276,15 +2271,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
 
     private void setupNavigationMenu() {
-        //final NavigationAdapter.NavigationItem itemTrashbin = new NavigationAdapter.NavigationItem("trashbin", getString(R.string.action_trashbin), null, R.drawable.ic_delete_grey600_24dp);
-        //final NavigationAdapter.NavigationItem itemAddProject = new NavigationAdapter.NavigationItem("addproject", getString(R.string.action_add_project), null, android.R.drawable.ic_menu_add);
-        //final NavigationAdapter.NavigationItem itemEditProject = new NavigationAdapter.NavigationItem("editproject", getString(R.string.action_edit_project), null, android.R.drawable.ic_menu_edit);
-        //final NavigationAdapter.NavigationItem itemRemoveProject = new NavigationAdapter.NavigationItem("removeproject", getString(R.string.action_remove_project), null, android.R.drawable.ic_menu_delete);
+        final NavigationAdapter.NavigationItem itemProjects = new NavigationAdapter.NavigationItem("projects", getString(R.string.action_projects), null, R.drawable.ic_format_list_bulleted_grey_24dp, false);
         final NavigationAdapter.NavigationItem itemProject = new NavigationAdapter.NavigationItem("project", "", null, R.drawable.ic_folder_grey600_24dp, false);
-        //final NavigationAdapter.NavigationItem itemAbout = new NavigationAdapter.NavigationItem("about", "", null, -1, false);
         final NavigationAdapter.NavigationItem itemSettings = new NavigationAdapter.NavigationItem("settings", getString(R.string.action_settings), null, R.drawable.ic_settings_grey600_24dp, false);
 
         itemsMenu = new ArrayList<>();
+        itemsMenu.add(itemProjects);
         itemsMenu.add(itemProject);
 
         ArrayList<NavigationAdapter.NavigationItem> itemsSettingMenu = new ArrayList<>();
@@ -2293,7 +2285,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         NavigationAdapter adapterMenu = new NavigationAdapter(new NavigationAdapter.ClickListener() {
             @Override
             public void onItemClick(NavigationAdapter.NavigationItem item) {
-                if (item.id.equals("project")) {
+                if (item.id.equals("project") || item.id.equals("projects")) {
                     if (db.getProjects().size() > 0) {
                         showProjectSelectionDialog();
                     }

@@ -1383,7 +1383,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
 
             // Set up the buttons
-            builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(getString(R.string.simple_yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     db.deleteProject(selectedProjectId);
@@ -1400,7 +1400,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     refreshLists();
                 }
             });
-            builder.setNegativeButton(getString(R.string.simple_cancel), new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(getString(R.string.simple_no), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();

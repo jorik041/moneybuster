@@ -4,10 +4,12 @@
     <string name="label_all_bills">全部账单</string>
     <string name="action_create_bill">新账单</string>
     <string name="action_settings">App settings</string>
+    <string name="action_projects">Projects</string>
     <string name="action_scan_qrcode">从Compen/MoneyBuster扫描二维码</string>
     <string name="action_add_project">添加项目</string>
     <string name="action_save_bill">保存账单</string>
-    <string name="action_edit_project">编辑远程项目</string>
+    <string name="action_edit_project">Edit project</string>
+    <string name="action_manage_project">Manage project</string>
     <string name="action_share_project">共享项目</string>
     <string name="mandatory">（必填项）</string>
     <string name="setting_what">消费内容？</string>
@@ -130,8 +132,10 @@
     <string name="fab_rm_project">移除当前项目</string>
     <string name="fab_edit_member">编辑成员</string>
     <string name="choose_member_management_action">Manage members</string>
+    <string name="choose_project_management_action">Manage project</string>
     <string name="fab_manage_members">Manage members</string>
     <string name="fab_export_project">Export project</string>
+    <string name="drawer_last_sync_text">Last sync: %1$02d:%2$02d</string>
     <string name="import_error_owers">Malformed CSV, bad owers on line %1$d</string>
     <string name="import_error_date">Malformed CSV, bad date on line %1$d</string>
     <string name="import_error_header">Malformed CSV, bad column names on line %1$d</string>

@@ -4,10 +4,12 @@
     <string name="label_all_bills">Toutes les factures</string>
     <string name="action_create_bill">Nouvelle facture</string>
     <string name="action_settings">Paramètres de l\'application</string>
+    <string name="action_projects">Projets</string>
     <string name="action_scan_qrcode">Scanner le QRCode provenant de Cospend/MoneyBuster</string>
     <string name="action_add_project">Ajouter un projet</string>
     <string name="action_save_bill">Enregistrer la facture</string>
-    <string name="action_edit_project">Éditer le projet distant</string>
+    <string name="action_edit_project">Éditer le projet</string>
+    <string name="action_manage_project">Gérer le projet</string>
     <string name="action_share_project">Partager le projet</string>
     <string name="mandatory">(obligatoire)</string>
     <string name="setting_what">Quoi ?</string>
@@ -130,8 +132,10 @@
     <string name="fab_rm_project">Enlever le projet courant</string>
     <string name="fab_edit_member">Éditer un membre</string>
     <string name="choose_member_management_action">Gérer les membres</string>
+    <string name="choose_project_management_action">Gérer le projet</string>
     <string name="fab_manage_members">Gérer les membres</string>
     <string name="fab_export_project">Exporter le projet</string>
+    <string name="drawer_last_sync_text">Dernière synchro : %1$02d:%2$02d</string>
     <string name="import_error_owers">CSV mal formé, mauvais débiteur à la ligne %1$d</string>
     <string name="import_error_date">CSV mal formé, mauvaise date à la ligne %1$d</string>
     <string name="import_error_header">CSV mal formé, mauvais nom de colonne à la ligne %1$d</string>

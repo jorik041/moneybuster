@@ -4,10 +4,12 @@
     <string name="label_all_bills">Alle Ausgaben</string>
     <string name="action_create_bill">Neue Ausgabe</string>
     <string name="action_settings">App settings</string>
+    <string name="action_projects">Projects</string>
     <string name="action_scan_qrcode">QRCode von Cospend/MoneyBuster scannen</string>
     <string name="action_add_project">Neues Projekt</string>
     <string name="action_save_bill">Ausgabe speichern</string>
-    <string name="action_edit_project">Remote-Projekt bearbeiten</string>
+    <string name="action_edit_project">Edit project</string>
+    <string name="action_manage_project">Manage project</string>
     <string name="action_share_project">Projekt teilen</string>
     <string name="mandatory">(notwendig)</string>
     <string name="setting_what">Was?</string>
@@ -130,8 +132,10 @@
     <string name="fab_rm_project">Aktuelles Projekt entfernen</string>
     <string name="fab_edit_member">Mitglied bearbeiten</string>
     <string name="choose_member_management_action">Manage members</string>
+    <string name="choose_project_management_action">Manage project</string>
     <string name="fab_manage_members">Manage members</string>
     <string name="fab_export_project">Projekt exportieren</string>
+    <string name="drawer_last_sync_text">Last sync: %1$02d:%2$02d</string>
     <string name="import_error_owers">Deformierte CSV, inkorrekte Schuldner in Zeile %1$d</string>
     <string name="import_error_date">Malformed CSV, bad date on line %1$d</string>
     <string name="import_error_header">Deformierte CSV, inkorrekte Spaltennamen in Zeile %1$d</string>

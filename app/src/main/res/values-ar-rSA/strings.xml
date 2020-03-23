@@ -4,10 +4,12 @@
     <string name="label_all_bills">All bills</string>
     <string name="action_create_bill">New bill</string>
     <string name="action_settings">App settings</string>
+    <string name="action_projects">Projects</string>
     <string name="action_scan_qrcode">Scan QRCode from Cospend/MoneyBuster</string>
     <string name="action_add_project">Add project</string>
     <string name="action_save_bill">Save bill</string>
-    <string name="action_edit_project">Edit remote project</string>
+    <string name="action_edit_project">Edit project</string>
+    <string name="action_manage_project">Manage project</string>
     <string name="action_share_project">Share project</string>
     <string name="mandatory">(mandatory)</string>
     <string name="setting_what">What?</string>
@@ -130,8 +132,10 @@
     <string name="fab_rm_project">Remove current Project</string>
     <string name="fab_edit_member">Edit a member</string>
     <string name="choose_member_management_action">Manage members</string>
+    <string name="choose_project_management_action">Manage project</string>
     <string name="fab_manage_members">Manage members</string>
     <string name="fab_export_project">Export project</string>
+    <string name="drawer_last_sync_text">Last sync: %1$02d:%2$02d</string>
     <string name="import_error_owers">Malformed CSV, bad owers on line %1$d</string>
     <string name="import_error_date">Malformed CSV, bad date on line %1$d</string>
     <string name="import_error_header">Malformed CSV, bad column names on line %1$d</string>

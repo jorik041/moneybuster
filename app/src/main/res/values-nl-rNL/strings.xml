@@ -4,10 +4,12 @@
     <string name="label_all_bills">Alle rekeningen</string>
     <string name="action_create_bill">Nieuwe rekening</string>
     <string name="action_settings">App settings</string>
+    <string name="action_projects">Projects</string>
     <string name="action_scan_qrcode">Scan QRCode van Cospend/MoneyBuster</string>
     <string name="action_add_project">Project toevoegen</string>
     <string name="action_save_bill">Rekening opslaan</string>
-    <string name="action_edit_project">Extern project bewerken</string>
+    <string name="action_edit_project">Edit project</string>
+    <string name="action_manage_project">Manage project</string>
     <string name="action_share_project">Project delen</string>
     <string name="mandatory">(vereist)</string>
     <string name="setting_what">Wat?</string>
@@ -130,8 +132,10 @@
     <string name="fab_rm_project">Huidig project verwijderen</string>
     <string name="fab_edit_member">Deelnemer bewerken</string>
     <string name="choose_member_management_action">Manage members</string>
+    <string name="choose_project_management_action">Manage project</string>
     <string name="fab_manage_members">Manage members</string>
     <string name="fab_export_project">Export project</string>
+    <string name="drawer_last_sync_text">Last sync: %1$02d:%2$02d</string>
     <string name="import_error_owers">Malformed CSV, bad owers on line %1$d</string>
     <string name="import_error_date">Malformed CSV, bad date on line %1$d</string>
     <string name="import_error_header">Malformed CSV, bad column names on line %1$d</string>

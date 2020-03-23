@@ -74,7 +74,7 @@ public class SyncService extends Service {
     private BroadcastReceiver powerSaverChangeReceiver;
     private BroadcastReceiver airplaneModeChangeReceiver;
 
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm MM-dd");
 
     /**
      * Basic initializations.
@@ -267,7 +267,6 @@ public class SyncService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(channelId, true);
         }
-        // TODO get last sync date and set notification icon
         String lastSyncDate = "∞";
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this, channelId)

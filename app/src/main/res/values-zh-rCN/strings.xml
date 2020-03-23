@@ -246,7 +246,7 @@
     <string name="edit_project_local_impossible">不可用于本地项目</string>
     <string name="choose_account_project_dialog_title">从您的 Nextcloud 帐户中选择一个项目</string>
     <string name="choose_account_project_dialog_impossible">您的 Nextcloud 帐户中没有 Cospend 项目</string>
-    <string name="is_running">Sync every %1$d min, last sync %2$s</string>
+    <string name="is_running">Synced at %2$s (every %1$d min)</string>
     <string name="error_invalid_sync_interval">Sync interval must be between 5 and 1440 (24h)</string>
     <string name="project_activity_notification">Project %1$s</string>
     <string name="activity_dialog_title">Activity in project %1$s</string>

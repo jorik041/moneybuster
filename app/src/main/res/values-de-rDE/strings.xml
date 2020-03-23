@@ -246,7 +246,7 @@
     <string name="edit_project_local_impossible">Für lokale Projekte nicht möglich</string>
     <string name="choose_account_project_dialog_title">Wählen Sie ein Projekt aus Ihrem Nextcloud Konto</string>
     <string name="choose_account_project_dialog_impossible">Es gibt kein Cospend-Projekt in Ihrem Nextcloud Konto</string>
-    <string name="is_running">Sync alle %1$d min, letzte Sync %2$s</string>
+    <string name="is_running">Synced at %2$s (every %1$d min)</string>
     <string name="error_invalid_sync_interval">Sync-Intervall muss zwischen 5 und 1440 (24h) liegen</string>
     <string name="project_activity_notification">Projekt %1$s</string>
     <string name="activity_dialog_title">Aktivität im Projekt %1$s</string>

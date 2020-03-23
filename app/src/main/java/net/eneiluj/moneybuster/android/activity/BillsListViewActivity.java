@@ -19,6 +19,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -508,9 +510,18 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         };
         drawerToggle.setDrawerIndicatorEnabled(true);
         drawerLayout.addDrawerListener(drawerToggle);
-        drawerLayout.findViewById(R.id.drawer_top_layout).setBackgroundColor(ThemeUtils.primaryColor(this));
+        int colors[] = { ThemeUtils.primaryColor(this), ThemeUtils.primaryLightColor(this) };
+        GradientDrawable gradientDrawable = new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT, colors);
+        drawerLayout.findViewById(R.id.drawer_top_layout).setBackground(gradientDrawable);
+
         ImageView logoView = drawerLayout.findViewById(R.id.drawer_logo);
         logoView.setColorFilter(ThemeUtils.primaryColor(this), PorterDuff.Mode.OVERLAY);
+
+        int colorsLastSync[] = { ThemeUtils.primaryDarkColor(this), ThemeUtils.primaryColor(this) };
+        GradientDrawable gradientDrawable2 = new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT, colorsLastSync);
+        lastSyncLayout.setBackground(gradientDrawable2);
 
         toolbar.setBackgroundColor(ThemeUtils.primaryColor(this));
 
@@ -1288,13 +1299,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         else {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             fabBillListAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
-            fabSidebarAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryDarkColor(this)));
+            fabSidebarAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
         }
         //fabMenuDrawerEdit.setMenuButtonColorNormal(Color.TRANSPARENT);
         //fabMenuDrawerEdit.setForegroundTintList(ColorStateList.valueOf(Color.DKGRAY));
         fabAddBill.setRippleColor(ThemeUtils.primaryDarkColor(this));
         fabBillListAddProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
-        fabSidebarAddProject.setRippleColor(ThemeUtils.primaryColor(this));
+        fabSidebarAddProject.setRippleColor(ThemeUtils.primaryLightColor(this));
 
         //fabSelectProject.setBackgroundColor(getResources().getColor(R.color.bg_normal));
         fabSelectProject.setRippleColor(ColorStateList.valueOf(Color.TRANSPARENT));

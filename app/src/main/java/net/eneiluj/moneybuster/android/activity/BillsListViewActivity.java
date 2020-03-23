@@ -523,7 +523,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 GradientDrawable.Orientation.LEFT_RIGHT, colorsLastSync);
         lastSyncLayout.setBackground(gradientDrawable2);
 
-        toolbar.setBackgroundColor(ThemeUtils.primaryColor(this));
+        //toolbar.setBackgroundColor(ThemeUtils.primaryColor(this));
+        GradientDrawable gradientDrawableToolbar = new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT, colors);
+        toolbar.setBackground(gradientDrawableToolbar);
 
         Window window = getWindow();
         if (window != null) {

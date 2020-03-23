@@ -1,11 +1,13 @@
 package net.eneiluj.moneybuster.android.fragment;
 
+import androidx.appcompat.app.ActionBar;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -36,7 +38,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -96,6 +100,7 @@ public class EditBillFragment extends Fragment {
 
     private Handler handler;
 
+    private ActionBar toolbar;
     private EditText editWhat;
     private EditText editDate;
     private EditText editTime;
@@ -563,6 +568,12 @@ public class EditBillFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_bill_fragment, menu);
+
+        toolbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        int colors[] = { ThemeUtils.primaryColor(getContext()), ThemeUtils.primaryLightColor(getContext()) };
+        GradientDrawable gradientDrawable = new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT, colors);
+        toolbar.setBackgroundDrawable(gradientDrawable);
     }
 
     @Override

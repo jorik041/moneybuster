@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.http.SslCertificate;
 import android.net.http.SslError;
 import android.os.AsyncTask;
@@ -155,6 +156,13 @@ public class SettingsActivity extends AppCompatActivity {
                 window.setStatusBarColor(colorDark);
             }
         }
+
+        // toolbar color
+        ActionBar toolbar = getSupportActionBar();
+        int colors[] = {ThemeUtils.primaryColor(this), ThemeUtils.primaryLightColor(this)};
+        GradientDrawable gradientDrawable = new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT, colors);
+        toolbar.setBackgroundDrawable(gradientDrawable);
 
         setupListener();
 

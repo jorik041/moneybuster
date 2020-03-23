@@ -4,6 +4,7 @@ package net.eneiluj.moneybuster.android.fragment;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,7 +22,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
@@ -35,6 +38,7 @@ import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.SupportUtil;
+import net.eneiluj.moneybuster.util.ThemeUtils;
 
 //import android.support.v7.preference.PreferenceFragmentCompat;
 
@@ -64,6 +68,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     protected EditTextPreference editProjectPassword;
     protected EditTextPreference editProjectNewPassword;
     protected EditTextPreference editProjectEmail;
+    private ActionBar toolbar;
 
     ImageView saveButton;
 
@@ -268,6 +273,13 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_edit_project_fragment, menu);
+        // toolbar color
+        toolbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        int colors[] = { ThemeUtils.primaryColor(getContext()), ThemeUtils.primaryLightColor(getContext()) };
+        GradientDrawable gradientDrawable = new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT, colors);
+        toolbar.setBackgroundDrawable(gradientDrawable);
+
         myMenu = menu;
         saveButton = (ImageView) menu.findItem(R.id.menu_save).getActionView();
         saveButton.setImageResource(R.drawable.ic_check_white_24dp);

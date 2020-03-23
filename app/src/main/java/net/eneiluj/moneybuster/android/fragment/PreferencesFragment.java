@@ -7,17 +7,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -38,6 +43,7 @@ import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider;
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.service.SyncService;
 import net.eneiluj.moneybuster.util.MoneyBuster;
+import net.eneiluj.moneybuster.util.ThemeUtils;
 
 import at.bitfire.cert4android.CustomCertManager;
 
@@ -47,6 +53,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
 
     public final static String STOP_SYNC_SERVICE = "net.eneiluj.moneybuster.STOP_SYNC_SERVICE";
     public final static String CHANGE_SYNC_INTERVAL = "net.eneiluj.moneybuster.CHANGE_SYNC_INTERVAL";
+
+    private ActionBar toolbar;
 
     @Override
     public Fragment getCallbackFragment() {
@@ -79,6 +87,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
         addPreferencesFromResource(R.xml.preferences);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        // toolbar color
+        toolbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        int colors[] = {ThemeUtils.primaryColor(getContext()), ThemeUtils.primaryLightColor(getContext())};
+        GradientDrawable gradientDrawable = new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT, colors);
+        toolbar.setBackgroundDrawable(gradientDrawable);
 
         Preference resetTrust = findPreference(getString(R.string.pref_key_reset_trust));
         resetTrust.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

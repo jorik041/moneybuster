@@ -11,6 +11,7 @@ import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,6 +40,8 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
@@ -132,6 +135,7 @@ public class NewProjectFragment extends Fragment {
     protected ImageView importButton;
 
     protected FloatingActionButton fabOk;
+    private ActionBar toolbar;
 
     protected String defaultIhmUrl;
     protected String defaultNcUrl;
@@ -831,6 +835,12 @@ public class NewProjectFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // toolbar color
+        toolbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        int colors[] = { ThemeUtils.primaryColor(getContext()), ThemeUtils.primaryLightColor(getContext()) };
+        GradientDrawable gradientDrawable = new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT, colors);
+        toolbar.setBackgroundDrawable(gradientDrawable);
         /*inflater.inflate(R.menu.menu_new_project_fragment, menu);
         //ImageView addButton = getActivity().findViewById(R.id.menu_create);
         final ImageView addButton = (ImageView) menu.findItem(R.id.menu_create).getActionView();

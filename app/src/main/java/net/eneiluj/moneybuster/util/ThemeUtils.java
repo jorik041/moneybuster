@@ -43,11 +43,11 @@ public class ThemeUtils {
     }
 
     public static int primaryDarkColor(Context context) {
-        return manipulateColor(primaryColor(context), 0.65f);
+        return manipulateColor(primaryColor(context), 0.6f);
     }
 
     public static int primaryLightColor(Context context) {
-        return manipulateColor(primaryColor(context), 1.35f);
+        return manipulateColor(primaryColor(context), 1.4f);
     }
 
     private static int manipulateColor(int color, float factor) {

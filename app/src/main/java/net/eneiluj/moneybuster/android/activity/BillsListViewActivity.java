@@ -1427,13 +1427,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     dialog.dismiss();
                 }
             });
-
-            // add OK and Cancel buttons
-            selectBuilder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
-            });
+            
             selectBuilder.setNegativeButton(getString(R.string.simple_cancel), null);
 
             AlertDialog selectDialog = selectBuilder.create();

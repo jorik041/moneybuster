@@ -3,6 +3,8 @@
 * Julien Veyssier <eneiluj@posteo.net> (Developper)
 * @Salamandar
 * @Michael-Hofer
+* @jwsp1
+* @rafafaf
 * @Obigre
 * @polkillas1
 * @zonque

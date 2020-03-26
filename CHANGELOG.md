@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.1.0 – 2020-03-26
+### Changed
+- lots of design improvement, specially in sidebar
+[#41](https://gitlab.com/eneiluj/moneybuster/issues/41) @jwsp1
+
+### Fixed
+- always update last sync timestamp
+
 ## 0.0.19 – 2020-03-19
 ### Added
 - support for time in bills (Cospend and local projects)

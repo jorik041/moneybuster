@@ -7,8 +7,8 @@ android {
         applicationId "net.eneiluj.moneybuster"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 19
-        versionName "0.0.19"
+        versionCode 20
+        versionName "0.1.0"
         multiDexEnabled true
     }
     buildTypes {

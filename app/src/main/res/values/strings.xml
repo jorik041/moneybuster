@@ -100,6 +100,10 @@
     <string name="action_search">Search</string>
     <string name="simple_error">Error</string>
     <string name="simple_loading">Loading</string>
+    <string name="simple_remove">Remove</string>
+    <string name="sync_error_dialog_title">Project sync failed</string>
+    <string name="sync_error_dialog_content">Synchronization with project %1$s failed.\n\n%2$s\n\nThis project might not exist anymore. Do you want to remove the project locally?</string>
+    <string name="simple_do_nothing">Do nothing</string>
     <string name="creating_remote_project">Creating remote project</string>
     <string name="simple_cancel">Cancel</string>
     <string name="simple_ok">Ok</string>
@@ -131,6 +135,7 @@
     <string name="fab_add_project">Add a project</string>
     <string name="fab_add_member">Add a member</string>
     <string name="fab_rm_project">Remove current Project</string>
+    <string name="remove_project_confirmation">Project %1$s has been removed</string>
     <string name="fab_edit_member">Edit a member</string>
     <string name="choose_member_management_action">Manage members</string>
     <string name="choose_project_management_action">Manage project</string>

@@ -137,6 +137,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     public static boolean DEBUG = true;
     public static final String BROADCAST_EXTRA_PARAM = "net.eneiluj.moneybuster.broadcast_extra_param";
     public static final String BROADCAST_ERROR_MESSAGE = "net.eneiluj.moneybuster.broadcast_error_message";
+    public static final String BROADCAST_PROJECT_ID = "net.eneiluj.moneybuster.broadcast_project_id";
     public static final String BROADCAST_ACCOUNT_PROJECTS_SYNC_FAILED = "net.eneiluj.moneybuster.broadcast_acc_proj_failed";
     public static final String BROADCAST_SSO_TOKEN_MISMATCH = "net.eneiluj.moneybuster.broadcast.token_mismatch";
     public static final String BROADCAST_ACCOUNT_PROJECTS_SYNCED = "net.eneiluj.moneybuster.broadcast.broadcast_acc_proj_synced";
@@ -1393,6 +1394,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     fabMenuDrawerEdit.close(false);
                     //drawerLayout.closeDrawers();
                     refreshLists();
+                    synchronize();
+                    showToast(getString(R.string.remove_project_confirmation, proj.getName()));
                 }
             });
             builder.setNegativeButton(getString(R.string.simple_no), new DialogInterface.OnClickListener() {
@@ -3000,7 +3003,38 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             switch (intent.getAction()) {
                 case MoneyBusterServerSyncHelper.BROADCAST_PROJECT_SYNC_FAILED:
                     String errorMessage = intent.getStringExtra(BROADCAST_ERROR_MESSAGE);
-                    showToast(errorMessage, Toast.LENGTH_LONG);
+                    long projectId = intent.getLongExtra(BROADCAST_PROJECT_ID, 0);
+                    if (projectId != 0) {
+                        DBProject project = db.getProject(projectId);
+                        String dialogContent = getString(R.string.sync_error_dialog_content, project.getName(), errorMessage);
+
+                        android.app.AlertDialog.Builder builder;
+                        builder = new android.app.AlertDialog.Builder(new ContextThemeWrapper(BillsListViewActivity.this, R.style.AppThemeDialog));
+                        builder.setTitle(getString(R.string.sync_error_dialog_title))
+                                .setMessage(dialogContent)
+                                .setPositiveButton(getString(R.string.simple_remove), new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        db.deleteProject(projectId);
+                                        List<DBProject> dbProjects = db.getProjects();
+                                        if (dbProjects.size() > 0) {
+                                            setSelectedProject(dbProjects.get(0).getId());
+                                            Log.v(TAG, "set selection 0");
+                                        } else {
+                                            setSelectedProject(0);
+                                        }
+                                        refreshLists();
+                                        synchronize();
+                                        showToast(getString(R.string.remove_project_confirmation, project.getName()));
+                                    }
+                                })
+                                .setNegativeButton(getString(R.string.simple_do_nothing), new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                })
+                                .setIcon(R.drawable.ic_sync_grey_24dp)
+                                .show();
+                    }
                     break;
                 case MoneyBusterServerSyncHelper.BROADCAST_PROJECT_SYNCED:
                     String projName = intent.getStringExtra(BROADCAST_EXTRA_PARAM);

@@ -831,18 +831,15 @@ public class MoneyBusterServerSyncHelper {
         protected void onPostExecute(LoginStatus status) {
             super.onPostExecute(status);
             if (status != LoginStatus.OK) {
-                String errorString = appContext.getString(
-                        R.string.error_sync,
-                        appContext.getString(status.str)
-                );
-                errorString += "\n\n";
+                String errorString = "";
                 for (Throwable e : exceptions) {
-                    errorString += e.getClass().getName() + ": " + e.getMessage();
+                    errorString += e.getMessage() + "\n";
                 }
                 // broadcast the error
                 // if the bills list is not visible, no toast
                 Intent intent = new Intent(BROADCAST_PROJECT_SYNC_FAILED);
                 intent.putExtra(BillsListViewActivity.BROADCAST_ERROR_MESSAGE, errorString);
+                intent.putExtra(BillsListViewActivity.BROADCAST_PROJECT_ID, project.getId());
                 appContext.sendBroadcast(intent);
                 if (status == LoginStatus.SSO_TOKEN_MISMATCH) {
                     Intent intent2 = new Intent(BillsListViewActivity.BROADCAST_SSO_TOKEN_MISMATCH);

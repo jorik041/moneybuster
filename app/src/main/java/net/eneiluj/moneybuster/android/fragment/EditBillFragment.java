@@ -586,7 +586,7 @@ public class EditBillFragment extends Fragment {
     }
 
     private void saveBillAsked() {
-        if (getWhat() == null || getWhat().equals("")) {
+        if (getWhat() == null || getWhat().equals("") || getWhat().contains(",")) {
             showToast(getString(R.string.error_invalid_bill_what), Toast.LENGTH_LONG);
         } else if (getTimestamp() == null || getTimestamp() == 0) {
             showToast(getString(R.string.error_invalid_bill_date), Toast.LENGTH_LONG);

@@ -781,8 +781,8 @@ public class NewProjectFragment extends Fragment {
 
     private void createProject() {
         String rid = getRemoteId();
-        if (rid == null || rid.equals("")) {
-            //showToast(getString(R.string.error_invalid_project_remote_id), Toast.LENGTH_LONG);
+        if (rid == null || rid.equals("") || rid.contains(",") || rid.contains("/")) {
+            showToast(getString(R.string.error_invalid_project_remote_id), Toast.LENGTH_LONG);
             return;
         }
 

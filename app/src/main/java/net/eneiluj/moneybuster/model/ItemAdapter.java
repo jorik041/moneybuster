@@ -143,6 +143,8 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (cat != null) {
                 whatPrefix += cat.getIcon()+" ";
             }
+            // we keep hardcoded here because of local projects
+            // and because new MB + old Cospend might need it
             else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_GROCERIES) {
                 whatPrefix += "\uD83D\uDED2 ";
             }

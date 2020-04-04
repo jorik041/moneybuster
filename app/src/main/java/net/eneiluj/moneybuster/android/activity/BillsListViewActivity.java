@@ -736,56 +736,63 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                     // CATEGORY
                     if (!ProjectType.IHATEMONEY.equals(proj.getType())) {
-                        List<String> categoryNameList = new ArrayList<>();
-                        categoryNameList.add(getString(R.string.category_all));
+                        String[] hardCodedCategoryIdsTmp;
+                        String[] hardCodedCategoryNamesTmp;
+
+                        // local projects => hardcoded categories
+                        if (ProjectType.LOCAL.equals(proj.getType())) {
+                            hardCodedCategoryNamesTmp = new String[]{
+                                    getString(R.string.category_all),
+                                    getString(R.string.category_all_except_reimbursement),
+                                    "\uD83D\uDED2 " + getString(R.string.category_groceries),
+                                    "\uD83C\uDF89 " + getString(R.string.category_leisure),
+                                    "\uD83C\uDFE0 " + getString(R.string.category_rent),
+                                    "\uD83C\uDF29 " + getString(R.string.category_bills),
+                                    "\uD83D\uDEB8 " + getString(R.string.category_excursion),
+                                    "\uD83D\uDC9A " + getString(R.string.category_health),
+                                    "\uD83D\uDECD " + getString(R.string.category_shopping),
+                                    "\uD83D\uDCB0 " + getString(R.string.category_reimbursement),
+                                    "\uD83C\uDF74 " + getString(R.string.category_restaurant),
+                                    "\uD83D\uDECC " + getString(R.string.category_accomodation),
+                                    "\uD83D\uDE8C " + getString(R.string.category_transport),
+                                    "\uD83C\uDFBE " + getString(R.string.category_sport)
+                            };
+                            hardCodedCategoryIdsTmp = new String[]{"0", "-100", "-1", "-2", "-3", "-4", "-5", "-6", "-10", "-11", "-12", "-13", "-14", "-15"};
+                        } else {
+                            // COSPEND projects => just "no cat" and "reimbursement"
+                            hardCodedCategoryNamesTmp = new String[]{
+                                    getString(R.string.category_all),
+                                    getString(R.string.category_all_except_reimbursement),
+                                    "\uD83D\uDCB0 " + getString(R.string.category_reimbursement)
+                            };
+                            hardCodedCategoryIdsTmp = new String[]{"0", "-100", "-11"};
+                        }
 
                         List<DBCategory> userCategories = db.getCategories(selectedProjectId);
-                        for (DBCategory cat : userCategories) {
-                            categoryNameList.add(cat.getIcon()+" "+cat.getName());
-                        }
 
-                        categoryNameList.add("\uD83D\uDED2 "+getString(R.string.category_groceries));
-                        categoryNameList.add("\uD83C\uDF89 "+getString(R.string.category_leisure));
-                        categoryNameList.add("\uD83C\uDFE0 "+getString(R.string.category_rent));
-                        categoryNameList.add("\uD83C\uDF29 "+getString(R.string.category_bills));
-                        categoryNameList.add("\uD83D\uDEB8 "+getString(R.string.category_excursion));
-                        categoryNameList.add("\uD83D\uDC9A "+getString(R.string.category_health));
-                        categoryNameList.add("\uD83D\uDECD "+getString(R.string.category_shopping));
-                        categoryNameList.add("\uD83D\uDCB0 "+getString(R.string.category_reimbursement));
-                        categoryNameList.add("\uD83C\uDF74 "+getString(R.string.category_restaurant));
-                        categoryNameList.add("\uD83D\uDECC "+getString(R.string.category_accomodation));
-                        categoryNameList.add("\uD83D\uDE8C "+getString(R.string.category_transport));
-                        categoryNameList.add("\uD83C\uDFBE "+getString(R.string.category_sport));
-
-
-                        String[] categoryNames = categoryNameList.toArray(new String[categoryNameList.size()]);
-
-                        String[] categoryIdsTmp = getResources().getStringArray(R.array.categoryValues);
                         List<String> categoryIdList = new ArrayList<>();
-                        categoryIdList.add(categoryIdsTmp[0]);
+                        categoryIdList.add(hardCodedCategoryIdsTmp[0]);
+                        categoryIdList.add(hardCodedCategoryIdsTmp[1]);
+                        List<String> categoryNameList = new ArrayList<>();
+                        categoryNameList.add(hardCodedCategoryNamesTmp[0]);
+                        categoryNameList.add(hardCodedCategoryNamesTmp[1]);
                         for (DBCategory cat : userCategories) {
                             categoryIdList.add(String.valueOf(cat.getRemoteId()));
+                            categoryNameList.add(cat.getIcon()+" "+cat.getName());
                         }
-                        for (int i = 1; i < categoryIdsTmp.length; i++) {
-                            categoryIdList.add(categoryIdsTmp[i]);
+                        for (int i = 2; i < hardCodedCategoryIdsTmp.length; i++) {
+                            categoryIdList.add(hardCodedCategoryIdsTmp[i]);
+                        }
+                        for (int i = 2; i < hardCodedCategoryNamesTmp.length; i++) {
+                            categoryNameList.add(hardCodedCategoryNamesTmp[i]);
                         }
 
-                        String[] categoryIds = new String[categoryIdList.size()];
-                        categoryIdList.toArray(categoryIds);
+                        String[] categoryIds = categoryIdList.toArray(new String[categoryIdList.size()]);
+                        String[] categoryNames = categoryNameList.toArray(new String[categoryNameList.size()]);
 
                         ArrayList<Map<String, String>> dataC = new ArrayList<>();
-                        // first add "all"
-                        HashMap<String, String> hashMap0 = new HashMap<>();
-                        hashMap0.put("name", categoryNames[0]);
-                        hashMap0.put("id", categoryIds[0]);
-                        dataC.add(hashMap0);
-                        // first add "all except reimbursement"
-                        HashMap<String, String> hashMap1 = new HashMap<>();
-                        hashMap1.put("name", getString(R.string.category_all_except_reimbursement));
-                        hashMap1.put("id", "-100");
-                        dataC.add(hashMap1);
-                        // then add categories
-                        for (int i = 1; i < categoryNames.length; i++) {
+                        // add categories
+                        for (int i = 0; i < categoryNames.length; i++) {
                             HashMap<String, String> hashMap = new HashMap<>();
                             hashMap.put("name", categoryNames[i]);
                             hashMap.put("id", categoryIds[i]);

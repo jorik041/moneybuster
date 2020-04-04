@@ -735,7 +735,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     TextView tableTitle = tView.findViewById(R.id.tableTitle);
 
                     // CATEGORY
-                    if (proj.getType().equals(ProjectType.COSPEND)) {
+                    if (!ProjectType.IHATEMONEY.equals(proj.getType())) {
                         List<String> categoryNameList = new ArrayList<>();
                         categoryNameList.add(getString(R.string.category_all));
 

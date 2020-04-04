@@ -1544,7 +1544,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         // get filter values
         int categoryId;
         String paymentMode;
-        if (proj.getType().equals(ProjectType.COSPEND)) {
+        if (!proj.getType().equals(ProjectType.IHATEMONEY)) {
             Spinner statsCategorySpinner = tView.findViewById(R.id.statsCategorySpinner);
             Map<String, String> item = (Map<String, String>) statsCategorySpinner.getSelectedItem();
             categoryId = Integer.valueOf(item.get("id"));

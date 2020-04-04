@@ -148,7 +148,9 @@ public class DBBill implements Item, Serializable {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timestamp * 1000);
         Log.v("ll", "["+what+"] get date ts "+timestamp+" year "+cal.get(Calendar.YEAR));
-        return cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DAY_OF_MONTH);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        return cal.get(Calendar.YEAR)+"-"+String.format(Locale.ROOT,"%02d", month)+"-"+String.format(Locale.ROOT,"%02d", day);
     }
 
     public String getTime() {

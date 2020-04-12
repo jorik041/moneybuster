@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## 0.1.1 – 2020-04-12
+### Added
+- dialog to remove project when sync has failed
+[#44](https://gitlab.com/eneiluj/moneybuster/issues/44) @jwsp1
+
+### Changed
+- remove hardcoded categories for Cospend projects
+
+### Fixed
+- many stats filter problems
 
 ## 0.1.0 – 2020-03-26
 ### Changed

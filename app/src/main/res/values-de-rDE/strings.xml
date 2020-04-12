@@ -19,7 +19,7 @@
     <string name="setting_date_long">Tag der Ausgabe</string>
     <string name="setting_payer">Wer hat gezahlt?</string>
     <string name="setting_all">Alle</string>
-    <string name="setting_none">Keine</string>
+    <string name="setting_none">Keiner</string>
     <string name="currency_dialog_title">Rechne den aktuellen Betrag aus einer anderen Währung in %s um</string>
     <string name="no_currency_error">Es gibt keine zusätzliche Währung</string>
     <string name="setting_amount">Wie viel?</string>

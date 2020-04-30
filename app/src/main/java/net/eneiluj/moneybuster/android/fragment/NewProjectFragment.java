@@ -1254,8 +1254,13 @@ public class NewProjectFragment extends Fragment {
                 }
                 // add members
                 for (String mName: membersweight.keySet()) {
-                    long memberDbId = db.addMember(new DBMember(0, 0, pid, mName,
-                            membersActive.get(mName), membersweight.get(mName), DBBill.STATE_OK, null, null, null));
+                    long memberDbId = db.addMember(
+                        new DBMember(
+                            0, 0, pid, mName,
+                            membersActive.get(mName), membersweight.get(mName), DBBill.STATE_OK,
+                            null, null, null, null, null
+                        )
+                    );
                     memberNameToId.put(mName, memberDbId);
                 }
                 // add bills

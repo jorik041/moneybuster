@@ -362,7 +362,8 @@ public class MoneyBusterServerSyncHelper {
                                 mToAdd.getId(), null,
                                 remoteMember.getWeight(), remoteMember.isActivated(),
                                 DBBill.STATE_OK, remoteMember.getRemoteId(), remoteMember.getR(),
-                                remoteMember.getG(), remoteMember.getB()
+                                remoteMember.getG(), remoteMember.getB(),
+                                remoteMember.getNcUserId(), null
                         );
                     }
                     // it does not exist, create it remotely
@@ -371,8 +372,9 @@ public class MoneyBusterServerSyncHelper {
                         long newRemoteId = Long.valueOf(createRemoteMemberResponse.getStringContent());
                         if (newRemoteId > 0) {
                             dbHelper.updateMember(
-                                    mToAdd.getId(), null,
-                                    null, null, DBBill.STATE_OK, newRemoteId, null, null, null
+                                mToAdd.getId(), null,
+                                null, null, DBBill.STATE_OK, newRemoteId,
+                                null, null, null, null, null
                             );
                         }
                     }
@@ -388,7 +390,7 @@ public class MoneyBusterServerSyncHelper {
                             dbHelper.updateMember(
                                     mToEdit.getId(), null,
                                     null, null, DBBill.STATE_OK, null,
-                                    null, null, null
+                                    null, null, null, null, null
                             );
                         }
                     } catch (IOException e) {
@@ -631,6 +633,11 @@ public class MoneyBusterServerSyncHelper {
                                         (m.getR() == localMember.getR() &&
                                             m.getG() == localMember.getG() &&
                                             m.getB() == localMember.getB())
+                                ) &&
+                                (
+                                        (m.getNcUserId() == null && localMember.getNcUserId() != null) ||
+                                        (m.getNcUserId() != null && localMember.getNcUserId() == null) ||
+                                        (!m.getNcUserId().equals(localMember.getNcUserId()))
                                 )
                         ) {
                             // alright
@@ -649,7 +656,7 @@ public class MoneyBusterServerSyncHelper {
                             dbHelper.updateMember(
                                     localMember.getId(), m.getName(), m.getWeight(),
                                     m.isActivated(), null, null,
-                                    r, g, b
+                                    r, g, b, m.getNcUserId(), null
                             );
                         }
                     }

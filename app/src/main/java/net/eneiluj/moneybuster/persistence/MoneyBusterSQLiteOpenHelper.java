@@ -43,7 +43,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String TAG = MoneyBusterSQLiteOpenHelper.class.getSimpleName();
 
-    private static final int database_version = 11;
+    private static final int database_version = 12;
     private static final String database_name = "IHATEMONEY";
 
     private static final String table_members = "MEMBERS";
@@ -57,6 +57,8 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String key_r = "R";
     private static final String key_g = "G";
     private static final String key_b = "B";
+    public static final String key_nc_userid = "NCUSERID";
+    public static final String key_avatar = "AVATAR";
 
     private static final String table_projects = "PROJECTS";
     //private static final String key_id = "ID";
@@ -113,7 +115,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String[] columnsMembers = {
             key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight, key_state,
-            key_r, key_g, key_b
+            key_r, key_g, key_b, key_nc_userid, key_avatar
     };
 
     private static final String[] columnsProjects = {
@@ -197,6 +199,8 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 key_r + " INTEGER, " +
                 key_g + " INTEGER, " +
                 key_b + " INTEGER, " +
+                key_nc_userid + " TEXT, " +
+                key_avatar + " TEXT, " +
                 key_state + " INTEGER)");
     }
 
@@ -356,6 +360,10 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
             // we should get rid of DATE column but...
             // a bit annoying to drop a column in SQLITE... leave it there
+        }
+        if (oldVersion < 12) {
+            db.execSQL("ALTER TABLE " + table_members + " ADD COLUMN " + key_nc_userid + " TEXT DEFAULT NULL");
+            db.execSQL("ALTER TABLE " + table_members + " ADD COLUMN " + key_avatar + " TEXT DEFAULT NULL");
         }
     }
 
@@ -875,6 +883,8 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_r, m.getR());
         values.put(key_g, m.getG());
         values.put(key_b, m.getB());
+        values.put(key_nc_userid, m.getNcUserId());
+        values.put(key_avatar, m.getAvatar());
 
         long memberId = db.insert(table_members, null, values);
         return memberId;
@@ -894,7 +904,8 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     public void updateMember(long memberId, @Nullable String newName, @Nullable Double newWeight,
                              @Nullable Boolean newActivated, @Nullable Integer newState, @Nullable Long newRemoteId,
-                             @Nullable Integer newR, @Nullable Integer newG, @Nullable Integer newB) {
+                             @Nullable Integer newR, @Nullable Integer newG, @Nullable Integer newB,
+                             @Nullable String newNcUserId, @Nullable String newAvatar) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -923,6 +934,12 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         if (newB != null) {
             values.put(key_b, newB);
         }
+        if (newNcUserId != null) {
+            values.put(key_nc_userid, newNcUserId);
+        }
+        if (newAvatar != null) {
+            values.put(key_avatar, newAvatar);
+        }
         if (values.size() > 0) {
             int rows = db.update(table_members, values, key_id + " = ?",
                     new String[]{String.valueOf(memberId)});
@@ -931,13 +948,17 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     public void updateMemberAndSync(DBMember m, @Nullable String newName,  @Nullable Double newWeight,
                                     @Nullable Boolean newActivated,
-                                    @Nullable Integer newR, @Nullable Integer newG, @Nullable Integer newB) {
+                                    @Nullable Integer newR, @Nullable Integer newG, @Nullable Integer newB,
+                                    @Nullable String newNcUserId, @Nullable String newAvatar) {
         int newState = DBBill.STATE_EDITED;
         if (m.getState() == DBBill.STATE_ADDED) {
             newState = DBBill.STATE_ADDED;
         }
 
-        updateMember(m.getId(), newName, newWeight, newActivated, newState, null, newR, newG, newB);
+        updateMember(
+            m.getId(), newName, newWeight, newActivated, newState, null,
+            newR, newG, newB, newNcUserId, newAvatar
+        );
 
         Log.v(TAG, "UPDATE MEMBER AND SYNC");
         DBProject proj = getProject(m.getProjectId());
@@ -1030,7 +1051,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 cursor.getInt(6),
                 cursor.isNull(7) ? null : cursor.getInt(7),
                 cursor.isNull(8) ? null : cursor.getInt(8),
-                cursor.isNull(9) ? null : cursor.getInt(9)
+                cursor.isNull(9) ? null : cursor.getInt(9),
+                cursor.isNull(10) ? null : cursor.getString(10),
+                cursor.isNull(11) ? null : cursor.getString(11)
         );
     }
 

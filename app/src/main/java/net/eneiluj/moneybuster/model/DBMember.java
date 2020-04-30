@@ -19,10 +19,13 @@ public class DBMember implements Serializable {
     private Integer r;
     private Integer g;
     private Integer b;
+    private String ncUserId;
+    private String avatar;
 
     public DBMember(long id, long remoteId, long projectId, String name, boolean activated,
                     double weight, int state,
-                    @Nullable Integer r, @Nullable Integer g, @Nullable Integer b) {
+                    @Nullable Integer r, @Nullable Integer g, @Nullable Integer b,
+                    @Nullable String ncUserId, @Nullable String avatar) {
         // key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight
         this.id = id;
         this.remoteId = remoteId;
@@ -34,6 +37,24 @@ public class DBMember implements Serializable {
         this.r = r;
         this.g = g;
         this.b = b;
+        this.ncUserId = ncUserId;
+        this.avatar = avatar;
+    }
+
+    public String getNcUserId() {
+        return ncUserId;
+    }
+
+    public void setNcUserId(String ncUserId) {
+        this.ncUserId = ncUserId;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public Integer getR() {

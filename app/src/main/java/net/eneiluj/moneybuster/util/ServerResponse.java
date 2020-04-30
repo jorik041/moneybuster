@@ -377,6 +377,7 @@ public class ServerResponse {
         Integer r = null;
         Integer g = null;
         Integer b = null;
+        String ncUserId = null;
         if (!json.isNull("id")) {
             remoteId = json.getLong("id");
         }
@@ -412,7 +413,13 @@ public class ServerResponse {
                 }
             }
         }
-        return new DBMember(0, remoteId, projId, name, activated, weight, DBBill.STATE_OK, r, g, b);
+        if (json.has("userid") && !json.isNull("userid")) {
+            ncUserId = json.getString("userid");
+        }
+        return new DBMember(
+            0, remoteId, projId, name, activated, weight, DBBill.STATE_OK,
+            r, g, b, ncUserId, null
+        );
     }
 
     protected List<Long> getAllBillIdsFromJSON(JSONObject json) throws JSONException {

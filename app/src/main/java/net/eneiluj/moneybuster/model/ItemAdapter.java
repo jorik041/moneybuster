@@ -1,7 +1,10 @@
 package net.eneiluj.moneybuster.model;
 
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.Html;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +21,7 @@ import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.activity.BillsListViewActivity;
 import net.eneiluj.moneybuster.android.ui.TextDrawable;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
+import net.eneiluj.moneybuster.util.ThemeUtils;
 
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -189,13 +193,21 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             else {
                 try {
                     DBMember m = db.getMember(bill.getPayerId());
-                    nvHolder.avatar.setImageDrawable(
-                            TextDrawable.createNamedAvatar(
-                                    m.getName(), avatarRadius,
-                                    m.getR(), m.getG(), m.getB(),
-                                    !m.isActivated()
-                            )
-                    );
+                    if (m.getAvatar() == null || m.getAvatar().equals("")) {
+                        nvHolder.avatar.setImageDrawable(
+                                TextDrawable.createNamedAvatar(
+                                        m.getName(), avatarRadius,
+                                        m.getR(), m.getG(), m.getB(),
+                                        !m.isActivated()
+                                )
+                        );
+                    } else {
+                        nvHolder.avatar.setImageDrawable(
+                                ThemeUtils.getMemberAvatarDrawable(
+                                        db.getContext(), m.getAvatar(), 22.5f, !m.isActivated()
+                                )
+                        );
+                    }
                 } catch (NoSuchAlgorithmException e) {
                     nvHolder.avatar.setImageDrawable(null);
                 }

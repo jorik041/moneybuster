@@ -80,8 +80,12 @@ public class CospendClient {
         }
     }
 
-    public ServerResponse.AvatarResponse getAvatar(CustomCertManager ccm) throws JSONException, IOException, TokenMismatchException {
-        String target = "/index.php/avatar/" + username + "/45";
+    public ServerResponse.AvatarResponse getAvatar(CustomCertManager ccm, @Nullable String otherUserName) throws JSONException, IOException, TokenMismatchException {
+        String targetUserName = username;
+        if (otherUserName != null) {
+            targetUserName = otherUserName;
+        }
+        String target = "/index.php/avatar/" + targetUserName + "/45";
         if (nextcloudAPI != null) {
             Log.d(getClass().getSimpleName(), "using SSO to get avatar");
             //return new ServerResponse.SessionsResponse(new ResponseData("[]", lastETag, lastModified));

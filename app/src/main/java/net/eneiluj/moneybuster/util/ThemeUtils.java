@@ -3,6 +3,7 @@ package net.eneiluj.moneybuster.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,6 +11,9 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.util.Base64;
 import android.util.TypedValue;
 
 import androidx.core.content.ContextCompat;
@@ -117,4 +121,24 @@ public class ThemeUtils {
                 context.getResources().getDisplayMetrics()
         );
     }
+
+    public static Drawable getMemberAvatarDrawable(Context context, String avatarB64, float mRadius, boolean disabled) {
+        byte[] decodedString = Base64.decode(avatarB64, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        Bitmap rounded = ThemeUtils.getRoundedBitmap(decodedByte, decodedByte.getWidth() / 2);
+        if (disabled) {
+            Paint mDisabledCircle = new Paint();
+            mDisabledCircle.setStyle(Paint.Style.STROKE);
+            mDisabledCircle.setStrokeWidth(mRadius * 0.2f);
+            mDisabledCircle.setAntiAlias(true);
+            mDisabledCircle.setColor(Color.DKGRAY);
+
+            Canvas canvas = new Canvas(rounded);
+            canvas.drawCircle(mRadius, mRadius, mRadius * 0.9f, mDisabledCircle);
+            canvas.drawLine(mRadius * 0.4f, mRadius * 1.6f, mRadius * 1.6f, mRadius * 0.4f, mDisabledCircle);
+        }
+        Drawable res = new BitmapDrawable(context.getResources(), rounded);
+        return res;
+    }
+
 }

@@ -76,6 +76,7 @@ public class MoneyBusterServerSyncHelper {
     public static final String BROADCAST_NETWORK_AVAILABLE = "net.eneiluj.moneybuster.broadcast.network_available";
     public static final String BROADCAST_NETWORK_UNAVAILABLE = "net.eneiluj.moneybuster.broadcast.network_unavailable";
     public static final String BROADCAST_AVATAR_UPDATED = "net.eneiluj.moneybuster.broadcast.avatar_updated";
+    public static final String BROADCAST_AVATAR_UPDATED_MEMBER = "net.eneiluj.moneybuster.broadcast.avatar_updated_for_member";
 
     private static int NOTIFICATION_ID = 1526756699;
     private static int CHANNEL_ID = 11122;
@@ -363,7 +364,7 @@ public class MoneyBusterServerSyncHelper {
                                 remoteMember.getWeight(), remoteMember.isActivated(),
                                 DBBill.STATE_OK, remoteMember.getRemoteId(), remoteMember.getR(),
                                 remoteMember.getG(), remoteMember.getB(),
-                                remoteMember.getNcUserId(), null
+                                remoteMember.getNcUserId(), ""
                         );
                     }
                     // it does not exist, create it remotely
@@ -624,6 +625,15 @@ public class MoneyBusterServerSyncHelper {
                     }
                     // member exists, check if needs update
                     else {
+                        boolean ncUserIdChanged = (
+                                (m.getNcUserId() == null && localMember.getNcUserId() != null) ||
+                                (m.getNcUserId() != null && localMember.getNcUserId() == null) ||
+                                (
+                                        m.getNcUserId() != null && localMember.getNcUserId() != null &&
+                                        !m.getNcUserId().equals(localMember.getNcUserId())
+                                )
+                        );
+                        Log.e("PULLREMOTE", "member NC user id : "+m.getNcUserId()+" ID changed "+ncUserIdChanged);
                         if (m.getName().equals(localMember.getName()) &&
                                 m.getWeight() == localMember.getWeight() &&
                                 m.isActivated() == localMember.isActivated() &&
@@ -634,11 +644,7 @@ public class MoneyBusterServerSyncHelper {
                                             m.getG() == localMember.getG() &&
                                             m.getB() == localMember.getB())
                                 ) &&
-                                (
-                                        (m.getNcUserId() == null && localMember.getNcUserId() != null) ||
-                                        (m.getNcUserId() != null && localMember.getNcUserId() == null) ||
-                                        (!m.getNcUserId().equals(localMember.getNcUserId()))
-                                )
+                                !ncUserIdChanged
                         ) {
                             // alright
                             Log.d(getClass().getSimpleName(), "Nothing to do for member : " + localMember);
@@ -653,11 +659,21 @@ public class MoneyBusterServerSyncHelper {
                                 g = localMember.getG();
                                 b = localMember.getB();
                             }
+                            // determine if we reset local avatar
+                            boolean needAvatarUpdate = (ncUserIdChanged && m.getNcUserId() != null && !m.getNcUserId().equals(""));
+                            String newAvatar = null;
+                            if (needAvatarUpdate) {
+                                newAvatar = "";
+                            }
                             dbHelper.updateMember(
                                     localMember.getId(), m.getName(), m.getWeight(),
                                     m.isActivated(), null, null,
-                                    r, g, b, m.getNcUserId(), null
+                                    r, g, b, m.getNcUserId(), newAvatar
                             );
+                            if (needAvatarUpdate) {
+                                Log.e("PLOP", "pullremote : update member avatar");
+                                updateMemberAvatar(localMember.getId());
+                            }
                         }
                     }
                 }
@@ -1270,6 +1286,15 @@ public class MoneyBusterServerSyncHelper {
         }
     }
 
+    // update member avatar with Nextcloud user one
+    public void updateMemberAvatar(long memberId) {
+        updateNetworkStatus();
+        if (isNextcloudAccountConfigured(appContext) && isSyncPossible()) {
+            UpdateMemberAvatarTask updateMemberAvatarTask = new UpdateMemberAvatarTask(memberId);
+            updateMemberAvatarTask.execute();
+        }
+    }
+
     // ACCOUNT SYNC
 
     public void runAccountProjectsSync() {
@@ -1586,7 +1611,7 @@ public class MoneyBusterServerSyncHelper {
         @Override
         protected LoginStatus doInBackground(Void... voids) {
             client = createCospendClient();
-            Log.i(getClass().getSimpleName(), "STARTING get avatar");
+            Log.i(getClass().getSimpleName(), "STARTING get account avatar");
 
             LoginStatus status = LoginStatus.OK;
 
@@ -1596,8 +1621,6 @@ public class MoneyBusterServerSyncHelper {
             else {
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
             }
-
-            Log.i(getClass().getSimpleName(), "Get color FINISHED");
             return status;
         }
 
@@ -1609,7 +1632,7 @@ public class MoneyBusterServerSyncHelper {
             LoginStatus status;
             try {
 
-                ServerResponse.AvatarResponse response = client.getAvatar(customCertManager);
+                ServerResponse.AvatarResponse response = client.getAvatar(customCertManager, null);
                 String avatar = response.getAvatarString();
 
                 status = LoginStatus.OK;
@@ -1618,7 +1641,7 @@ public class MoneyBusterServerSyncHelper {
                 SharedPreferences.Editor editor = preferences.edit();
 
                 if (avatar != null && !avatar.isEmpty()) {
-                    Log.d(getClass().getSimpleName(), "avatar from server is "+avatar);
+                    //Log.d(getClass().getSimpleName(), "avatar from server is "+avatar);
                     editor.putString(appContext.getString(R.string.pref_key_avatar), avatar);
                 }
                 else {
@@ -1650,6 +1673,95 @@ public class MoneyBusterServerSyncHelper {
             super.onPostExecute(status);
             if (status == LoginStatus.OK) {
                 Intent intent = new Intent(BROADCAST_AVATAR_UPDATED);
+                appContext.sendBroadcast(intent);
+            }
+        }
+    }
+
+    private class UpdateMemberAvatarTask extends AsyncTask<Void, Void, LoginStatus> {
+
+        private final List<ICallback> callbacks = new ArrayList<>();
+        private CospendClient client;
+        private long memberId;
+        private List<Throwable> exceptions = new ArrayList<>();
+
+        public UpdateMemberAvatarTask(long memberId) {
+            this.memberId = memberId;
+        }
+
+        public void addCallbacks(List<ICallback> callbacks) {
+            this.callbacks.addAll(callbacks);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected LoginStatus doInBackground(Void... voids) {
+            client = createCospendClient();
+            Log.i(getClass().getSimpleName(), "STARTING get avatar for member");
+
+            LoginStatus status = LoginStatus.OK;
+
+            if (client != null) {
+                status = getNextcloudUserAvatar();
+            }
+            else {
+                status = LoginStatus.SSO_TOKEN_MISMATCH;
+            }
+            return status;
+        }
+
+        private LoginStatus getNextcloudUserAvatar() {
+            Log.d(getClass().getSimpleName(), "getNextcloudUserAvatar() "+memberId);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
+            //String lastETag = preferences.getString(SettingsActivity.SETTINGS_KEY_ETAG, null);
+            //long lastModified = preferences.getLong(SettingsActivity.SETTINGS_KEY_LAST_MODIFIED, 0);
+            LoginStatus status = LoginStatus.OK;
+            try {
+                DBMember m = dbHelper.getMember(memberId);
+                String targetUserName = m.getNcUserId();
+                if (targetUserName != null && !targetUserName.equals("")) {
+                    ServerResponse.AvatarResponse response = client.getAvatar(customCertManager, targetUserName);
+                    String avatar = response.getAvatarString();
+
+                    if (avatar != null && !avatar.isEmpty()) {
+                        //Log.d(getClass().getSimpleName(), "avatar from server is "+avatar);
+                        dbHelper.updateMember(
+                                memberId, null, null, null,
+                                null, null, null, null, null,
+                                null, avatar
+                        );
+                        Log.d(getClass().getSimpleName(), "RECEIVED AVATAR for member "+memberId+" length "+avatar.length());
+                    }
+                }
+            } catch (ServerResponse.NotModifiedException e) {
+                Log.d(getClass().getSimpleName(), "No changes, nothing to do.");
+                status = LoginStatus.OK;
+            } catch (IOException e) {
+                Log.e(getClass().getSimpleName(), "Exception", e);
+                exceptions.add(e);
+                status = LoginStatus.CONNECTION_FAILED;
+            } catch (JSONException e) {
+                Log.e(getClass().getSimpleName(), "Exception", e);
+                exceptions.add(e);
+                status = LoginStatus.JSON_FAILED;
+            } catch (TokenMismatchException e) {
+                Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
+                status = LoginStatus.SSO_TOKEN_MISMATCH;
+            }
+
+            return status;
+        }
+
+        @Override
+        protected void onPostExecute(LoginStatus status) {
+            super.onPostExecute(status);
+            if (status == LoginStatus.OK) {
+                Intent intent = new Intent(BROADCAST_AVATAR_UPDATED);
+                intent.putExtra(BROADCAST_AVATAR_UPDATED_MEMBER, memberId);
                 appContext.sendBroadcast(intent);
             }
         }

@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -98,11 +99,19 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
                         int width = ContextCompat.getDrawable(icon.getContext(), item.icon).getMinimumWidth();
                         int height = ContextCompat.getDrawable(icon.getContext(), item.icon).getMinimumHeight();
                         DBMember member = db.getMember(Long.valueOf(currentItem.id));
-                        TextDrawable td = TextDrawable.createNamedAvatar(
-                                member.getName(), width / 2,
-                                member.getR(), member.getG(), member.getB(),
-                                !member.isActivated()
-                        );
+                        Drawable td;
+                        if (member.getAvatar() != null && !member.getAvatar().equals("")) {
+                            // TODO adapt to be able to set size of bitmap (independently from loaded image size)
+                            td = ThemeUtils.getMemberAvatarDrawable(
+                                    db.getContext(), member.getAvatar(), 22.5f, !member.isActivated()
+                            );
+                        } else {
+                            td = TextDrawable.createNamedAvatar(
+                                    member.getName(), width / 2,
+                                    member.getR(), member.getG(), member.getB(),
+                                    !member.isActivated()
+                            );
+                        }
                         icon.setImageDrawable(td);
                         icon.setPadding(width / 4, height / 2, 0, 0);
                     } catch (NoSuchAlgorithmException e) {

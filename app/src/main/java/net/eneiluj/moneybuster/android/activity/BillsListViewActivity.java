@@ -3084,7 +3084,16 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     break;
                 case MoneyBusterServerSyncHelper.BROADCAST_AVATAR_UPDATED:
                     Log.v("AAA", "BROAD AVATAR received");
-                    updateAvatarInDrawer(true);
+                    long memberId = intent.getLongExtra(MoneyBusterServerSyncHelper.BROADCAST_AVATAR_UPDATED_MEMBER, 0);
+                    // this is the account avatar
+                    if (memberId == 0) {
+                        Log.v("AAA", "UPDATE avatar of NC account");
+                        updateAvatarInDrawer(true);
+                    } else {
+                        // update avatar for one specific member
+                        Log.v("AAA", "UPDATE avatar of project member "+memberId);
+                        //updateAvatarOfMember(memberId);
+                    }
                     break;
                 case BROADCAST_ACCOUNT_PROJECTS_SYNCED:
                     // show account projects sync success toast

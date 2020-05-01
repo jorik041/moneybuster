@@ -633,7 +633,10 @@ public class MoneyBusterServerSyncHelper {
                                         !m.getNcUserId().equals(localMember.getNcUserId())
                                 )
                         );
-                        Log.e("PULLREMOTE", "member NC user id : "+m.getNcUserId()+" ID changed "+ncUserIdChanged);
+                        Log.e("PULLREMOTE", "member NC user id : "+localMember.getNcUserId()+" => "+m.getNcUserId()+" ID changed "+ncUserIdChanged);
+                        if (ncUserIdChanged && m.getNcUserId() == null) {
+                            m.setNcUserId("");
+                        }
                         if (m.getName().equals(localMember.getName()) &&
                                 m.getWeight() == localMember.getWeight() &&
                                 m.isActivated() == localMember.isActivated() &&
@@ -662,7 +665,7 @@ public class MoneyBusterServerSyncHelper {
                             // determine if we reset local avatar
                             boolean needAvatarUpdate = (ncUserIdChanged && m.getNcUserId() != null && !m.getNcUserId().equals(""));
                             String newAvatar = null;
-                            if (needAvatarUpdate) {
+                            if (ncUserIdChanged) {
                                 newAvatar = "";
                             }
                             dbHelper.updateMember(

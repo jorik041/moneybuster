@@ -3092,7 +3092,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     } else {
                         // update avatar for one specific member
                         Log.v("AAA", "UPDATE avatar of project member "+memberId);
-                        //updateAvatarOfMember(memberId);
+                        refreshLists();
                     }
                     break;
                 case BROADCAST_ACCOUNT_PROJECTS_SYNCED:

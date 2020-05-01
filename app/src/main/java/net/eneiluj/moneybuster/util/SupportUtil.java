@@ -28,6 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -50,6 +51,11 @@ import at.bitfire.cert4android.CustomCertManager;
  */
 public class SupportUtil {
 
+    public static final NumberFormat normalNumberFormat = NumberFormat.getInstance();
+    static {
+        normalNumberFormat.setMaximumFractionDigits(Integer.MAX_VALUE);
+        normalNumberFormat.setGroupingUsed(false);
+    }
     /**
      * Creates a {@link Spanned} from a HTML string on all SDK versions.
      *

@@ -21,6 +21,7 @@ import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.activity.BillsListViewActivity;
 import net.eneiluj.moneybuster.android.ui.TextDrawable;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
+import net.eneiluj.moneybuster.util.SupportUtil;
 import net.eneiluj.moneybuster.util.ThemeUtils;
 
 import java.security.NoSuchAlgorithmException;
@@ -217,7 +218,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             Log.d(TAG, "[get member of project " + bill.getProjectId() + " with remoteid : "+bill.getPayerId()+"]");
             double rAmount = Math.round(bill.getAmount() * 100.0 ) / 100.0;
-            String subtitle = String.valueOf(rAmount);
+            String subtitle = SupportUtil.normalNumberFormat.format(rAmount);
             subtitle += " (" + db.getMember(bill.getPayerId()).getName();
             subtitle += " → ";
             for (long boRId : bill.getBillOwersIds()) {

@@ -60,9 +60,11 @@ import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.MoneyBuster;
+import net.eneiluj.moneybuster.util.SupportUtil;
 import net.eneiluj.moneybuster.util.ThemeUtils;
 
 import java.security.NoSuchAlgorithmException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -875,7 +877,7 @@ public class EditBillFragment extends Fragment {
         updateTimeLabel();
         Log.v(TAG, "AFTER TIME INIT");
 
-        editAmount.setText(String.valueOf(bill.getAmount()));
+        editAmount.setText(SupportUtil.normalNumberFormat.format(bill.getAmount()));
 
         // hide the validation button so that it appears if a value changes
 

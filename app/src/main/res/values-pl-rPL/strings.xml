@@ -242,7 +242,7 @@
     <string name="drawer_no_project">Brak projektu.\nDotknij tutaj, aby utworzyć/dodać</string>
     <string name="drawer_no_account">Kliknij tutaj, aby połączyć się z kontem Nextcloud</string>
     <string name="choose_project_to_select">Wybierz projekt</string>
-    <string name="edit_bill_impossible_no_member">Co najmniej dwóch aktywowanych członków musi dodać rachunek</string>
+    <string name="edit_bill_impossible_no_member">Aby dodać rachunek, potrzeba co najmniej dwóch aktywowanych członków</string>
     <string name="edit_project_local_impossible">Niemożliwe w przypadku projektów lokalnych</string>
     <string name="choose_account_project_dialog_title">Wybierz projekt z konta Nextcloud</string>
     <string name="choose_account_project_dialog_impossible">Brak projektu Cospend na twoim koncie Nextcloud</string>
@@ -310,9 +310,9 @@
     <string name="use_sso_toggle">Użyj konta z aplikacji Nextcloud Files</string>
     <!-- Plurals -->
     <plurals name="ab_selected">
-        <item quantity="one">%d wybranych</item>
-        <item quantity="few">%d selected</item>
-        <item quantity="many">%d selected</item>
-        <item quantity="other">%d selected</item>
+        <item quantity="one">wybrany %d</item>
+        <item quantity="few">wybrane %d</item>
+        <item quantity="many">wybrane %d</item>
+        <item quantity="other">wybrane %d</item>
     </plurals>
 </resources>

@@ -103,17 +103,18 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
                         if (member.getAvatar() != null && !member.getAvatar().equals("")) {
                             // TODO adapt to be able to set size of bitmap (independently from loaded image size)
                             td = ThemeUtils.getMemberAvatarDrawable(
-                                    db.getContext(), member.getAvatar(), 22.5f, !member.isActivated()
+                                    db.getContext(), member.getAvatar(), !member.isActivated()
                             );
+                            icon.setPadding(width / 4, height / 4, width / 8, 0);
                         } else {
                             td = TextDrawable.createNamedAvatar(
                                     member.getName(), width / 2,
                                     member.getR(), member.getG(), member.getB(),
                                     !member.isActivated()
                             );
+                            icon.setPadding(width / 4, height / 2, 0, 0);
                         }
                         icon.setImageDrawable(td);
-                        icon.setPadding(width / 4, height / 2, 0, 0);
                     } catch (NoSuchAlgorithmException e) {
                         Log.v(getClass().getSimpleName(), "error creating avatar", e);
                         icon.setImageDrawable(

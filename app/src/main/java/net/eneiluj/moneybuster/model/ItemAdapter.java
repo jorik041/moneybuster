@@ -204,7 +204,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     } else {
                         nvHolder.avatar.setImageDrawable(
                                 ThemeUtils.getMemberAvatarDrawable(
-                                        db.getContext(), m.getAvatar(), 22.5f, !m.isActivated()
+                                        db.getContext(), m.getAvatar(), !m.isActivated()
                                 )
                         );
                     }

@@ -122,10 +122,11 @@ public class ThemeUtils {
         );
     }
 
-    public static Drawable getMemberAvatarDrawable(Context context, String avatarB64, float mRadius, boolean disabled) {
+    public static Drawable getMemberAvatarDrawable(Context context, String avatarB64, boolean disabled) {
         byte[] decodedString = Base64.decode(avatarB64, Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         Bitmap rounded = ThemeUtils.getRoundedBitmap(decodedByte, decodedByte.getWidth() / 2);
+        float mRadius = decodedByte.getWidth() / 2;
         if (disabled) {
             Paint mDisabledCircle = new Paint();
             mDisabledCircle.setStyle(Paint.Style.STROKE);

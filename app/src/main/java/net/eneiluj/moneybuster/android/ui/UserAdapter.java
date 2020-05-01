@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
+import net.eneiluj.moneybuster.util.ThemeUtils;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -58,13 +59,19 @@ public class UserAdapter extends ArrayAdapter<UserItem> {
             viewHolder.name.setText(user.getName());
             try {
                 DBMember m = MoneyBusterSQLiteOpenHelper.getInstance(mContext).getMember(user.getId());
-                viewHolder.avatar.setImageDrawable(
-                        TextDrawable.createNamedAvatar(
-                                user.getName(), mAccountAvatarRadiusDimension,
-                                m.getR(), m.getG(), m.getB(),
-                                !m.isActivated()
-                        )
-                );
+                if (m.getAvatar() != null && !m.getAvatar().equals("")) {
+                    viewHolder.avatar.setImageDrawable(ThemeUtils.getMemberAvatarDrawable(
+                            view.getContext(), m.getAvatar(), !m.isActivated()
+                    ));
+                } else {
+                    viewHolder.avatar.setImageDrawable(
+                            TextDrawable.createNamedAvatar(
+                                    user.getName(), mAccountAvatarRadiusDimension,
+                                    m.getR(), m.getG(), m.getB(),
+                                    !m.isActivated()
+                            )
+                    );
+                }
             } catch (NoSuchAlgorithmException e) {
                 Log.e(TAG, "error creating avatar", e);
                 viewHolder.avatar.setImageDrawable(null);
@@ -98,13 +105,19 @@ public class UserAdapter extends ArrayAdapter<UserItem> {
             viewHolder.name.setText(user.getName());
             try {
                 DBMember m = MoneyBusterSQLiteOpenHelper.getInstance(mContext).getMember(user.getId());
-                viewHolder.avatar.setImageDrawable(
-                        TextDrawable.createNamedAvatar(
-                                user.getName(), mAccountAvatarRadiusDimension,
-                                m.getR(), m.getG(), m.getB(),
-                                !m.isActivated()
-                        )
-                );
+                if (m.getAvatar() != null && !m.getAvatar().equals("")) {
+                    viewHolder.avatar.setImageDrawable(ThemeUtils.getMemberAvatarDrawable(
+                            view.getContext(), m.getAvatar(), !m.isActivated()
+                    ));
+                } else {
+                    viewHolder.avatar.setImageDrawable(
+                            TextDrawable.createNamedAvatar(
+                                    user.getName(), mAccountAvatarRadiusDimension,
+                                    m.getR(), m.getG(), m.getB(),
+                                    !m.isActivated()
+                            )
+                    );
+                }
             } catch (NoSuchAlgorithmException e) {
                 Log.e(TAG, "error creating avatar", e);
                 viewHolder.avatar.setImageDrawable(null);

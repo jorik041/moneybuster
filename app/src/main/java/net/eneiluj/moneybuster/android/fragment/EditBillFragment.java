@@ -776,14 +776,24 @@ public class EditBillFragment extends Fragment {
                 // avatar
                 ImageView avatar = row.findViewById(R.id.avatar);
                 try {
-                    avatar.setImageDrawable(
-                            TextDrawable.createNamedAvatar(
-                                    member.getName(), 30,
-                                    member.getR(), member.getG(), member.getB(),
-                                    !member.isActivated()
-                            )
-                    );
                     avatar.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    if (member.getAvatar() != null && !member.getAvatar().equals("")) {
+                        avatar.setImageDrawable(ThemeUtils.getMemberAvatarDrawable(
+                                db.getContext(), member.getAvatar(), !member.isActivated()
+                        ));
+                        ViewGroup.LayoutParams lp = avatar.getLayoutParams();
+                        int width = lp.width;
+                        int height = lp.height;
+                        avatar.setPadding(0, 0, width / 5, 0);
+                    } else {
+                        avatar.setImageDrawable(
+                                TextDrawable.createNamedAvatar(
+                                        member.getName(), 30,
+                                        member.getR(), member.getG(), member.getB(),
+                                        !member.isActivated()
+                                )
+                        );
+                    }
                 } catch (NoSuchAlgorithmException e) {
                     Log.e(TAG, "error creating avatar", e);
                     avatar.setImageDrawable(null);

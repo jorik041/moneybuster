@@ -79,7 +79,6 @@ public class MoneyBusterServerSyncHelper {
     public static final String BROADCAST_AVATAR_UPDATED_MEMBER = "net.eneiluj.moneybuster.broadcast.avatar_updated_for_member";
 
     private static int NOTIFICATION_ID = 1526756699;
-    private static int CHANNEL_ID = 11122;
 
     private SharedPreferences preferences;
 
@@ -920,9 +919,7 @@ public class MoneyBusterServerSyncHelper {
         ptIntent.putExtra(BillsListViewActivity.PARAM_DIALOG_CONTENT, dialogContent);
         ptIntent.putExtra(BillsListViewActivity.PARAM_PROJECT_TO_SELECT, projectId);
 
-        createNotificationChannel();
-
-        String chanId = String.valueOf(CHANNEL_ID);
+        String chanId = String.valueOf(SyncService.MAIN_CHANNEL_ID + projectId);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(appContext, chanId)
                 .setSmallIcon(R.drawable.ic_dollar_grey_24dp)
                 .setContentTitle(appContext.getString(R.string.app_name))
@@ -937,23 +934,6 @@ public class MoneyBusterServerSyncHelper {
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(NOTIFICATION_ID, builder.build());
         NOTIFICATION_ID++;
-    }
-
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String chanId = String.valueOf(CHANNEL_ID);
-            CharSequence name = appContext.getString(R.string.app_name);
-            //String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(chanId, name, importance);
-            //channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = appContext.getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
     }
 
     private VersatileProjectSyncClient createVersatileProjectSyncClient() {

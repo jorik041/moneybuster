@@ -44,7 +44,9 @@ import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.activity.BillsListViewActivity;
 import net.eneiluj.moneybuster.android.fragment.PreferencesFragment;
 import net.eneiluj.moneybuster.model.DBProject;
+import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
+import net.eneiluj.moneybuster.util.SupportUtil;
 
 /**
  * Background service logging positions to database
@@ -64,6 +66,7 @@ public class SyncService extends Service {
     private long intervalMinutes;
 
     private final int NOTIFICATION_ID = 1526756648;
+    public static final int MAIN_CHANNEL_ID = 1234567890;
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder mNotificationBuilder;
     public static boolean DEBUG = true;
@@ -107,6 +110,8 @@ public class SyncService extends Service {
 
         mSyncWorker = new SyncWorker(intervalMinutes * 60);
 
+        // NOTIFICATIONS
+        createNotificationChannels();
 
         final Notification notification = showNotification(NOTIFICATION_ID);
         startForeground(NOTIFICATION_ID, notification);
@@ -218,6 +223,23 @@ public class SyncService extends Service {
         }
     }
 
+    private void createNotificationChannels() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // main channel
+            SupportUtil.createNotificationChannel(MAIN_CHANNEL_ID, getString(R.string.permanent_notification_title), true, getApplicationContext());
+            // one channel per project
+            List<DBProject> projs = db.getProjects();
+            long channelId;
+            for (DBProject p: projs) {
+                if (!p.getType().equals(ProjectType.LOCAL)) {
+                    channelId = MAIN_CHANNEL_ID + p.getId();
+                    //Log.e("LLL", "channel ID : "+channelId+" name "+p.getRemoteId());
+                    SupportUtil.createNotificationChannel(channelId, p.getRemoteId(), false, getApplicationContext());
+                }
+            }
+        }
+    }
+
     /**
      * Check if logger service is running.
      *
@@ -263,10 +285,7 @@ public class SyncService extends Service {
         if (DEBUG) { Log.d(TAG, "[showNotification " + mId + "]"); }
         int priority = NotificationCompat.PRIORITY_MIN;
 
-        final String channelId = String.valueOf(mId);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel(channelId, true);
-        }
+        final String channelId = String.valueOf(MAIN_CHANNEL_ID);
         String lastSyncDate = "∞";
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this, channelId)
@@ -306,16 +325,6 @@ public class SyncService extends Service {
                 lastSyncDate
         ));
         mNotificationManager.notify(this.NOTIFICATION_ID, mNotificationBuilder.build());
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private void createNotificationChannel(String channelId, boolean lowImportance) {
-        int importance = NotificationManager.IMPORTANCE_LOW;
-        if (lowImportance) {
-            importance = NotificationManager.IMPORTANCE_MIN;
-        }
-        NotificationChannel chan = new NotificationChannel(channelId, getString(R.string.app_name), importance);
-        mNotificationManager.createNotificationChannel(chan);
     }
 
     /**

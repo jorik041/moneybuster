@@ -1,5 +1,7 @@
 package net.eneiluj.moneybuster.util;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -356,5 +358,23 @@ public class SupportUtil {
         return versionName;
     }
 
+    public static void createNotificationChannel(long channelId, String channelName, boolean lowImportance, Context ctx) {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String chanId = String.valueOf(channelId);
+            //String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            if (lowImportance) {
+                importance = NotificationManager.IMPORTANCE_MIN;
+            }
+            NotificationChannel channel = new NotificationChannel(chanId, channelName, importance);
+            //channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = ctx.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 
 }

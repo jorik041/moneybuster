@@ -134,15 +134,14 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             String whatPrefix = "";
             if ("c".equals(bill.getPaymentMode())) {
                 whatPrefix += "\uD83D\uDCB3 ";
-            }
-            else if ("b".equals(bill.getPaymentMode())) {
+            } else if ("b".equals(bill.getPaymentMode())) {
                 whatPrefix += "💵 ";
-            }
-            else if ("f".equals(bill.getPaymentMode())) {
+            } else if ("f".equals(bill.getPaymentMode())) {
                 whatPrefix += "🎫 ";
-            }
-            else if ("t".equals(bill.getPaymentMode())) {
+            } else if ("t".equals(bill.getPaymentMode())) {
                 whatPrefix += "⇄ ";
+            } else if ("o".equals(bill.getPaymentMode())) {
+                whatPrefix += "\uD83C\uDF0E ";
             }
             DBCategory cat = db.getCategory(bill.getCategoryRemoteId(), bill.getProjectId());
             if (cat != null) {

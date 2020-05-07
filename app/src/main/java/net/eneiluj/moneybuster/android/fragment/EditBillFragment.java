@@ -924,6 +924,7 @@ public class EditBillFragment extends Fragment {
             paymentModeNameList.add("\uD83D\uDCB5 "+getString(R.string.payment_mode_cash));
             paymentModeNameList.add("\uD83C\uDFAB "+getString(R.string.payment_mode_check));
             paymentModeNameList.add("⇄ "+getString(R.string.payment_mode_transfer));
+            paymentModeNameList.add("\uD83C\uDF0E "+getString(R.string.payment_mode_online));
 
             String[] paymentModeNames = paymentModeNameList.toArray(new String[paymentModeNameList.size()]);
             //String[] repeatNames = getResources().getStringArray(R.array.repeatBillEntries);

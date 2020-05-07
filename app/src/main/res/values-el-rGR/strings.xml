@@ -25,7 +25,7 @@
     <string name="setting_amount">Πόσο;</string>
     <string name="setting_amount_long">Πόσο κόστισε;</string>
     <string name="setting_owers">Προς ποιον;</string>
-    <string name="setting_project_id">Αναγνωριστικό έργου</string>
+    <string name="setting_project_id">Project ID/name</string>
     <string name="setting_project_type">Τύπος έργου</string>
     <string name="setting_project_repetition">Επανάληψη αυτού του λογαριασμού κάθε</string>
     <string name="setting_payment_mode">Τρόπος πληρωμής</string>
@@ -79,12 +79,12 @@
     <string name="setting_ihm_project_url">Διεύθυνση IHateMoney</string>
     <string name="setting_cospend_project_url_long">Διεύθυνση του Nextcloud που φιλοξενεί το έργο Cospend</string>
     <string name="setting_cospend_project_url">Διεύθυνση Nextcloud Cospend</string>
-    <string name="setting_project_name">Όνομα έργου (απομακρυσμένο)</string>
-    <string name="setting_project_name_long">Όνομα που εμφανίζεται στη διεπαφή χρήστη</string>
+    <string name="setting_project_name">Project title (remote)</string>
+    <string name="setting_project_name_long">Displayed in user interface</string>
     <string name="setting_password_long">Ο κωδικός πρόσβασης που χρησιμοποιείτε για τη σύνδεση στο έργο</string>
     <string name="setting_password">Συνθηματικό (τοπικό)</string>
     <string name="setting_new_project_password">Password</string>
-    <string name="setting_new_project_name">Project name</string>
+    <string name="setting_new_project_name">Project title</string>
     <string name="setting_new_project_email">E-mail</string>
     <string name="warning_auth_project_creation">Warning: creating a Cospend project using Nextcloud account works with Cospend v0.3.4 and higher.</string>
     <string name="auth_project_creation_title">Authenticated project creation</string>
@@ -99,6 +99,10 @@
     <string name="action_search">Αναζήτηση</string>
     <string name="simple_error">Σφάλμα</string>
     <string name="simple_loading">Φόρτωση</string>
+    <string name="simple_remove">Remove</string>
+    <string name="sync_error_dialog_title">Project sync failed</string>
+    <string name="sync_error_dialog_content">Synchronization with project %1$s failed.\n\n%2$s\n\nThis project might not exist anymore. Do you want to remove the project locally?</string>
+    <string name="simple_do_nothing">Do nothing</string>
     <string name="creating_remote_project">Δημιουργία απομακρυσμένου έργου</string>
     <string name="simple_cancel">Ακύρωση</string>
     <string name="simple_ok">Ok</string>
@@ -130,6 +134,7 @@
     <string name="fab_add_project">Προσθήκη έργου</string>
     <string name="fab_add_member">Προσθήκη μέλους</string>
     <string name="fab_rm_project">Αφαίρεση τρέχοντος έργου</string>
+    <string name="remove_project_confirmation">Project %1$s has been removed</string>
     <string name="fab_edit_member">Επεξεργασία μέλους</string>
     <string name="choose_member_management_action">Manage members</string>
     <string name="choose_project_management_action">Manage project</string>
@@ -264,9 +269,9 @@
     <string name="error_username_password_invalid">λάθος όνομα χρήστη ή συνθηματικό</string>
     <string name="error_invalid_email">Μη έγκυρη διεύθυνση e-mail</string>
     <string name="error_invalid_url">Μη έγκυρη διεύθυνση URL</string>
-    <string name="error_invalid_project_remote_id">Μη έγκυρο ID έργου</string>
+    <string name="error_invalid_project_remote_id">Invalid project ID/name</string>
     <string name="error_invalid_project_password">Το συνθηματικό του έργου δεν μπορεί να είναι κενό</string>
-    <string name="error_invalid_project_name">Μη έγκυρο όνομα έργου</string>
+    <string name="error_invalid_project_name">Invalid project title</string>
     <string name="error_invalid_bill_what">Μη έγκυρο όνομα λογαριασμού</string>
     <string name="error_invalid_bill_date">Μη έγκυρη ημερομηνία λογαριασμού</string>
     <string name="error_invalid_bill_amount">Μη έγκυρο ποσό λογαριασμού</string>

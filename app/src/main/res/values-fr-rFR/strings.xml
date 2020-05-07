@@ -25,7 +25,7 @@
     <string name="setting_amount">Combien ?</string>
     <string name="setting_amount_long">Combien cela a-t-il couté ?</string>
     <string name="setting_owers">Pour qui ?</string>
-    <string name="setting_project_id">Identifiant du projet</string>
+    <string name="setting_project_id">Nom/ID du projet</string>
     <string name="setting_project_type">Type de projet</string>
     <string name="setting_project_repetition">Répéter cette facture tous les</string>
     <string name="setting_payment_mode">Mode de paiement</string>
@@ -80,11 +80,11 @@
     <string name="setting_cospend_project_url_long">Adresse de l\'instance Nextcloud hébergeant le projet Cospend</string>
     <string name="setting_cospend_project_url">Adresse du Nextcloud de Cospend</string>
     <string name="setting_project_name">Nom du projet (distant)</string>
-    <string name="setting_project_name_long">Nom affiché dans l\'interface utilisateur</string>
+    <string name="setting_project_name_long">Affiché dans l\'interface utilisateur</string>
     <string name="setting_password_long">Mot de passe que vous utilisez pour vous connecter au projet</string>
     <string name="setting_password">Mot de passe (local)</string>
     <string name="setting_new_project_password">Mot de passe</string>
-    <string name="setting_new_project_name">Nom du projet</string>
+    <string name="setting_new_project_name">Titre du Projet</string>
     <string name="setting_new_project_email">E-mail</string>
     <string name="warning_auth_project_creation">Attention : la création d\'un projet Cospend en utilisant un compte Nextcloud fonctionne avec Cospend v0.3.4 et supérieur.</string>
     <string name="auth_project_creation_title">Création authentifiée du projet</string>
@@ -99,6 +99,10 @@
     <string name="action_search">Chercher</string>
     <string name="simple_error">Erreur</string>
     <string name="simple_loading">Chargement</string>
+    <string name="simple_remove">Enlever</string>
+    <string name="sync_error_dialog_title">Échec de la synchro du projet</string>
+    <string name="sync_error_dialog_content">La synchronisation avec le projet %1$s a échoué.\n\n%2$s\n\nCe projet pourrait ne plus exister. Voulez-vous supprimer le projet localement ?</string>
+    <string name="simple_do_nothing">Ne rien faire</string>
     <string name="creating_remote_project">Création du projet distant</string>
     <string name="simple_cancel">Annuler</string>
     <string name="simple_ok">Ok</string>
@@ -130,6 +134,7 @@
     <string name="fab_add_project">Ajouter un projet</string>
     <string name="fab_add_member">Ajouter un membre</string>
     <string name="fab_rm_project">Enlever le projet courant</string>
+    <string name="remove_project_confirmation">Le projet %1$s a été enlevé</string>
     <string name="fab_edit_member">Éditer un membre</string>
     <string name="choose_member_management_action">Gérer les membres</string>
     <string name="choose_project_management_action">Gérer le projet</string>
@@ -264,9 +269,9 @@
     <string name="error_username_password_invalid">mauvais nom d\'utilisateur ou mot de passe</string>
     <string name="error_invalid_email">Adresse e-mail invalide</string>
     <string name="error_invalid_url">URL invalide</string>
-    <string name="error_invalid_project_remote_id">ID projet invalide</string>
+    <string name="error_invalid_project_remote_id">ID/nom de projet invalide</string>
     <string name="error_invalid_project_password">Le mot de passe de projet ne doit pas être vide</string>
-    <string name="error_invalid_project_name">Nom de projet invalide</string>
+    <string name="error_invalid_project_name">Titre de projet invalide</string>
     <string name="error_invalid_bill_what">Nom de facture invalide</string>
     <string name="error_invalid_bill_date">Date de facture invalide</string>
     <string name="error_invalid_bill_amount">Montant de facture invalide</string>

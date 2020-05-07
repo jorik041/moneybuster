@@ -25,7 +25,7 @@
     <string name="setting_amount">Сколько?</string>
     <string name="setting_amount_long">Сколько это стоило?</string>
     <string name="setting_owers">За кого?</string>
-    <string name="setting_project_id">Идентификатор проекта</string>
+    <string name="setting_project_id">Project ID/name</string>
     <string name="setting_project_type">Тип проекта</string>
     <string name="setting_project_repetition">Повторять этот счет каждый</string>
     <string name="setting_payment_mode">Форма оплаты</string>
@@ -79,12 +79,12 @@
     <string name="setting_ihm_project_url">Адрес IHateMoney</string>
     <string name="setting_cospend_project_url_long">Адрес сервера Nextcloud, на котором находится проект Cospend</string>
     <string name="setting_cospend_project_url">Адрес сервера Nextcloud</string>
-    <string name="setting_project_name">Имя проекта (внешний)</string>
-    <string name="setting_project_name_long">Имя, отображаемое в интерфейсе пользователя</string>
+    <string name="setting_project_name">Project title (remote)</string>
+    <string name="setting_project_name_long">Displayed in user interface</string>
     <string name="setting_password_long">Пароль, используемый для подключения к проекту</string>
     <string name="setting_password">Пароль (локальный)</string>
     <string name="setting_new_project_password">Password</string>
-    <string name="setting_new_project_name">Project name</string>
+    <string name="setting_new_project_name">Project title</string>
     <string name="setting_new_project_email">E-mail</string>
     <string name="warning_auth_project_creation">Warning: creating a Cospend project using Nextcloud account works with Cospend v0.3.4 and higher.</string>
     <string name="auth_project_creation_title">Authenticated project creation</string>
@@ -99,6 +99,10 @@
     <string name="action_search">Поиск</string>
     <string name="simple_error">Ошибка</string>
     <string name="simple_loading">Загружается</string>
+    <string name="simple_remove">Remove</string>
+    <string name="sync_error_dialog_title">Project sync failed</string>
+    <string name="sync_error_dialog_content">Synchronization with project %1$s failed.\n\n%2$s\n\nThis project might not exist anymore. Do you want to remove the project locally?</string>
+    <string name="simple_do_nothing">Do nothing</string>
     <string name="creating_remote_project">Создание внешнего проекта</string>
     <string name="simple_cancel">Отмена</string>
     <string name="simple_ok">Ок</string>
@@ -130,6 +134,7 @@
     <string name="fab_add_project">Добавить проект</string>
     <string name="fab_add_member">Добавить участника</string>
     <string name="fab_rm_project">Удалить текущий проект</string>
+    <string name="remove_project_confirmation">Project %1$s has been removed</string>
     <string name="fab_edit_member">Редактировать участника</string>
     <string name="choose_member_management_action">Manage members</string>
     <string name="choose_project_management_action">Manage project</string>
@@ -264,9 +269,9 @@
     <string name="error_username_password_invalid">неправильное имя пользователя или пароль</string>
     <string name="error_invalid_email">Некорректный адрес эл. почты</string>
     <string name="error_invalid_url">Неверный URL</string>
-    <string name="error_invalid_project_remote_id">Неверный ID проекта</string>
+    <string name="error_invalid_project_remote_id">Invalid project ID/name</string>
     <string name="error_invalid_project_password">Пароль проекта не может быть пустым</string>
-    <string name="error_invalid_project_name">Недопустимое имя проекта</string>
+    <string name="error_invalid_project_name">Invalid project title</string>
     <string name="error_invalid_bill_what">Неверное имя счета</string>
     <string name="error_invalid_bill_date">Недопустимая дата</string>
     <string name="error_invalid_bill_amount">Недопустимая сумма счета</string>

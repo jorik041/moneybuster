@@ -25,7 +25,7 @@
     <string name="setting_amount">How much?</string>
     <string name="setting_amount_long">How much did it cost?</string>
     <string name="setting_owers">For whom?</string>
-    <string name="setting_project_id">Project identifier</string>
+    <string name="setting_project_id">Project ID/name</string>
     <string name="setting_project_type">Project type</string>
     <string name="setting_project_repetition">Repeat this bill every</string>
     <string name="setting_payment_mode">Payment mode</string>
@@ -79,12 +79,12 @@
     <string name="setting_ihm_project_url">IHateMoney address</string>
     <string name="setting_cospend_project_url_long">Address of Nextcloud instance hosting the Cospend project</string>
     <string name="setting_cospend_project_url">Nextcloud Cospend address</string>
-    <string name="setting_project_name">Project name (remote)</string>
-    <string name="setting_project_name_long">Name displayed in user interface</string>
+    <string name="setting_project_name">Project title (remote)</string>
+    <string name="setting_project_name_long">Displayed in user interface</string>
     <string name="setting_password_long">Password you use to connect to the project</string>
     <string name="setting_password">Password (local)</string>
     <string name="setting_new_project_password">Password</string>
-    <string name="setting_new_project_name">Project name</string>
+    <string name="setting_new_project_name">Project title</string>
     <string name="setting_new_project_email">E-mail</string>
     <string name="warning_auth_project_creation">Warning: creating a Cospend project using Nextcloud account works with Cospend v0.3.4 and higher.</string>
     <string name="auth_project_creation_title">Authenticated project creation</string>
@@ -99,6 +99,10 @@
     <string name="action_search">Search</string>
     <string name="simple_error">Error</string>
     <string name="simple_loading">Loading</string>
+    <string name="simple_remove">Remove</string>
+    <string name="sync_error_dialog_title">Project sync failed</string>
+    <string name="sync_error_dialog_content">Synchronization with project %1$s failed.\n\n%2$s\n\nThis project might not exist anymore. Do you want to remove the project locally?</string>
+    <string name="simple_do_nothing">Do nothing</string>
     <string name="creating_remote_project">Creating remote project</string>
     <string name="simple_cancel">Cancel</string>
     <string name="simple_ok">Ok</string>
@@ -130,6 +134,7 @@
     <string name="fab_add_project">Add a project</string>
     <string name="fab_add_member">Add a member</string>
     <string name="fab_rm_project">Remove current Project</string>
+    <string name="remove_project_confirmation">Project %1$s has been removed</string>
     <string name="fab_edit_member">Edit a member</string>
     <string name="choose_member_management_action">Manage members</string>
     <string name="choose_project_management_action">Manage project</string>
@@ -264,9 +269,9 @@
     <string name="error_username_password_invalid">wrong username or password</string>
     <string name="error_invalid_email">Invalid e-mail address</string>
     <string name="error_invalid_url">Invalid URL</string>
-    <string name="error_invalid_project_remote_id">Invalid project ID</string>
+    <string name="error_invalid_project_remote_id">Invalid project ID/name</string>
     <string name="error_invalid_project_password">Project password must not be empty</string>
-    <string name="error_invalid_project_name">Invalid project name</string>
+    <string name="error_invalid_project_name">Invalid project title</string>
     <string name="error_invalid_bill_what">Invalid bill name</string>
     <string name="error_invalid_bill_date">Invalid bill date</string>
     <string name="error_invalid_bill_amount">Invalid bill amount</string>

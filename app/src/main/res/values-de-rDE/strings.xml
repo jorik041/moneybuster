@@ -25,7 +25,7 @@
     <string name="setting_amount">Wie viel?</string>
     <string name="setting_amount_long">Wie viel hat es gekostet?</string>
     <string name="setting_owers">Für wen?</string>
-    <string name="setting_project_id">Projektidentifikator</string>
+    <string name="setting_project_id">Project ID/name</string>
     <string name="setting_project_type">Projekttyp</string>
     <string name="setting_project_repetition">Wiederhole diese Ausgabe jede(n)</string>
     <string name="setting_payment_mode">Zahlungsmodus</string>
@@ -43,7 +43,7 @@
     <string name="payment_mode_credit_card">Kreditkarte</string>
     <string name="payment_mode_cash">Bar</string>
     <string name="payment_mode_check">Scheck</string>
-    <string name="payment_mode_transfer">Transaktion</string>
+    <string name="payment_mode_transfer">Überweisung</string>
     <string name="category_none">Keine Kategorie</string>
     <string name="category_all">Alle Kategorien</string>
     <string name="category_all_except_reimbursement">Alle außer Rückerstattung</string>
@@ -79,12 +79,12 @@
     <string name="setting_ihm_project_url">IHateMoney Adresse</string>
     <string name="setting_cospend_project_url_long">Adresse des Nextcloud-Servers welche das Cospend Projekt hosted</string>
     <string name="setting_cospend_project_url">Nextcloud Server-Adresse</string>
-    <string name="setting_project_name">Projektname (Remote)</string>
-    <string name="setting_project_name_long">Angezeigter Name in der Anwendung</string>
+    <string name="setting_project_name">Project title (remote)</string>
+    <string name="setting_project_name_long">Displayed in user interface</string>
     <string name="setting_password_long">Passwort für die Verbindung zum Projekt</string>
     <string name="setting_password">Passwort (lokal)</string>
     <string name="setting_new_project_password">Passwort</string>
-    <string name="setting_new_project_name">Projektname</string>
+    <string name="setting_new_project_name">Project title</string>
     <string name="setting_new_project_email">E-Mail</string>
     <string name="warning_auth_project_creation">Warnung: Das Erstellen eines Cospend-Projekts mit einem Nextcloud-Konto funktioniert mit Cospend v0.3.4 und höher.</string>
     <string name="auth_project_creation_title">Projekterstellung authentifiziert</string>
@@ -99,6 +99,10 @@
     <string name="action_search">Suche</string>
     <string name="simple_error">Fehler</string>
     <string name="simple_loading">Wird geladen</string>
+    <string name="simple_remove">Remove</string>
+    <string name="sync_error_dialog_title">Project sync failed</string>
+    <string name="sync_error_dialog_content">Synchronization with project %1$s failed.\n\n%2$s\n\nThis project might not exist anymore. Do you want to remove the project locally?</string>
+    <string name="simple_do_nothing">Do nothing</string>
     <string name="creating_remote_project">Erstelle win remote Projekt</string>
     <string name="simple_cancel">Abbrechen</string>
     <string name="simple_ok">OK</string>
@@ -130,6 +134,7 @@
     <string name="fab_add_project">Projekt hinzufügen</string>
     <string name="fab_add_member">Mitglied hinzufügen</string>
     <string name="fab_rm_project">Aktuelles Projekt entfernen</string>
+    <string name="remove_project_confirmation">Project %1$s has been removed</string>
     <string name="fab_edit_member">Mitglied bearbeiten</string>
     <string name="choose_member_management_action">Mitglieder verwalten</string>
     <string name="choose_project_management_action">Projekt verwalten</string>
@@ -264,9 +269,9 @@
     <string name="error_username_password_invalid">Benutzername oder Passwort ungültig</string>
     <string name="error_invalid_email">Ungültige E-Mail-Adresse</string>
     <string name="error_invalid_url">Ungültige Adresse</string>
-    <string name="error_invalid_project_remote_id">Ungültige Projekt ID</string>
+    <string name="error_invalid_project_remote_id">Invalid project ID/name</string>
     <string name="error_invalid_project_password">Projektpasswort darf nicht leer sein</string>
-    <string name="error_invalid_project_name">Ungültiger Projektname</string>
+    <string name="error_invalid_project_name">Invalid project title</string>
     <string name="error_invalid_bill_what">Ungültiger Ausgabenname</string>
     <string name="error_invalid_bill_date">Ungültiges Ausgabendatum</string>
     <string name="error_invalid_bill_amount">Ungültiger Ausgabenbetrag</string>

@@ -25,7 +25,7 @@
     <string name="setting_amount">Mennyi?</string>
     <string name="setting_amount_long">Mennyibe került?</string>
     <string name="setting_owers">Kinek?</string>
-    <string name="setting_project_id">Projekt azonosítója</string>
+    <string name="setting_project_id">Project ID/name</string>
     <string name="setting_project_type">Projekt típusa</string>
     <string name="setting_project_repetition">Ismételje ezt a számlát</string>
     <string name="setting_payment_mode">Fizetési mód</string>
@@ -79,12 +79,12 @@
     <string name="setting_ihm_project_url">IHateMoney címe</string>
     <string name="setting_cospend_project_url_long">A Cospend projektet hosztoló Nextcloud szerver címe</string>
     <string name="setting_cospend_project_url">Nextcloud Cospend címe</string>
-    <string name="setting_project_name">Projekt neve (távoli)</string>
-    <string name="setting_project_name_long">A felhasználói felületen megjelenő név</string>
+    <string name="setting_project_name">Project title (remote)</string>
+    <string name="setting_project_name_long">Displayed in user interface</string>
     <string name="setting_password_long">Projekthez való csatlakozás jelszava</string>
     <string name="setting_password">Jelszó (helyi)</string>
     <string name="setting_new_project_password">Jelszó</string>
-    <string name="setting_new_project_name">Projekt neve</string>
+    <string name="setting_new_project_name">Project title</string>
     <string name="setting_new_project_email">Email cím</string>
     <string name="warning_auth_project_creation">Figyelmeztetés: Cospend projekt létrehozása Nextcloud fiókkal csak Cospend v0.3.4 vagy ennél magasabb verzióval lehetséges.</string>
     <string name="auth_project_creation_title">Hitelesített projekt létrehozás</string>
@@ -99,6 +99,10 @@
     <string name="action_search">Keresés</string>
     <string name="simple_error">Hiba</string>
     <string name="simple_loading">Betöltés</string>
+    <string name="simple_remove">Remove</string>
+    <string name="sync_error_dialog_title">Project sync failed</string>
+    <string name="sync_error_dialog_content">Synchronization with project %1$s failed.\n\n%2$s\n\nThis project might not exist anymore. Do you want to remove the project locally?</string>
+    <string name="simple_do_nothing">Do nothing</string>
     <string name="creating_remote_project">Távoli projekt létrehozása</string>
     <string name="simple_cancel">Mégse</string>
     <string name="simple_ok">Ok</string>
@@ -130,6 +134,7 @@
     <string name="fab_add_project">Projekt hozzáadása</string>
     <string name="fab_add_member">Tag hozzáadása</string>
     <string name="fab_rm_project">Aktuális projekt eltávolítása</string>
+    <string name="remove_project_confirmation">Project %1$s has been removed</string>
     <string name="fab_edit_member">Tag szerkesztése</string>
     <string name="choose_member_management_action">Tagok kezelése</string>
     <string name="choose_project_management_action">Projekt kezelése</string>
@@ -264,9 +269,9 @@
     <string name="error_username_password_invalid">hibás felhasználónév vagy jelszó</string>
     <string name="error_invalid_email">Érvénytelen email cím</string>
     <string name="error_invalid_url">Érvénytelen URL</string>
-    <string name="error_invalid_project_remote_id">Érvénytelen projekt ID</string>
+    <string name="error_invalid_project_remote_id">Invalid project ID/name</string>
     <string name="error_invalid_project_password">Projekt jelszó nem lehet üres</string>
-    <string name="error_invalid_project_name">Érvénytelen projekt név</string>
+    <string name="error_invalid_project_name">Invalid project title</string>
     <string name="error_invalid_bill_what">Érvénytelen számla név</string>
     <string name="error_invalid_bill_date">Érvénytelen számla dátum</string>
     <string name="error_invalid_bill_amount">Érvénytelen számla összeg</string>

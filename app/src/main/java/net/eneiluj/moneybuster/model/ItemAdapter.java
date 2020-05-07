@@ -255,12 +255,12 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } catch (Exception e) {
             billDate.setText(Html.fromHtml(stringDate));
         }
-        if (!projectType.equals(ProjectType.IHATEMONEY)) {
+        /*if (!projectType.equals(ProjectType.IHATEMONEY)) {
             billTime.setText(bill.getTime());
         }
-        else {
+        else {*/
             billTime.setText("");
-        }
+        //}
     }
 
     public boolean select(Integer position) {

@@ -59,7 +59,9 @@ public class UserAdapter extends ArrayAdapter<UserItem> {
             viewHolder.name.setText(user.getName());
             try {
                 DBMember m = MoneyBusterSQLiteOpenHelper.getInstance(mContext).getMember(user.getId());
-                if (m.getAvatar() != null && !m.getAvatar().equals("")) {
+                if (m == null) {
+                    viewHolder.avatar.setImageDrawable(null);
+                } else if (m.getAvatar() != null && !m.getAvatar().equals("")) {
                     viewHolder.avatar.setImageDrawable(ThemeUtils.getMemberAvatarDrawable(
                             view.getContext(), m.getAvatar(), !m.isActivated()
                     ));
@@ -105,7 +107,9 @@ public class UserAdapter extends ArrayAdapter<UserItem> {
             viewHolder.name.setText(user.getName());
             try {
                 DBMember m = MoneyBusterSQLiteOpenHelper.getInstance(mContext).getMember(user.getId());
-                if (m.getAvatar() != null && !m.getAvatar().equals("")) {
+                if (m == null) {
+                    viewHolder.avatar.setImageDrawable(null);
+                } else if (m.getAvatar() != null && !m.getAvatar().equals("")) {
                     viewHolder.avatar.setImageDrawable(ThemeUtils.getMemberAvatarDrawable(
                             view.getContext(), m.getAvatar(), !m.isActivated()
                     ));

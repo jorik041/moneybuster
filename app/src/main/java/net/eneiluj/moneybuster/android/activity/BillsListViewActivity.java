@@ -88,6 +88,8 @@ import com.nextcloud.android.sso.model.SingleSignOnAccount;
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.fragment.NewProjectFragment;
 import net.eneiluj.moneybuster.android.ui.TextDrawable;
+import net.eneiluj.moneybuster.android.ui.UserAdapter;
+import net.eneiluj.moneybuster.android.ui.UserItem;
 import net.eneiluj.moneybuster.model.Category;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
@@ -1059,31 +1061,28 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     else {
                         projectName = proj.getName();
                     }
-                    // get stats
-                    Map<Long, Integer> membersNbBills = new HashMap<>();
-                    HashMap<Long, Double> membersBalance = new HashMap<>();
-                    HashMap<Long, Double> membersPaid = new HashMap<>();
-                    HashMap<Long, Double> membersSpent = new HashMap<>();
-
-                    NumberFormat numberFormatter = new DecimalFormat("#0.00");
-
-                    int nbBills = SupportUtil.getStatsOfProject(
-                            proj.getId(), db,
-                            membersNbBills, membersBalance, membersPaid, membersSpent,
-                            0, null, null, null
-                    );
-
-                    List<DBMember> membersSortedByName = db.getMembersOfProject(proj.getId(), MoneyBusterSQLiteOpenHelper.key_name);
-
-                    final List<Transaction> transactions = settleBills(membersSortedByName, membersBalance);
-                    if (transactions == null || transactions.size() == 0) {
-                        return;
+                    final View tView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.settle_table, null);
+                    // show member list
+                    List<DBMember> memberList = db.getMembersOfProject(selectedProjectId, null);
+                    List<String> nameList = new ArrayList<>();
+                    List<String> idList = new ArrayList<>();
+                    nameList.add(getString(R.string.center_none));
+                    idList.add(String.valueOf(0));
+                    for (DBMember member : memberList) {
+                        //if (member.isActivated() || member.getId() == bill.getPayerId()) {
+                            nameList.add(member.getName());
+                            idList.add(String.valueOf(member.getId()));
+                        //}
                     }
-                    // get members names per id
-                    final Map<Long, String> memberIdToName = new HashMap<>();
-                    for (DBMember m : membersSortedByName) {
-                        memberIdToName.put(m.getId(), m.getName());
+                    List<UserItem> userList = new ArrayList<>();
+                    for (int i = 0; i < nameList.size(); i++) {
+                        userList.add(new UserItem(Long.valueOf(idList.get(i)), nameList.get(i)));
                     }
+
+                    UserAdapter userAdapter = new UserAdapter(BillsListViewActivity.this, userList);
+                    Spinner centerMemberSpinner = tView.findViewById(R.id.memberCenterSpinner);
+                    centerMemberSpinner.setAdapter(userAdapter);
+                    centerMemberSpinner.getSelectedItemPosition();
 
                     // generate the dialog
                     AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -1094,34 +1093,34 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     );
                     builder.setTitle(getString(R.string.settle_dialog_title));
 
+                    // get stats
+                    Map<Long, Integer> membersNbBills = new HashMap<>();
+                    HashMap<Long, Double> membersBalance = new HashMap<>();
+                    HashMap<Long, Double> membersPaid = new HashMap<>();
+                    HashMap<Long, Double> membersSpent = new HashMap<>();
 
-                    final View tView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.settle_table, null);
+                    int nbBills = SupportUtil.getStatsOfProject(
+                            proj.getId(), db,
+                            membersNbBills, membersBalance, membersPaid, membersSpent,
+                            0, null, null, null
+                    );
+
+                    List<DBMember> membersSortedByName = db.getMembersOfProject(proj.getId(), MoneyBusterSQLiteOpenHelper.key_name);
+
+
+                    // get members names per id
+                    final Map<Long, String> memberIdToName = new HashMap<>();
+                    for (DBMember m : membersSortedByName) {
+                        memberIdToName.put(m.getId(), m.getName());
+                    }
+
+                    // table header
                     TextView hwho = tView.findViewById(R.id.header_who);
                     hwho.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
                     TextView htowhom = tView.findViewById(R.id.header_towhom);
                     htowhom.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
                     TextView hhowmuch = tView.findViewById(R.id.header_howmuch);
                     hhowmuch.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default_low));
-
-                    final TableLayout tl = tView.findViewById(R.id.settleTable);
-
-                    for (Transaction t : transactions) {
-                        View row = LayoutInflater.from(getApplicationContext()).inflate(R.layout.settle_row, null);
-                        TextView wv = row.findViewById(R.id.settle_who);
-                        wv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
-                        wv.setText(memberIdToName.get(t.getOwerMemberId()));
-
-                        TextView pv = row.findViewById(R.id.settle_towhom);
-                        pv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
-                        pv.setText(memberIdToName.get(t.getReceiverMemberId()));
-
-                        TextView sv = row.findViewById(R.id.settle_howmuch);
-                        sv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
-                        double amount = Math.round(t.getAmount() * 100.0) / 100.0;
-                        sv.setText(numberFormatter.format(amount));
-
-                        tl.addView(row);
-                    }
 
                     builder.setView(tView).setIcon(R.drawable.ic_compare_arrows_white_24dp);
                     builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
@@ -1133,6 +1132,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     builder.setNegativeButton(getString(R.string.simple_create_bills), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            UserItem item = (UserItem) centerMemberSpinner.getSelectedItem();
+                            final List<Transaction> transactions = settleBills(membersSortedByName, membersBalance, item.getId());
+                            if (transactions == null || transactions.size() == 0) {
+                                return;
+                            }
                             createBillsFromTransactions(selectedProjectId, transactions);
                         }
                     });
@@ -1140,6 +1144,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             String text = getString(R.string.share_settle_intro, projectName) + "\n";
+                            UserItem item = (UserItem) centerMemberSpinner.getSelectedItem();
+                            final List<Transaction> transactions = settleBills(membersSortedByName, membersBalance, item.getId());
+                            if (transactions == null || transactions.size() == 0) {
+                                return;
+                            }
                             // generate text to share
                             for (Transaction t : transactions) {
                                 double amount = Math.round(t.getAmount() * 100.0) / 100.0;
@@ -1165,6 +1174,30 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     });
                     builder.show();
                     fabMenuDrawerEdit.close(false);
+
+                    // center spinner event
+                    centerMemberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                            if (position <= 0) {
+                                return;
+                            } else {
+                                UserItem item = (UserItem) centerMemberSpinner.getSelectedItem();
+                                //return item.getId();
+                                Log.d(TAG, "CENTER ON "+item.getId()+" "+item.getName());
+                                updateSettlement(tView, proj.getId(), membersBalance, memberIdToName, item.getId());
+                            }
+
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parentView) {
+                            Log.d(TAG, "CENTER NOTHING");
+                        }
+                    });
+
+                    UserItem item = (UserItem) centerMemberSpinner.getSelectedItem();
+                    updateSettlement(tView, proj.getId(),membersBalance, memberIdToName, item.getId());
                 }
             }
         });
@@ -1346,6 +1379,42 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             fabAddBill.show();
             fabMenuDrawerEdit.setVisibility(View.VISIBLE);
             fabBillListAddProject.hide();
+        }
+    }
+
+    private void updateSettlement(View tView, long projectId, HashMap<Long, Double> membersBalance,
+                                  Map<Long, String> memberIdToName, long memberId) {
+        List<DBMember> membersSortedByName = db.getMembersOfProject(projectId, MoneyBusterSQLiteOpenHelper.key_name);
+        final List<Transaction> transactions = settleBills(membersSortedByName, membersBalance, memberId);
+        if (transactions == null || transactions.size() == 0) {
+            return;
+        }
+
+        NumberFormat numberFormatter = new DecimalFormat("#0.00");
+        final TableLayout tl = tView.findViewById(R.id.settleTable);
+        //tl.removeAllViews();
+        // clear table
+        int i;
+        for (i = tl.getChildCount()-1; i > 0; i--) {
+            tl.removeViewAt(i);
+        }
+
+        for (Transaction t : transactions) {
+            View row = LayoutInflater.from(getApplicationContext()).inflate(R.layout.settle_row, null);
+            TextView wv = row.findViewById(R.id.settle_who);
+            wv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
+            wv.setText(memberIdToName.get(t.getOwerMemberId()));
+
+            TextView pv = row.findViewById(R.id.settle_towhom);
+            pv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
+            pv.setText(memberIdToName.get(t.getReceiverMemberId()));
+
+            TextView sv = row.findViewById(R.id.settle_howmuch);
+            sv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
+            double amount = Math.round(t.getAmount() * 100.0) / 100.0;
+            sv.setText(numberFormatter.format(amount));
+
+            tl.addView(row);
         }
     }
 

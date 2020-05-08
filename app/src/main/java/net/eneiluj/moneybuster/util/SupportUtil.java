@@ -223,7 +223,28 @@ public class SupportUtil {
         return r;
     }
 
-    public static List<Transaction> settleBills(List<DBMember> members, Map<Long, Double> membersBalance) {
+    public static List<Transaction> settleBills(List<DBMember> members, Map<Long, Double> membersBalance,
+                                                       long centerOnMemberId) {
+        if (centerOnMemberId == 0) {
+            return settleBillsOptimal(members, membersBalance);
+        } else {
+            List<Transaction> results = new ArrayList<>();
+            double balance;
+            for (Long mid : membersBalance.keySet()) {
+                if (mid != centerOnMemberId) {
+                    balance = membersBalance.get(mid);
+                    if (balance > 0.0) {
+                        results.add(new Transaction(centerOnMemberId, mid, balance));
+                    } else if (balance < 0.0) {
+                        results.add(new Transaction(mid, centerOnMemberId, -balance));
+                    }
+                }
+            }
+            return results;
+        }
+    }
+
+    public static List<Transaction> settleBillsOptimal(List<DBMember> members, Map<Long, Double> membersBalance) {
         List<CreditDebt> crediters = new ArrayList<>();
         List<CreditDebt> debiters = new ArrayList<>();
 

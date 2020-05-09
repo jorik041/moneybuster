@@ -32,6 +32,6 @@ If you want to be able to create remote projects from MoneyBuster : enable publi
 
 The app runs on Android>=5
 
-# Alternatives
+# Alternativy
 
 Tricount, Cospender, Splitwise etc... which are not FOSS and force you to give away your private data.

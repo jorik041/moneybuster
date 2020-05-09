@@ -1,6 +1,6 @@
-Moneybuster is een budgetmanager waarbij je kan synchroniseren met IHateMoney en Nextcloud Cospend.
+Moneybuster is a shared budget manager able to synchronize with IHateMoney and Nextcloud Cospend.
 
-Wat is er anders ten opzichte van andere budgetbeheerders?
+What's different from other shared budget managers?
 
 You can keep your project local or make it synchronize with IHateMoney and Nextcloud Cospend projects.
 This means you can choose where your data is going and preserve your privacy.
@@ -8,8 +8,8 @@ This means you can choose where your data is going and preserve your privacy.
 # Features
 
 * manage projects (add/remove/create/delete/edit)
-* deelnemers beheren (toevoegen/verwijderen/bewerken)
-* rekeningen beheren (toevoegen/verwijderen/bewerken)
+* manage members (add/remove/edit)
+* manage bills (add/remove/edit)
 * search bills (by payer, name, amount, date)
 * project statistics
 * project settlement plan

@@ -30,7 +30,7 @@ Se vuoi ospitare un progetto in Nextcloud Cospend:
 
 Se vuoi essere in grado di creare progetti remoti da MoneyBuster: abilita la creazione di progetti pubblici sulla tua istanza IHateMoney o Nextcloud Cospend.
 
-The app runs on Android>=5
+L'app è compatibile con Android>=5
 
 # Alternative
 

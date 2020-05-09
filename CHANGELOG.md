@@ -5,6 +5,25 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## 0.1.2 – 2020-05-09
+### Added
+- display real avatars for members linked with NC users
+- new payment mode: online service
+[#49](https://gitlab.com/eneiluj/moneybuster/issues/49) @jwsp1
+- now able to center settlement on one member
+[#28](https://gitlab.com/eneiluj/moneybuster/issues/28) @patxiku
+
+### Changed
+- remove time display in bill list items
+[#50](https://gitlab.com/eneiluj/moneybuster/issues/50) @jwsp1
+- better notification management with one main channel and one for each project
+[#51](https://gitlab.com/eneiluj/moneybuster/issues/51) @jwsp1
+
+### Fixed
+- avoid scientific notation when sending/displaying amount
+[#48](https://gitlab.com/eneiluj/moneybuster/issues/48) @uniqdom
+
 ## 0.1.1 – 2020-04-12
 ### Added
 - dialog to remove project when sync has failed

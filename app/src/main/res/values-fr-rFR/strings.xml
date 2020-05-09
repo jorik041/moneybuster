@@ -43,6 +43,7 @@
     <string name="payment_mode_credit_card">Carte de crédit</string>
     <string name="payment_mode_cash">Liquide</string>
     <string name="payment_mode_check">Chèque</string>
+    <string name="payment_mode_online">Service en ligne</string>
     <string name="payment_mode_transfer">Virement</string>
     <string name="category_none">Pas de catégorie</string>
     <string name="category_all">Toutes les catégories</string>
@@ -164,6 +165,7 @@
     <string name="welcome_dialog_content_v13">Quoi de neuf ?\n\n* Filtres de statistiques\n* Création automatique des factures de remboursement\n* Recherche par nom de débiteur\n* Et bien plus :-)</string>
     <string name="first_welcome_dialog_content">Tout d\'abord, configurez un compte Nextcloud ou créez/rejoignez un projet (IHateMoney ou Nextcloud Cospend), puis ajoutez des membres et/ou créez des factures!\n\n Autres actions principales:\n* Générer un plan de remboursement global\n* Afficher les statistiques d\'un projet\n* Partager: génère un QRCode pour que d\'autres puissent le scanner et rejoindre le projet\n\n Sur Android &gt;= 8.0 vous pouvez effectuer un appui long sur les boutons pour afficher de l\'aide.</string>
     <string name="changelog">Journal des modifications</string>
+    <string name="permanent_notification_title">Synchronisation permanente</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Apparence</string>
     <string name="settings_network_category">Réseau</string>

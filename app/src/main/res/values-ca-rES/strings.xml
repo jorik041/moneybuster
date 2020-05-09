@@ -43,6 +43,7 @@
     <string name="payment_mode_credit_card">Tarjeta de crèdit</string>
     <string name="payment_mode_cash">Efectiu</string>
     <string name="payment_mode_check">Taló</string>
+    <string name="payment_mode_online">Online service</string>
     <string name="payment_mode_transfer">Transferència</string>
     <string name="category_none">Sense categoria</string>
     <string name="category_all">Totes les categories</string>
@@ -164,6 +165,7 @@
     <string name="welcome_dialog_content_v13">Novetats?\n\n* Filtres a les estadístiques\n* Creació automàtica de factures de reemborsament\n* Cerca pel nom del deutor\n* I molt més :-)</string>
     <string name="first_welcome_dialog_content">First, configure Nextcloud account or create/join a project (IHateMoney or Nextcloud Cospend), then add some members and/or create some bills!\n\nOther main actions:\n* Settle the project to generate a global repayment plan\n* Show project statistics\n* Share: generate a QRCode that others can scan to join the project\n\nOn Android &gt;= 8.0 you can long press the action buttons to display help.</string>
     <string name="changelog">Registre de canvis</string>
+    <string name="permanent_notification_title">Permanent sync</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Aparença</string>
     <string name="settings_network_category">Xarxa</string>

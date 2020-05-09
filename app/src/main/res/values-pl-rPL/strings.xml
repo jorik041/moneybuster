@@ -43,6 +43,7 @@
     <string name="payment_mode_credit_card">Karta kredytowa</string>
     <string name="payment_mode_cash">Gotówka</string>
     <string name="payment_mode_check">Czek</string>
+    <string name="payment_mode_online">Online service</string>
     <string name="payment_mode_transfer">Przelew</string>
     <string name="category_none">Brak kategorii</string>
     <string name="category_all">Wszystkie kategorie</string>
@@ -164,6 +165,7 @@
     <string name="welcome_dialog_content_v13">Co nowego?\n\n* Filtry w statystykach\n* Automatyczne tworzenie rachunków rozliczeniowych\n* Szukaj według nazwy\n* I wiele więcej :-)</string>
     <string name="first_welcome_dialog_content">Najpierw skonfiguruj konto Nextcloud lub stwórz/dołącz do projektu (IHateMoney lub Nextcloud Cospend), a następnie dodaj niektórych członków i/lub stwórz rachunki!\n\nInne główne działania:\n* Uzupełnij projekt do wygenerowania globalnego planu spłaty\n* Pokaż statystyki projektu\n* Udostępnij: wygeneruj QRCode, który inni mogą zeskanować, aby dołączyć do projektu\n\nNa Androidzie &gt;= 8. możesz przytrzymać przycisk akcji, aby wyświetlić pomoc.</string>
     <string name="changelog">Lista zmian</string>
+    <string name="permanent_notification_title">Permanent sync</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Wygląd</string>
     <string name="settings_network_category">Sieć</string>

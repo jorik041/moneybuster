@@ -43,6 +43,7 @@
     <string name="payment_mode_credit_card">Kredi kartı</string>
     <string name="payment_mode_cash">Nakit</string>
     <string name="payment_mode_check">Çek</string>
+    <string name="payment_mode_online">Online service</string>
     <string name="payment_mode_transfer">Havale</string>
     <string name="category_none">Kategori yok</string>
     <string name="category_all">Tüm kategoriler</string>
@@ -164,6 +165,7 @@
     <string name="welcome_dialog_content_v13">What\'s new?\n\n* Filters in statistics\n* Automatic settlement bills creation\n* Search by ower name\n* And much more :-)</string>
     <string name="first_welcome_dialog_content">First, configure Nextcloud account or create/join a project (IHateMoney or Nextcloud Cospend), then add some members and/or create some bills!\n\nOther main actions:\n* Settle the project to generate a global repayment plan\n* Show project statistics\n* Share: generate a QRCode that others can scan to join the project\n\nOn Android &gt;= 8.0 you can long press the action buttons to display help.</string>
     <string name="changelog">Değişiklik Kütüğü</string>
+    <string name="permanent_notification_title">Permanent sync</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Görünüm</string>
     <string name="settings_network_category">Ağ</string>

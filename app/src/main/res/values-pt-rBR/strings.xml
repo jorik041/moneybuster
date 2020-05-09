@@ -43,6 +43,7 @@
     <string name="payment_mode_credit_card">Cartão de crédito</string>
     <string name="payment_mode_cash">Dinheiro</string>
     <string name="payment_mode_check">Cheque</string>
+    <string name="payment_mode_online">Online service</string>
     <string name="payment_mode_transfer">Transfer</string>
     <string name="category_none">Sem categoria</string>
     <string name="category_all">Todas as categorias</string>
@@ -164,6 +165,7 @@
     <string name="welcome_dialog_content_v13">O que há de novo?\n\n* Filtros nas estatísticas\n* Criação automática de quitações\n* Pesquisa por nome do devedor\n* E muito mais :-)</string>
     <string name="first_welcome_dialog_content">Primeiro crie ou junte-se a um projeto (IHateMoney ou Nextcloud Cospend), depois adicione alguns membros e/ou crie algumas despesas!\n\nOutras ações principais:\n* Quite o projeto para gerar um plano de reembolso global\n* Mostre estatísticas do projeto\n* Partilhe: crie um código QR que outros podem ler para juntarem-se ao projeto\n\nNo Android &gt;= 8.0 pode apertar os botões de ação de forma prolongada para obter ajuda.</string>
     <string name="changelog">Lista de mudanças</string>
+    <string name="permanent_notification_title">Permanent sync</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Aparência</string>
     <string name="settings_network_category">Rede</string>

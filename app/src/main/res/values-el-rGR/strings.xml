@@ -43,6 +43,7 @@
     <string name="payment_mode_credit_card">Πιστωτική κάρτα</string>
     <string name="payment_mode_cash">Μετρητά</string>
     <string name="payment_mode_check">Έλεγχος</string>
+    <string name="payment_mode_online">Online service</string>
     <string name="payment_mode_transfer">Transfer</string>
     <string name="category_none">Χωρίς κατηγορία</string>
     <string name="category_all">Όλες οι κατηγορίες</string>
@@ -164,6 +165,7 @@
     <string name="welcome_dialog_content_v13">Τι νέο υπάρχει;\n\n* Φίλτρα στα στατιστικά στοιχεία\n* Δημιουργία λογαριασμών αυτοματοποιημένων διακανονισμών\n* Αναζήτηση βάσει ονόματος οφειλέτη\n* Και πολλά άλλα :-)</string>
     <string name="first_welcome_dialog_content">Πρώτα προσαρμόστε έναν λογαριασμό Nextcloud ή δημιουργήσετε/συνδεθείτε σε ένα έργο (IHateMoney ή Nextcloud Cospend), προσθέστε μερικά μέλη και/ή δημιουργήστε μερικούς λογαριασμούς!\n\nΆλλες κύριες δράσεις:\n* Εξόφληση ενός έργου για τη δημιουργία ενός συνολικού σχεδίου αποπληρωμής\n* Εμφάνιση στατιστικών έργων\n* Κοινοποίηση: δημιουργία ένα QRCode που μπορούν να σαρώσουν άλλοι για να συμμετάσχουν στο έργο\n\nΣτο Android &gt;= 8.0 μπορείτε να πατήσετε πατημένα τα κουμπιά δράσης για να εμφανιστεί η βοήθεια.</string>
     <string name="changelog">Αρχείο αλλαγών</string>
+    <string name="permanent_notification_title">Permanent sync</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Εμφάνιση</string>
     <string name="settings_network_category">Δίκτυο</string>

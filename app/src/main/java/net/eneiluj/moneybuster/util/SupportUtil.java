@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -57,6 +58,12 @@ public class SupportUtil {
     static {
         normalNumberFormat.setMaximumFractionDigits(Integer.MAX_VALUE);
         normalNumberFormat.setGroupingUsed(false);
+    }
+
+    public static final NumberFormat dotNumberFormat = NumberFormat.getNumberInstance(Locale.UK);
+    static {
+        dotNumberFormat.setMaximumFractionDigits(Integer.MAX_VALUE);
+        dotNumberFormat.setGroupingUsed(false);
     }
     /**
      * Creates a {@link Spanned} from a HTML string on all SDK versions.

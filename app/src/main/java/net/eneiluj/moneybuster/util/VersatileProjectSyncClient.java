@@ -240,7 +240,7 @@ public class VersatileProjectSyncClient {
                 )
         );
         paramKeys.add("amount");
-        paramValues.add(SupportUtil.normalNumberFormat.format(bill.getAmount()));
+        paramValues.add(SupportUtil.dotNumberFormat.format(bill.getAmount()));
 
         String target;
         String username = null;
@@ -417,7 +417,7 @@ public class VersatileProjectSyncClient {
                 )
         );
         paramKeys.add("amount");
-        paramValues.add(SupportUtil.normalNumberFormat.format(bill.getAmount()));
+        paramValues.add(SupportUtil.dotNumberFormat.format(bill.getAmount()));
 
         String target;
         String username = null;

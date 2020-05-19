@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## 0.1.4 – 2020-05-19
+### Fixed
+- bug when editing/creating bills with decimal amount
+[#53](https://gitlab.com/eneiluj/moneybuster/issues/53) @helfio
 
 ## 0.1.2 – 2020-05-09
 ### Added

@@ -1902,6 +1902,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     private void addProject() {
         String defaultNcUrl = "https://mynextcloud.org";
+        if (MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(this)) {
+            defaultNcUrl = MoneyBusterServerSyncHelper.getNextcloudAccountServerUrl(this);
+        }
         String defaultIhmUrl = "https://ihatemoney.org";
         Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
         List<DBProject> projects = db.getProjects();

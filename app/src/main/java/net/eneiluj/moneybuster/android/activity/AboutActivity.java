@@ -1,6 +1,7 @@
 package net.eneiluj.moneybuster.android.activity;
 
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -23,11 +24,6 @@ import net.eneiluj.moneybuster.android.fragment.about.AboutFragmentCreditsTab;
 import net.eneiluj.moneybuster.android.fragment.about.AboutFragmentLicenseTab;
 import net.eneiluj.moneybuster.util.ThemeUtils;
 
-//import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentManager;
-//import android.support.v4.app.FragmentPagerAdapter;
-//import android.support.v4.view.ViewPager;
-
 public class AboutActivity extends AppCompatActivity {
 
     ViewPager mViewPager;
@@ -39,7 +35,6 @@ public class AboutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_about);
         mViewPager = findViewById(R.id.pager);
         mTabLayout = findViewById(R.id.tabs);
-        //ButterKnife.bind(this);
 
         mViewPager.setAdapter(new TabsPagerAdapter(getSupportFragmentManager()));
         mTabLayout.setupWithViewPager(mViewPager);
@@ -51,8 +46,10 @@ public class AboutActivity extends AppCompatActivity {
         ActionBar actionBar = getDelegate().getSupportActionBar();
 
         if (actionBar != null) {
-            int color = ThemeUtils.primaryColor(this);
-            actionBar.setBackgroundDrawable(new ColorDrawable(color));
+            int colors[] = { ThemeUtils.primaryColor(this), ThemeUtils.primaryLightColor(this) };
+            GradientDrawable gradientDrawable = new GradientDrawable(
+                    GradientDrawable.Orientation.LEFT_RIGHT, colors);
+            actionBar.setBackgroundDrawable(gradientDrawable);
         }
 
         Window window = getWindow();

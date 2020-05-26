@@ -122,7 +122,8 @@ public class SettingsActivity extends AppCompatActivity {
         btn_submit = findViewById(R.id.settings_submit);
         urlWarnHttp = findViewById(R.id.settings_url_warn_http);
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
+        // this appears not to be mandatory or even useless... (for SSO)
+        /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
                 != PackageManager.PERMISSION_GRANTED) {
 
             Log.d(TAG, "[request get accounts permission]");
@@ -131,7 +132,7 @@ public class SettingsActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.GET_ACCOUNTS},
                     PERMISSION_GET_ACCOUNTS
             );
-        }
+        }*/
 
         preferences = PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext());

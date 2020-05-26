@@ -44,4 +44,11 @@ public class LoginDialogFragment extends DialogFragment {
             ((SettingsActivity) getActivity()).onAccountChoose(account);
         });
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        AccountImporter.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
 }

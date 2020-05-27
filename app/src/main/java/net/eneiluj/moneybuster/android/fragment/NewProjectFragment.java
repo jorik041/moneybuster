@@ -1211,7 +1211,7 @@ public class NewProjectFragment extends Fragment {
                             }
                             // ignore "deleteMeIfYouWant" bills that are just there
                             // to make sure we add members
-                            if (!payer_name.equals(owersStr)) {
+                            if (!"deleteMeIfYouWant".equals(what)) {
                                 billRemoteIdToOwerStr.put(Long.valueOf(row), owersStr);
                                 owersArray = owersStr.split(", ");
                                 for (int i = 0; i < owersArray.length; i++) {

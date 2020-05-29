@@ -209,7 +209,7 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginLeft="15dp"
                     android:paddingTop="8dp"
-                    android:tint="@color/grey"
+                    android:tint="@color/icon_grey"
                     android:src="@drawable/ic_currency_black_24dp" />
 
             </LinearLayout>

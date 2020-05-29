@@ -21,6 +21,8 @@
     <color name="fg_default_high">#cccccc</color>
     <color name="fg_contrast">#ffffff</color>
     <color name="icon_grey">#757575</color>
+    <color name="green">#00CC00</color>
+    <color name="red">#CC0000</color>
 
     <!-- Dark Theme -->
     <!-- Defined here until appwidgets can use night/colors -->

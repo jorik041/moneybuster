@@ -28,10 +28,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.model.DBProject;
@@ -86,8 +86,8 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     }
 
     @Override
-    public void onCreatePreferencesFix(Bundle savedInstanceState, String rootkey) {
-        addPreferencesFromResource(R.xml.activity_edit_project);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootkey) {
+
     }
 
     @Override
@@ -108,13 +108,14 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        addPreferencesFromResource(R.xml.activity_edit_project);
 
         Preference.OnPreferenceClickListener clickListener =  new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                EditText input = ((com.takisoft.fix.support.v7.preference.EditTextPreference) preference).getEditText();
+                /*EditText input = ((EditTextPreference) preference).getEditText();
                 input.setSelectAllOnFocus(true);
                 input.requestFocus();
-                input.setSelected(true);
+                input.setSelected(true);*/
                 // show keyboard
                 InputMethodManager inputMethodManager = (InputMethodManager) preference.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);

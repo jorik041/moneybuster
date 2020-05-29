@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="project_preferences">
 
-    <com.takisoft.fix.support.v7.preference.EditTextPreference
+    <EditTextPreference
         android:id="@+id/editProjectName"
         android:icon="@drawable/ic_title_grey_24dp"
         android:dialogMessage="@string/setting_project_name_long"
@@ -14,7 +14,7 @@
         android:summary=""
         android:title="@string/setting_project_name" />
 
-    <com.takisoft.fix.support.v7.preference.EditTextPreference
+    <EditTextPreference
         android:id="@+id/editProjectPassword"
         android:icon="@drawable/ic_lock_grey_24dp"
         android:dialogMessage="@string/setting_password_long"
@@ -27,7 +27,7 @@
         android:inputType="textPassword"
         android:title="@string/setting_password" />
 
-    <com.takisoft.fix.support.v7.preference.EditTextPreference
+    <EditTextPreference
         android:id="@+id/editProjectNewPassword"
         android:icon="@drawable/ic_lock_grey_24dp"
         android:dialogMessage="@string/setting_new_password_long"
@@ -40,7 +40,7 @@
         android:inputType="textPassword"
         android:title="@string/setting_new_password" />
 
-    <com.takisoft.fix.support.v7.preference.EditTextPreference
+    <EditTextPreference
         android:id="@+id/editProjectEmail"
         android:icon="@drawable/ic_email_grey_24dp"
         android:dialogMessage="@string/setting_email_long"

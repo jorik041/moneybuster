@@ -162,7 +162,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
                 spannableString.setSpan(
                         new ForegroundColorSpan(
                                 //context.getResources().getColor(R.color.primary_dark)
-                                ContextCompat.getColor(view.getContext(), R.color.light_blue)
+                                ContextCompat.getColor(view.getContext(), R.color.primary_light)
                         ),
                         matcher.start()+1, matcher.end()-1, 0);
             }

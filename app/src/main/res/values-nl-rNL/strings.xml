@@ -212,6 +212,7 @@
     <string name="add_member_dialog_title">Nieuwe deelnemernaam</string>
     <string name="edit_member_dialog_title">Deelnemer bewerken</string>
     <string name="member_edit_empty_name">Deelnemernaam mag niet blanco zijn</string>
+    <string name="center_none">Optimal</string>
     <string name="settle_who">Wie betaalt?</string>
     <string name="settle_to_whom">Aan wie?</string>
     <string name="settle_how_much">Hoeveel?</string>

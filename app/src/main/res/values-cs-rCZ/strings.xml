@@ -212,6 +212,7 @@
     <string name="add_member_dialog_title">New member name</string>
     <string name="edit_member_dialog_title">Upravit člena</string>
     <string name="member_edit_empty_name">Jméno člena nemůže zůstat nevyplněné</string>
+    <string name="center_none">Optimal</string>
     <string name="settle_who">Kdo platí?</string>
     <string name="settle_to_whom">Komu?</string>
     <string name="settle_how_much">Kolik?</string>

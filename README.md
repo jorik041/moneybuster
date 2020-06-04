@@ -25,7 +25,7 @@ This means you can choose where your data is going and preserve your privacy.
 * multi-lingual user-interface (translated on Crowdin: https://crowdin.com/project/moneybuster)
 
 ## :link: Requirements
-* Android >= 4.1
+* Android >= 5.0
 
 If you want to host a project in IHateMoney :
 

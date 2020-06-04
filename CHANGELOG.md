@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## 0.1.5 – 2020-06-05
+### Added
+
+### Changed
+- remove 'read contacts' permission request, SSO works without it
+[#45](https://gitlab.com/eneiluj/moneybuster/issues/45) @jwsp1
+- use NC account server URL by default for new projects
+
+### Fixed
+- CSV project import was missing some bills
+- get rid of takisoft stuff to be able to update gradle
+
 ## 0.1.4 – 2020-05-19
 ### Fixed
 - bug when editing/creating bills with decimal amount

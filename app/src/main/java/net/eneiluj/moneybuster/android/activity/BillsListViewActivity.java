@@ -2780,8 +2780,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 Log.v(TAG, "WE SAVE to "+savedFile);
                 saveToFileUri(contentToExport, savedFile);
             }
-        }
-        else if (requestCode == server_settings) {
+        } else if (requestCode == server_settings) {
             updateUsernameInDrawer();
             db = MoneyBusterSQLiteOpenHelper.getInstance(this);
             if (db.getMoneyBusterServerSyncHelper().isSyncPossible()) {

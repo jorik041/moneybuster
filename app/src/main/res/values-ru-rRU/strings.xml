@@ -212,6 +212,7 @@
     <string name="add_member_dialog_title">Имя нового участника</string>
     <string name="edit_member_dialog_title">Редактировать участника</string>
     <string name="member_edit_empty_name">Имя участника не может быть пустым</string>
+    <string name="center_none">Optimal</string>
     <string name="settle_who">Кто платит?</string>
     <string name="settle_to_whom">За кого?</string>
     <string name="settle_how_much">Сколько?</string>

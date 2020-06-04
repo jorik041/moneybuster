@@ -212,6 +212,7 @@
     <string name="add_member_dialog_title">Νέο όνομα μέλους</string>
     <string name="edit_member_dialog_title">Επεξεργασία μέλους</string>
     <string name="member_edit_empty_name">Το όνομα μέλους δεν μπορεί να είναι κενό</string>
+    <string name="center_none">Optimal</string>
     <string name="settle_who">Ποιος πληρώνει;</string>
     <string name="settle_to_whom">Προς ποιον;</string>
     <string name="settle_how_much">Πόσο;</string>

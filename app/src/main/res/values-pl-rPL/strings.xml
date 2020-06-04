@@ -212,6 +212,7 @@
     <string name="add_member_dialog_title">Nazwa nowego użytkownika</string>
     <string name="edit_member_dialog_title">Edytuj członka</string>
     <string name="member_edit_empty_name">Nazwa użytkownika nie może być pusta</string>
+    <string name="center_none">Optimal</string>
     <string name="settle_who">Kto płaci?</string>
     <string name="settle_to_whom">Do kogo?</string>
     <string name="settle_how_much">Ile?</string>

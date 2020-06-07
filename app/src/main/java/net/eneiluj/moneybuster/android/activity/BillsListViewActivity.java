@@ -19,7 +19,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -184,6 +183,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     SwipeRefreshLayout swipeRefreshLayout;
     com.github.clans.fab.FloatingActionMenu fabMenuDrawerEdit;
     com.github.clans.fab.FloatingActionButton fabManageMembers;
+    com.github.clans.fab.FloatingActionButton fabManageCurrencies;
     com.github.clans.fab.FloatingActionButton fabExportProject;
     com.github.clans.fab.FloatingActionButton fabManageProject;
     FloatingActionButton fabAddBill;
@@ -258,6 +258,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabMenuDrawerEdit = findViewById(R.id.floatingMenuDrawerEdit);
         fabManageMembers = findViewById(R.id.fabDrawer_manage_members);
         fabExportProject = findViewById(R.id.fabDrawer_export_project);
+        fabManageCurrencies = findViewById(R.id.fabDrawer_manage_currencies);
         fabStatistics = findViewById(R.id.fab_statistics);
         fabSettle = findViewById(R.id.fab_settle);
         fabManageProject = findViewById(R.id.fabDrawer_manage_project);
@@ -695,6 +696,116 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 selectDialog.show();
 
                 fabMenuDrawerEdit.close(true);
+            }
+        });
+
+        fabManageCurrencies.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                Intent createIntent = new Intent(getApplicationContext(), ManageCurrenciesActivity.class);
+                startActivity(createIntent);
+                /*
+                AlertDialog.Builder builder = new AlertDialog.Builder(
+                    new ContextThemeWrapper(
+                            view.getContext(),
+                            R.style.AppThemeDialog
+                    )
+                );
+
+                builder.setTitle(getString(R.string.currencies_dialog_title));
+
+                final View tView = LayoutInflater.from(view.getContext()).inflate(R.layout.currencies_management, null);
+
+                long selectedProjectID = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getLong("selected_project", 0);
+                String homeCurrency = db.getProject(selectedProjectID).getCurrencyName();
+
+                if(homeCurrency == null) {
+                    // home currency not set yet
+                    AlertDialog.Builder builderHomeCurrency = new AlertDialog.Builder(
+                            new ContextThemeWrapper(
+                                    view.getContext(),
+                                    R.style.AppThemeDialog
+                            )
+                    );
+                    builderHomeCurrency.setTitle("Set home currency");
+                    final EditText input = new EditText(view.getContext());
+                    input.setHint("e.g. USD");
+                    builderHomeCurrency.setView(input);
+                    builderHomeCurrency.setPositiveButton(R.string.simple_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            db.updateProject(selectedProjectID, null, null, null, null, null, input.getText().toString());
+                        }
+                    });
+                    builderHomeCurrency.setNegativeButton(R.string.simple_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builderHomeCurrency.show();
+                }
+                else {
+                    // home currency available
+                    final LinearLayout linearLayout = tView.findViewById(R.id.currencies_table);
+                    View homecurrencyRow = LayoutInflater.from(getApplicationContext()).inflate(R.layout.currency_row, null);
+                    TextView home_curr_name = homecurrencyRow.findViewById(R.id.curr_name);
+                    home_curr_name.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                    home_curr_name.setText(homeCurrency);
+
+                    TextView home_curr_rate = homecurrencyRow.findViewById(R.id.curr_rate);
+                    home_curr_rate.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                    home_curr_rate.setText("1.0");
+
+                    Button delete_btn = homecurrencyRow.findViewById(R.id.delete_currency_btn);
+                    delete_btn.setEnabled(false);
+                    linearLayout.addView(homecurrencyRow);
+
+                    ImageView add_currency = tView.findViewById(R.id.add_currency);
+                    add_currency.setClickable(true);
+                    add_currency.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            AlertDialog.Builder builderAddCurrency = new AlertDialog.Builder(
+                                    new ContextThemeWrapper(
+                                            view.getContext(),
+                                            R.style.AppThemeDialog
+                                    )
+                            );
+                            builder.setTitle("Add currency");
+                            final EditText nameinput = new EditText(view.getContext());
+                            final EditText rateinput = new EditText(view.getContext());
+                            rateinput.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+                            builder.setView(rateinput);
+                            builder.show();
+                        }
+                    });
+
+                    List<DBCurrency> currenciesDB = db.getCurrencies(selectedProjectID);
+                    for(DBCurrency currency: currenciesDB) {
+                        View row = LayoutInflater.from(getApplicationContext()).inflate(R.layout.currency_row, null);
+                        TextView curr_name = row.findViewById(R.id.curr_name);
+                        curr_name.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                        curr_name.setText(currency.getName());
+
+                        TextView curr_rate = row.findViewById(R.id.curr_rate);
+                        curr_rate.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+                        curr_rate.setText(String.valueOf(currency.getExchangeRate()));
+
+                        linearLayout.addView(row);
+
+                    }
+                    builder.setPositiveButton(R.string.simple_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+
+                    builder.setView(tView);
+                    builder.show();
+                }
+                 */
             }
         });
 
@@ -1358,6 +1469,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabExportProject.setColorPressed(ThemeUtils.primaryColor(this));
         fabManageProject.setColorNormal(ThemeUtils.primaryColor(this));
         fabManageProject.setColorPressed(ThemeUtils.primaryColor(this));
+        fabManageCurrencies.setColorNormal(ThemeUtils.primaryColor(this));
+        fabManageCurrencies.setColorPressed(ThemeUtils.primaryColor(this));
         fabStatistics.setColorNormal(ThemeUtils.primaryColor(this));
         fabStatistics.setColorPressed(ThemeUtils.primaryColor(this));
         fabSettle.setColorNormal(ThemeUtils.primaryColor(this));

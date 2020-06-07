@@ -343,6 +343,18 @@
                         fab:fab_size="mini" />
 
                     <com.github.clans.fab.FloatingActionButton
+                        android:id="@+id/fabDrawer_manage_currencies"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_currency_white_24dp"
+                        app:fab_colorNormal="@color/primary"
+                        app:fab_colorPressed="@color/primary"
+                        app:fab_hideAnimation="@anim/fab_slide_out_to_left"
+                        app:fab_showAnimation="@anim/fab_slide_in_from_left"
+                        fab:fab_label="Manage currencies"
+                        fab:fab_size="mini" />
+
+                    <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/fabDrawer_manage_members"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

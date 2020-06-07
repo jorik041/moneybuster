@@ -23,6 +23,10 @@
     <string name="setting_none">None</string>
     <string name="currency_dialog_title">Convert current amount from another currency into %s</string>
     <string name="no_currency_error">There is no additional currency</string>
+    <string name="main_currency">Main currency</string>
+    <string name="no_main_currency">Main currency must be set before adding others</string>
+    <string name="currency_edit_name">Currency</string>
+    <string name="currency_rate">Rate</string>
     <string name="setting_amount">How much?</string>
     <string name="setting_amount_long">How much did it cost?</string>
     <string name="setting_owers">For whom?</string>
@@ -111,6 +115,7 @@
     <string name="simple_ok_no_more">Got it!</string>
     <string name="simple_yes">Yes</string>
     <string name="simple_no">No</string>
+    <string name="simple_add">Add</string>
     <string name="simple_edit_bill">Edit bill</string>
     <string name="simple_new_bill">New bill</string>
     <string name="simple_add_project">Add project in MoneyBuster</string>

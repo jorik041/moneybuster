@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - use NC account server URL by default for new projects
 
 ### Fixed
+- missing avatar updates in some cases
 - CSV project import was missing some bills
 - get rid of takisoft stuff to be able to update gradle
 

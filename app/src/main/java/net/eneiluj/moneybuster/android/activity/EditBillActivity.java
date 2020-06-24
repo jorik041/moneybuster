@@ -105,8 +105,8 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         }
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(R.string.simple_edit_bill);
+        //ActionBar actionBar = getSupportActionBar();
+        //actionBar.setTitle(R.string.simple_edit_bill);
     }
 
     /**

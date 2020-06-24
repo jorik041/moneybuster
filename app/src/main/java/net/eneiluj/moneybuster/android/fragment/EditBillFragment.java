@@ -141,7 +141,9 @@ public class EditBillFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_edit_bill_form, container, false);
+        View view = inflater.inflate(R.layout.activity_edit_bill, container, false);
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         editWhat = view.findViewById(R.id.editWhat);
         editAmount = view.findViewById(R.id.editAmount);
         currencyIcon = view.findViewById(R.id.currencyIcon);
@@ -570,12 +572,6 @@ public class EditBillFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_bill_fragment, menu);
-
-        toolbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        int colors[] = { ThemeUtils.primaryColor(getContext()), ThemeUtils.primaryLightColor(getContext()) };
-        GradientDrawable gradientDrawable = new GradientDrawable(
-                GradientDrawable.Orientation.LEFT_RIGHT, colors);
-        toolbar.setBackgroundDrawable(gradientDrawable);
     }
 
     @Override

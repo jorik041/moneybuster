@@ -17,6 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/bg_normal"
         android:fitsSystemWindows="false">
 
 
@@ -173,6 +174,7 @@
                         android:layout_gravity="start"
                         android:paddingTop="2dp"
                         android:paddingBottom="0dp"
+                        android:background="@color/bg_normal"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                     <LinearLayout
@@ -186,6 +188,7 @@
                             android:layout_height="wrap_content"
                             android:paddingTop="0dp"
                             android:paddingBottom="2dp"
+                            android:background="@color/bg_normal"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                         <View

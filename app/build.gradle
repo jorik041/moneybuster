@@ -10,6 +10,9 @@ android {
         versionCode 25
         versionName "0.1.5"
         multiDexEnabled true
+        vectorDrawables {
+            useSupportLibrary true
+        }
     }
     buildTypes {
         release {

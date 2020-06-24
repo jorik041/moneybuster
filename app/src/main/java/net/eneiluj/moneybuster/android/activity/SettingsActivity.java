@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -13,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
@@ -28,6 +30,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.webkit.SslErrorHandler;
@@ -110,7 +113,11 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+
+        View view = LayoutInflater.from(this).inflate(R.layout.activity_settings, null);
+        setContentView(view);
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         use_sso_switch = findViewById(R.id.use_sso_switch);
         field_url = findViewById(R.id.settings_url);
@@ -144,27 +151,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            int color = ThemeUtils.primaryColor(this);
-            actionBar.setBackgroundDrawable(new ColorDrawable(color));
-        }
-
-        Window window = getWindow();
-        if (window != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                int colorDark = ThemeUtils.primaryDarkColor(this);
-                window.setStatusBarColor(colorDark);
-            }
-        }
-
-        // toolbar color
-        ActionBar toolbar = getSupportActionBar();
-        int colors[] = {ThemeUtils.primaryColor(this), ThemeUtils.primaryLightColor(this)};
-        GradientDrawable gradientDrawable = new GradientDrawable(
-                GradientDrawable.Orientation.LEFT_RIGHT, colors);
-        toolbar.setBackgroundDrawable(gradientDrawable);
-
         setupListener();
 
         // Load current Preferences
@@ -173,6 +159,14 @@ public class SettingsActivity extends AppCompatActivity {
             url_wrapper.setVisibility(View.INVISIBLE);
             urlWarnHttp.setVisibility(View.GONE);
             btn_submit.setVisibility(View.INVISIBLE);
+        }
+        // manage switch color
+        if (use_sso_switch.isChecked()) {
+            use_sso_switch.getTrackDrawable().setColorFilter(ThemeUtils.primaryDarkColor(this), PorterDuff.Mode.SRC_IN);
+            use_sso_switch.getThumbDrawable().setColorFilter(ThemeUtils.primaryColor(this), PorterDuff.Mode.MULTIPLY);
+        } else {
+            use_sso_switch.getTrackDrawable().setColorFilter(ContextCompat.getColor(this, R.color.fg_default_low), PorterDuff.Mode.SRC_IN);
+            use_sso_switch.getThumbDrawable().setColorFilter(ContextCompat.getColor(this, R.color.fg_default_high), PorterDuff.Mode.MULTIPLY);
         }
         field_url.setText(preferences.getString(SETTINGS_URL, DEFAULT_SETTINGS));
         field_username.setText(preferences.getString(SETTINGS_USERNAME, DEFAULT_SETTINGS));
@@ -208,8 +202,10 @@ public class SettingsActivity extends AppCompatActivity {
                     loginDialogFragment.show(SettingsActivity.this.getSupportFragmentManager(), "NoticeDialogFragment");
 
                     use_sso_switch.setChecked(false);
-                }
-                else {
+                } else {
+                    use_sso_switch.getTrackDrawable().setColorFilter(ContextCompat.getColor(SettingsActivity.this, R.color.fg_default_low), PorterDuff.Mode.SRC_IN);
+                    use_sso_switch.getThumbDrawable().setColorFilter(ContextCompat.getColor(SettingsActivity.this, R.color.fg_default_high), PorterDuff.Mode.MULTIPLY);
+
                     url_wrapper.setVisibility(View.VISIBLE);
                     //urlWarnHttp.setVisibility(View.VISIBLE);
                     // stimulate url field to update http warning

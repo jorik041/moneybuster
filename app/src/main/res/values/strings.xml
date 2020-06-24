@@ -263,6 +263,7 @@
     <string name="error_invalid_sync_interval">Sync interval must be between 5 and 1440 (24h)</string>
     <string name="project_activity_notification">Project %1$s</string>
     <string name="activity_dialog_title">Activity in project %1$s</string>
+    <string name="manage_accounts">Manage accounts</string>
 
 
     <!-- Certificates -->

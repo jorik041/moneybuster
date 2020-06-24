@@ -88,13 +88,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        // toolbar color
-        toolbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        int colors[] = {ThemeUtils.primaryColor(getContext()), ThemeUtils.primaryLightColor(getContext())};
-        GradientDrawable gradientDrawable = new GradientDrawable(
-                GradientDrawable.Orientation.LEFT_RIGHT, colors);
-        toolbar.setBackgroundDrawable(gradientDrawable);
-
         Preference resetTrust = findPreference(getString(R.string.pref_key_reset_trust));
         resetTrust.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override

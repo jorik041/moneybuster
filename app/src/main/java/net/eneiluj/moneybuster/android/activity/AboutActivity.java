@@ -41,6 +41,7 @@ public class AboutActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         mViewPager = findViewById(R.id.pager);
         mTabLayout = findViewById(R.id.tabs);
+        mTabLayout.setSelectedTabIndicatorColor(ThemeUtils.primaryColor(this));
 
         mViewPager.setAdapter(new TabsPagerAdapter(getSupportFragmentManager()));
         mTabLayout.setupWithViewPager(mViewPager);

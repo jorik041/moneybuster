@@ -576,6 +576,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     @SuppressLint("PrivateResource")
     private void updateToolbars(boolean disableSearch) {
+        if (!disableSearch) {
+            displaySearchHelp();
+        }
         homeToolbar.setVisibility(disableSearch ? VISIBLE : GONE);
         toolbar.setVisibility(disableSearch ? GONE : VISIBLE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

@@ -35,22 +35,6 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
         } else {
             fragment = (NewProjectFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
         }
-        /*ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            int color = ThemeUtils.primaryColor(this);
-            actionBar.setBackgroundDrawable(new ColorDrawable(color));
-        }
-
-        Window window = getWindow();
-        if (window != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                int colorDark = ThemeUtils.primaryDarkColor(this);
-                window.setStatusBarColor(colorDark);
-            }
-        }
-
-         */
     }
 
     @Override

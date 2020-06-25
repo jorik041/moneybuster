@@ -17,7 +17,6 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -108,7 +107,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.activity_edit_project);
+        addPreferencesFromResource(R.xml.activity_edit_project_prefs);
 
         Preference.OnPreferenceClickListener clickListener =  new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
@@ -274,16 +273,10 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_edit_project_fragment, menu);
-        // toolbar color
-        toolbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        int colors[] = { ThemeUtils.primaryColor(getContext()), ThemeUtils.primaryLightColor(getContext()) };
-        GradientDrawable gradientDrawable = new GradientDrawable(
-                GradientDrawable.Orientation.LEFT_RIGHT, colors);
-        toolbar.setBackgroundDrawable(gradientDrawable);
 
         myMenu = menu;
         saveButton = (ImageView) menu.findItem(R.id.menu_save).getActionView();
-        saveButton.setImageResource(R.drawable.ic_check_white_24dp);
+        saveButton.setImageResource(R.drawable.ic_check_grey600_24dp);
         saveButton.setPadding(20,0,20,0);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override

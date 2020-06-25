@@ -2701,9 +2701,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.search:
+            /*case R.id.search:
                 displaySearchHelp();
-                return true;
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }

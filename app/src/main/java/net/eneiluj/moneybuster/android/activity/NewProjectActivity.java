@@ -35,7 +35,7 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
         } else {
             fragment = (NewProjectFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
         }
-        ActionBar actionBar = getSupportActionBar();
+        /*ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             int color = ThemeUtils.primaryColor(this);
@@ -49,6 +49,8 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
                 window.setStatusBarColor(colorDark);
             }
         }
+
+         */
     }
 
     @Override

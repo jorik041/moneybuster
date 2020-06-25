@@ -43,6 +43,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
@@ -170,7 +171,9 @@ public class NewProjectFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView");
-        View view = inflater.inflate(R.layout.activity_new_project_form, container, false);
+        View view = inflater.inflate(R.layout.activity_new_project, container, false);
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         whatTodoJoin = view.findViewById(R.id.whatTodoJoin);
         whatTodoCreate = view.findViewById(R.id.whatTodoCreate);
         whereLocal = view.findViewById(R.id.whereLocal);
@@ -835,32 +838,6 @@ public class NewProjectFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // toolbar color
-        toolbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        int colors[] = { ThemeUtils.primaryColor(getContext()), ThemeUtils.primaryLightColor(getContext()) };
-        GradientDrawable gradientDrawable = new GradientDrawable(
-                GradientDrawable.Orientation.LEFT_RIGHT, colors);
-        toolbar.setBackgroundDrawable(gradientDrawable);
-        /*inflater.inflate(R.menu.menu_new_project_fragment, menu);
-        //ImageView addButton = getActivity().findViewById(R.id.menu_create);
-        final ImageView addButton = (ImageView) menu.findItem(R.id.menu_create).getActionView();
-        addButton.setImageResource(R.drawable.ic_add_circle_white_24dp);
-        addButton.setPadding(40,0,40,0);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Animation animation1 =
-                        AnimationUtils.loadAnimation(
-                                getActivity().getApplicationContext(),
-                                R.anim.rotation
-                        );
-                addButton.startAnimation(animation1);
-
-
-
-            }
-        });*/
-
     }
 
     @Override

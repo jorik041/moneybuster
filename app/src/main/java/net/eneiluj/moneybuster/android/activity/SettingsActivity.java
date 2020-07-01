@@ -129,8 +129,9 @@ public class SettingsActivity extends AppCompatActivity {
         btn_submit = findViewById(R.id.settings_submit);
         urlWarnHttp = findViewById(R.id.settings_url_warn_http);
 
-        // this appears not to be mandatory or even useless... (for SSO)
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
+        // this appears not to be mandatory or even useless after API level 25... (for SSO)
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N_MR1 &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
                 != PackageManager.PERMISSION_GRANTED) {
 
             Log.d(TAG, "[request get accounts permission]");

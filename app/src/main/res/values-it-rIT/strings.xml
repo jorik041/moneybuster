@@ -208,11 +208,11 @@
     <string name="settings_notify_deleted">Notifica sulla cancellazione delle spese</string>
     <string name="project_sync_success">Progetto %s sincronizzato</string>
     <string name="file_saved_success">Progetto salvato in %s</string>
-    <string name="write_permission_refused">Write permission refused, impossible to write file</string>
+    <string name="write_permission_refused">Autorizzazione di scrittura rifiutata, impossibile scrivere il file</string>
     <string name="add_member_dialog_title">Nome nuovo membro</string>
     <string name="edit_member_dialog_title">Modifica un membro</string>
     <string name="member_edit_empty_name">Il nome del membro non può essere vuoto</string>
-    <string name="center_none">Optimal</string>
+    <string name="center_none">Ottimale</string>
     <string name="settle_who">Chi paga?</string>
     <string name="settle_to_whom">A chi?</string>
     <string name="settle_how_much">Quanto?</string>
@@ -254,10 +254,11 @@
     <string name="edit_project_local_impossible">Impossibile per progetti locali</string>
     <string name="choose_account_project_dialog_title">Scegli un progetto dal tuo account Nextcloud</string>
     <string name="choose_account_project_dialog_impossible">Non c\'è un progetto Cospend nel tuo account Nextcloud</string>
-    <string name="is_running">Synced at %2$s (every %1$d min)</string>
+    <string name="is_running">Sincronizzato a %2$s (ogni %1$d min)</string>
     <string name="error_invalid_sync_interval">L\'intervallo di sincronizzazione deve essere compreso tra 5 e 1440 (24h)</string>
     <string name="project_activity_notification">Progetto %1$s</string>
     <string name="activity_dialog_title">Attività nel progetto %1$s</string>
+    <string name="manage_accounts">Manage accounts</string>
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Sicurezza della connessione</string>
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster ha riscontrato un certificato sconosciuto. Vuoi fidarti?</string>

@@ -258,6 +258,7 @@
     <string name="error_invalid_sync_interval">Sync interval must be between 5 and 1440 (24h)</string>
     <string name="project_activity_notification">Проект %1$s</string>
     <string name="activity_dialog_title">Дейност в проект %1$s</string>
+    <string name="manage_accounts">Manage accounts</string>
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Connection security</string>
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster has encountered an unknown certificate. Do you want to trust it?</string>

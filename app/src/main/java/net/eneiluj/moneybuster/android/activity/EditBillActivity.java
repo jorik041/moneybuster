@@ -104,9 +104,6 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
             fragment.setInitialSavedState(savedState);
         }
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
-
-        //ActionBar actionBar = getSupportActionBar();
-        //actionBar.setTitle(R.string.simple_edit_bill);
     }
 
     /**
@@ -122,9 +119,6 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
 
         fragment = EditBillFragment.newInstanceWithNewBill(newBill, getProjectType());
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(R.string.simple_new_bill);
     }
 
     @Override

@@ -144,6 +144,9 @@ public class EditBillFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_edit_bill, container, false);
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        if (bill.getId() == 0) {
+            toolbar.setTitle(R.string.simple_new_bill);
+        }
         editWhat = view.findViewById(R.id.editWhat);
         editAmount = view.findViewById(R.id.editAmount);
         currencyIcon = view.findViewById(R.id.currencyIcon);

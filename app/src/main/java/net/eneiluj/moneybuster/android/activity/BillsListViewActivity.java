@@ -869,6 +869,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         int[] toC = new int[]{android.R.id.text1};
                         SimpleAdapter simpleAdapterC = new SimpleAdapter(tView.getContext(), dataC, android.R.layout.simple_spinner_item, fromC, toC);
                         simpleAdapterC.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
                         Spinner statsCategorySpinner = tView.findViewById(R.id.statsCategorySpinner);
                         statsCategorySpinner.setAdapter(simpleAdapterC);
                         //statsCategorySpinner.setSelection(0);
@@ -1146,6 +1147,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                     UserAdapter userAdapter = new UserAdapter(BillsListViewActivity.this, userList);
                     Spinner centerMemberSpinner = tView.findViewById(R.id.memberCenterSpinner);
+                    // TODO color
                     centerMemberSpinner.setAdapter(userAdapter);
                     centerMemberSpinner.getSelectedItemPosition();
 
@@ -1250,7 +1252,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                 UserItem item = (UserItem) centerMemberSpinner.getSelectedItem();
                                 //return item.getId();
                                 Log.d(TAG, "CENTER ON "+item.getId()+" "+item.getName());
-                                updateSettlement(tView, proj.getId(), membersBalance, memberIdToName, item.getId());
+                                updateSettlement(tView, view, proj.getId(), membersBalance, memberIdToName, item.getId());
                             }
 
                         }
@@ -1262,7 +1264,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     });
 
                     UserItem item = (UserItem) centerMemberSpinner.getSelectedItem();
-                    updateSettlement(tView, proj.getId(),membersBalance, memberIdToName, item.getId());
+                    updateSettlement(tView, view, proj.getId(),membersBalance, memberIdToName, item.getId());
                 }
             }
         });
@@ -1447,7 +1449,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         }
     }
 
-    private void updateSettlement(View tView, long projectId, HashMap<Long, Double> membersBalance,
+    private void updateSettlement(View tView, View view, long projectId, HashMap<Long, Double> membersBalance,
                                   Map<Long, String> memberIdToName, long memberId) {
         List<DBMember> membersSortedByName = db.getMembersOfProject(projectId, MoneyBusterSQLiteOpenHelper.key_name);
         final List<Transaction> transactions = settleBills(membersSortedByName, membersBalance, memberId);
@@ -1467,15 +1469,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         for (Transaction t : transactions) {
             View row = LayoutInflater.from(getApplicationContext()).inflate(R.layout.settle_row, null);
             TextView wv = row.findViewById(R.id.settle_who);
-            wv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
+            wv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
             wv.setText(memberIdToName.get(t.getOwerMemberId()));
 
             TextView pv = row.findViewById(R.id.settle_towhom);
-            pv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
+            pv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
             pv.setText(memberIdToName.get(t.getReceiverMemberId()));
 
             TextView sv = row.findViewById(R.id.settle_howmuch);
-            sv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
+            sv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
             double amount = Math.round(t.getAmount() * 100.0) / 100.0;
             sv.setText(numberFormatter.format(amount));
 
@@ -1755,6 +1757,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             View row = LayoutInflater.from(getApplicationContext()).inflate(R.layout.statistic_row, null);
             TextView wv = row.findViewById(R.id.stat_who);
             wv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+
             wv.setText(m.getName());
 
             TextView pv = row.findViewById(R.id.stat_paid);

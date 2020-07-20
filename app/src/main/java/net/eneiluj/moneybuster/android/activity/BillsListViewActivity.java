@@ -1127,7 +1127,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     else {
                         projectName = proj.getName();
                     }
-                    final View tView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.settle_table, null);
+                    final View tView = LayoutInflater.from(view.getContext()).inflate(R.layout.settle_table, null);
                     // show member list
                     List<DBMember> memberList = db.getMembersOfProject(selectedProjectId, null);
                     List<String> nameList = new ArrayList<>();
@@ -1147,7 +1147,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                     UserAdapter userAdapter = new UserAdapter(BillsListViewActivity.this, userList);
                     Spinner centerMemberSpinner = tView.findViewById(R.id.memberCenterSpinner);
-                    // TODO color
                     centerMemberSpinner.setAdapter(userAdapter);
                     centerMemberSpinner.getSelectedItemPosition();
 
@@ -1264,7 +1263,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     });
 
                     UserItem item = (UserItem) centerMemberSpinner.getSelectedItem();
-                    updateSettlement(tView, view, proj.getId(),membersBalance, memberIdToName, item.getId());
+                    updateSettlement(tView, view, proj.getId(), membersBalance, memberIdToName, item.getId());
                 }
             }
         });

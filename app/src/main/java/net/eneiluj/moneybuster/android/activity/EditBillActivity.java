@@ -45,20 +45,6 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         } else {
             fragment = (EditBillFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
         }
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            int color = ThemeUtils.primaryColor(this);
-            actionBar.setBackgroundDrawable(new ColorDrawable(color));
-        }
-
-        Window window = getWindow();
-        if (window != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                int colorDark = ThemeUtils.primaryDarkColor(this);
-                window.setStatusBarColor(colorDark);
-            }
-        }
     }
 
     @Override
@@ -118,9 +104,6 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
             fragment.setInitialSavedState(savedState);
         }
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(R.string.simple_edit_bill);
     }
 
     /**
@@ -136,9 +119,6 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
 
         fragment = EditBillFragment.newInstanceWithNewBill(newBill, getProjectType());
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(R.string.simple_new_bill);
     }
 
     @Override

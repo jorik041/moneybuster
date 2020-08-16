@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## 0.1.7 – 2020-07-06
+### Fixed
+- crash when creating a bill
+[#57](https://gitlab.com/eneiluj/moneybuster/issues/57) @cyko69
+
+## 0.1.6 – 2020-07-03
+### Changed
+- new design (from NC Files and NC Notes)
+- allow to move app to external storage
+[#55](https://gitlab.com/eneiluj/moneybuster/issues/55) @call-me-matt
+
 ## 0.1.5 – 2020-06-05
 ### Added
 
@@ -14,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - use NC account server URL by default for new projects
 
 ### Fixed
+- missing avatar updates in some cases
 - CSV project import was missing some bills
 - get rid of takisoft stuff to be able to update gradle
 

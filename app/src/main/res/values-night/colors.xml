@@ -3,6 +3,7 @@
     <!-- Colors -->
 
     <color name="primary_dark">#286090</color>
+    <color name="accent">#f5f5f5</color>
 
     <color name="separator">#444</color>
 
@@ -17,5 +18,7 @@
     <color name="fg_default_high">#666666</color>
     <color name="fg_contrast">#000000</color>
     <color name="primary_text">#FFFFFF</color>
+
+    <color name="appbar">#212121</color>
 
 </resources>

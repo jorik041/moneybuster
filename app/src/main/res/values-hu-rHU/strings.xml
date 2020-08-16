@@ -258,6 +258,7 @@
     <string name="error_invalid_sync_interval">Szinkronizációs intervallum muszáj, hogy 5 és 1440 között legyen (24óra)</string>
     <string name="project_activity_notification">Projekt %1$s</string>
     <string name="activity_dialog_title">Tevékenység a(z) %1$s projektben</string>
+    <string name="manage_accounts">Manage accounts</string>
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Kapcsolat biztonságos</string>
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster egy ismeretlen tanúsítvánnyal találkozott. Megbízol benne?</string>

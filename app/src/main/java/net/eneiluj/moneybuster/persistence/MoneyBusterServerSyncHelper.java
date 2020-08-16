@@ -620,7 +620,10 @@ public class MoneyBusterServerSyncHelper {
                     // member does not exist locally, add it
                     if (localMember == null) {
                         Log.d(getClass().getSimpleName(), "Add local member : " + m);
-                        dbHelper.addMember(m);
+                        long mid = dbHelper.addMember(m);
+                        if (m.getNcUserId() != null && !"".equals(m.getNcUserId())) {
+                            updateMemberAvatar(mid);
+                        }
                     }
                     // member exists, check if needs update
                     else {
@@ -650,6 +653,13 @@ public class MoneyBusterServerSyncHelper {
                         ) {
                             // alright
                             Log.d(getClass().getSimpleName(), "Nothing to do for member : " + localMember);
+                            // if there was no change BUT there is a userid and no avatar => update avatar
+                            if (localMember.getNcUserId() != null && !"".equals(localMember.getNcUserId()) &&
+                                    (localMember.getAvatar() == null || "".equals(localMember.getAvatar()))
+                            ) {
+                                Log.d(getClass().getSimpleName(), "except updating avatar");
+                                updateMemberAvatar(localMember.getId());
+                            }
                         } else {
                             Log.d(getClass().getSimpleName(), "Update local member : " + m);
                             Integer r = m.getR();

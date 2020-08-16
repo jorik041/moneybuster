@@ -1,6 +1,7 @@
 package net.eneiluj.moneybuster.android.activity;
 
 import android.Manifest;
+import android.animation.AnimatorInflater;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.SearchManager;
@@ -28,6 +29,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.text.Html;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -38,7 +40,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -60,11 +61,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.core.view.ViewCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -74,6 +79,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.zxing.WriterException;
@@ -127,6 +134,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static net.eneiluj.moneybuster.android.activity.EditProjectActivity.PARAM_PROJECT_ID;
 import static net.eneiluj.moneybuster.util.SupportUtil.getVersionName;
 import static net.eneiluj.moneybuster.util.SupportUtil.settleBills;
@@ -188,7 +197,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     com.github.clans.fab.FloatingActionButton fabManageProject;
     FloatingActionButton fabAddBill;
     FloatingActionButton fabSidebarAddProject;
-    FloatingActionButton fabBillListAddProject;
+    //FloatingActionButton fabBillListAddProject;
     com.github.clans.fab.FloatingActionButton fabStatistics;
     com.github.clans.fab.FloatingActionButton fabSettle;
     com.github.clans.fab.FloatingActionButton fabShareProject;
@@ -201,10 +210,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     ImageView avatarView;
     LinearLayoutCompat lastSyncLayout;
     TextView lastSyncText;
+    AppCompatImageButton menuButton;
+    AppCompatImageView accountButton;
+    MaterialCardView homeToolbar;
+    AppBarLayout appBar;
 
     private String statsTextToShare;
 
-    private ActionBarDrawerToggle drawerToggle;
     private ItemAdapter adapter = null;
     private NavigationAdapter adapterMembers;
     private NavigationAdapter.NavigationItem itemAll;
@@ -265,7 +277,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabShareProject = findViewById(R.id.fab_share);
         fabAddBill = findViewById(R.id.fab_add_bill);
         fabSidebarAddProject = findViewById(R.id.fab_add_project);
-        fabBillListAddProject = findViewById(R.id.fab_bill_list_add_project);
+        //fabBillListAddProject = findViewById(R.id.fab_bill_list_add_project);
         fabSelectProject = findViewById(R.id.fab_select_project);
         listNavigationMembers = findViewById(R.id.navigationList);
         listNavigationMenu = findViewById(R.id.navigationMenu);
@@ -274,13 +286,18 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         avatarView = findViewById(R.id.drawer_nc_logo);
         lastSyncLayout = findViewById(R.id.drawer_last_sync_layout);
         lastSyncText = findViewById(R.id.last_sync_text);
+        menuButton = findViewById(R.id.menu_button);
+        accountButton = findViewById(R.id.launchAccountSwitcher);
+        searchView = findViewById(R.id.search_view);
+        homeToolbar = findViewById(R.id.home_toolbar);
+        appBar = findViewById(R.id.appBar);
 
-        lastSyncLayout.setVisibility(View.GONE);
+        lastSyncLayout.setVisibility(GONE);
         lastSyncLayout.setBackgroundColor(ThemeUtils.primaryDarkColor(this));
 
         db = MoneyBusterSQLiteOpenHelper.getInstance(this);
 
-        setupActionBar();
+        setupToolBar();
         setupBillsList();
         setupNavigationMenu();
         setupMembersNavigationList(categoryAdapterSelectedItem);
@@ -477,18 +494,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     }
 
     @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        drawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        drawerToggle.syncState();
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable(SAVED_STATE_NAVIGATION_SELECTION, navigationSelection);
@@ -496,25 +501,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         outState.putString(SAVED_STATE_NAVIGATION_OPEN, navigationOpen);
     }
 
-    private void setupActionBar() {
+    private void setupToolBar() {
         setSupportActionBar(toolbar);
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.action_drawer_open, R.string.action_drawer_close) {
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                // Do whatever you want here
-                fabMenuDrawerEdit.close(false);
-            }
-
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                // Do whatever you want here
-            }
-        };
-        drawerToggle.setDrawerIndicatorEnabled(true);
-        drawerLayout.addDrawerListener(drawerToggle);
-        int colors[] = { ThemeUtils.primaryColor(this), ThemeUtils.primaryLightColor(this) };
+        int colors[] = {ThemeUtils.primaryColor(this), ThemeUtils.primaryLightColor(this)};
         GradientDrawable gradientDrawable = new GradientDrawable(
                 GradientDrawable.Orientation.LEFT_RIGHT, colors);
         drawerLayout.findViewById(R.id.drawer_top_layout).setBackground(gradientDrawable);
@@ -522,22 +511,97 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         ImageView logoView = drawerLayout.findViewById(R.id.drawer_logo);
         logoView.setColorFilter(ThemeUtils.primaryColor(this), PorterDuff.Mode.OVERLAY);
 
-        int colorsLastSync[] = { ThemeUtils.primaryDarkColor(this), ThemeUtils.primaryColor(this) };
+        int colorsLastSync[] = {ThemeUtils.primaryDarkColor(this), ThemeUtils.primaryColor(this)};
         GradientDrawable gradientDrawable2 = new GradientDrawable(
                 GradientDrawable.Orientation.LEFT_RIGHT, colorsLastSync);
         lastSyncLayout.setBackground(gradientDrawable2);
 
-        //toolbar.setBackgroundColor(ThemeUtils.primaryColor(this));
-        GradientDrawable gradientDrawableToolbar = new GradientDrawable(
-                GradientDrawable.Orientation.LEFT_RIGHT, colors);
-        toolbar.setBackground(gradientDrawableToolbar);
-
-        Window window = getWindow();
-        if (window != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                int color = ThemeUtils.primaryDarkColor(this);
-                window.setStatusBarColor(color);
+        menuButton.setOnClickListener((v) -> drawerLayout.openDrawer(GravityCompat.START));
+        final BillsListViewActivity that = this;
+        accountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent settingsIntent = new Intent(that, SettingsActivity.class);
+                startActivityForResult(settingsIntent, server_settings);
             }
+        });
+
+        ///////// SEARCH
+        homeToolbar.setOnClickListener((v) -> {
+            if (toolbar.getVisibility() == GONE) {
+                updateToolbars(false);
+            }
+        });
+
+        final LinearLayout searchEditFrame = searchView.findViewById(R.id
+                .search_edit_frame);
+
+        searchEditFrame.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            int oldVisibility = -1;
+
+            @Override
+            public void onGlobalLayout() {
+                int currentVisibility = searchEditFrame.getVisibility();
+
+                if (currentVisibility != oldVisibility) {
+                    if (currentVisibility == VISIBLE) {
+                        fabAddBill.setVisibility(View.INVISIBLE);
+                    } else {
+                        new Handler().postDelayed(() -> fabAddBill.setVisibility(VISIBLE), 150);
+                    }
+
+                    oldVisibility = currentVisibility;
+                }
+            }
+
+        });
+        searchView.setOnCloseListener(() -> {
+            if (toolbar.getVisibility() == VISIBLE && TextUtils.isEmpty(searchView.getQuery())) {
+                updateToolbars(true);
+                return true;
+            }
+            return false;
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                refreshLists();
+                return true;
+            }
+        });
+    }
+
+    @SuppressLint("PrivateResource")
+    private void updateToolbars(boolean disableSearch) {
+        if (!disableSearch) {
+            displaySearchHelp();
+        }
+        homeToolbar.setVisibility(disableSearch ? VISIBLE : GONE);
+        toolbar.setVisibility(disableSearch ? GONE : VISIBLE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            appBar.setStateListAnimator(AnimatorInflater.loadStateListAnimator(appBar.getContext(),
+                    disableSearch ? R.animator.appbar_elevation_off : R.animator.appbar_elevation_on));
+        } else {
+            ViewCompat.setElevation(appBar, disableSearch ? 0 : getResources().getDimension(R.dimen.design_appbar_elevation));
+        }
+        if (disableSearch) {
+            searchView.setQuery(null, true);
+        }
+        searchView.setIconified(disableSearch);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        if (toolbar.getVisibility() == VISIBLE) {
+            updateToolbars(true);
+            return true;
+        } else {
+            return super.onSupportNavigateUp();
         }
     }
 
@@ -586,13 +650,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         });
 
-        fabBillListAddProject.setOnClickListener(new View.OnClickListener() {
+        /*fabBillListAddProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addProject();
                 drawerLayout.closeDrawers();
             }
         });
+
+         */
 
         fabAddBill.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -915,6 +981,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         int[] toC = new int[]{android.R.id.text1};
                         SimpleAdapter simpleAdapterC = new SimpleAdapter(tView.getContext(), dataC, android.R.layout.simple_spinner_item, fromC, toC);
                         simpleAdapterC.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
                         Spinner statsCategorySpinner = tView.findViewById(R.id.statsCategorySpinner);
                         statsCategorySpinner.setAdapter(simpleAdapterC);
                         //statsCategorySpinner.setSelection(0);
@@ -994,9 +1061,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     }
                     else {
                         LinearLayout statsCategoryLayout = tView.findViewById(R.id.statsCategoryLayout);
-                        statsCategoryLayout.setVisibility(View.GONE);
+                        statsCategoryLayout.setVisibility(GONE);
                         LinearLayout statsPaymentModeLayout = tView.findViewById(R.id.statsPaymentModeLayout);
-                        statsPaymentModeLayout.setVisibility(View.GONE);
+                        statsPaymentModeLayout.setVisibility(GONE);
                     }
 
                     // DATE MIN and MAX
@@ -1172,7 +1239,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     else {
                         projectName = proj.getName();
                     }
-                    final View tView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.settle_table, null);
+                    final View tView = LayoutInflater.from(view.getContext()).inflate(R.layout.settle_table, null);
                     // show member list
                     List<DBMember> memberList = db.getMembersOfProject(selectedProjectId, null);
                     List<String> nameList = new ArrayList<>();
@@ -1296,7 +1363,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                 UserItem item = (UserItem) centerMemberSpinner.getSelectedItem();
                                 //return item.getId();
                                 Log.d(TAG, "CENTER ON "+item.getId()+" "+item.getName());
-                                updateSettlement(tView, proj.getId(), membersBalance, memberIdToName, item.getId());
+                                updateSettlement(tView, view, proj.getId(), membersBalance, memberIdToName, item.getId());
                             }
 
                         }
@@ -1308,7 +1375,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     });
 
                     UserItem item = (UserItem) centerMemberSpinner.getSelectedItem();
-                    updateSettlement(tView, proj.getId(),membersBalance, memberIdToName, item.getId());
+                    updateSettlement(tView, view, proj.getId(), membersBalance, memberIdToName, item.getId());
                 }
             }
         });
@@ -1449,14 +1516,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         // if dark theme and main color is black, make fab button lighter/gray
         if (darkTheme && ThemeUtils.primaryColor(this) == Color.BLACK) {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
-            fabBillListAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
+            //fabBillListAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
         }
         else {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
-            fabBillListAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
+            //fabBillListAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
         }
         fabAddBill.setRippleColor(ThemeUtils.primaryDarkColor(this));
-        fabBillListAddProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
+        //fabBillListAddProject.setRippleColor(ThemeUtils.primaryDarkColor(this));
 
         fabSelectProject.setRippleColor(ColorStateList.valueOf(Color.TRANSPARENT));
         fabSidebarAddProject.setRippleColor(ColorStateList.valueOf(Color.TRANSPARENT));
@@ -1485,17 +1552,17 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         if (selectedProjectId == 0) {
             fabAddBill.hide();
-            fabMenuDrawerEdit.setVisibility(View.GONE);
-            fabBillListAddProject.show();
+            fabMenuDrawerEdit.setVisibility(GONE);
+            //fabBillListAddProject.show();
         }
         else {
             fabAddBill.show();
-            fabMenuDrawerEdit.setVisibility(View.VISIBLE);
-            fabBillListAddProject.hide();
+            fabMenuDrawerEdit.setVisibility(VISIBLE);
+            //fabBillListAddProject.hide();
         }
     }
 
-    private void updateSettlement(View tView, long projectId, HashMap<Long, Double> membersBalance,
+    private void updateSettlement(View tView, View view, long projectId, HashMap<Long, Double> membersBalance,
                                   Map<Long, String> memberIdToName, long memberId) {
         List<DBMember> membersSortedByName = db.getMembersOfProject(projectId, MoneyBusterSQLiteOpenHelper.key_name);
         final List<Transaction> transactions = settleBills(membersSortedByName, membersBalance, memberId);
@@ -1515,15 +1582,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         for (Transaction t : transactions) {
             View row = LayoutInflater.from(getApplicationContext()).inflate(R.layout.settle_row, null);
             TextView wv = row.findViewById(R.id.settle_who);
-            wv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
+            wv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
             wv.setText(memberIdToName.get(t.getOwerMemberId()));
 
             TextView pv = row.findViewById(R.id.settle_towhom);
-            pv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
+            pv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
             pv.setText(memberIdToName.get(t.getReceiverMemberId()));
 
             TextView sv = row.findViewById(R.id.settle_howmuch);
-            sv.setTextColor(ContextCompat.getColor(tView.getContext(), R.color.fg_default));
+            sv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
             double amount = Math.round(t.getAmount() * 100.0) / 100.0;
             sv.setText(numberFormatter.format(amount));
 
@@ -1803,6 +1870,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             View row = LayoutInflater.from(getApplicationContext()).inflate(R.layout.statistic_row, null);
             TextView wv = row.findViewById(R.id.stat_who);
             wv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
+
             wv.setText(m.getName());
 
             TextView pv = row.findViewById(R.id.stat_paid);
@@ -2168,11 +2236,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         long selectedId = preferences.getLong("selected_project", 0);
         if (selectedId == 0) {
-            lastSyncLayout.setVisibility(View.GONE);
+            lastSyncLayout.setVisibility(GONE);
         } else {
             DBProject proj = db.getProject(selectedId);
             if (proj.isLocal()) {
-                lastSyncLayout.setVisibility(View.GONE);
+                lastSyncLayout.setVisibility(GONE);
             } else {
                 long lastSyncTimestamp = proj.getLastSyncedTimestamp();
                 Calendar cal = Calendar.getInstance();
@@ -2180,7 +2248,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 int hours = cal.get(Calendar.HOUR_OF_DAY);
                 int minutes = cal.get(Calendar.MINUTE);
                 lastSyncText.setText(getString(R.string.drawer_last_sync_text, hours, minutes));
-                lastSyncLayout.setVisibility(View.VISIBLE);
+                lastSyncLayout.setVisibility(VISIBLE);
             }
         }
     }
@@ -2752,70 +2820,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.search:
+            /*case R.id.search:
                 displaySearchHelp();
-                return true;
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    /**
-     * Adds the Menu Items to the Action Bar.
-     *
-     * @param menu Menu
-     * @return boolean
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_list_view, menu);
-        // Associate searchable configuration with the SearchView
-        final MenuItem item = menu.findItem(R.id.search);
-        searchView = (SearchView) item.getActionView();
-
-        final LinearLayout searchEditFrame = searchView.findViewById(androidx.appcompat.R.id
-                .search_edit_frame);
-
-        searchEditFrame.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            int oldVisibility = -1;
-            @SuppressLint("RestrictedApi")
-            @Override
-            public void onGlobalLayout() {
-                int currentVisibility = searchEditFrame.getVisibility();
-
-                if (currentVisibility != oldVisibility) {
-                    if (currentVisibility == View.VISIBLE) {
-                        fabAddBill.setVisibility(View.INVISIBLE);
-                        fabSidebarAddProject.setVisibility(View.INVISIBLE);
-                    } else {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                fabAddBill.setVisibility(View.VISIBLE);
-                                fabSidebarAddProject.setVisibility(View.VISIBLE);
-                            }
-                        }, 150);
-                    }
-
-                    oldVisibility = currentVisibility;
-                }
-            }
-
-        });
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                refreshLists();
-                return true;
-            }
-        });
-        return true;
     }
 
     @Override
@@ -2960,14 +2970,18 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                     Bitmap rounded = ThemeUtils.getRoundedBitmap(decodedByte, decodedByte.getWidth() / 2);
                     avatarView.setImageBitmap(rounded);
+                    accountButton.setImageBitmap(rounded);
                 } catch (Exception e) {
                     avatarView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_nextcloud_logo_white));
+                    accountButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_nextcloud_logo_white));
                 }
             } else {
                 avatarView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_nextcloud_logo_white));
+                accountButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_nextcloud_logo_white));
             }
         } else {
             avatarView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_nextcloud_logo_white));
+            accountButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_account_circle_grey_24dp));
         }
     }
 
@@ -3027,10 +3041,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     @Override
     public void onBackPressed() {
-        if (searchView == null || searchView.isIconified()) {
-            super.onBackPressed();
+        if (toolbar.getVisibility() == VISIBLE) {
+            updateToolbars(true);
         } else {
-            searchView.setIconified(true);
+            super.onBackPressed();
         }
     }
 

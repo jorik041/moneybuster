@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="swipe_left">Noch keine Einträge</string>
-    <string name="label_all_bills">Alle Ausgaben</string>
+    <string name="label_all_bills">Alle Rechnungen</string>
     <string name="action_create_bill">Neue Ausgabe</string>
     <string name="action_settings">App-Einstellungen</string>
     <string name="action_projects">Projekte</string>
     <string name="action_scan_qrcode">QRCode von Cospend/MoneyBuster scannen</string>
-    <string name="action_add_project">Neues Projekt</string>
+    <string name="action_add_project">Projekt hinzufügen</string>
     <string name="action_save_bill">Ausgabe speichern</string>
     <string name="action_edit_project">Projekt bearbeiten</string>
     <string name="action_manage_project">Projekt verwalten</string>
@@ -258,6 +258,7 @@
     <string name="error_invalid_sync_interval">Sync-Intervall muss zwischen 5 und 1440 (24h) liegen</string>
     <string name="project_activity_notification">Projekt %1$s</string>
     <string name="activity_dialog_title">Aktivität im Projekt %1$s</string>
+    <string name="manage_accounts">Manage accounts</string>
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Verbindungssicherheit</string>
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster hat ein unbekanntes Zertifikat erkannt. Möchtest du diesem vertrauen?</string>

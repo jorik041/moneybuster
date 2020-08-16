@@ -6,15 +6,20 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.fragment.EditProjectFragment;
+import net.eneiluj.moneybuster.android.fragment.PreferencesFragment;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.util.ThemeUtils;
 
@@ -32,20 +37,6 @@ public class EditProjectActivity extends AppCompatActivity implements EditProjec
             launchEditProjectFragment();
         } else {
             fragment = (EditProjectFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
-        }
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            int color = ThemeUtils.primaryColor(this);
-            actionBar.setBackgroundDrawable(new ColorDrawable(color));
-        }
-
-        Window window = getWindow();
-        if (window != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                int colorDark = ThemeUtils.primaryDarkColor(this);
-                window.setStatusBarColor(colorDark);
-            }
         }
     }
 
@@ -75,7 +66,15 @@ public class EditProjectActivity extends AppCompatActivity implements EditProjec
         if (savedState != null) {
             fragment.setInitialSavedState(savedState);
         }
-        getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
+        //getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
+
+        View view = LayoutInflater.from(this).inflate(R.layout.activity_edit_project, null);
+        setContentView(view);
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container_view, fragment)
+                .commit();
     }
 
     @Override

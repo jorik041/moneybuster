@@ -1,9 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="6dp"
+    android:background="@drawable/bg_navdrawer_item"
     android:paddingStart="6dp"
-    android:paddingRight="8dp"
     android:paddingEnd="8dp">
 
     <ImageView

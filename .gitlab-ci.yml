@@ -45,6 +45,7 @@ assembleDevDebug:
   artifacts:
     paths:
     - ./*.apk
+    expire_in: 3 week
 
 assembleNormalRelease:
   stage: build
@@ -64,6 +65,7 @@ assembleNormalRelease:
     paths:
     - ./*.apk
     - CHANGELOG.md
+    expire_in: 2 month
 
 debugTests:
   stage: test

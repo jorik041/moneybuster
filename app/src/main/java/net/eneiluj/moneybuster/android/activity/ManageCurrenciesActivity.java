@@ -1,6 +1,7 @@
 package net.eneiluj.moneybuster.android.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.model.DBCurrency;
@@ -47,6 +48,9 @@ public class ManageCurrenciesActivity extends AppCompatActivity {
         buttonAddCurrency = findViewById(R.id.add_currency_btn);
         mainCurrencyWarningTextView = findViewById(R.id.textViewMainCurrencyWarning);
         currenciesTable = findViewById(R.id.currencies_table);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         db = MoneyBusterSQLiteOpenHelper.getInstance(this);
         selectedProjectID = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getLong("selected_project", 0);
@@ -140,6 +144,12 @@ public class ManageCurrenciesActivity extends AppCompatActivity {
             mainCurrencyWarningTextView.setVisibility(View.GONE);
             updateCurrenciesList();
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish(); // close this activity as oppose to navigating up
+        return true;
     }
 
     private void checkMainCurrencyTextEdit(){

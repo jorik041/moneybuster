@@ -1152,7 +1152,7 @@ public class NewProjectFragment extends Fragment {
                             if (Double.parseDouble(exchangeRate) == 1.0) {
                                 mainCurrencyName = currencyname;
                             }
-                            currencies.add(new DBCurrency(0, 0, 0, currencyname, Double.parseDouble(exchangeRate)));
+                            currencies.add(new DBCurrency(0, 0, 0, currencyname, Double.parseDouble(exchangeRate), DBBill.STATE_OK));
                         } else if (currentSection == "bills") {
                             what = nextLine[columns.get("what")];
                             amount = Double.parseDouble(nextLine[columns.get("amount")]);
@@ -1227,7 +1227,7 @@ public class NewProjectFragment extends Fragment {
                 }
                 // add currencies
                 for (DBCurrency cur: currencies) {
-                    long currDbId = db.addCurrency(new DBCurrency(0, 0, pid, cur.getName(), cur.getExchangeRate()));
+                    long currDbId = db.addCurrency(new DBCurrency(0, 0, pid, cur.getName(), cur.getExchangeRate(), DBBill.STATE_OK));
                 }
                 // add members
                 for (String mName: membersweight.keySet()) {

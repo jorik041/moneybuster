@@ -89,6 +89,36 @@ public class ServerResponse {
         }
     }
 
+    public static class CreateRemoteCurrencyResponse extends ServerResponse {
+        public CreateRemoteCurrencyResponse(VersatileProjectSyncClient.ResponseData response){
+            super(response);
+        }
+
+        public String getStringContent() {
+            return getContent();
+        }
+    }
+
+    public static class EditRemoteCurrencyResponse extends ServerResponse {
+        public EditRemoteCurrencyResponse(VersatileProjectSyncClient.ResponseData response){
+            super(response);
+        }
+
+        public String getStringContent() {
+            return getContent();
+        }
+    }
+
+    public static class DeleteRemoteCurrencyResponse extends ServerResponse {
+        public DeleteRemoteCurrencyResponse(VersatileProjectSyncClient.ResponseData response) {
+            super(response);
+        }
+
+        public String getStringContent() {
+            return getContent();
+        }
+    }
+
     public static class EditRemoteProjectResponse extends ServerResponse {
         public EditRemoteProjectResponse(VersatileProjectSyncClient.ResponseData response) {
             super(response);
@@ -353,7 +383,7 @@ public class ServerResponse {
         if (json.has("name") && !json.isNull("name")) {
             name = json.getString("name");
         }
-        return new DBCurrency(0, remoteId, projId, name, exchangeRate);
+        return new DBCurrency(0, remoteId, projId, name, exchangeRate, DBBill.STATE_OK);
     }
 
     protected List<DBMember> getMembersFromJSON(JSONObject json, long projId) throws JSONException {

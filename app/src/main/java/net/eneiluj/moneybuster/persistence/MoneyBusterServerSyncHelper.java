@@ -470,6 +470,59 @@ public class MoneyBusterServerSyncHelper {
                         );
                     }
                 }
+
+                // Handle currencies
+                // delete what's been deleted
+                List<DBCurrency> currenciesToDelete = dbHelper.getCurrenciesOfProjectWithState(project.getId(), DBBill.STATE_DELETED);
+                for (DBCurrency cToDel : currenciesToDelete) {
+                    try {
+                        ServerResponse.DeleteRemoteCurrencyResponse deleteRemoteCurrencyResponse = client.deleteRemoteCurrency(customCertManager, project, cToDel.getRemoteId());
+                        if (deleteRemoteCurrencyResponse.getStringContent().equals("OK")) {
+                            Log.d(getClass().getSimpleName(), "successfully deleted currency on remote project : delete it locally");
+                            dbHelper.deleteCurrency(cToDel.getId());
+                        }
+                    } catch (IOException e) {
+                        // if it's not there on the server
+                        if (e.getMessage().equals("\"Not Found\"")) {
+                            Log.d(getClass().getSimpleName(), "failed to delete currency on remote project : delete it locally anyway");
+                            dbHelper.deleteCurrency(cToDel.getId());
+                        } else {
+                            throw e;
+                        }
+                    }
+                }
+                // edit what's been edited
+                List<DBCurrency> currenciesToEdit = dbHelper.getCurrenciesOfProjectWithState(project.getId(), DBBill.STATE_EDITED);
+                for (DBCurrency cToEdit : currenciesToEdit) {
+                    try {
+                        ServerResponse.EditRemoteCurrencyResponse editRemoteCurrencyResponse = client.editRemoteCurrency(customCertManager, project, cToEdit);
+                        if (editRemoteCurrencyResponse.getStringContent().equals(String.valueOf(cToEdit.getRemoteId()))) {
+                            dbHelper.setCurrencyState(cToEdit.getId(), DBBill.STATE_OK);
+                            Log.d(getClass().getSimpleName(), "SUCCESSFUL remote currency edition (" + editRemoteCurrencyResponse.getStringContent() + ")");
+                        } else {
+                            Log.d(getClass().getSimpleName(), "FAILED to edit remote currency (" + editRemoteCurrencyResponse.getStringContent() + ")");
+                        }
+                    } catch (IOException e) {
+                        // if it's not there on the server
+                        if (e.getMessage().equals("{\"message\": \"Internal Server Error\"}")) {
+                            Log.d(getClass().getSimpleName(), "FAILED to edit remote currency : it does not exist remotely");
+                            // pullremotechanges will take care of deletion
+                            //dbHelper.deleteBill(bToEdit.getId());
+                        } else {
+                            throw e;
+                        }
+                    }
+                }
+                // add what's been added
+                List<DBCurrency> currencyToAdd = dbHelper.getCurrenciesOfProjectWithState(project.getId(), DBBill.STATE_ADDED);
+                for (DBCurrency cToAdd : currencyToAdd) {
+                    ServerResponse.CreateRemoteCurrencyResponse createRemoteCurrencyResponse = client.createRemoteCurrency(customCertManager, project, cToAdd);
+                    long newRemoteId = Long.valueOf(createRemoteCurrencyResponse.getStringContent());
+                    if (newRemoteId > 0) {
+                        dbHelper.setCurrencyState(cToAdd.getId(), DBBill.STATE_OK);
+                    }
+                }
+
                 status = LoginStatus.OK;
             } catch (ServerResponse.NotModifiedException e) {
                 Log.d(getClass().getSimpleName(), "No changes, nothing to do.");

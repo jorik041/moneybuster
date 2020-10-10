@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
 import net.eneiluj.moneybuster.R;
+import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 
@@ -78,6 +79,7 @@ public class ManageCurrenciesActivity extends AppCompatActivity {
                 String newMaincurrencyName = mainCurrencyTextEdit.getText().toString();
                 mainCurrencyTextEdit.clearFocus();
                 db.updateProject(selectedProjectID, null, null, null, null, null, newMaincurrencyName);
+                db.syncIfRemote(db.getProject(selectedProjectID));
             }
         });
 
@@ -89,9 +91,9 @@ public class ManageCurrenciesActivity extends AppCompatActivity {
                     DBCurrency newCurrency= new DBCurrency(0,
                             0,
                             selectedProjectID,
-                            newCurrencyNameTextEdit.getText().toString(), exchangeRate
+                            newCurrencyNameTextEdit.getText().toString(), exchangeRate, DBBill.STATE_ADDED
                             );
-                    db.addCurrency(newCurrency);
+                    db.addCurrencyAndSync(newCurrency);
                     newCurrencyNameTextEdit.setText("");
                     newCurrencyRateTextEdit.setText("");
                     newCurrencyNameTextEdit.clearFocus();
@@ -185,7 +187,9 @@ public class ManageCurrenciesActivity extends AppCompatActivity {
 
     private void updateCurrenciesList(){
         currenciesTable.removeAllViews();
-        List<DBCurrency> currenciesDB = db.getCurrencies(selectedProjectID);
+        List<DBCurrency> currenciesDB = db.getCurrenciesOfProjectWithState(selectedProjectID, DBBill.STATE_ADDED);
+        currenciesDB.addAll(db.getCurrenciesOfProjectWithState(selectedProjectID, DBBill.STATE_EDITED));
+        currenciesDB.addAll(db.getCurrenciesOfProjectWithState(selectedProjectID, DBBill.STATE_OK));
         for(DBCurrency currency: currenciesDB) {
             View row = LayoutInflater.from(getApplicationContext()).inflate(R.layout.currency_row, null);
             TextView curr_name = row.findViewById(R.id.curr_name);
@@ -200,7 +204,7 @@ public class ManageCurrenciesActivity extends AppCompatActivity {
             button_delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    db.deleteCurrency(currency.getId());
+                    db.setCurrencyStateSync(currency.getId(), DBBill.STATE_DELETED);
                     updateCurrenciesList();
                 }
             });

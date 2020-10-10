@@ -43,7 +43,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String TAG = MoneyBusterSQLiteOpenHelper.class.getSimpleName();
 
-    private static final int database_version = 12;
+    private static final int database_version = 13;
     private static final String database_name = "IHATEMONEY";
 
     private static final String table_members = "MEMBERS";
@@ -142,7 +142,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     };
 
     private static final String[] columnsCurrencies = {
-            key_id, key_remoteId, key_projectid, key_name,  key_exchangeRate
+            key_id, key_remoteId, key_projectid, key_name,  key_exchangeRate, key_state
     };
 
     private static final String default_order = key_id + " DESC";
@@ -266,7 +266,8 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 key_remoteId + " INTEGER, " +
                 key_projectid + " INTEGER, " +
                 key_name + " TEXT, " +
-                key_exchangeRate + " FLOAT)");
+                key_exchangeRate + " FLOAT, " +
+                key_state + " INTEGER)");
     }
 
     @Override
@@ -364,6 +365,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         if (oldVersion < 12) {
             db.execSQL("ALTER TABLE " + table_members + " ADD COLUMN " + key_nc_userid + " TEXT DEFAULT NULL");
             db.execSQL("ALTER TABLE " + table_members + " ADD COLUMN " + key_avatar + " TEXT DEFAULT NULL");
+        }
+        if (oldVersion < 13) {
+            db.execSQL("ALTER TABLE " + table_currencies + " ADD COLUMN " + key_state + " INTEGER DEFAULT " + DBBill.STATE_OK);
         }
     }
 
@@ -591,7 +595,24 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_projectid, currency.getProjectId());
         values.put(key_name, currency.getName());
         values.put(key_exchangeRate, currency.getExchangeRate());
+        values.put(key_state, currency.getState());
         return db.insert(table_currencies, null, values);
+    }
+
+    public void addCurrencyAndSync(DBCurrency m) {
+        addCurrency(m);
+        DBProject proj = getProject(m.getProjectId());
+        syncIfRemote(proj);
+    }
+
+    public void syncIfRemote(DBProject proj) {
+        if (!proj.isLocal()) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            boolean offlineMode = preferences.getBoolean(getContext().getString(R.string.pref_key_offline_mode), false);
+            if (!offlineMode) {
+                serverSyncHelper.scheduleSync(true, proj.getId());
+            }
+        }
     }
 
     public DBCurrency getCurrency(long id) {
@@ -636,12 +657,13 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     @NonNull
     private DBCurrency getCurrencyFromCursor(@NonNull Cursor cursor) {
-        // key_id, key_remoteId, key_projectid, key_name,  key_exchangeRate
+        // key_id, key_remoteId, key_projectid, key_name,  key_exchangeRate, key_state
         return new DBCurrency(cursor.getLong(0),
                 cursor.getLong(1),
                 cursor.getLong(2),
                 cursor.getString(3),
-                cursor.getDouble(4)
+                cursor.getDouble(4),
+                cursor.getInt(5)
         );
     }
 
@@ -893,13 +915,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     public void addMemberAndSync(DBMember m) {
         addMember(m);
         DBProject proj = getProject(m.getProjectId());
-        if (!proj.isLocal()) {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-            boolean offlineMode = preferences.getBoolean(getContext().getString(R.string.pref_key_offline_mode), false);
-            if (!offlineMode) {
-                serverSyncHelper.scheduleSync(true, m.getProjectId());
-            }
-        }
+        syncIfRemote(proj);
     }
 
     public void updateMember(long memberId, @Nullable String newName, @Nullable Double newWeight,
@@ -962,13 +978,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
         Log.v(TAG, "UPDATE MEMBER AND SYNC");
         DBProject proj = getProject(m.getProjectId());
-        if (!proj.isLocal()) {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-            boolean offlineMode = preferences.getBoolean(getContext().getString(R.string.pref_key_offline_mode), false);
-            if (!offlineMode) {
-                serverSyncHelper.scheduleSync(true, m.getProjectId());
-            }
-        }
+        syncIfRemote(proj);
     }
 
     /**
@@ -1193,13 +1203,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         }
         Log.v(TAG, "UPDATE BILL AND SYNC");
         DBProject proj = getProject(bill.getProjectId());
-        if (!proj.isLocal()) {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-            boolean offlineMode = preferences.getBoolean(getContext().getString(R.string.pref_key_offline_mode), false);
-            if (!offlineMode) {
-                serverSyncHelper.scheduleSync(true, bill.getProjectId());
-            }
-        }
+        syncIfRemote(proj);
     }
 
     /**
@@ -1239,6 +1243,24 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 null
         );
         return bills.isEmpty() ? null : bills.get(0);
+    }
+
+    public List<DBCurrency> getCurrenciesOfProjectWithState(long projId, int state) {
+        return getCurrenciesCustom(key_projectid + "= ? AND " + key_state + " = ?",
+                new String[]{String.valueOf(projId), String.valueOf(state)}, null);
+    }
+
+    public void setCurrencyStateSync(long currencyId, int state) {
+        setCurrencyState(currencyId, state);
+        syncIfRemote(getProject(getCurrency(currencyId).getProjectId()));
+    }
+
+    public void setCurrencyState(long currencyId, int state) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(key_state, state);
+        int rows = db.update(table_currencies, values, key_id + " = ?",
+                new String[]{String.valueOf(currencyId)});
     }
 
     @NonNull

@@ -161,7 +161,7 @@
     <string name="member_edit_weight_error">O peso de membro está incorreto</string>
     <string name="bill_info_dialog_title">Sobre o %s</string>
     <string name="welcome_dialog_title">Bem-vindo ao MoneyBuster v%s</string>
-    <string name="welcome_dialog_content_v12">O que há de novo?\n\n* Leitura de códigos QR\n* Interface melhorada\n* Importação de projetos de contas Nextcloud\n* Estatísticas melhoradas\n* E muito mais :-)</string>
+    <string name="welcome_dialog_content_v12">O que há de novo?\n\n* Leitura de QRCode\n* Interface melhorada\n* Importação de projetos de contas Nextcloud\n* Estatísticas melhoradas\n* E muito mais :-)</string>
     <string name="welcome_dialog_content_v13">O que há de novo?\n\n* Filtros nas estatísticas\n* Criação automática de quitações\n* Pesquisa por nome do devedor\n* E muito mais :-)</string>
     <string name="first_welcome_dialog_content">Primeiro crie ou junte-se a um projeto (IHateMoney ou Nextcloud Cospend), depois adicione alguns membros e/ou crie algumas despesas!\n\nOutras ações principais:\n* Quite o projeto para gerar um plano de reembolso global\n* Mostre estatísticas do projeto\n* Partilhe: crie um código QR que outros podem ler para juntarem-se ao projeto\n\nNo Android &gt;= 8.0 pode apertar os botões de ação de forma prolongada para obter ajuda.</string>
     <string name="changelog">Lista de mudanças</string>
@@ -258,7 +258,7 @@
     <string name="error_invalid_sync_interval">Intervalo de sincronização deve estar entre 5 e 1440 (24h)</string>
     <string name="project_activity_notification">Projeto %1$s</string>
     <string name="activity_dialog_title">Atividade no projeto %1$s</string>
-    <string name="manage_accounts">Manage accounts</string>
+    <string name="manage_accounts">Gerenciar contas</string>
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Segurança de conexão</string>
     <string name="trust_certificate_unknown_certificate_found">O MoneyBuster encontrou um certificado desconhecido. Quer confiar nele?</string>

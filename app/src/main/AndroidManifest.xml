@@ -86,19 +86,25 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="*" android:pathPrefix="/" android:scheme="cospend" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
                 <data android:host="net.eneiluj.moneybuster.cospend" android:pathPrefix="/" android:scheme="https" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:host="net.eneiluj.moneybuster.ihatemoney" android:pathPrefix="/" android:scheme="https" />
+                <data android:host="*" android:pathPrefix="/" android:scheme="ihatemoney" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:host="ihatemoney.org" android:pathPrefix="/" android:scheme="https" />
+                <data android:host="net.eneiluj.moneybuster.ihatemoney" android:pathPrefix="/" android:scheme="https" />
             </intent-filter>
         </activity>
 

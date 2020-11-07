@@ -72,41 +72,51 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
             if (data == null) {
                 showToast(getString(R.string.import_no_data), Toast.LENGTH_LONG);
                 shouldCloseActivity = true;
-            }
-            else if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 2) {
+            } else if (data.getScheme().equals("cospend") && data.getPathSegments().size() >= 1) {
                 if (data.getPath().endsWith("/")) {
                     defaultProjectPassword = "";
                     defaultProjectId = data.getLastPathSegment();
+                } else {
+                    defaultProjectPassword = data.getLastPathSegment();
+                    defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
                 }
-                else {
+                defaultNcUrl = "https://" +
+                        data.getHost() + data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
+                defaultProjectType = ProjectType.COSPEND;
+            } else if (data.getScheme().equals("ihatemoney") && data.getPathSegments().size() >= 1) {
+                if (data.getPath().endsWith("/")) {
+                    defaultProjectPassword = "";
+                    defaultProjectId = data.getLastPathSegment();
+                } else {
+                    defaultProjectPassword = data.getLastPathSegment();
+                    defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
+                }
+                defaultIhmUrl = "https://" +
+                        data.getHost() + data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
+                defaultProjectType = ProjectType.IHATEMONEY;
+            } else if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 2) {
+                if (data.getPath().endsWith("/")) {
+                    defaultProjectPassword = "";
+                    defaultProjectId = data.getLastPathSegment();
+                } else {
                     defaultProjectPassword = data.getLastPathSegment();
                     defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
                 }
                 defaultNcUrl = "https:/" +
                         data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
                 defaultProjectType = ProjectType.COSPEND;
-            }
-            else if (data.getHost().equals("net.eneiluj.moneybuster.ihatemoney") && data.getPathSegments().size() >= 2) {
+            } else if (data.getHost().equals("net.eneiluj.moneybuster.ihatemoney") && data.getPathSegments().size() >= 2) {
                 if (data.getPath().endsWith("/")) {
                     defaultProjectPassword = "";
                     defaultProjectId = data.getLastPathSegment();
-                }
-                else {
+                } else {
                     defaultProjectPassword = data.getLastPathSegment();
                     defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
                 }
                 defaultIhmUrl = "https:/" +
                         data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
                 defaultProjectType = ProjectType.IHATEMONEY;
-            }
-            else if (data.getHost().equals("ihatemoney.org") && data.getPathSegments().size() == 1) {
-                defaultProjectPassword = "";
-                defaultProjectId = data.getLastPathSegment();
-
-                defaultIhmUrl = "https://ihatemoney.org";
-                defaultProjectType = ProjectType.IHATEMONEY;
-            }
-            else {
+            } else {
                 showToast(getString(R.string.import_bad_url), Toast.LENGTH_LONG);
                 shouldCloseActivity = true;
             }

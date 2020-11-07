@@ -683,7 +683,43 @@ public class NewProjectFragment extends Fragment {
         String password;
         String url;
         String pid;
-        if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 2) {
+        if (data.getScheme().equals("cospend") && data.getPathSegments().size() >= 1) {
+            if (data.getPath().endsWith("/")) {
+                password = "";
+                pid = data.getLastPathSegment();
+            } else {
+                password = data.getLastPathSegment();
+                pid = data.getPathSegments().get(data.getPathSegments().size() - 2);
+            }
+            url = "https://" +
+                    data.getHost() + data.getPath().replaceAll("/"+pid+"/" + password + "$", "");
+            newProjectPassword.setText(password);
+            newProjectId.setText(pid);
+            newProjectUrl.setText(url);
+            whereLocal.setChecked(false);
+            whereIhm.setChecked(false);
+            whereCospend.setChecked(true);
+            showHideInputFields(false);
+            showHideValidationButtons();
+        } else if (data.getScheme().equals("ihatemoney") && data.getPathSegments().size() >= 1) {
+            if (data.getPath().endsWith("/")) {
+                password = "";
+                pid = data.getLastPathSegment();
+            } else {
+                password = data.getLastPathSegment();
+                pid = data.getPathSegments().get(data.getPathSegments().size() - 2);
+            }
+            url = "https://" +
+                    data.getHost() + data.getPath().replaceAll("/" + pid + "/" + password + "$", "");
+            newProjectPassword.setText(password);
+            newProjectId.setText(pid);
+            newProjectUrl.setText(url);
+            whereLocal.setChecked(false);
+            whereIhm.setChecked(true);
+            whereCospend.setChecked(false);
+            showHideInputFields(false);
+            showHideValidationButtons();
+        } else if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 2) {
             if (data.getPath().endsWith("/")) {
                 password = "";
                 pid = data.getLastPathSegment();
@@ -702,8 +738,7 @@ public class NewProjectFragment extends Fragment {
             whereCospend.setChecked(true);
             showHideInputFields(false);
             showHideValidationButtons();
-        }
-        else if (data.getHost().equals("net.eneiluj.moneybuster.ihatemoney") && data.getPathSegments().size() >= 2) {
+        } else if (data.getHost().equals("net.eneiluj.moneybuster.ihatemoney") && data.getPathSegments().size() >= 2) {
             if (data.getPath().endsWith("/")) {
                 password = "";
                 pid = data.getLastPathSegment();
@@ -722,29 +757,14 @@ public class NewProjectFragment extends Fragment {
             whereCospend.setChecked(false);
             showHideInputFields(false);
             showHideValidationButtons();
-        }
-        else if (data.getHost().equals("ihatemoney.org") && data.getPathSegments().size() == 1) {
-            password = "";
-            pid = data.getLastPathSegment();
-            url = "https://ihatemoney.org";
-            newProjectPassword.setText(password);
-            newProjectId.setText(pid);
-            newProjectUrl.setText(url);
-            whereLocal.setChecked(false);
-            whereIhm.setChecked(true);
-            whereCospend.setChecked(false);
-            showHideInputFields(false);
-            showHideValidationButtons();
-        }
-        else {
+        } else {
             showToast(getString(R.string.import_bad_url), Toast.LENGTH_LONG);
             return;
         }
 
         if (isFormValid()) {
             onPressOk();
-        }
-        else {
+        } else {
             if (getPassword().equals("")) {
                 newProjectPassword.requestFocus();
             }

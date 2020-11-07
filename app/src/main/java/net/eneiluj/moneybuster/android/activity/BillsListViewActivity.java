@@ -1285,20 +1285,20 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             .replace("/index.php/apps/cospend", "");
                     String password = proj.getPassword();
 
-                    String hostEnd;
+                    String protocol;
                     final String publicWebUrl;
                     String publicWebLink;
                     if (proj.getServerUrl().contains("index.php/apps/cospend")) {
-                        hostEnd = "cospend";
+                        protocol = "cospend";
                         publicWebUrl = proj.getServerUrl() + "/loginproject/" + proj.getRemoteId();
                     }
                     else {
-                        hostEnd = "ihatemoney";
+                        protocol = "ihatemoney";
                         publicWebUrl = proj.getServerUrl() + "/" + proj.getRemoteId();
                     }
                     publicWebLink = "<a href=\"" + publicWebUrl + "\">" + publicWebUrl + "</a>";
 
-                    final String shareUrl = "https://net.eneiluj.moneybuster." + hostEnd + "/" +
+                    final String shareUrl = protocol + "://" +
                             url + "/" + projId + "/" + password;
                     final String shareLink = "<a href=\"" + shareUrl + "\">" + shareUrl + "</a>";
 

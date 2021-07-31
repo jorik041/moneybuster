@@ -226,8 +226,10 @@
     <string name="stats_balance">Egyenleg</string>
     <string name="fab_statistics">Projekt statisztika</string>
     <string name="fab_settle">Megszilárdít</string>
-    <string name="project_add_success">%1$s projekt létrehozása sikeres</string>
+    <string name="project_add_success_message">Project %1$s was successfully added</string>
+    <string name="project_create_success_message">Project %1$s was successfully created</string>
     <string name="project_add_success_title">Projekt hozzáadva</string>
+    <string name="project_create_success_title">Project created</string>
     <string name="import_bad_url">Torz MoneyBuster link, importálása lehetetlen</string>
     <string name="import_no_data">Valami hiba történt a projekt hozzáadásakor</string>
     <string name="fab_scan_qrcode_import">MB QRCode importálása</string>

@@ -226,8 +226,10 @@
     <string name="stats_balance">Saldo</string>
     <string name="fab_statistics">Statistiche del progetto</string>
     <string name="fab_settle">Liquida</string>
-    <string name="project_add_success">Progetto %1$s creato con successo</string>
+    <string name="project_add_success_message">Project %1$s was successfully added</string>
+    <string name="project_create_success_message">Project %1$s was successfully created</string>
     <string name="project_add_success_title">Progetto aggiunto</string>
+    <string name="project_create_success_title">Project created</string>
     <string name="import_bad_url">Link MoneyBuster non valido, impossibile da importare</string>
     <string name="import_no_data">Qualcosa è andato storto durante l\'aggiunta di un nuovo progetto</string>
     <string name="fab_scan_qrcode_import">Importa MB QRCode</string>

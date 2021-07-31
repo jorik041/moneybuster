@@ -226,8 +226,10 @@
     <string name="stats_balance">Solde</string>
     <string name="fab_statistics">Statistiques du projet</string>
     <string name="fab_settle">Remboursements</string>
-    <string name="project_add_success">Le projet %1$s a bien été créé</string>
+    <string name="project_add_success_message">Le projet %1$s a bien été ajouté</string>
+    <string name="project_create_success_message">Le projet %1$s a bien été créé</string>
     <string name="project_add_success_title">Projet ajouté</string>
+    <string name="project_create_success_title">Projet créé</string>
     <string name="import_bad_url">Lien MoneyBuster mal formé, impossible d\'importer</string>
     <string name="import_no_data">Une erreur s\'est produite lors de l\'ajout d\'un nouveau projet</string>
     <string name="fab_scan_qrcode_import">Importer un QRCode MB</string>

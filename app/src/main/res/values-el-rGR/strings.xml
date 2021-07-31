@@ -226,8 +226,10 @@
     <string name="stats_balance">Υπόλοιπο</string>
     <string name="fab_statistics">Στατιστικά έργου</string>
     <string name="fab_settle">Εξόφληση</string>
-    <string name="project_add_success">Project %1$s was successfully created</string>
+    <string name="project_add_success_message">Project %1$s was successfully added</string>
+    <string name="project_create_success_message">Project %1$s was successfully created</string>
     <string name="project_add_success_title">Project added</string>
+    <string name="project_create_success_title">Project created</string>
     <string name="import_bad_url">Παραποιημένος σύνδεσμος MoneyBuster, αδύνατο να εισαχθεί</string>
     <string name="import_no_data">Something went wrong when adding a new project</string>
     <string name="fab_scan_qrcode_import">Εισαγωγή MB QRCode</string>

@@ -226,8 +226,10 @@
     <string name="stats_balance">موجودی</string>
     <string name="fab_statistics">آمار پروژه</string>
     <string name="fab_settle">تسویه حساب</string>
-    <string name="project_add_success">پروژه %1$s با موفقیت ساخته شد</string>
+    <string name="project_add_success_message">Project %1$s was successfully added</string>
+    <string name="project_create_success_message">Project %1$s was successfully created</string>
     <string name="project_add_success_title">پروژه افزوده شد</string>
+    <string name="project_create_success_title">Project created</string>
     <string name="import_bad_url">پیوند MoneyBuster نادرست است، واردکردن ناممکن است</string>
     <string name="import_no_data">هنگام افزودن یک پروژه تازه، مشکلی پیش آمد</string>
     <string name="fab_scan_qrcode_import">واردکردن MB QRCode</string>

@@ -226,8 +226,10 @@
     <string name="stats_balance">Zůstatek</string>
     <string name="fab_statistics">Statistiky projektu</string>
     <string name="fab_settle">Vypořádat</string>
-    <string name="project_add_success">Projekt %1$s byl úspěšně vytvořen</string>
+    <string name="project_add_success_message">Project %1$s was successfully added</string>
+    <string name="project_create_success_message">Project %1$s was successfully created</string>
     <string name="project_add_success_title">Projekt přidán</string>
+    <string name="project_create_success_title">Project created</string>
     <string name="import_bad_url">Pokažený odkaz MoneyBuster, nelze importovat</string>
     <string name="import_no_data">Při přidávání nového projektu se něco pokazilo</string>
     <string name="fab_scan_qrcode_import">Importovat MB QR kód</string>

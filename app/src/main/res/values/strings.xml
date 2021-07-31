@@ -231,8 +231,8 @@
     <string name="stats_balance">Balance</string>
     <string name="fab_statistics">Project\'s statistics</string>
     <string name="fab_settle">Settle</string>
-    <string name="project_add_success">Project %1$s was successfully added</string>
-    <string name="project_create_success">Project %1$s was successfully created</string>
+    <string name="project_add_success_message">Project %1$s was successfully added</string>
+    <string name="project_create_success_message">Project %1$s was successfully created</string>
     <string name="project_add_success_title">Project added</string>
     <string name="project_create_success_title">Project created</string>
     <string name="import_bad_url">Malformed MoneyBuster link, impossible to import</string>

@@ -69,7 +69,7 @@
     <string name="where_ihm">Servidor IHateMoney</string>
     <string name="where_cospend">Aplicativo Nextcloud Cospend</string>
     <string name="where_local_short">Local</string>
-    <string name="where_ihm_short">IHateMoney</string>
+    <string name="where_ihm_short">EuOdeioDinheiro</string>
     <string name="where_cospend_short">Cospend</string>
     <string name="new_project_scan">Aponte para o código QR do MoneyBuster</string>
     <string name="todo_join">Juntar-se a um projeto existente</string>
@@ -117,7 +117,7 @@
     <string name="simple_about">Sobre</string>
     <string name="share_impossible">Impossível compartilhar este projeto</string>
     <string name="simple_settle_share">Compartilhar rateio</string>
-    <string name="simple_create_bills">Criar despesas</string>
+    <string name="simple_create_bills">Adicionar pagamentos</string>
     <string name="settle_bill_what">Quitação</string>
     <string name="simple_stats_share">Compartilhar estatísticas</string>
     <string name="simple_share_share">Compartilhar link</string>

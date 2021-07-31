@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="swipe_left">Doposud nic</string>
+    <string name="swipe_left">Zatím nic</string>
     <string name="label_all_bills">Všechny účty</string>
     <string name="action_create_bill">Nový účet</string>
     <string name="action_settings">Nastavení aplikace</string>
@@ -16,7 +16,7 @@
     <string name="setting_what_long">Zaplaceno za co?</string>
     <string name="setting_date">Kdy to bylo?</string>
     <string name="setting_time">V kolik hodin to bylo?</string>
-    <string name="setting_date_long">Den, kdy byla zaplaceno</string>
+    <string name="setting_date_long">Den, kdy bylo zaplaceno</string>
     <string name="setting_payer">Kdo zaplatil?</string>
     <string name="setting_all">Vše</string>
     <string name="setting_none">Žádné</string>
@@ -39,7 +39,7 @@
     <string name="repeat_month">měsíc</string>
     <string name="repeat_year">rok</string>
     <string name="payment_mode_none">Žádný režim platby</string>
-    <string name="payment_mode_all">Všechny způsoby platby</string>
+    <string name="payment_mode_all">Všechny režimy platby</string>
     <string name="payment_mode_credit_card">Kreditní karta</string>
     <string name="payment_mode_cash">Hotově</string>
     <string name="payment_mode_check">Šek</string>
@@ -76,7 +76,7 @@
     <string name="todo_join_label">Připojit</string>
     <string name="todo_create_label">Vytvořit</string>
     <string name="todo_create">Vytvořit projekt</string>
-    <string name="setting_ihm_project_url_long">Adresa IHateMoney instance hostující projekt</string>
+    <string name="setting_ihm_project_url_long">Adresa instance IHateMoney, hostující projekt</string>
     <string name="setting_ihm_project_url">Adresa IHateMoney</string>
     <string name="setting_cospend_project_url_long">Adresa instance Nextcloud, hostující Cospend projekt</string>
     <string name="setting_cospend_project_url">Adresa Nextcloud Cospend</string>
@@ -88,7 +88,7 @@
     <string name="setting_new_project_name">Název projektu</string>
     <string name="setting_new_project_email">E-mail</string>
     <string name="warning_auth_project_creation">Varování: Vytvoření projektu Cospend pomocí Nextcloud účtu funguje až s Cospend v0.3.4 a novější.</string>
-    <string name="auth_project_creation_title">Vytvoření projektu ověřeným uživatelem</string>
+    <string name="auth_project_creation_title">Vytvoření projektu přihlášeným uživatelem</string>
     <string name="project_edition_no_change">Žádná změna</string>
     <string name="setting_new_password_long">Změnit heslo pro vzdálený projekt (sdělte ostatním uživatelům projektu)</string>
     <string name="setting_new_password">Nové heslo (vzdálené)</string>
@@ -104,7 +104,7 @@
     <string name="sync_error_dialog_title">Synchronizace projektu se nezdařila</string>
     <string name="sync_error_dialog_content">Synchronizace s projektem %1$s se nezdařila.\n\n%2$s\n\nTento projekt už možná neexistuje. Chcete projekt odstranit lokálně?</string>
     <string name="simple_do_nothing">Nedělat nic</string>
-    <string name="creating_remote_project">Vytváření projektu na protějšku</string>
+    <string name="creating_remote_project">Vytváření vzdáleného projektu</string>
     <string name="simple_cancel">Storno</string>
     <string name="simple_ok">OK</string>
     <string name="simple_ok_no_more">Chápu!</string>
@@ -148,11 +148,11 @@
     <string name="choose_member_to_edit">Vyberte člena, u kterého provést úpravy</string>
     <string name="member_already_exists">Tento člen už v tomto projektu existuje</string>
     <string name="search_help_dialog_title">Jak hledat</string>
-    <string name="search_help_dialog_content">Hledat je možné podle názvu účtu a částky.\n\nTaké lze podle:\n* plátce pomocí +NAME\n* vlastníka pomocí -NAME\n* plátce nebo vlastníka pomocí @NAME\n\nPříklad 1: „@julia -robert“ zobrazí účty, u kterých figuruje Julia (jako plátce nebo vlastník) A Robert jako vlastník.\n\nPříklad 2: \"+julia -julia -robert\" zobrazí účty zaplacené Julií alespoň za Julii A Roberta.</string>
+    <string name="search_help_dialog_content">Hledat je možné podle názvu účtu a částky.\n\nTaké lze podle:\n* plátce pomocí +NAME\n* dlužníka pomocí -NAME\n* plátce nebo dlužníka pomocí @NAME\n\nPříklad 1: „@julia -robert“ zobrazí účty, u kterých figuruje Julia (jako plátce nebo vlastník) A Robert jako dlužník.\n\nPříklad 2: \"+julia -julia -robert\" zobrazí účty zaplacené Julií alespoň za Julii A Roberta.</string>
     <string name="confirm_remove_project_dialog_title">Opravdu to chcete?</string>
     <string name="confirm_delete_bill_dialog_title">Opravdu chcete tento účet smazat?</string>
-    <string name="confirm_delete_project_dialog_title">Opravdu chcete projekt na protějšku smazat?</string>
-    <string name="confirm_remove_project_dialog_message">Vzdálený projekt NEBUDE smazán</string>
+    <string name="confirm_delete_project_dialog_title">Opravdu chcete vzdálený projekt smazat?</string>
+    <string name="confirm_remove_project_dialog_message">Projekt NEBUDE smazán na serveru</string>
     <string name="member_edit_toggle">Aktivováno</string>
     <string name="member_edit_name">Jméno</string>
     <string name="member_edit_color">Barva</string>
@@ -161,7 +161,7 @@
     <string name="member_edit_weight_error">Podíl člena není platný</string>
     <string name="bill_info_dialog_title">O aplikaci %s</string>
     <string name="welcome_dialog_title">Vítejte v MoneyBuster v%s</string>
-    <string name="welcome_dialog_content_v12">Co je nového?\n\n* Skenování QR kódů \n* Lepší rozhraní\n* Import Nextcloud účetů projektu\n* Vylepšené statistiky\n* A mnoho dalšího :-)</string>
+    <string name="welcome_dialog_content_v12">Co je nového?\n\n* Skenování QR kódů \n* Lepší rozhraní\n* Import projektů Nextcloud účtů\n* Vylepšené statistiky\n* A mnoho dalšího :-)</string>
     <string name="welcome_dialog_content_v13">Co je nového?\n\n* Filtry ve statistikách\n* Automatické vytváření vypořádávacích účtů\n* Vyhledávání podle jména majitele\n* A mnoho dalšího :-)</string>
     <string name="first_welcome_dialog_content">Nejprve nastavte Nextcloud účet nebo vytvořte/připojte k projektu (IHateMoney nebo Nextcloud Cospend), poté přidejte nějaké členy a/nebo vytvořte nějaké účty!\n\nDalší hlavní akce:\n* Nastavte projekt k vytváření globálního plánu splácení\n* Zobrazit statistiky projektu\n* Sdílet: vytvořte QR kód který mohou ostatní naskenovat a přidat se tak k projektu\n\nNa Androidu &gt;= 8.0 je pro zobrazení nápovědy možné dlouze stisknout tlačítka akcí.</string>
     <string name="changelog">Seznam změn</string>
@@ -208,7 +208,7 @@
     <string name="settings_notify_deleted">Upozornění při mazání účtů</string>
     <string name="project_sync_success">Projekt %s synchronizován</string>
     <string name="file_saved_success">Projekt uložen v %s</string>
-    <string name="write_permission_refused">Oprávnění zápisu zamítnuto, nelze zapisovat do souboru</string>
+    <string name="write_permission_refused">Oprávnění k zápisu zamítnuto, do souboru nelze zapsat</string>
     <string name="add_member_dialog_title">Jméno nového člena</string>
     <string name="edit_member_dialog_title">Upravit člena</string>
     <string name="member_edit_empty_name">Jméno člena nemůže zůstat nevyplněné</string>
@@ -228,12 +228,12 @@
     <string name="fab_settle">Vypořádat</string>
     <string name="project_add_success">Projekt %1$s byl úspěšně vytvořen</string>
     <string name="project_add_success_title">Projekt přidán</string>
-    <string name="import_bad_url">Chybný odkaz MoneyBuster, nelze importovat</string>
+    <string name="import_bad_url">Pokažený odkaz MoneyBuster, nelze importovat</string>
     <string name="import_no_data">Při přidávání nového projektu se něco pokazilo</string>
     <string name="fab_scan_qrcode_import">Importovat MB QR kód</string>
     <string name="statistic_dialog_title">Statistiky projektu</string>
     <string name="settle_dialog_title">Vypořádat projekt</string>
-    <string name="share_dialog_title">Sdílet projekt</string>
+    <string name="share_dialog_title">Nasdílet projekt</string>
     <string name="share_project_dialog_message">Naskenujte tento QR kód pomocí MoneyBuster nebo skenovací aplikací na Android zařízení, kde je nainstalován MoneyBuster. Můžete také snadno poslat/sdílet výše uvedený MoneyBuster odkaz.</string>
     <string name="share_project_public_url_dialog_message">Sdílejte tento webový odkaz, abyste ostatním umožnili přístup k projektu prostřednictvím webového prohlížeče.</string>
     <string name="share_project_public_url_title">Webový odkaz</string>
@@ -246,14 +246,14 @@
     <string name="share_settle_title">Vypořádat projekt %1$s</string>
     <string name="share_stats_intro">Statistiky projektu %1$s :</string>
     <string name="share_stats_title">Sdílet statistiky projektu %1$s</string>
-    <string name="share_stats_header">MEMBER_NAME (PAID | SPENT | BALANCE)</string>
+    <string name="share_stats_header">JMÉNO_ČLENA (ZAPLACENO | UTRACENO | ZŮSTATEK)</string>
     <string name="drawer_no_project">Není zde žádný projekt.\nVytvoříte/přidáte ho klepnutím sem</string>
     <string name="drawer_no_account">Pro připojení k Nextcloud účtu klikněte sem</string>
     <string name="choose_project_to_select">Vyberte projekt</string>
     <string name="edit_bill_impossible_no_member">Pro přidání účtu je zapotřebí alespoň dvou aktivovaných členů</string>
-    <string name="edit_project_local_impossible">Nemožné pro místní projekty</string>
-    <string name="choose_account_project_dialog_title">Vyberte projekt z vašeho Nextcloud účtu</string>
-    <string name="choose_account_project_dialog_impossible">Na vašem Nextcloud účtu není žádný projekt Cospend</string>
+    <string name="edit_project_local_impossible">Nemožné pro lokální projekty</string>
+    <string name="choose_account_project_dialog_title">Vyberte projekt ze svého Nextcloud účtu</string>
+    <string name="choose_account_project_dialog_impossible">Ve vašem Nextcloud účtu není žádný Cospend projekt</string>
     <string name="is_running">Synchronizováno v %2$s (každých %1$d min)</string>
     <string name="error_invalid_sync_interval">Je třeba, aby interval synchronizace byl z rozmezí 5 až 1440 (24h)</string>
     <string name="project_activity_notification">Projekt %1$s</string>
@@ -279,32 +279,32 @@
     <string name="error_invalid_bill_what">Neplatný název účtu</string>
     <string name="error_invalid_bill_date">Neplatné datum účtu</string>
     <string name="error_invalid_bill_amount">Neplatná částka účtu</string>
-    <string name="error_invalid_bill_payerid">Účtenka by měla mít plátce</string>
-    <string name="error_invalid_bill_owers">Faktura by měla mít alespoň jednoho vlastníka</string>
+    <string name="error_invalid_bill_payerid">Účet by měl mít plátce</string>
+    <string name="error_invalid_bill_owers">Účet by měl mít alespoň jednoho vlastníka</string>
     <string name="error_create_remote_project_helper">Chyba při vytváření projektu na protějšku: %s</string>
     <string name="error_edit_remote_project_helper">Chyba při upravování projektu na protějšku: %s</string>
-    <string name="error_token_mismatch">Prosím znovu ověřte svůj SSO účet v nastavení</string>
+    <string name="error_token_mismatch">Prosím v nastavení proveďte opětovné ověření svého SSO účtu</string>
     <!-- Snackbar Actions -->
     <!-- URLs -->
     <!-- About -->
     <string name="about_version_title">Verze</string>
-    <string name="about_version">Momentálně používáte &lt;strong&gt;%1$s&lt;/strong&gt;</string>
+    <string name="about_version">Nyní používáte &lt;strong&gt;%1$s&lt;/strong&gt;</string>
     <string name="about_maintainer_title">Správce</string>
-    <string name="about_developers_title">Vývojáří</string>
+    <string name="about_developers_title">Vývojáři</string>
     <string name="about_translators_title">Překladatelé</string>
     <string name="about_translators_crowdin">Komunita kolem MoneyBuster na &lt;a href=\"%1$s\"&gt;Crowdin&lt;/a&gt;</string>
     <string name="about_testers_title">Testeři</string>
     <string name="about_source_title">Zdrojové kódy</string>
     <string name="about_source">Tento projekt je hostován na portálu Gitlab: &lt;a href=\"%1$s\"&gt;%1$s&lt;/a&gt;</string>
     <string name="about_issues_title">Problémy</string>
-    <string name="about_issues">Chyby, návrhy na vylepšení a žádat o přidání funkcí je možné v systému správy hlášení problémů na portálu Gitlab: &lt;a href=\"%1$s\"&gt;%1$s&lt;/a&gt;</string>
+    <string name="about_issues">Hlásit chyby, podávat návrhy na vylepšení a žádat o přidání funkcí je možné vyplněním v systému správy hlášení na portálu Gitlab: &lt;a href=\"%1$s\"&gt;%1$s&lt;/a&gt;</string>
     <string name="about_translate_title">Překládání</string>
-    <string name="about_translate">Připojte se k MoneyBuster týmu na Crowdin a pomozte nám překládat tuto aplikaci: &lt;a href=\"%1$s\"&gt;%1$s&lt;/a&gt;</string>
+    <string name="about_translate">Připojte se k MoneyBuster týmu na portálu Crowdin a pomozte nám překládat tuto aplikaci: &lt;a href=\"%1$s\"&gt;%1$s&lt;/a&gt;</string>
     <string name="about_app_license_title">Licence aplikace</string>
     <string name="about_app_license">Tato aplikace je licencována pod GNU GNU GENERAL PUBLIC LICENSE v3+.</string>
     <string name="about_app_license_button">Zobrazit licenci</string>
     <string name="about_icons_disclaimer_title">Ikony</string>
-    <string name="about_icons_disclaimer">&lt;p&gt;Původní ikonu vytvořil %1$s&lt;/p&gt;&lt;p&gt;Všechny další ikony, použité v této aplikaci pocházejí ze sady &lt;a href=\"https://materialdesignicons.com/\"&gt;Material Design Icons&lt;/a&gt; vytvořené společností Google Inc. a licencovány pod licencí Apache 2.0.&lt;/p&gt;</string>
+    <string name="about_icons_disclaimer">&lt;p&gt;Původní ikonu vytvořil %1$s&lt;/p&gt;&lt;p&gt;Všechny další ikony, použité v této aplikaci, pocházejí ze sady &lt;a href=\"https://materialdesignicons.com/\"&gt;Material Design Icons&lt;/a&gt; vytvořené společností Google Inc. a licencované pod licencí Apache 2.0.&lt;/p&gt;</string>
     <string name="about_credits_tab_title">Poděkování</string>
     <string name="about_contribution_tab_title">Příspěvek</string>
     <string name="about_license_tab_title">Licence</string>
@@ -312,14 +312,14 @@
     <string name="shortcut_create_project_long">Přidat projekt</string>
     <!-- Key / Values for preferences -->
     <string name="pref_value_theme_light">Světlý</string>
-    <string name="pref_value_theme_dark">Temný</string>
-    <string name="avatar">Zástupný obrázek</string>
-    <string name="fallback_weblogin_text">Vrátit se ke staré přihlašovací metodě</string>
+    <string name="pref_value_theme_dark">Tmavý</string>
+    <string name="avatar">Profilový obrázek</string>
+    <string name="fallback_weblogin_text">Vrátit se ke staré metodě přihlašování</string>
     <string name="fallback_weblogin_back">Zpět</string>
     <string name="use_sso_toggle">Použít účet z aplikace Nextcloud Soubory</string>
     <!-- Plurals -->
     <plurals name="ab_selected">
-        <item quantity="one">%d vybrána</item>
+        <item quantity="one">%d vybráno</item>
         <item quantity="few">%d vybrány</item>
         <item quantity="many">%d vybraných</item>
         <item quantity="other">%d vybrány</item>

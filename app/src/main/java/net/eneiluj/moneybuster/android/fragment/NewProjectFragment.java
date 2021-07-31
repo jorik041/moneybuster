@@ -97,7 +97,7 @@ public class NewProjectFragment extends Fragment {
     private final static int import_file_cmd = 123;
 
     public interface NewProjectFragmentListener {
-        void close(long pid);
+        void close(long pid, boolean justAdded);
     }
 
     @Nullable
@@ -829,7 +829,8 @@ public class NewProjectFragment extends Fragment {
         boolean todoCreate = getTodoCreate();
         if (!todoCreate || ProjectType.LOCAL.equals(type)) {
             long pid = saveProject(null);
-            listener.close(pid);
+            // if it's local, we call that creation, otherwise we can say it's been "added"
+            listener.close(pid, !ProjectType.LOCAL.equals(type));
         }
         // create remote project (we know the type is not local)
         // the callback will quit this activity
@@ -1017,7 +1018,7 @@ public class NewProjectFragment extends Fragment {
         public void onFinish(String result, String message) {
             if (message.isEmpty()) {
                 long pid = saveProject(null);
-                listener.close(pid);
+                listener.close(pid, false);
             }
             else {
                 //showToast(getString(R.string.error_create_remote_project_helper, message), Toast.LENGTH_LONG);
@@ -1276,7 +1277,7 @@ public class NewProjectFragment extends Fragment {
                     for (Long owerId: owerIds) {
                         db.addBillower(billDbId, owerId);
                     }
-                    listener.close(pid);
+                    listener.close(pid, false);
                 }
             } catch (IOException e) {
 

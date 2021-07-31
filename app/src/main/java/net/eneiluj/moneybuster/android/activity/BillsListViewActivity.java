@@ -161,6 +161,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     public final static String CREATED_BILL = "net.eneiluj.moneybuster.created_bill";
     public final static String CREATED_PROJECT = "net.eneiluj.moneybuster.created_project";
+    public final static String ADDED_PROJECT = "net.eneiluj.moneybuster.added_project";
     public final static String EDITED_PROJECT = "net.eneiluj.moneybuster.edited_project";
     public final static String DELETED_PROJECT = "net.eneiluj.moneybuster.deleted_project";
     public final static String DELETED_BILL = "net.eneiluj.moneybuster.deleted_bill";
@@ -2746,15 +2747,31 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             listView.scrollToPosition(0);
         } else if (requestCode == addproject) {
             long pid = data.getLongExtra(CREATED_PROJECT, 0);
+            boolean created = true;
+            if (pid == 0) {
+                created = false;
+                pid = data.getLongExtra(ADDED_PROJECT, 0);
+            }
             if (DEBUG) { Log.d(TAG, "BILLS request code : addproject " + pid); }
             if (pid != 0) {
                 setSelectedProject(pid);
                 Log.d(TAG, "CREATED project id: " + pid);
                 DBProject addedProj = db.getProject(pid);
+                String message;
+                String title;
+                if (created) {
+                    Log.e(TAG, "CREATED !!!");
+                    title = getString(R.string.project_create_success_title);
+                    message = getString(R.string.project_create_success, addedProj.getRemoteId());
+                } else {
+                    Log.e(TAG, "ADDED !!!");
+                    title = getString(R.string.project_add_success_title);
+                    message = getString(R.string.project_add_success, addedProj.getRemoteId());
+                }
                 showDialog(
-                        getString(R.string.project_add_success, addedProj.getRemoteId()),
-                        getString(R.string.project_add_success_title),
-                        R.drawable.ic_add_circle_white_24dp
+                    message,
+                    title,
+                    R.drawable.ic_add_circle_white_24dp
                 );
             }
         } else if (requestCode == editproject) {

@@ -2,26 +2,19 @@ package net.eneiluj.moneybuster.android.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.Window;
 import android.widget.Toast;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.fragment.NewProjectFragment;
 import net.eneiluj.moneybuster.model.ProjectType;
-import net.eneiluj.moneybuster.util.ThemeUtils;
 
 public class NewProjectActivity extends AppCompatActivity implements NewProjectFragment.NewProjectFragmentListener {
-
-    //public static final String PARAM_PROJECT_ID = "projectId";
 
     protected NewProjectFragment fragment;
 
@@ -40,7 +33,6 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        //Log.d(getClass().getSimpleName(), "onNewIntent: " + intent.getLongExtra(PARAM_PROJECT_ID, 0));
         Log.d(getClass().getSimpleName(), "onNewIntent: ");
         setIntent(intent);
         if (fragment != null) {
@@ -130,20 +122,20 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
 
         if (shouldCloseActivity) {
-            close(0);
+            close(0, false);
         }
     }
 
     @Override
     public void onBackPressed() {
-        close(0);
+        close(0, false);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                close(0);
+                close(0, false);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -153,10 +145,14 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
     /**
      * Send result and closes the Activity
      */
-    public void close(long pid) {
+    public void close(long pid, boolean justAdded) {
         fragment.onCloseProject();
         final Intent data = new Intent();
-        data.putExtra(BillsListViewActivity.CREATED_PROJECT, pid);
+        if (justAdded) {
+            data.putExtra(BillsListViewActivity.ADDED_PROJECT, pid);
+        } else {
+            data.putExtra(BillsListViewActivity.CREATED_PROJECT, pid);
+        }
         setResult(RESULT_OK, data);
         finish();
     }

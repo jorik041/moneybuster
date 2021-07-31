@@ -2762,11 +2762,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 if (created) {
                     Log.e(TAG, "CREATED !!!");
                     title = getString(R.string.project_create_success_title);
-                    message = getString(R.string.project_create_success, addedProj.getRemoteId());
+                    message = getString(R.string.project_create_success_message, addedProj.getRemoteId());
                 } else {
                     Log.e(TAG, "ADDED !!!");
                     title = getString(R.string.project_add_success_title);
-                    message = getString(R.string.project_add_success, addedProj.getRemoteId());
+                    message = getString(R.string.project_add_success_message, addedProj.getRemoteId());
                 }
                 showDialog(
                     message,

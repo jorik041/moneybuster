@@ -98,6 +98,7 @@
     <string name="setting_email">E-mail (vzdálený)</string>
     <string name="project_added_success">Projekt úspěšně přidán do MoneyBuster</string>
     <string name="action_search">Hledat</string>
+    <string name="action_search_in_project">Search in %s</string>
     <string name="simple_error">Chyba</string>
     <string name="simple_loading">Načítá se</string>
     <string name="simple_remove">Odstranit</string>

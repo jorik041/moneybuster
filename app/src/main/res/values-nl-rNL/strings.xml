@@ -98,6 +98,7 @@
     <string name="setting_email">E-mail (op afstand)</string>
     <string name="project_added_success">Project toegevoegd aan MoneyBuster</string>
     <string name="action_search">Zoeken</string>
+    <string name="action_search_in_project">Search in %s</string>
     <string name="simple_error">Fout</string>
     <string name="simple_loading">Bezig met laden</string>
     <string name="simple_remove">Verwijderen</string>

@@ -98,6 +98,7 @@
     <string name="setting_email">ایمیل (از راه دور)</string>
     <string name="project_added_success">پروژه با موفقیت به MoneyBuster افزوده شد</string>
     <string name="action_search">جستجو</string>
+    <string name="action_search_in_project">Search in %s</string>
     <string name="simple_error">خطا</string>
     <string name="simple_loading">در حال بارگذاری</string>
     <string name="simple_remove">پاک کردن</string>

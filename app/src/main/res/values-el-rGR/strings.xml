@@ -98,6 +98,7 @@
     <string name="setting_email">E-mail (απομακρυσμένο)</string>
     <string name="project_added_success">Το έργο προστέθηκε με επιτυχία στο MoneyBuster</string>
     <string name="action_search">Αναζήτηση</string>
+    <string name="action_search_in_project">Search in %s</string>
     <string name="simple_error">Σφάλμα</string>
     <string name="simple_loading">Φόρτωση</string>
     <string name="simple_remove">Remove</string>

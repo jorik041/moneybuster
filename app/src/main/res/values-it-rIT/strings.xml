@@ -98,6 +98,7 @@
     <string name="setting_email">E-mail (remoto)</string>
     <string name="project_added_success">Progetto aggiunto con successo a MoneyBuster</string>
     <string name="action_search">Ricerca</string>
+    <string name="action_search_in_project">Search in %s</string>
     <string name="simple_error">Errore</string>
     <string name="simple_loading">Caricamento</string>
     <string name="simple_remove">Rimuovi</string>

@@ -98,6 +98,7 @@
     <string name="setting_email">E-mail (remote)</string>
     <string name="project_added_success">项目已成功添加到 MoneyBuster</string>
     <string name="action_search">搜索</string>
+    <string name="action_search_in_project">Search in %s</string>
     <string name="simple_error">错误</string>
     <string name="simple_loading">载入中</string>
     <string name="simple_remove">Remove</string>

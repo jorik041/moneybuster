@@ -98,6 +98,7 @@
     <string name="setting_email">E-mail (remote)</string>
     <string name="project_added_success">Project successfully added to MoneyBuster</string>
     <string name="action_search">Søg</string>
+    <string name="action_search_in_project">Search in %s</string>
     <string name="simple_error">Fejl</string>
     <string name="simple_loading">Indlæser</string>
     <string name="simple_remove">Remove</string>

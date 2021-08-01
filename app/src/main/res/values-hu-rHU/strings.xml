@@ -98,6 +98,7 @@
     <string name="setting_email">E-mail cím (távoli)</string>
     <string name="project_added_success">Projekt sikeresen hozzáadva a MoneyBuster-hez</string>
     <string name="action_search">Keresés</string>
+    <string name="action_search_in_project">Search in %s</string>
     <string name="simple_error">Hiba</string>
     <string name="simple_loading">Betöltés</string>
     <string name="simple_remove">Eltávolítás</string>

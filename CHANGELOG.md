@@ -5,6 +5,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## 0.1.9 – 2021-08-01
+### Changed
+- adjust some UI messages
+- add project name in search bar text
+- update translations
+- upgrade gradle plugin
+- bump dependencies
+- change color of sync toast
+- adapt CI to latest build tools
+
+### Fixed
+- qrcode scanner with Android API < 24 (< Android 7 Nougat)
+- bump SSO lib to snapshot to make it work with API >= 30 (Android >= 11)
+
 ## 0.1.8 – 2020-11-08
 ### Added
 - ability to open/scan cospend:// and ihatemoney:// links to automatically import projects

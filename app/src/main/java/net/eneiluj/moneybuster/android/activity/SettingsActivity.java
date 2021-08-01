@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputLayout;
 import com.nextcloud.android.sso.helper.SingleAccountHelper;
 import com.nextcloud.android.sso.model.SingleSignOnAccount;
@@ -92,7 +93,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private SharedPreferences preferences = null;
 
-    Switch use_sso_switch;
+    SwitchMaterial use_sso_switch;
     EditText field_url;
     TextInputLayout url_wrapper;
     TextInputLayout username_wrapper;

@@ -2040,6 +2040,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog));
         selectBuilder.setTitle(getString(R.string.choose_project_to_select));
+        // TODO use listadapter with items showing the project type as an icon
         selectBuilder.setSingleChoiceItems(namescs, checkedItem, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

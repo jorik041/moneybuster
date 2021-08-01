@@ -95,10 +95,12 @@
                     android:paddingLeft="18dp"
                     android:paddingRight="18dp"
                     android:layout_gravity="center"
-                    android:tint="#999999"
+                    app:tint="#999999"
                     android:scaleX="2"
                     android:scaleY="2"
-                    android:src="@drawable/ic_qrcode" />
+                    android:src="@drawable/ic_qrcode"
+                    android:tooltipText="@string/scan_qrcode_tooltip"
+                    />
 
             </LinearLayout>
 
@@ -197,10 +199,12 @@
                     android:paddingLeft="18dp"
                     android:paddingRight="18dp"
                     android:layout_gravity="center"
-                    android:tint="#999999"
+                    app:tint="#999999"
                     android:scaleX="2"
                     android:scaleY="2"
-                    android:src="@drawable/ic_nextcloud_logo_white" />
+                    android:src="@drawable/ic_nextcloud_logo_white"
+                    android:tooltipText="@string/new_project_from_nextcloud_tooltip"
+                    />
 
                 <ImageView
                     android:id="@+id/importButton"
@@ -210,10 +214,11 @@
                     android:paddingLeft="18dp"
                     android:paddingRight="18dp"
                     android:layout_gravity="center"
-                    android:tint="#999999"
+                    app:tint="#999999"
                     android:scaleX="2"
                     android:scaleY="2"
-                    android:src="@drawable/ic_folder_open_grey600_24dp" />
+                    android:src="@drawable/ic_folder_open_grey600_24dp"
+                    android:tooltipText="@string/import_tooltip" />
 
             </LinearLayout>
 
@@ -260,7 +265,7 @@
                     android:paddingLeft="18dp"
                     android:paddingRight="18dp"
                     android:layout_gravity="center"
-                    android:tint="#999999"
+                    app:tint="#999999"
                     android:scaleX="2"
                     android:scaleY="2"
                     android:src="@drawable/ic_nextcloud_logo_white" />

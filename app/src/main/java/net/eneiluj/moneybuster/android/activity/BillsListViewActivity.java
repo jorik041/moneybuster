@@ -83,6 +83,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.zxing.WriterException;
 import com.larswerkman.lobsterpicker.LobsterPicker;
 import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider;
@@ -225,6 +226,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private ActionMode mActionMode;
     private MoneyBusterSQLiteOpenHelper db = null;
     private SearchView searchView = null;
+    private MaterialTextView searchText = null;
     private ICallback syncCallBack = new ICallback() {
         @Override
         public void onFinish() {
@@ -288,6 +290,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         menuButton = findViewById(R.id.menu_button);
         accountButton = findViewById(R.id.launchAccountSwitcher);
         searchView = findViewById(R.id.search_view);
+        searchText = findViewById(R.id.search_text);
         homeToolbar = findViewById(R.id.home_toolbar);
         appBar = findViewById(R.id.appBar);
 
@@ -2110,6 +2113,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 fabManageProject.setImageDrawable(getDrawable(R.drawable.ic_ihm_white_24dp));
             }
         }
+
+        // search text
+        searchText.setText(getString(R.string.action_search_in_project, proj.getName()));
 
         itemsMenu.set(1, new NavigationAdapter.NavigationItem("project", selText, null, icon, false));
         listNavigationMenu.getAdapter().notifyItemChanged(1);

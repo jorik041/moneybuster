@@ -143,6 +143,9 @@
     <string name="fab_manage_members">Tagok kezelése</string>
     <string name="fab_export_project">Projekt exportálása</string>
     <string name="drawer_last_sync_text">Utolsó szinkronizálás: %1$02d:%2$02d</string>
+    <string name="scan_qrcode_tooltip">Scan a Cospend/IHateMoney QRCode</string>
+    <string name="new_project_from_nextcloud_tooltip">Choose project from Nextcloud account</string>
+    <string name="import_tooltip">Import from CSV file</string>
     <string name="import_error_owers">Rossz formátumú CSV, hibás tartozók a %1$d. sorban</string>
     <string name="import_error_date">Rossz formátumú CSV, hibás dátum a %1$d. sorban</string>
     <string name="import_error_header">Rossz formátumú CSV, hibás oszlop nevek a %1$d. sorban</string>

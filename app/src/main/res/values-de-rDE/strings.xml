@@ -143,6 +143,9 @@
     <string name="fab_manage_members">Mitglieder verwalten</string>
     <string name="fab_export_project">Projekt exportieren</string>
     <string name="drawer_last_sync_text">Letzter Sync: %1$02d:%2$02d</string>
+    <string name="scan_qrcode_tooltip">Scan a Cospend/IHateMoney QRCode</string>
+    <string name="new_project_from_nextcloud_tooltip">Choose project from Nextcloud account</string>
+    <string name="import_tooltip">Import from CSV file</string>
     <string name="import_error_owers">Fehlerhafte CSV, inkorrekte Schuldner in Zeile %1$d</string>
     <string name="import_error_date">Fehlerhafte CSV, falsches Datum auf der Linie %1$d</string>
     <string name="import_error_header">Fehlerhafte CSV, inkorrekte Spaltennamen in Zeile %1$d</string>

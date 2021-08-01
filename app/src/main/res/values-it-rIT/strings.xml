@@ -143,6 +143,9 @@
     <string name="fab_manage_members">Gestisci membri</string>
     <string name="fab_export_project">Esporta progetto</string>
     <string name="drawer_last_sync_text">Ultima sincronizzazione: %1$02d:%2$02d</string>
+    <string name="scan_qrcode_tooltip">Scan a Cospend/IHateMoney QRCode</string>
+    <string name="new_project_from_nextcloud_tooltip">Choose project from Nextcloud account</string>
+    <string name="import_tooltip">Import from CSV file</string>
     <string name="import_error_owers">CSV malformato, proprietario errato alla linea %1$d</string>
     <string name="import_error_date">CSV malformato, data errata alla linea %1$d</string>
     <string name="import_error_header">CSV malformato, nomi di colonne errati alla riga %1$d</string>

@@ -143,6 +143,9 @@
     <string name="fab_manage_members">Spravovat členy</string>
     <string name="fab_export_project">Exportovat projekt</string>
     <string name="drawer_last_sync_text">Naposledy synchronizováno: %1$02d:%2$02d</string>
+    <string name="scan_qrcode_tooltip">Scan a Cospend/IHateMoney QRCode</string>
+    <string name="new_project_from_nextcloud_tooltip">Choose project from Nextcloud account</string>
+    <string name="import_tooltip">Import from CSV file</string>
     <string name="import_error_owers">Pokažené CSV, chybní dlužníci na řádku %1$d</string>
     <string name="import_error_date">Pokažené CSV, chybné datum na řádku %1$d</string>
     <string name="import_error_header">Pokažené CSV, chybné názvy sloupců na řádku %1$d</string>

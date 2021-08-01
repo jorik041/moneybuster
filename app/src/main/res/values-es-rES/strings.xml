@@ -143,6 +143,9 @@
     <string name="fab_manage_members">Gestionar miembros</string>
     <string name="fab_export_project">Exportar proyecto</string>
     <string name="drawer_last_sync_text">Última sincronización: %1$02d:%2$02d</string>
+    <string name="scan_qrcode_tooltip">Scan a Cospend/IHateMoney QRCode</string>
+    <string name="new_project_from_nextcloud_tooltip">Choose project from Nextcloud account</string>
+    <string name="import_tooltip">Import from CSV file</string>
     <string name="import_error_owers">CSV malformado, deudor inválido (línea %1$d)</string>
     <string name="import_error_date">CSV malformado, fecha incorrecta en la línea %1$d</string>
     <string name="import_error_header">CSV malformado, nombres de columnas incorrectos en la línea %1$d</string>

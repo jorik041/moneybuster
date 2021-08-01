@@ -2075,10 +2075,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             if (dbProjects.size() > 0) {
                 proj = dbProjects.get(0);
                 preferences.edit().putLong("selected_project", proj.getId()).apply();
-            }
-            else {
+            } else {
                 itemsMenu.set(1, new NavigationAdapter.NavigationItem("project", getString(R.string.drawer_no_project), null, R.drawable.ic_folder_open_grey600_24dp, false));
                 listNavigationMenu.getAdapter().notifyItemChanged(1);
+                searchText.setText(getString(R.string.action_search));
                 return;
             }
         }

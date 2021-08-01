@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
@@ -106,6 +107,17 @@ public class VersatileProjectSyncClient {
         );
     }
 
+    /**
+     * This is normally done by the network lib but apparently not in Android API < 24
+     * Can be removed if some day the min API level become higher than 24 (and some tests are made)
+     * @param password
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    private String getEncodedPassword(String password) throws UnsupportedEncodingException {
+        return URLEncoder.encode(password, "utf-8").replaceAll("\\+", "%20");
+    }
+
     public ServerResponse.ProjectResponse getProject(CustomCertManager ccm, DBProject project, long lastModified, String lastETag) throws JSONException, IOException, TokenMismatchException {
         String target;
         String username = null;
@@ -116,17 +128,15 @@ public class VersatileProjectSyncClient {
                 password = this.password;
                 target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api-priv/projects/" + project.getRemoteId();
-            }
-            else if (canAccessProjectWithSSO(project)) {
+            } else if (canAccessProjectWithSSO(project)) {
                 target = "/index.php/apps/cospend/api-priv/projects/" + project.getRemoteId();
                 return new ServerResponse.ProjectResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_GET, null, null));
-            }
-            else {
+            } else {
                 target = project.getServerUrl().replaceAll("/+$", "")
-                        + "/api/projects/" + project.getRemoteId() + "/" + project.getPassword();
+                    + "/api/projects/"
+                    + project.getRemoteId() + "/" + getEncodedPassword(project.getPassword());
             }
-        }
-        else {
+        } else {
             target = project.getServerUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId();
             username = project.getRemoteId();
@@ -155,17 +165,14 @@ public class VersatileProjectSyncClient {
                 password = this.password;
                 target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api-priv/projects/" + project.getRemoteId();
-            }
-            else if (canAccessProjectWithSSO(project)) {
+            } else if (canAccessProjectWithSSO(project)) {
                 target = "/index.php/apps/cospend/api-priv/projects/" + project.getRemoteId();
                 return new ServerResponse.EditRemoteProjectResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_PUT, paramKeys, paramValues));
-            }
-            else {
+            } else {
                 target = project.getServerUrl().replaceAll("/+$", "")
-                        + "/api/projects/" + project.getRemoteId() + "/" + project.getPassword();
+                        + "/api/projects/" + project.getRemoteId() + "/" + getEncodedPassword(project.getPassword());
             }
-        }
-        else {
+        } else {
             target = project.getServerUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId();
             //https://ihatemoney.org/api/projects/demo
@@ -203,21 +210,18 @@ public class VersatileProjectSyncClient {
                 username = this.username;
                 password = this.password;
                 target = project.getServerUrl().replaceAll("/+$", "")
-                        + "/api-priv/projects/" + project.getRemoteId() + "/members/" + member.getRemoteId();
-            }
-            else if (canAccessProjectWithSSO(project)) {
+                    + "/api-priv/projects/" + project.getRemoteId() + "/members/" + member.getRemoteId();
+            } else if (canAccessProjectWithSSO(project)) {
                 target = "/index.php/apps/cospend/api-priv/projects/" + project.getRemoteId() + "/members/" + member.getRemoteId();
                 return new ServerResponse.EditRemoteMemberResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_PUT, paramKeys, paramValues));
-            }
-            else {
+            } else {
                 target = project.getServerUrl().replaceAll("/+$", "")
-                        + "/api/projects/" + project.getRemoteId() + "/"
-                        + project.getPassword() + "/members/" + member.getRemoteId();
+                    + "/api/projects/" + project.getRemoteId() + "/"
+                    + getEncodedPassword(project.getPassword()) + "/members/" + member.getRemoteId();
             }
-        }
-        else {
+        } else {
             target = project.getServerUrl().replaceAll("/+$", "")
-                    + "/api/projects/" + project.getRemoteId() + "/members/" + member.getRemoteId();
+                + "/api/projects/" + project.getRemoteId() + "/members/" + member.getRemoteId();
             username = project.getRemoteId();
             password = project.getPassword();
         }
@@ -268,20 +272,17 @@ public class VersatileProjectSyncClient {
                 password = this.password;
                 target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api-priv/projects/" + project.getRemoteId() + "/bills/" + bill.getRemoteId();
-            }
-            else if (canAccessProjectWithSSO(project)) {
+            } else if (canAccessProjectWithSSO(project)) {
                 target = "/index.php/apps/cospend/api-priv/projects/" + project.getRemoteId() + "/bills/" + bill.getRemoteId();
                 return new ServerResponse.EditRemoteBillResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_PUT, paramKeys, paramValues));
-            }
-            else {
+            } else {
                 target = project.getServerUrl().replaceAll("/+$", "")
-                        + "/api/projects/" + project.getRemoteId() + "/"
-                        + project.getPassword() + "/bills/" + bill.getRemoteId();
+                    + "/api/projects/" + project.getRemoteId() + "/"
+                    + getEncodedPassword(project.getPassword()) + "/bills/" + bill.getRemoteId();
             }
-        }
-        else {
+        } else {
             target = project.getServerUrl().replaceAll("/+$", "")
-                    + "/api/projects/" + project.getRemoteId() + "/bills/" + bill.getRemoteId();
+                + "/api/projects/" + project.getRemoteId() + "/bills/" + bill.getRemoteId();
             username = project.getRemoteId();
             password = project.getPassword();
 
@@ -307,19 +308,16 @@ public class VersatileProjectSyncClient {
                 password = this.password;
                 target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api-priv/projects/" + project.getRemoteId();
-            }
-            else if (canAccessProjectWithSSO(project)) {
+            } else if (canAccessProjectWithSSO(project)) {
                 target = "/index.php/apps/cospend/api-priv/projects/" + project.getRemoteId();
                 return new ServerResponse.DeleteRemoteProjectResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_DELETE, null, null));
-            }
-            else {
+            } else {
                 target = project.getServerUrl().replaceAll("/+$", "")
-                        + "/api/projects/" + project.getRemoteId() + "/" + project.getPassword();
+                    + "/api/projects/" + project.getRemoteId() + "/" + getEncodedPassword(project.getPassword());
             }
-        }
-        else {
+        } else {
             target = project.getServerUrl().replaceAll("/+$", "")
-                    + "/api/projects/" + project.getRemoteId();
+                + "/api/projects/" + project.getRemoteId();
             username = project.getRemoteId();
             password = project.getPassword();
         }
@@ -336,18 +334,15 @@ public class VersatileProjectSyncClient {
                 password = this.password;
                 target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api-priv/projects/" + project.getRemoteId() + "/bills/" + billRemoteId;
-            }
-            else if (canAccessProjectWithSSO(project)) {
+            } else if (canAccessProjectWithSSO(project)) {
                 target = "/index.php/apps/cospend/api-priv/projects/" + project.getRemoteId() + "/bills/" + billRemoteId;
                 return new ServerResponse.DeleteRemoteBillResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_DELETE, null, null));
-            }
-            else {
+            } else {
                 target = project.getServerUrl().replaceAll("/+$", "")
-                        + "/api/projects/" + project.getRemoteId() + "/"
-                        + project.getPassword() + "/bills/" + billRemoteId;
+                    + "/api/projects/" + project.getRemoteId() + "/"
+                    + getEncodedPassword(project.getPassword()) + "/bills/" + billRemoteId;
             }
-        }
-        else {
+        } else {
             target = project.getServerUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/bills/" + billRemoteId;
             username = project.getRemoteId();
@@ -445,20 +440,17 @@ public class VersatileProjectSyncClient {
                 password = this.password;
                 target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api-priv/projects/" + project.getRemoteId() + "/bills";
-            }
-            else if (canAccessProjectWithSSO(project)) {
+            } else if (canAccessProjectWithSSO(project)) {
                 target = "/index.php/apps/cospend/api-priv/projects/" + project.getRemoteId() + "/bills";
                 return new ServerResponse.CreateRemoteBillResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_POST, paramKeys, paramValues));
-            }
-            else {
+            } else {
                 target = project.getServerUrl().replaceAll("/+$", "")
-                        + "/api/projects/" + project.getRemoteId() + "/"
-                        + project.getPassword() + "/bills";
+                    + "/api/projects/" + project.getRemoteId() + "/"
+                    + getEncodedPassword(project.getPassword()) + "/bills";
             }
-        }
-        else {
+        } else {
             target = project.getServerUrl().replaceAll("/+$", "")
-                    + "/api/projects/" + project.getRemoteId() + "/bills";
+                + "/api/projects/" + project.getRemoteId() + "/bills";
             username = project.getRemoteId();
             password = project.getPassword();
 
@@ -499,19 +491,16 @@ public class VersatileProjectSyncClient {
                 username = this.username;
                 password = this.password;
                 target = project.getServerUrl().replaceAll("/+$", "")
-                        + "/api-priv/projects/" + project.getRemoteId() + "/members";
-            }
-            else if (canAccessProjectWithSSO(project)) {
+                    + "/api-priv/projects/" + project.getRemoteId() + "/members";
+            } else if (canAccessProjectWithSSO(project)) {
                 target = "/index.php/apps/cospend/api-priv/projects/" + project.getRemoteId() + "/members";
                 return new ServerResponse.CreateRemoteMemberResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_POST, paramKeys, paramValues));
-            }
-            else {
+            } else {
                 target = project.getServerUrl().replaceAll("/+$", "")
-                        + "/api/projects/" + project.getRemoteId() + "/"
-                        + project.getPassword() + "/members";
+                    + "/api/projects/" + project.getRemoteId() + "/"
+                    + getEncodedPassword(project.getPassword()) + "/members";
             }
-        }
-        else {
+        } else {
             target = project.getServerUrl().replaceAll("/+$", "")
                     + "/api/projects/" + project.getRemoteId() + "/members";
             username = project.getRemoteId();
@@ -531,34 +520,31 @@ public class VersatileProjectSyncClient {
                 username = this.username;
                 password = this.password;
                 target = project.getServerUrl().replaceAll("/+$", "")
-                        + "/api-priv/projects/" + project.getRemoteId() + "/bills?lastchanged=" + tsLastSync;
+                    + "/api-priv/projects/" + project.getRemoteId() + "/bills?lastchanged=" + tsLastSync;
                 return new ServerResponse.BillsResponse(requestServer(ccm, target, METHOD_GET, null, null,null, username, password), true);
-            }
-            else if (canAccessProjectWithSSO(project)) {
+            } else if (canAccessProjectWithSSO(project)) {
                 target = "/index.php/apps/cospend/api-priv/projects/" + project.getRemoteId() + "/bills";
                 List<String> paramKeys = new ArrayList<>();
                 List<String> paramValues = new ArrayList<>();
                 paramKeys.add("lastchanged");
                 paramValues.add(String.valueOf(tsLastSync));
                 return new ServerResponse.BillsResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_GET, paramKeys, paramValues), true);
-            }
-            else {
+            } else {
                 if (cospendSmartSync) {
                     target = project.getServerUrl().replaceAll("/+$", "")
-                            + "/apiv2/projects/" + project.getRemoteId() + "/"
-                            + project.getPassword() + "/bills?lastchanged=" + tsLastSync;
+                        + "/apiv2/projects/" + project.getRemoteId() + "/"
+                        + getEncodedPassword(project.getPassword()) + "/bills?lastchanged=" + tsLastSync;
                     return new ServerResponse.BillsResponse(requestServer(ccm, target, METHOD_GET, null, null,null, username, password), true);
                 } else {
                     target = project.getServerUrl().replaceAll("/+$", "")
-                            + "/api/projects/" + project.getRemoteId() + "/"
-                            + project.getPassword() + "/bills";
+                        + "/api/projects/" + project.getRemoteId() + "/"
+                        + getEncodedPassword(project.getPassword()) + "/bills";
                     return new ServerResponse.BillsResponse(requestServer(ccm, target, METHOD_GET, null, null,null, username, password), false);
                 }
             }
-        }
-        else {
+        } else {
             target = project.getServerUrl().replaceAll("/+$", "")
-                    + "/api/projects/" + project.getRemoteId() + "/bills";
+                + "/api/projects/" + project.getRemoteId() + "/bills";
             username = project.getRemoteId();
             password = project.getPassword();
             return new ServerResponse.BillsResponse(requestServer(ccm, target, METHOD_GET, null, null,null, username, password), false);
@@ -575,21 +561,18 @@ public class VersatileProjectSyncClient {
                 password = this.password;
                 target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api-priv/projects/" + project.getRemoteId() + "/members";
-            }
-            else if (canAccessProjectWithSSO(project)) {
+            } else if (canAccessProjectWithSSO(project)) {
                 target = "/index.php/apps/cospend/api-priv/projects/" + project.getRemoteId() + "/members";
                 Log.v("YOUP", "SSO target "+target);
                 return new ServerResponse.MembersResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_GET, null, null));
-            }
-            else {
+            } else {
                 target = project.getServerUrl().replaceAll("/+$", "")
-                        + "/api/projects/" + project.getRemoteId() + "/"
-                        + project.getPassword() + "/members";
+                    + "/api/projects/" + project.getRemoteId() + "/"
+                    + getEncodedPassword(project.getPassword()) + "/members";
             }
-        }
-        else {
+        } else {
             target = project.getServerUrl().replaceAll("/+$", "")
-                    + "/api/projects/" + project.getRemoteId() + "/members";
+                + "/api/projects/" + project.getRemoteId() + "/members";
             username = project.getRemoteId();
             password = project.getPassword();
         }

@@ -148,7 +148,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (!MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(this)) {
             first_run = true;
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             }
         }
 

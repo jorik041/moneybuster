@@ -135,7 +135,7 @@
                             android:layout_marginBottom="0dp"
 
                             android:layout_gravity="center"
-                            android:tint="#ffffff"
+                            app:tint="#ffffff"
                             android:src="@drawable/ic_sync_grey_14dp" />
 
                         <TextView

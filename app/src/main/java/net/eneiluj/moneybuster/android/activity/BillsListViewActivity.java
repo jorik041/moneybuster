@@ -2093,7 +2093,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             selText = proj.getRemoteId();
             //+ "@local";
             icon = R.drawable.ic_phone_android_grey_24dp;
-            fabManageProject.setImageDrawable(getDrawable(R.drawable.ic_phone_android_white_24dp));
+            fabManageProject.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_phone_android_white_24dp));
         }
         // remote project
         else {
@@ -2107,10 +2107,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
              */
             if (ProjectType.COSPEND.equals(proj.getType())) {
                 icon = R.drawable.ic_cospend_grey_24dp;
-                fabManageProject.setImageDrawable(getDrawable(R.drawable.ic_cospend_white_24dp));
+                fabManageProject.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_cospend_white_24dp));
             } else {
                 icon = R.drawable.ic_ihm_grey_24dp;
-                fabManageProject.setImageDrawable(getDrawable(R.drawable.ic_ihm_white_24dp));
+                fabManageProject.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_ihm_white_24dp));
             }
         }
 
@@ -2890,7 +2890,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         } else {
             avatarView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_nextcloud_logo_white));
-            accountButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_account_circle_grey_24dp));
+            accountButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_account_circle_grey_24dp));
         }
     }
 

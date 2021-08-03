@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## 0.1.10 – 2021-08-03
+### Fixed
+- bug in Android 5, project sync with spaces in passwords
+[#72](https://gitlab.com/eneiluj/moneybuster/issues/72) @hugodu69
+
 ## 0.1.9 – 2021-08-01
 ### Changed
 - adjust some UI messages

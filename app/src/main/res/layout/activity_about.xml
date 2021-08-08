@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/about_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:contentInsetStartWithNavigation="0dp"
@@ -21,13 +21,13 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabs"
+        android:id="@+id/about_tabLayout"
         android:background="@color/bg_normal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/pager"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/about_viewPager2"
         android:background="@color/bg_normal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

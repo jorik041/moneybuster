@@ -39,6 +39,7 @@ android {
     // solves cert4android crash
     buildFeatures {
         dataBinding true
+        viewBinding true
     }
 }
 

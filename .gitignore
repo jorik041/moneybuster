@@ -1,10 +1,11 @@
 .gradle/
-/local.properties
+local.properties
 .DS_Store
-/build
-/captures
-/.idea/
+build/
+captures/
+.idea/
 *.iml
 .*.swp
-/projectFilesBackup/
-/app/.idea
+projectFilesBackup/
+app/debug/
+app/release/

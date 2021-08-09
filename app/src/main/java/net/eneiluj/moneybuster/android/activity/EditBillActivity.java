@@ -2,30 +2,27 @@ package net.eneiluj.moneybuster.android.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.Window;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.fragment.EditBillFragment;
 import net.eneiluj.moneybuster.model.DBBill;
+import net.eneiluj.moneybuster.model.DBBillOwer;
+import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
-import net.eneiluj.moneybuster.util.ThemeUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
-
-//import android.support.v4.app.Fragment;
 
 public class EditBillActivity extends AppCompatActivity implements EditBillFragment.BillFragmentListener {
 
@@ -124,14 +121,25 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
             long newTimestamp = System.currentTimeMillis() / 1000;
             newBill = new DBBill(0, 0, projectId, 0, 0, newTimestamp,
                     "", DBBill.STATE_ADDED, DBBill.NON_REPEATED, DBBill.PAYMODE_NONE, DBBill.CATEGORY_NONE);
+            fragment = EditBillFragment.newInstanceWithNewBill(newBill, getProjectType());
         } else {
             db = MoneyBusterSQLiteOpenHelper.getInstance(this);
             DBBill btd = db.getBill(billIdToDuplicate);
-            newBill = new DBBill(0, 0, projectId, btd.getPayerId(), btd.getAmount(), btd.getTimestamp(),
+            newBill = new DBBill(0, 0, projectId, btd.getPayerId(), btd.getAmount(), btd.getTimestamp() + 1,
                     btd.getWhat(), DBBill.STATE_ADDED, btd.getRepeat(), btd.getPaymentMode(), btd.getCategoryRemoteId());
+            List<DBBillOwer> btdOwers = btd.getBillOwers();
+            List<DBBillOwer> newBillOwers = new ArrayList<>();
+            for (DBBillOwer btdOwer : btdOwers) {
+                long mid = btdOwer.getMemberId();
+                DBMember member = db.getMember(mid);
+                if (member.isActivated()) {
+                    newBillOwers.add(btdOwer);
+                }
+            }
+            newBill.setBillOwers(newBillOwers);
+            fragment = EditBillFragment.newInstanceWithDuplicatedBill(newBill, getProjectType());
         }
 
-        fragment = EditBillFragment.newInstanceWithNewBill(newBill, getProjectType());
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
     }
 

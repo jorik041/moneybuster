@@ -92,12 +92,14 @@ public class EditBillFragment extends Fragment {
 
     private static final String PARAM_BILL_ID = "billId";
     private static final String PARAM_NEWBILL = "newBill";
+    private static final String PARAM_NEWBILL_IS_DUPLICATED = "newBillIsDuplicated";
     private static final String PARAM_PROJECT_TYPE = "projectType";
     private static final String SAVEDKEY_BILL = "bill";
     private static final String SAVEDKEY_PROJECT_TYPE = "type";
     private static final String SAVEDKEY_ORIGINAL_BILL = "original_bill";
 
     protected DBBill bill;
+    protected boolean billIsDuplicated = false;
 
     private MoneyBusterSQLiteOpenHelper db;
     private BillFragmentListener listener;
@@ -517,6 +519,7 @@ public class EditBillFragment extends Fragment {
                 }
                 //bill = db.getBill(db.addBill(cloudBill));
                 bill = newBill;
+                billIsDuplicated = getArguments().getBoolean(PARAM_NEWBILL_IS_DUPLICATED, false);
             }
         } else {
             bill = (DBBill) savedInstanceState.getSerializable(SAVEDKEY_BILL);
@@ -745,6 +748,16 @@ public class EditBillFragment extends Fragment {
         return f;
     }
 
+    public static EditBillFragment newInstanceWithDuplicatedBill(DBBill newBill, ProjectType projectType) {
+        EditBillFragment f = new EditBillFragment();
+        Bundle b = new Bundle();
+        b.putSerializable(PARAM_NEWBILL, newBill);
+        b.putString(PARAM_PROJECT_TYPE, projectType.getId());
+        b.putBoolean(PARAM_NEWBILL_IS_DUPLICATED, true);
+        f.setArguments(b);
+        return f;
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -783,7 +796,8 @@ public class EditBillFragment extends Fragment {
 
                 final CheckBox cb = row.findViewById(R.id.owerBox);
 
-                if (bill.getId() == 0 || owerIndex != -1) {
+                if ((bill.getId() == 0 && !billIsDuplicated)
+                        || owerIndex != -1) {
                     cb.setChecked(true);
                 }
                 cb.setText(member.getName());

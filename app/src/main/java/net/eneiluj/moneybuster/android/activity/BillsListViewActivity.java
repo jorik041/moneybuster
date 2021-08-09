@@ -2116,7 +2116,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         }
 
         // search text
-        searchText.setText(getString(R.string.action_search_in_project, proj.getName()));
+        if (proj.getName() == null || "".equals(proj.getName())) {
+            searchText.setText(getString(R.string.action_search));
+        } else {
+            searchText.setText(getString(R.string.action_search_in_project, proj.getName()));
+        }
 
         itemsMenu.set(1, new NavigationAdapter.NavigationItem("project", selText, null, icon, false));
         listNavigationMenu.getAdapter().notifyItemChanged(1);

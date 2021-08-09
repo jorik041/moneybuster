@@ -102,10 +102,11 @@
     <string name="action_search">Search</string>
     <string name="action_search_in_project">Search in %s</string>
     <string name="simple_error">Error</string>
+    <string name="simple_close">Close</string>
     <string name="simple_loading">Loading</string>
     <string name="simple_remove">Remove</string>
     <string name="sync_error_dialog_title">Project sync failed</string>
-    <string name="sync_error_dialog_content">Synchronization with project %1$s failed.\n\n%2$s\n\nThis project might not exist anymore. Do you want to remove the project locally?</string>
+    <string name="sync_error_dialog_full_content">Synchronization with project %1$s failed. Error message:\n\n%2$s\n\nThe associated remote project might not exist anymore. If so, you could remove this project from MoneyBuster.</string>
     <string name="simple_do_nothing">Do nothing</string>
     <string name="creating_remote_project">Creating remote project</string>
     <string name="simple_cancel">Cancel</string>

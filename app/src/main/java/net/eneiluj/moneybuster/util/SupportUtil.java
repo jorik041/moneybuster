@@ -13,6 +13,7 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.preference.PreferenceManager;
 
@@ -23,6 +24,9 @@ import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.Transaction;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -402,6 +406,14 @@ public class SupportUtil {
             // or other notification behaviors after this
             NotificationManager notificationManager = ctx.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    public static @Nullable JSONObject getJsonObject(String text) {
+        try {
+            return new JSONObject(text);
+        } catch (JSONException ex) {
+            return null;
         }
     }
 

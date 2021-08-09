@@ -50,6 +50,7 @@ import net.eneiluj.moneybuster.util.ServerResponse;
 import net.eneiluj.moneybuster.util.SupportUtil;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -868,7 +869,16 @@ public class MoneyBusterServerSyncHelper {
             if (status != LoginStatus.OK) {
                 String errorString = "";
                 for (Throwable e : exceptions) {
-                    errorString += e.getMessage() + "\n";
+                    JSONObject obj = SupportUtil.getJsonObject(e.getMessage());
+                    if (obj != null && obj.has("message")) {
+                        try {
+                            errorString += obj.getString("message") + "\n";
+                        } catch (JSONException jsonEx) {
+                            errorString += e.getMessage() + "\n";
+                        }
+                    } else {
+                        errorString += e.getMessage() + "\n";
+                    }
                 }
                 // broadcast the error
                 // if the bills list is not visible, no toast

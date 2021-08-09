@@ -3152,13 +3152,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     long projectId = intent.getLongExtra(BROADCAST_PROJECT_ID, 0);
                     if (projectId != 0) {
                         DBProject project = db.getProject(projectId);
-                        String dialogContent = getString(R.string.sync_error_dialog_content, project.getName(), errorMessage);
+                        String dialogContent = getString(R.string.sync_error_dialog_full_content, project.getName(), errorMessage);
 
                         android.app.AlertDialog.Builder builder;
                         builder = new android.app.AlertDialog.Builder(new ContextThemeWrapper(BillsListViewActivity.this, R.style.AppThemeDialog));
                         builder.setTitle(getString(R.string.sync_error_dialog_title))
                                 .setMessage(dialogContent)
-                                .setPositiveButton(getString(R.string.simple_remove), new DialogInterface.OnClickListener() {
+                                /*.setPositiveButton(getString(R.string.simple_remove), new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         db.deleteProject(projectId);
                                         List<DBProject> dbProjects = db.getProjects();
@@ -3172,10 +3172,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                         synchronize();
                                         showToast(getString(R.string.remove_project_confirmation, project.getName()));
                                     }
-                                })
-                                .setNegativeButton(getString(R.string.simple_do_nothing), new DialogInterface.OnClickListener() {
+                                })*/
+                                .setPositiveButton(getString(R.string.simple_close), new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
-
                                     }
                                 })
                                 .setIcon(R.drawable.ic_sync_grey_24dp)

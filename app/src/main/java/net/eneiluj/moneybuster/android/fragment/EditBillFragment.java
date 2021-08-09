@@ -83,6 +83,8 @@ public class EditBillFragment extends Fragment {
     public interface BillFragmentListener {
         void close();
 
+        void closeAndDuplicate(long billId);
+
         void closeOnDelete(long billId);
 
         void onBillUpdated(DBBill bill);
@@ -117,6 +119,8 @@ public class EditBillFragment extends Fragment {
     private FloatingActionButton fabSaveBill;
     private Button bAll;
     private Button bNone;
+    private Button duplicateButton;
+    private LinearLayout duplicateLayout;
     private LinearLayout editTimeLayout;
     private LinearLayout editRepeatLayout;
     private LinearLayout editPaymentModeLayout;
@@ -200,6 +204,19 @@ public class EditBillFragment extends Fragment {
                 for (Map.Entry<Long, CheckBox> entry : owerCheckboxes.entrySet()) {
                     entry.getValue().setChecked(false);
                 }
+            }
+
+        });
+        duplicateButton = view.findViewById(R.id.duplicateBillButton);
+        duplicateLayout = view.findViewById(R.id.duplicateBillLayout);
+        if (bill.getId() == 0) {
+            duplicateLayout.setVisibility(View.GONE);
+        }
+        duplicateButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                listener.closeAndDuplicate(bill.getId());
             }
 
         });
@@ -733,7 +750,9 @@ public class EditBillFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "ACT EDIT BILL CREATED");
 
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        if (bill.getId() == 0 && "".equals(bill.getWhat())) {
+            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        }
 
         // manage currency icon
         DBProject proj = db.getProject(bill.getProjectId());
@@ -859,15 +878,16 @@ public class EditBillFragment extends Fragment {
             }
         }
 
+        editWhat.setText(bill.getWhat());
+        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         // select what and show keyboard if this is a new bill
-        if (bill.getId() == 0) {
+        if (bill.getId() == 0 && "".equals(bill.getWhat())) {
             editWhat.setSelectAllOnFocus(true);
             editWhat.requestFocus();
             // show keyboard
-            InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         } else {
-            editWhat.setText(bill.getWhat());
+            inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
         }
 
         Log.v(TAG, "BEFORE TIME INIT");
@@ -879,9 +899,10 @@ public class EditBillFragment extends Fragment {
         editAmount.setText(SupportUtil.normalNumberFormat.format(bill.getAmount()));
 
         // hide the validation button so that it appears if a value changes
-
-        fabSaveBill.hide();
-        Log.d(TAG, "HIIIIIIIIIIDE FAB");
+        if (bill.getId() != 0 || "".equals(bill.getWhat())) {
+            fabSaveBill.hide();
+            Log.d(TAG, "HIIIIIIIIIIDE FAB");
+        }
 
         if (!ProjectType.IHATEMONEY.equals(projectType)) {
             List<String> repeatNameList = new ArrayList<>();

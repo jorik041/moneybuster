@@ -423,6 +423,23 @@
 
             </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/duplicateBillLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/duplicateBillButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_baseline_play_arrow_24"
+                android:text="@string/duplicate_bill" />
+        </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 

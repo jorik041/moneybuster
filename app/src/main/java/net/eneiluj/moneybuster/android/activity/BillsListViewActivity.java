@@ -166,6 +166,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     public final static String EDITED_PROJECT = "net.eneiluj.moneybuster.edited_project";
     public final static String DELETED_PROJECT = "net.eneiluj.moneybuster.deleted_project";
     public final static String DELETED_BILL = "net.eneiluj.moneybuster.deleted_bill";
+    public final static String BILL_TO_DUPLICATE = "net.eneiluj.moneybuster.bill_to_duplicate";
     public static final String ADAPTER_KEY_ALL = "all";
 
     public final static String CREDENTIALS_CHANGED = "net.eneiluj.moneybuster.CREDENTIALS_CHANGED";
@@ -2800,7 +2801,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 }
             }
         } else if (requestCode == show_single_bill_cmd) {
-
+            if (data != null) {
+                long billId = data.getLongExtra(BILL_TO_DUPLICATE, 0);
+                Log.d(TAG, "onActivityResult show_single_bill_cmd BILL ID TO DUPLICATE : " + billId);
+                if (billId != 0) {
+                    duplicateBill(billId);
+                }
+            }
         } else if (requestCode == scan_qrcode_import_cmd) {
             if (data != null) {
                 // adapt after project has been deleted
@@ -2827,6 +2834,22 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 if (MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(getApplicationContext())) {
                     Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(CospendClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
                 }
+            }
+        }
+    }
+
+    private void duplicateBill(Long billId) {
+        Intent createIntent = new Intent(getApplicationContext(), EditBillActivity.class);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        long selectedProjectId = preferences.getLong("selected_project", 0);
+        if (selectedProjectId != 0) {
+            if (db.getActivatedMembersOfProject(selectedProjectId).size() < 2) {
+                showToast(getString(R.string.edit_bill_impossible_no_member));
+            } else {
+                createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, selectedProjectId);
+                createIntent.putExtra(EditBillActivity.PARAM_PROJECT_TYPE, db.getProject(selectedProjectId).getType().getId());
+                createIntent.putExtra(EditBillActivity.PARAM_BILL_ID_TO_DUPLICATE, billId);
+                startActivityForResult(createIntent, create_bill_cmd);
             }
         }
     }

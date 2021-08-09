@@ -32,7 +32,9 @@ android {
             resValue "string", "app_name", "MoneyBuster"
         }
         dev {
-            applicationIdSuffix '.dev'
+            applicationId 'net.eneiluj.moneybuster.dev'
+            resValue "string", "applicationId", applicationId
+            // applicationIdSuffix '.dev'
             resValue "string", "app_name", "MoneyDevBuster"
         }
     }

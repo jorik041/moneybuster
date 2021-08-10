@@ -22,6 +22,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -42,10 +44,12 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
         @DrawableRes
         public int icon;
         @Nullable
-        public Integer count;
+        public Double count;
         public boolean isMember;
 
-        public NavigationItem(@NonNull String id, @NonNull String label, @Nullable Integer count,
+        public static NumberFormat balanceFormatter = new DecimalFormat("#0.00");
+
+        public NavigationItem(@NonNull String id, @NonNull String label, @Nullable Double count,
                               @DrawableRes int icon, boolean isMember) {
             this.id = id;
             this.label = label;
@@ -90,9 +94,25 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
             currentItem = item;
             MoneyBusterSQLiteOpenHelper db = MoneyBusterSQLiteOpenHelper.getInstance(icon.getContext());
             boolean isSelected = item.id.equals(selectedItem);
-            //name.setText(item.label);
             count.setVisibility((item.count == null) ? View.GONE : View.VISIBLE);
-            count.setText(String.valueOf(item.count));
+            if (item.isMember) {
+                String sign = "";
+                if (item.count > 0.0) {
+                    sign = "+";
+                    count.setTextColor(ContextCompat.getColor(view.getContext(), R.color.green));
+                } else if (item.count < 0.0) {
+                    sign = "-";
+                    count.setTextColor(ContextCompat.getColor(view.getContext(), R.color.red));
+                } else {
+                    count.setTextColor(ContextCompat.getColor(view.getContext(), R.color.primary_light));
+                }
+                Double absCount = Math.abs(item.count);
+                String balanceStr = NavigationItem.balanceFormatter.format(absCount).replace(",", ".");
+
+                count.setText(sign + balanceStr);
+            } else {
+                count.setText(String.valueOf(item.count));
+            }
             if (item.icon > 0) {
                 if (item.isMember) {
                     try {
@@ -166,7 +186,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
 
             int textColor = ContextCompat.getColor(view.getContext(), R.color.fg_default);
             name.setTextColor(textColor);
-            count.setTextColor(textColor);
+            // count.setTextColor(textColor);
             if (!item.isMember) {
                 icon.setColorFilter(isSelected ? textColor : Color.GRAY);
                 icon.setScaleX(0.6f);

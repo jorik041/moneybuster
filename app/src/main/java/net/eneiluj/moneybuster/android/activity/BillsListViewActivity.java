@@ -2387,22 +2387,19 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             HashMap<Long, Double> membersSpent = new HashMap<>();
 
             int nbBills = SupportUtil.getStatsOfProject(
-                    selectedProjectId, db,
-                    membersNbBills, membersBalance, membersPaid, membersSpent,
-                    0, null, null, null
+                selectedProjectId, db,
+                membersNbBills, membersBalance, membersPaid, membersSpent,
+                0, null, null, null
             );
 
-            itemAll.count = nbBills;
+            itemAll.count = null;
             items.add(itemAll);
 
-            NumberFormat balanceFormatter = new DecimalFormat("#0.00");
             NumberFormat weightFormatter = new DecimalFormat("#.##");
 
             for (DBMember m : dbMembers) {
                 double balance = membersBalance.get(m.getId());
                 double rBalance = Math.round( balance * 100.0 ) / 100.0;
-                double rAbsBalance = Math.round( Math.abs(balance) * 100.0 ) / 100.0;
-                String balanceStr = balanceFormatter.format(rAbsBalance).replace(",", ".");
 
                 // add member in sidebar list if he/she's activated or the balance is not "zero"
                 if (m.isActivated() || balance <= -0.01 || balance >= 0.01) {
@@ -2410,17 +2407,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     if (m.getWeight() != 1) {
                         weightStr = " x" + weightFormatter.format(m.getWeight()).replace(",", ".");
                     }
-                    String sign = "";
-                    if (rBalance > 0.0) {
-                        sign = "+";
-                    }
-                    else if (rBalance < 0.0) {
-                         sign = "-";
-                    }
                     NavigationAdapter.NavigationItem it = new NavigationAdapter.NavigationItem(
                             String.valueOf(m.getId()),
-                            m.getName()+" ("+sign+balanceStr+")"+weightStr,
-                            membersNbBills.get(m.getId()),
+                            m.getName() + weightStr,
+                            rBalance,
                             R.drawable.ic_person_grey_24dp,
                             true
                     );

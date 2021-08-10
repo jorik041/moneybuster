@@ -471,6 +471,7 @@ public class ServerResponse {
         Date date;
         long timestamp = 0;
         String what = "";
+        String comment = "";
         String repeat = DBBill.NON_REPEATED;
         String paymentMode = DBBill.PAYMODE_NONE;
         int categoryId = DBBill.CATEGORY_NONE;
@@ -500,6 +501,9 @@ public class ServerResponse {
         if (!json.isNull("what")) {
             what = json.getString("what");
         }
+        if (!json.isNull("comment")) {
+            comment = json.getString("comment");
+        }
         if (json.has("repeat") && !json.isNull("repeat")) {
             repeat = json.getString("repeat");
         }
@@ -511,7 +515,7 @@ public class ServerResponse {
             Log.d("PLOP", "LOADED CATTTTTTTTTTTT " + categoryId);
         }
         DBBill bill = new DBBill(0, remoteId, projId, payerId, amount, timestamp, what,
-                DBBill.STATE_OK, repeat, paymentMode, categoryId);
+                DBBill.STATE_OK, repeat, paymentMode, categoryId, comment);
         bill.setBillOwers(getBillOwersFromJson(json, memberRemoteIdToId));
         return bill;
     }

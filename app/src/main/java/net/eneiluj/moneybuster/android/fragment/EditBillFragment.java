@@ -108,6 +108,7 @@ public class EditBillFragment extends Fragment {
 
     private ActionBar toolbar;
     private EditText editWhat;
+    private EditText editComment;
     private EditText editDate;
     private EditText editTime;
     private String isoDate;
@@ -125,6 +126,7 @@ public class EditBillFragment extends Fragment {
     private LinearLayout duplicateLayout;
     private LinearLayout editTimeLayout;
     private LinearLayout editRepeatLayout;
+    private LinearLayout editCommentLayout;
     private LinearLayout editPaymentModeLayout;
     private LinearLayout editCategoryLayout;
 
@@ -154,6 +156,7 @@ public class EditBillFragment extends Fragment {
             toolbar.setTitle(R.string.simple_new_bill);
         }
         editWhat = view.findViewById(R.id.editWhat);
+        editComment = view.findViewById(R.id.editComment);
         editAmount = view.findViewById(R.id.editAmount);
         currencyIcon = view.findViewById(R.id.currencyIcon);
         editDate = view.findViewById(R.id.editDate);
@@ -167,6 +170,7 @@ public class EditBillFragment extends Fragment {
         editCategory = view.findViewById(R.id.editCategorySpinner);
         editTimeLayout = view.findViewById(R.id.editTimeLayout);
         editRepeatLayout = view.findViewById(R.id.editRepeatLayout);
+        editCommentLayout = view.findViewById(R.id.editCommentLayout);
         editPaymentModeLayout = view.findViewById(R.id.editPaymentModeLayout);
         editCategoryLayout = view.findViewById(R.id.editCategoryLayout);
         fabSaveBill = view.findViewById(R.id.fab_edit_ok);
@@ -332,6 +336,18 @@ public class EditBillFragment extends Fragment {
         editWhat.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 Log.d(TAG, "WHWHWHWHAAAATTT");
+                showHideValidationButtons();
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+        editComment.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                Log.d(TAG, "COMMENT");
                 showHideValidationButtons();
             }
 
@@ -656,6 +672,7 @@ public class EditBillFragment extends Fragment {
     protected void saveBill(@Nullable ICallback callback) {
         Log.d(getClass().getSimpleName(), "CUSTOM saveData()");
         String newWhat = getWhat();
+        String newComment = getComment();
         long newTimestamp = getTimestamp();
         double newAmount = getAmount();
         long newPayerId = getPayerId();
@@ -697,13 +714,14 @@ public class EditBillFragment extends Fragment {
                     newRepeat.equals(bill.getRepeat()) &&
                     newPaymentMode.equals(bill.getPaymentMode()) &&
                     newCategoryId == bill.getCategoryRemoteId() &&
+                    bill.getComment().equals(newComment) &&
                     !owersChanged
             ) {
                 Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed " + bill.getWhat() + " " + newWhat);
             } else {
                 Log.d(TAG, "====== update bill");
                 db.updateBillAndSync(bill, newPayerId, newAmount, newTimestamp, newWhat, newOwersIds,
-                                     newRepeat, newPaymentMode, newCategoryId);
+                                     newRepeat, newPaymentMode, newCategoryId, newComment);
                 //listener.onBillUpdated(bill);
                 //listener.close();
             }
@@ -712,7 +730,8 @@ public class EditBillFragment extends Fragment {
         else {
             // add the bill
             DBBill newBill = new DBBill(0, 0, bill.getProjectId(), newPayerId, newAmount,
-                    newTimestamp, newWhat, DBBill.STATE_ADDED, newRepeat, newPaymentMode, newCategoryId);
+                    newTimestamp, newWhat, DBBill.STATE_ADDED, newRepeat, newPaymentMode,
+                    newCategoryId, newComment);
             for (long newOwerId : newOwersIds) {
                 newBill.getBillOwers().add(new DBBillOwer(0, 0, newOwerId));
             }
@@ -892,6 +911,7 @@ public class EditBillFragment extends Fragment {
             }
         }
 
+        editComment.setText(bill.getComment());
         editWhat.setText(bill.getWhat());
         InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         // select what and show keyboard if this is a new bill
@@ -1060,6 +1080,7 @@ public class EditBillFragment extends Fragment {
         if (ProjectType.IHATEMONEY.equals(projectType)) {
             editTimeLayout.setVisibility(View.GONE);
             editRepeatLayout.setVisibility(View.GONE);
+            editCommentLayout.setVisibility(View.GONE);
             editPaymentModeLayout.setVisibility(View.GONE);
             editCategoryLayout.setVisibility(View.GONE);
         } else if (ProjectType.LOCAL.equals(projectType)) {
@@ -1069,6 +1090,10 @@ public class EditBillFragment extends Fragment {
 
     protected String getWhat() {
         return editWhat.getText().toString();
+    }
+
+    protected String getComment() {
+        return editComment.getText().toString();
     }
 
     protected Long getTimestamp() {

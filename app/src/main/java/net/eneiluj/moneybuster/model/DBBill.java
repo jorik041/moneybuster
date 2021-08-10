@@ -19,6 +19,7 @@ public class DBBill implements Item, Serializable {
     private double amount;
     private long timestamp;
     private String what;
+    private String comment;
     // OK, ADDED, EDITED, DELETED
     private int state;
 
@@ -55,7 +56,9 @@ public class DBBill implements Item, Serializable {
     public static final String NON_REPEATED = "n";
 
     public DBBill(long id, long remoteId, long projectId, long payerId, double amount,
-                  long timestamp, String what, int state, String repeat, String paymentMode, int categoryRemoteId) {
+                  long timestamp, String what, int state, String repeat,
+                  String paymentMode, int categoryRemoteId,
+                  String comment) {
         this.id = id;
         this.remoteId = remoteId;
         this.projectId = projectId;
@@ -66,6 +69,7 @@ public class DBBill implements Item, Serializable {
         this.repeat = repeat;
         this.paymentMode = paymentMode;
         this.categoryRemoteId = categoryRemoteId;
+        this.comment = comment;
 
         this.billOwers = new ArrayList<>();
 
@@ -166,6 +170,14 @@ public class DBBill implements Item, Serializable {
 
     public void setWhat(String what) {
         this.what = what;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public String getRepeat() {

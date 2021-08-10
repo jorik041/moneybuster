@@ -260,6 +260,8 @@ public class VersatileProjectSyncClient {
             payedFor = payedFor.replaceAll(",$", "");
             paramValues.add(payedFor);
 
+            paramKeys.add("comment");
+            paramValues.add(bill.getComment());
             paramKeys.add("repeat");
             paramValues.add(bill.getRepeat());
             paramKeys.add("paymentmode");

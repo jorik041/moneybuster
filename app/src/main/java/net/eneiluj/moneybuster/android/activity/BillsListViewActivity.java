@@ -1678,7 +1678,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             DBBill bill = new DBBill(
                     0, 0, projectId, owerId, amount,
                     timestamp, getString(R.string.settle_bill_what),
-                    DBBill.STATE_ADDED, DBBill.NON_REPEATED, DBBill.PAYMODE_NONE, DBBill.CATEGORY_NONE);
+                    DBBill.STATE_ADDED, DBBill.NON_REPEATED,
+                    DBBill.PAYMODE_NONE, DBBill.CATEGORY_NONE,
+                    "");
             bill.getBillOwers().add(new DBBillOwer(0, 0, receiverId));
             db.addBill(bill);
         }

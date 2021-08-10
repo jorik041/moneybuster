@@ -1101,7 +1101,7 @@ public class NewProjectFragment extends Fragment {
                 int row = 0;
                 int nbCols;
                 String icon, color, categoryname, categoryid, currencyname, exchangeRate,
-                    what, payer_name, owersStr, paymentmode;
+                    what, payer_name, owersStr, paymentmode, comment;
                 long timestamp;
                 String dateStr;
                 Date date;
@@ -1176,6 +1176,7 @@ public class NewProjectFragment extends Fragment {
                             currencies.add(new DBCurrency(0, 0, 0, currencyname, Double.parseDouble(exchangeRate)));
                         } else if (currentSection == "bills") {
                             what = nextLine[columns.get("what")];
+                            comment = nextLine[columns.get("comment")];
                             amount = Double.parseDouble(nextLine[columns.get("amount")]);
                             // get timestamp in priority
                             if (columns.containsKey("timestamp")) {
@@ -1223,7 +1224,8 @@ public class NewProjectFragment extends Fragment {
                                 }
                                 bills.add(
                                         new DBBill(0, row, 0, 0, amount, timestamp, what,
-                                                DBBill.STATE_OK, "n", paymentmode, Integer.parseInt(categoryid)
+                                                DBBill.STATE_OK, "n", paymentmode,
+                                                Integer.parseInt(categoryid), comment
                                         )
                                 );
                                 billRemoteIdToPayerName.put(Long.valueOf(row), payer_name);
@@ -1271,8 +1273,9 @@ public class NewProjectFragment extends Fragment {
                     for (int i = 0; i < owersArray.length; i++) {
                         owerIds.add(memberNameToId.get(owersArray[i]));
                     }
-                    long billDbId = db.addBill(new DBBill(0, 0, pid, payerId, b.getAmount(), b.getTimestamp(),
-                            b.getWhat(), DBBill.STATE_OK, "n", b.getPaymentMode(), b.getCategoryRemoteId()));
+                    long billDbId = db.addBill(new DBBill(0, 0, pid, payerId, b.getAmount(),
+                            b.getTimestamp(), b.getWhat(), DBBill.STATE_OK, "n",
+                            b.getPaymentMode(), b.getCategoryRemoteId(), b.getComment()));
                     // add bill owers
                     for (Long owerId: owerIds) {
                         db.addBillower(billDbId, owerId);

@@ -467,7 +467,8 @@ public class MoneyBusterServerSyncHelper {
                         dbHelper.updateBill(
                                 bToAdd.getId(), newRemoteId, null,
                                 null, null, null,
-                                DBBill.STATE_OK, null, null, null
+                                DBBill.STATE_OK, null, null, null,
+                                null
                         );
                     }
                 }
@@ -752,7 +753,8 @@ public class MoneyBusterServerSyncHelper {
                                     localBill.getId(), null, remoteBill.getPayerId(),
                                     remoteBill.getAmount(), remoteBill.getTimestamp(),
                                     remoteBill.getWhat(), DBBill.STATE_OK, remoteBill.getRepeat(),
-                                    remoteBill.getPaymentMode(), remoteBill.getCategoryRemoteId()
+                                    remoteBill.getPaymentMode(), remoteBill.getCategoryRemoteId(),
+                                    remoteBill.getComment()
                             );
                             nbPulledUpdatedBills++;
                             updatedBillsDialogText += "✏ " + remoteBill.getWhat() + "\n";
@@ -1277,6 +1279,7 @@ public class MoneyBusterServerSyncHelper {
                         localBill.getAmount() == remoteBill.getAmount() &&
                         localBill.getTimestamp() == remoteBill.getTimestamp() &&
                         localBill.getWhat().equals(remoteBill.getWhat()) &&
+                        localBill.getComment().equals(remoteBill.getComment()) &&
                         localBill.getPaymentMode().equals(remoteBill.getPaymentMode()) &&
                         localBill.getCategoryRemoteId() == remoteBill.getCategoryRemoteId()
         ) {

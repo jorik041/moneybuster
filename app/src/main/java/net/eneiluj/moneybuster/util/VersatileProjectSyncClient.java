@@ -8,6 +8,7 @@ import androidx.annotation.WorkerThread;
 
 import com.nextcloud.android.sso.aidl.NextcloudRequest;
 import com.nextcloud.android.sso.api.NextcloudAPI;
+import com.nextcloud.android.sso.api.Response;
 import com.nextcloud.android.sso.exceptions.TokenMismatchException;
 import com.nextcloud.android.sso.model.SingleSignOnAccount;
 
@@ -47,11 +48,13 @@ public class VersatileProjectSyncClient {
         private final String content;
         private final String etag;
         private final long lastModified;
+        private final int responseCode;
 
-        public ResponseData(String content, String etag, long lastModified) {
+        public ResponseData(String content, String etag, long lastModified, int responseCode) {
             this.content = content;
             this.etag = etag;
             this.lastModified = lastModified;
+            this.responseCode = responseCode;
         }
 
         public String getContent() {
@@ -599,17 +602,19 @@ public class VersatileProjectSyncClient {
             nextcloudRequest = new NextcloudRequest.Builder()
                     .setMethod(method)
                     .setUrl(target).build();
-        }
-        else {
+        } else {
             nextcloudRequest = new NextcloudRequest.Builder()
                     .setMethod(method)
                     .setUrl(target)
+                    // TODO replace with new stuff
                     .setParameter(params)
                     .build();
         }
 
         try {
-            InputStream inputStream = nextcloudAPI.performNetworkRequest(nextcloudRequest);
+            // InputStream inputStream = nextcloudAPI.performNetworkRequest(nextcloudRequest);
+            Response response = nextcloudAPI.performNetworkRequestV2(nextcloudRequest);
+            InputStream inputStream = response.getBody();
 
             BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
             String line;
@@ -631,13 +636,12 @@ public class VersatileProjectSyncClient {
                 loginDialogFragment.show(new SettingsActivity().getSupportFragmentManager(), "NoticeDialogFragment");
             }*/
             throw e;
-
         } catch (Exception e) {
             // TODO handle errors
             Log.d(getClass().getSimpleName(), "SSO server request error "+e.toString());
         }
 
-        return new VersatileProjectSyncClient.ResponseData(result.toString(), "", 0);
+        return new VersatileProjectSyncClient.ResponseData(result.toString(), "", 0, 200);
     }
 
     /**
@@ -705,8 +709,8 @@ public class VersatileProjectSyncClient {
         BufferedReader rd;
         if (responseCode >= 200 && responseCode < 400) {
             rd = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        }
-        else {
+        } else {
+            Log.e(TAG, "ERROR CODE : " + responseCode);
             rd = new BufferedReader(new InputStreamReader(con.getErrorStream()));
         }
         String line;
@@ -722,6 +726,6 @@ public class VersatileProjectSyncClient {
         Log.i(TAG, "Result length:  " + result.length() + (paramData == null ? "" : "; Request length: " + paramData.length));
         Log.d(TAG, "ETag: " + etag + "; Last-Modified: " + lastModified + " (" + con.getHeaderField("Last-Modified") + ")");
         // return these header fields since they should only be saved after successful processing the result!
-        return new ResponseData(result.toString(), etag, lastModified);
+        return new ResponseData(result.toString(), etag, lastModified, responseCode);
     }
 }

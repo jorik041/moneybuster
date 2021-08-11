@@ -10,6 +10,7 @@ import androidx.annotation.WorkerThread;
 
 import com.nextcloud.android.sso.aidl.NextcloudRequest;
 import com.nextcloud.android.sso.api.NextcloudAPI;
+import com.nextcloud.android.sso.api.Response;
 import com.nextcloud.android.sso.exceptions.TokenMismatchException;
 
 import net.eneiluj.moneybuster.BuildConfig;
@@ -104,8 +105,7 @@ public class CospendClient {
             nextcloudRequest = new NextcloudRequest.Builder()
                     .setMethod(method)
                     .setUrl(target).build();
-        }
-        else {
+        } else {
             nextcloudRequest = new NextcloudRequest.Builder()
                     .setMethod(method)
                     .setUrl(target)
@@ -114,7 +114,9 @@ public class CospendClient {
         }
 
         try {
-            InputStream inputStream = nextcloudAPI.performNetworkRequest(nextcloudRequest);
+            // InputStream inputStream = nextcloudAPI.performNetworkRequest(nextcloudRequest);
+            Response response = nextcloudAPI.performNetworkRequestV2(nextcloudRequest);
+            InputStream inputStream = response.getBody();
 
             BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
             String line;
@@ -136,13 +138,12 @@ public class CospendClient {
                 loginDialogFragment.show(new SettingsActivity().getSupportFragmentManager(), "NoticeDialogFragment");
             }*/
             throw e;
-
         } catch (Exception e) {
             // TODO handle errors
             Log.d(getClass().getSimpleName(), "SSO server request error "+e.toString());
         }
 
-        return new VersatileProjectSyncClient.ResponseData(result.toString(), "", 0);
+        return new VersatileProjectSyncClient.ResponseData(result.toString(), "", 0, 200);
     }
 
     private VersatileProjectSyncClient.ResponseData imageRequestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, Map<String, String> params) throws TokenMismatchException{
@@ -154,8 +155,7 @@ public class CospendClient {
             nextcloudRequest = new NextcloudRequest.Builder()
                     .setMethod(method)
                     .setUrl(target).build();
-        }
-        else {
+        } else {
             nextcloudRequest = new NextcloudRequest.Builder()
                     .setMethod(method)
                     .setUrl(target)
@@ -164,7 +164,9 @@ public class CospendClient {
         }
 
         try {
-            InputStream inputStream = nextcloudAPI.performNetworkRequest(nextcloudRequest);
+            // InputStream inputStream = nextcloudAPI.performNetworkRequest(nextcloudRequest);
+            Response response = nextcloudAPI.performNetworkRequestV2(nextcloudRequest);
+            InputStream inputStream = response.getBody();
 
             Bitmap selectedImage = BitmapFactory.decodeStream(inputStream);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -183,7 +185,7 @@ public class CospendClient {
             Log.d(getClass().getSimpleName(), "SSO server request error "+e.toString());
         }
 
-        return new VersatileProjectSyncClient.ResponseData(strBase64, "", 0);
+        return new VersatileProjectSyncClient.ResponseData(strBase64, "", 0, 200);
     }
 
     /**
@@ -253,7 +255,7 @@ public class CospendClient {
         Log.i(getClass().getSimpleName(), "Result length:  " + result.length() + (paramData == null ? "" : "; Request length: " + paramData.length));
         Log.d(getClass().getSimpleName(), "ETag: " + etag + "; Last-Modified: " + lastModified + " (" + con.getHeaderField("Last-Modified") + ")");
         // return these header fields since they should only be saved after successful processing the result!
-        return new VersatileProjectSyncClient.ResponseData(result.toString(), "", 0);
+        return new VersatileProjectSyncClient.ResponseData(result.toString(), "", 0, responseCode);
     }
 
     private VersatileProjectSyncClient.ResponseData imageRequestServer(CustomCertManager ccm, String target,
@@ -310,6 +312,6 @@ public class CospendClient {
         byte[] byteArray = stream.toByteArray();
         strBase64 = Base64.encodeToString(byteArray, 0);
 
-        return new VersatileProjectSyncClient.ResponseData(strBase64, "", 0);
+        return new VersatileProjectSyncClient.ResponseData(strBase64, "", 0, responseCode);
     }
 }

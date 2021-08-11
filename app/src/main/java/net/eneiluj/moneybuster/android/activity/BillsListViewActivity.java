@@ -1405,13 +1405,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
 
         // color
-        boolean darkTheme = MoneyBuster.getAppTheme(this);
+        boolean darkTheme = MoneyBuster.isDarkTheme(this);
         // if dark theme and main color is black, make fab button lighter/gray
         if (darkTheme && ThemeUtils.primaryColor(this) == Color.BLACK) {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             //fabBillListAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
-        }
-        else {
+        } else {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             //fabBillListAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
         }

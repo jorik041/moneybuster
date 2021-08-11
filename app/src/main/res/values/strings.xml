@@ -191,6 +191,7 @@
     <string name="settings_submit">Connect</string>
     <string name="settings_submitting">Connecting &#8230;</string>
     <string name="settings_theme_title">Theme</string>
+    <string name="settings_night_mode_title">Theme</string>
     <string name="settings_offline_mode_title">Offline mode</string>
     <string name="settings_offline_mode_summary">Do not automatically sync. Only sync when user asks.</string>
     <string name="settings_smart_sync_title">Smart sync with Cospend</string>
@@ -345,7 +346,7 @@
     <string name="pref_key_certs" translatable="false">certificates</string>
     <string name="pref_key_trust_system_certs" translatable="false">trustSystemCerts</string>
     <string name="pref_key_reset_trust" translatable="false">resetTrust</string>
-    <string name="pref_key_theme" translatable="false">darkTheme</string>
+    <string name="pref_key_night_mode" translatable="false">nightMode</string>
     <string name="pref_key_color" translatable="false">appColor</string>
     <string name="pref_key_server_color" translatable="false">serverColor</string>
     <string name="pref_key_avatar" translatable="false">ncAvatar</string>
@@ -360,6 +361,10 @@
     <string name="pref_key_notify_deleted" translatable="false">notifDeleted</string>
     <string name="pref_value_theme_light">Light</string>
     <string name="pref_value_theme_dark">Dark</string>
+    <string name="pref_value_theme_system">Follow system</string>
+    <string name="pref_value_night_mode_no">1</string>
+    <string name="pref_value_night_mode_yes">2</string>
+    <string name="pref_value_night_mode_system">-1</string>
     <string name="avatar">Avatar</string>
     <string name="fallback_weblogin_text">Revert to old login method</string>
     <string name="fallback_weblogin_back">Back</string>

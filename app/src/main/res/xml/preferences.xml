@@ -7,12 +7,13 @@
         android:title="@string/settings_appearance_category"
         android:key="settings_appearance_category">
 
-    <SwitchPreferenceCompat
-        android:defaultValue="@string/pref_value_theme_light"
+    <ListPreference
         android:icon="@drawable/ic_brightness_2_grey_24dp"
-        android:key="@string/pref_key_theme"
-        android:summary="%s"
-        android:title="@string/settings_theme_title" />
+        android:key="@string/pref_key_night_mode"
+        android:summary=""
+        android:title="@string/settings_night_mode_title"
+        android:entryValues="@array/nightModeValues"
+        android:defaultValue="@string/pref_value_night_mode_system" />
 
     <CheckBoxPreference
         android:icon="@drawable/ic_palette_grey_24dp"

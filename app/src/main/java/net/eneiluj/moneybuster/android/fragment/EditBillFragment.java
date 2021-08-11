@@ -176,7 +176,7 @@ public class EditBillFragment extends Fragment {
         fabSaveBill = view.findViewById(R.id.fab_edit_ok);
 
         // color
-        boolean darkTheme = MoneyBuster.getAppTheme(getContext());
+        boolean darkTheme = MoneyBuster.isDarkTheme(getContext());
         // if dark theme and main color is black, make fab button lighter/gray
         if (darkTheme && ThemeUtils.primaryColor(getContext()) == Color.BLACK) {
             fabSaveBill.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));

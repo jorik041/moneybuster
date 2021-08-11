@@ -287,7 +287,7 @@ public class NewProjectFragment extends Fragment {
             }
         });
 
-        boolean darkTheme = MoneyBuster.getAppTheme(getContext());
+        boolean darkTheme = MoneyBuster.isDarkTheme(getContext());
         // if dark theme and main color is black, make fab button lighter/gray
         if (darkTheme && ThemeUtils.primaryColor(getContext()) == Color.BLACK) {
             fabOk.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));

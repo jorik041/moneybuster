@@ -51,4 +51,10 @@
         <item>-14</item>
         <item>-15</item>
     </string-array>
+
+    <string-array name="nightModeValues" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>-1</item>
+    </string-array>
 </resources>

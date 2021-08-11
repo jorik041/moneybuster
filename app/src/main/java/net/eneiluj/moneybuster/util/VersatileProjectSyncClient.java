@@ -7,9 +7,11 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.nextcloud.android.sso.aidl.NextcloudRequest;
+import com.nextcloud.android.sso.api.AidlNetworkRequest;
 import com.nextcloud.android.sso.api.NextcloudAPI;
 import com.nextcloud.android.sso.api.QueryParam;
 import com.nextcloud.android.sso.api.Response;
+import com.nextcloud.android.sso.exceptions.NextcloudHttpRequestFailedException;
 import com.nextcloud.android.sso.exceptions.TokenMismatchException;
 import com.nextcloud.android.sso.model.SingleSignOnAccount;
 
@@ -49,13 +51,11 @@ public class VersatileProjectSyncClient {
         private final String content;
         private final String etag;
         private final long lastModified;
-        private final int responseCode;
 
-        public ResponseData(String content, String etag, long lastModified, int responseCode) {
+        public ResponseData(String content, String etag, long lastModified) {
             this.content = content;
             this.etag = etag;
             this.lastModified = lastModified;
-            this.responseCode = responseCode;
         }
 
         public String getContent() {
@@ -122,7 +122,7 @@ public class VersatileProjectSyncClient {
         return URLEncoder.encode(password, "utf-8").replaceAll("\\+", "%20");
     }
 
-    public ServerResponse.ProjectResponse getProject(CustomCertManager ccm, DBProject project, long lastModified, String lastETag) throws JSONException, IOException, TokenMismatchException {
+    public ServerResponse.ProjectResponse getProject(CustomCertManager ccm, DBProject project, long lastModified, String lastETag) throws JSONException, IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         String target;
         String username = null;
         String password = null;
@@ -150,7 +150,7 @@ public class VersatileProjectSyncClient {
         return new ServerResponse.ProjectResponse(requestServer(ccm, target, METHOD_GET, null, null, lastETag, username, password));
     }
 
-    public ServerResponse.EditRemoteProjectResponse editRemoteProject(CustomCertManager ccm, DBProject project, String newName, String newEmail, String newPassword) throws IOException, TokenMismatchException {
+    public ServerResponse.EditRemoteProjectResponse editRemoteProject(CustomCertManager ccm, DBProject project, String newName, String newEmail, String newPassword) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
         paramKeys.add("name");
@@ -186,7 +186,7 @@ public class VersatileProjectSyncClient {
         return new ServerResponse.EditRemoteProjectResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, username, password));
     }
 
-    public ServerResponse.EditRemoteMemberResponse editRemoteMember(CustomCertManager ccm, DBProject project, DBMember member) throws IOException, TokenMismatchException {
+    public ServerResponse.EditRemoteMemberResponse editRemoteMember(CustomCertManager ccm, DBProject project, DBMember member) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
         paramKeys.add("name");
@@ -233,7 +233,7 @@ public class VersatileProjectSyncClient {
         return new ServerResponse.EditRemoteMemberResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, username, password));
     }
 
-    public ServerResponse.EditRemoteBillResponse editRemoteBill(CustomCertManager ccm, DBProject project, DBBill bill, Map<Long, Long> memberIdToRemoteId) throws IOException, TokenMismatchException {
+    public ServerResponse.EditRemoteBillResponse editRemoteBill(CustomCertManager ccm, DBProject project, DBBill bill, Map<Long, Long> memberIdToRemoteId) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
         // we keep sending date for IHateMoney and old Cospend versions
@@ -304,7 +304,7 @@ public class VersatileProjectSyncClient {
         return new ServerResponse.EditRemoteBillResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, username, password));
     }
 
-    public ServerResponse.DeleteRemoteProjectResponse deleteRemoteProject(CustomCertManager ccm, DBProject project) throws IOException, TokenMismatchException {
+    public ServerResponse.DeleteRemoteProjectResponse deleteRemoteProject(CustomCertManager ccm, DBProject project) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         String target;
         String username = null;
         String password = null;
@@ -330,7 +330,7 @@ public class VersatileProjectSyncClient {
         return new ServerResponse.DeleteRemoteProjectResponse(requestServer(ccm, target, METHOD_DELETE, null,null, null, username, password));
     }
 
-    public ServerResponse.DeleteRemoteBillResponse deleteRemoteBill(CustomCertManager ccm, DBProject project, long billRemoteId) throws IOException, TokenMismatchException {
+    public ServerResponse.DeleteRemoteBillResponse deleteRemoteBill(CustomCertManager ccm, DBProject project, long billRemoteId) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         String target;
         String username = null;
         String password = null;
@@ -357,7 +357,7 @@ public class VersatileProjectSyncClient {
         return new ServerResponse.DeleteRemoteBillResponse(requestServer(ccm, target, METHOD_DELETE, null,null, null, username, password));
     }
 
-    public ServerResponse.CreateRemoteProjectResponse createAnonymousRemoteProject(CustomCertManager ccm, DBProject project) throws IOException {
+    public ServerResponse.CreateRemoteProjectResponse createAnonymousRemoteProject(CustomCertManager ccm, DBProject project) throws IOException, NextcloudHttpRequestFailedException {
         String target = project.getServerUrl().replaceAll("/+$", "")
                 + "/api/projects";
         List<String> paramKeys = new ArrayList<>();
@@ -373,7 +373,7 @@ public class VersatileProjectSyncClient {
         return new ServerResponse.CreateRemoteProjectResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, null, null));
     }
 
-    public ServerResponse.CreateRemoteProjectResponse createAuthenticatedRemoteProject(CustomCertManager ccm, DBProject project) throws IOException, TokenMismatchException {
+    public ServerResponse.CreateRemoteProjectResponse createAuthenticatedRemoteProject(CustomCertManager ccm, DBProject project) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         // request values
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
@@ -403,7 +403,7 @@ public class VersatileProjectSyncClient {
         }
     }
 
-    public ServerResponse.CreateRemoteBillResponse createRemoteBill(CustomCertManager ccm, DBProject project, DBBill bill, Map<Long, Long> memberIdToRemoteId) throws IOException, TokenMismatchException {
+    public ServerResponse.CreateRemoteBillResponse createRemoteBill(CustomCertManager ccm, DBProject project, DBBill bill, Map<Long, Long> memberIdToRemoteId) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
         // we keep sending date for IHateMoney and old Cospend versions
@@ -473,7 +473,7 @@ public class VersatileProjectSyncClient {
         return new ServerResponse.CreateRemoteBillResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, username, password));
     }
 
-    public ServerResponse.CreateRemoteMemberResponse createRemoteMember(CustomCertManager ccm, DBProject project, DBMember member) throws IOException, TokenMismatchException {
+    public ServerResponse.CreateRemoteMemberResponse createRemoteMember(CustomCertManager ccm, DBProject project, DBMember member) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
         paramKeys.add("name");
@@ -516,7 +516,7 @@ public class VersatileProjectSyncClient {
         return new ServerResponse.CreateRemoteMemberResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, username, password));
     }
 
-    public ServerResponse.BillsResponse getBills(CustomCertManager ccm, DBProject project, boolean cospendSmartSync) throws JSONException, IOException, TokenMismatchException {
+    public ServerResponse.BillsResponse getBills(CustomCertManager ccm, DBProject project, boolean cospendSmartSync) throws JSONException, IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         String target;
         String username = null;
         String password = null;
@@ -557,7 +557,7 @@ public class VersatileProjectSyncClient {
         }
     }
 
-    public ServerResponse.MembersResponse getMembers(CustomCertManager ccm, DBProject project) throws JSONException, IOException, TokenMismatchException {
+    public ServerResponse.MembersResponse getMembers(CustomCertManager ccm, DBProject project) throws JSONException, IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         String target;
         String username = null;
         String password = null;
@@ -585,7 +585,7 @@ public class VersatileProjectSyncClient {
         return new ServerResponse.MembersResponse(requestServer(ccm, target, METHOD_GET, null, null,null, username, password));
     }
 
-    private ResponseData requestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, List<String> paramKeys, List<String> paramValues) throws TokenMismatchException {
+    private ResponseData requestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, List<String> paramKeys, List<String> paramValues) throws TokenMismatchException, NextcloudHttpRequestFailedException {
         StringBuffer result = new StringBuffer();
 
         List<QueryParam> qParams = null;
@@ -621,10 +621,10 @@ public class VersatileProjectSyncClient {
             while ((line = rd.readLine()) != null) {
                 result.append(line);
             }
-            Log.d(getClass().getSimpleName(), "RES " + result.toString());
+            Log.d(getClass().getSimpleName(), "RES versatile " + result.toString());
             inputStream.close();
         } catch (TokenMismatchException e) {
-            Log.d(getClass().getSimpleName(), "Mismatcho SSO server request error "+e.toString());
+            Log.d(getClass().getSimpleName(), "Mismatcho SSO server request error " + e.toString());
             /*try {
                 SingleAccountHelper.reauthenticateCurrentAccount(:smile:);
             } catch (NextcloudFilesAppAccountNotFoundException | NoCurrentAccountSelectedException | NextcloudFilesAppNotSupportedException ee) {
@@ -636,12 +636,15 @@ public class VersatileProjectSyncClient {
                 loginDialogFragment.show(new SettingsActivity().getSupportFragmentManager(), "NoticeDialogFragment");
             }*/
             throw e;
+        } catch (NextcloudHttpRequestFailedException e) {
+            Log.d(getClass().getSimpleName(), "SSO server HTTP request failed "+e.getStatusCode());
+            throw e;
         } catch (Exception e) {
             // TODO handle errors
             Log.d(getClass().getSimpleName(), "SSO server request error "+e.toString());
         }
 
-        return new VersatileProjectSyncClient.ResponseData(result.toString(), "", 0, 200);
+        return new VersatileProjectSyncClient.ResponseData(result.toString(), "", 0);
     }
 
     /**
@@ -654,7 +657,7 @@ public class VersatileProjectSyncClient {
      * @throws IOException
      */
     private ResponseData requestServer(CustomCertManager ccm, String target, String method, List<String> paramKeys, List<String> paramValues, String lastETag, String username, String password)
-            throws IOException {
+            throws IOException, NextcloudHttpRequestFailedException {
         StringBuffer result = new StringBuffer();
         // setup connection
         String targetURL = target;
@@ -718,7 +721,8 @@ public class VersatileProjectSyncClient {
             result.append(line);
         }
         if (responseCode >= 400) {
-            throw new IOException(result.toString());
+            throw new NextcloudHttpRequestFailedException(responseCode, null);
+            // throw new IOException(result.toString());
         }
         // create response object
         String etag = con.getHeaderField("ETag");
@@ -726,6 +730,6 @@ public class VersatileProjectSyncClient {
         Log.i(TAG, "Result length:  " + result.length() + (paramData == null ? "" : "; Request length: " + paramData.length));
         Log.d(TAG, "ETag: " + etag + "; Last-Modified: " + lastModified + " (" + con.getHeaderField("Last-Modified") + ")");
         // return these header fields since they should only be saved after successful processing the result!
-        return new ResponseData(result.toString(), etag, lastModified, responseCode);
+        return new ResponseData(result.toString(), etag, lastModified);
     }
 }

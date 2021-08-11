@@ -25,6 +25,7 @@ import androidx.preference.PreferenceManager;
 import com.google.gson.GsonBuilder;
 import com.nextcloud.android.sso.api.NextcloudAPI;
 import com.nextcloud.android.sso.exceptions.NextcloudFilesAppAccountNotFoundException;
+import com.nextcloud.android.sso.exceptions.NextcloudHttpRequestFailedException;
 import com.nextcloud.android.sso.exceptions.NoCurrentAccountSelectedException;
 import com.nextcloud.android.sso.exceptions.TokenMismatchException;
 import com.nextcloud.android.sso.helper.SingleAccountHelper;
@@ -487,6 +488,9 @@ public class MoneyBusterServerSyncHelper {
             } catch (TokenMismatchException e) {
                 Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
+            } catch (NextcloudHttpRequestFailedException e) {
+                Log.e(getClass().getSimpleName(), "Catch SSO HTTP req FAILED", e);
+                status = LoginStatus.REQ_FAILED;
             }
             Log.d(getClass().getSimpleName(), "END PUSH LOCAL CHANGES");
             return status;
@@ -861,6 +865,9 @@ public class MoneyBusterServerSyncHelper {
             } catch (TokenMismatchException e) {
                 Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
+            } catch (NextcloudHttpRequestFailedException e) {
+                Log.e(getClass().getSimpleName(), "Catch NC REQ failed", e);
+                status = LoginStatus.REQ_FAILED;
             }
             return status;
         }
@@ -1069,6 +1076,9 @@ public class MoneyBusterServerSyncHelper {
             } catch (TokenMismatchException e) {
                 Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
+            } catch (NextcloudHttpRequestFailedException e) {
+                Log.e(getClass().getSimpleName(), "Catch NC REQ failed", e);
+                status = LoginStatus.REQ_FAILED;
             }
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "FINISHED edit remote project");
@@ -1153,6 +1163,9 @@ public class MoneyBusterServerSyncHelper {
             } catch (TokenMismatchException e) {
                 Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
+            } catch (NextcloudHttpRequestFailedException e) {
+                Log.e(getClass().getSimpleName(), "Catch NC REQ failed", e);
+                status = LoginStatus.REQ_FAILED;
             }
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "FINISHED delete device");
@@ -1246,6 +1259,12 @@ public class MoneyBusterServerSyncHelper {
                 }
                 exceptions.add(e);
                 status = LoginStatus.CONNECTION_FAILED;
+            } catch (NextcloudHttpRequestFailedException e) {
+                if (BillsListViewActivity.DEBUG) {
+                    Log.e(getClass().getSimpleName(), "Exception", e);
+                }
+                exceptions.add(e);
+                status = LoginStatus.REQ_FAILED;
             }
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "FINISHED create remote project");
@@ -1467,6 +1486,9 @@ public class MoneyBusterServerSyncHelper {
             } catch (TokenMismatchException e) {
                 Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
+            } catch (NextcloudHttpRequestFailedException e) {
+                Log.e(getClass().getSimpleName(), "Catch REQ FAILED", e);
+                status = LoginStatus.REQ_FAILED;
             }
 
             return status;
@@ -1564,8 +1586,7 @@ public class MoneyBusterServerSyncHelper {
                     int intColor = Color.parseColor(color);
                     Log.d(getClass().getSimpleName(), "COLOR from server is "+color);
                     editor.putInt(appContext.getString(R.string.pref_key_server_color), intColor);
-                }
-                else {
+                } else {
                     //editor.remove(SettingsActivity.SETTINGS_KEY_ETAG);
                 }
 
@@ -1584,6 +1605,9 @@ public class MoneyBusterServerSyncHelper {
             } catch (TokenMismatchException e) {
                 Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
+            } catch (NextcloudHttpRequestFailedException e) {
+                Log.e(getClass().getSimpleName(), "Catch REQ FAILED", e);
+                status = LoginStatus.REQ_FAILED;
             }
 
             return status;
@@ -1649,8 +1673,7 @@ public class MoneyBusterServerSyncHelper {
                 if (avatar != null && !avatar.isEmpty()) {
                     //Log.d(getClass().getSimpleName(), "avatar from server is "+avatar);
                     editor.putString(appContext.getString(R.string.pref_key_avatar), avatar);
-                }
-                else {
+                } else {
                     //editor.remove(SettingsActivity.SETTINGS_KEY_ETAG);
                 }
 
@@ -1669,6 +1692,9 @@ public class MoneyBusterServerSyncHelper {
             } catch (TokenMismatchException e) {
                 Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
+            } catch (NextcloudHttpRequestFailedException e) {
+                Log.e(getClass().getSimpleName(), "Catch REQ FAILED", e);
+                status = LoginStatus.REQ_FAILED;
             }
 
             return status;
@@ -1757,6 +1783,9 @@ public class MoneyBusterServerSyncHelper {
             } catch (TokenMismatchException e) {
                 Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
+            } catch (NextcloudHttpRequestFailedException e) {
+                Log.e(getClass().getSimpleName(), "Catch REQ FAILED", e);
+                status = LoginStatus.REQ_FAILED;
             }
 
             return status;

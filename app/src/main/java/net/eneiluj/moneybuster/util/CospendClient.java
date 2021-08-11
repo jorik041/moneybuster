@@ -12,6 +12,7 @@ import com.nextcloud.android.sso.aidl.NextcloudRequest;
 import com.nextcloud.android.sso.api.NextcloudAPI;
 import com.nextcloud.android.sso.api.QueryParam;
 import com.nextcloud.android.sso.api.Response;
+import com.nextcloud.android.sso.exceptions.NextcloudHttpRequestFailedException;
 import com.nextcloud.android.sso.exceptions.TokenMismatchException;
 
 import net.eneiluj.moneybuster.BuildConfig;
@@ -59,7 +60,7 @@ public class CospendClient {
         this.nextcloudAPI = nextcloudAPI;
     }
 
-    public ServerResponse.AccountProjectsResponse getAccountProjects(CustomCertManager ccm) throws JSONException, IOException, TokenMismatchException {
+    public ServerResponse.AccountProjectsResponse getAccountProjects(CustomCertManager ccm) throws JSONException, IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         String target = "/index.php/apps/cospend/" + "getProjects";
         Log.d(getClass().getSimpleName(), "target "+target);
         if (nextcloudAPI != null) {
@@ -71,7 +72,7 @@ public class CospendClient {
         }
     }
 
-    public ServerResponse.CapabilitiesResponse getColor(CustomCertManager ccm) throws JSONException, IOException, TokenMismatchException {
+    public ServerResponse.CapabilitiesResponse getColor(CustomCertManager ccm) throws JSONException, IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         String target = "/ocs/v2.php/cloud/capabilities";
         if (nextcloudAPI != null) {
             Log.d(getClass().getSimpleName(), "using SSO to get color");
@@ -83,7 +84,7 @@ public class CospendClient {
         }
     }
 
-    public ServerResponse.AvatarResponse getAvatar(CustomCertManager ccm, @Nullable String otherUserName) throws JSONException, IOException, TokenMismatchException {
+    public ServerResponse.AvatarResponse getAvatar(CustomCertManager ccm, @Nullable String otherUserName) throws JSONException, IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         String targetUserName = username;
         if (otherUserName != null) {
             targetUserName = otherUserName;
@@ -99,7 +100,7 @@ public class CospendClient {
         }
     }
 
-    private VersatileProjectSyncClient.ResponseData requestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, List<QueryParam> qParams) throws TokenMismatchException{
+    private VersatileProjectSyncClient.ResponseData requestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, List<QueryParam> qParams) throws TokenMismatchException, NextcloudHttpRequestFailedException {
         StringBuffer result = new StringBuffer();
 
         NextcloudRequest nextcloudRequest;
@@ -140,15 +141,18 @@ public class CospendClient {
                 loginDialogFragment.show(new SettingsActivity().getSupportFragmentManager(), "NoticeDialogFragment");
             }*/
             throw e;
+        } catch (NextcloudHttpRequestFailedException e) {
+            Log.d(getClass().getSimpleName(), "SSO server HTTP request failed "+e.getStatusCode());
+            throw e;
         } catch (Exception e) {
             // TODO handle errors
             Log.d(getClass().getSimpleName(), "SSO server request error "+e.toString());
         }
 
-        return new VersatileProjectSyncClient.ResponseData(result.toString(), "", 0, 200);
+        return new VersatileProjectSyncClient.ResponseData(result.toString(), "", 0);
     }
 
-    private VersatileProjectSyncClient.ResponseData imageRequestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, List<QueryParam> qParams) throws TokenMismatchException{
+    private VersatileProjectSyncClient.ResponseData imageRequestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, List<QueryParam> qParams) throws TokenMismatchException, NextcloudHttpRequestFailedException {
         StringBuffer result = new StringBuffer();
         String strBase64 = "";
 
@@ -181,13 +185,15 @@ public class CospendClient {
         } catch (TokenMismatchException e) {
             Log.d(getClass().getSimpleName(), "Mismatcho SSO server request error "+e.toString());
             throw e;
-
+        } catch (NextcloudHttpRequestFailedException e) {
+            Log.d(getClass().getSimpleName(), "SSO server HTTP request failed "+e.getStatusCode());
+            throw e;
         } catch (Exception e) {
             // TODO handle errors
             Log.d(getClass().getSimpleName(), "SSO server request error "+e.toString());
         }
 
-        return new VersatileProjectSyncClient.ResponseData(strBase64, "", 0, 200);
+        return new VersatileProjectSyncClient.ResponseData(strBase64, "", 0);
     }
 
     /**
@@ -202,7 +208,7 @@ public class CospendClient {
      */
     private VersatileProjectSyncClient.ResponseData requestServer(CustomCertManager ccm, String target,
                                                                   String method, JSONObject params, String lastETag, boolean needLogin, boolean isOCSRequest)
-            throws IOException {
+            throws IOException, NextcloudHttpRequestFailedException {
         StringBuffer result = new StringBuffer();
         // setup connection
         String targetURL = url + target.replaceAll("^/", "");
@@ -244,6 +250,9 @@ public class CospendClient {
         if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) {
             throw new ServerResponse.NotModifiedException();
         }
+        if (responseCode >= 400) {
+            throw new NextcloudHttpRequestFailedException(responseCode, null);
+        }
 
         Log.i(TAG, "METHOD : "+method);
         BufferedReader rd = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -257,12 +266,12 @@ public class CospendClient {
         Log.i(getClass().getSimpleName(), "Result length:  " + result.length() + (paramData == null ? "" : "; Request length: " + paramData.length));
         Log.d(getClass().getSimpleName(), "ETag: " + etag + "; Last-Modified: " + lastModified + " (" + con.getHeaderField("Last-Modified") + ")");
         // return these header fields since they should only be saved after successful processing the result!
-        return new VersatileProjectSyncClient.ResponseData(result.toString(), "", 0, responseCode);
+        return new VersatileProjectSyncClient.ResponseData(result.toString(), "", 0);
     }
 
     private VersatileProjectSyncClient.ResponseData imageRequestServer(CustomCertManager ccm, String target,
                                                                   String method, JSONObject params, String lastETag, boolean needLogin, boolean isOCSRequest)
-            throws IOException {
+            throws IOException, NextcloudHttpRequestFailedException {
         StringBuffer result = new StringBuffer();
         String strBase64 = "";
         // setup connection
@@ -305,6 +314,9 @@ public class CospendClient {
         if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) {
             throw new ServerResponse.NotModifiedException();
         }
+        if (responseCode >= 400) {
+            throw new NextcloudHttpRequestFailedException(responseCode, null);
+        }
 
         Log.i(TAG, "METHOD : "+method);
 
@@ -314,6 +326,6 @@ public class CospendClient {
         byte[] byteArray = stream.toByteArray();
         strBase64 = Base64.encodeToString(byteArray, 0);
 
-        return new VersatileProjectSyncClient.ResponseData(strBase64, "", 0, responseCode);
+        return new VersatileProjectSyncClient.ResponseData(strBase64, "", 0);
     }
 }

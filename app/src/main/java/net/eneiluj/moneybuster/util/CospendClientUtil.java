@@ -30,7 +30,8 @@ public class CospendClientUtil {
         NO_NETWORK(R.string.error_no_network),
         JSON_FAILED(R.string.error_json),
         SERVER_FAILED(R.string.error_server),
-        SSO_TOKEN_MISMATCH(R.string.error_token_mismatch);
+        SSO_TOKEN_MISMATCH(R.string.error_token_mismatch),
+        REQ_FAILED(R.string.error_req_failed);
 
         @StringRes
         public final int str;

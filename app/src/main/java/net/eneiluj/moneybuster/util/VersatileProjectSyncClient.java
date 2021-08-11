@@ -8,6 +8,7 @@ import androidx.annotation.WorkerThread;
 
 import com.nextcloud.android.sso.aidl.NextcloudRequest;
 import com.nextcloud.android.sso.api.NextcloudAPI;
+import com.nextcloud.android.sso.api.QueryParam;
 import com.nextcloud.android.sso.api.Response;
 import com.nextcloud.android.sso.exceptions.TokenMismatchException;
 import com.nextcloud.android.sso.model.SingleSignOnAccount;
@@ -587,18 +588,18 @@ public class VersatileProjectSyncClient {
     private ResponseData requestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, List<String> paramKeys, List<String> paramValues) throws TokenMismatchException {
         StringBuffer result = new StringBuffer();
 
-        Map<String, String> params = null;
+        List<QueryParam> qParams = null;
         if (paramKeys != null && paramValues != null) {
-            params = new HashMap<>();
+            qParams = new ArrayList<>();
             for (int i=0; i < paramKeys.size(); i++) {
                 String key = paramKeys.get(i);
                 String value = paramValues.get(i);
-                params.put(key, value);
+                qParams.add(new QueryParam(key, value));
             }
         }
 
         NextcloudRequest nextcloudRequest;
-        if (params == null) {
+        if (qParams == null) {
             nextcloudRequest = new NextcloudRequest.Builder()
                     .setMethod(method)
                     .setUrl(target).build();
@@ -606,8 +607,7 @@ public class VersatileProjectSyncClient {
             nextcloudRequest = new NextcloudRequest.Builder()
                     .setMethod(method)
                     .setUrl(target)
-                    // TODO replace with new stuff
-                    .setParameter(params)
+                    .setParameter(qParams)
                     .build();
         }
 

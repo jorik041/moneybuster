@@ -300,6 +300,7 @@ public class MoneyBusterServerSyncHelper {
         private final List<ICallback> callbacks = new ArrayList<>();
         private VersatileProjectSyncClient client;
         private List<Throwable> exceptions = new ArrayList<>();
+        private List<String> errorMessages = new ArrayList<>();
         private int nbPulledNewBills = 0;
         private int nbPulledUpdatedBills = 0;
         private int nbPulledDeletedBills = 0;
@@ -491,6 +492,7 @@ public class MoneyBusterServerSyncHelper {
             } catch (NextcloudHttpRequestFailedException e) {
                 Log.e(getClass().getSimpleName(), "Catch SSO HTTP req FAILED", e);
                 status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
             }
             Log.d(getClass().getSimpleName(), "END PUSH LOCAL CHANGES");
             return status;
@@ -868,6 +870,7 @@ public class MoneyBusterServerSyncHelper {
             } catch (NextcloudHttpRequestFailedException e) {
                 Log.e(getClass().getSimpleName(), "Catch NC REQ failed", e);
                 status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
             }
             return status;
         }
@@ -888,6 +891,9 @@ public class MoneyBusterServerSyncHelper {
                     } else {
                         errorString += e.getMessage() + "\n";
                     }
+                }
+                for (String errorMessage : errorMessages) {
+                    errorString += errorMessage + "\n";
                 }
                 // broadcast the error
                 // if the bills list is not visible, no toast
@@ -940,6 +946,14 @@ public class MoneyBusterServerSyncHelper {
                 scheduleSync(false, pid);
             }
         }
+    }
+
+    public String getErrorMessageFromException(NextcloudHttpRequestFailedException e) {
+        int errorCode = e.getStatusCode();
+        if (errorCode == 503) {
+            return appContext.getString(R.string.error_maintenance_mode);
+        }
+        return "";
     }
 
     public void notifyProjectEvent(String dialogContent, String notificationContent, long projectId) {
@@ -1040,6 +1054,7 @@ public class MoneyBusterServerSyncHelper {
         private DBProject project;
         private ICallback callback;
         private List<Throwable> exceptions = new ArrayList<>();
+        private List<String> errorMessages = new ArrayList<>();
 
         public EditRemoteProjectTask(long projId, String newName, String newEmail, String newPassword, ICallback callback) {
             this.project = dbHelper.getProject(projId);
@@ -1079,6 +1094,7 @@ public class MoneyBusterServerSyncHelper {
             } catch (NextcloudHttpRequestFailedException e) {
                 Log.e(getClass().getSimpleName(), "Catch NC REQ failed", e);
                 status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
             }
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "FINISHED edit remote project");
@@ -1098,6 +1114,9 @@ public class MoneyBusterServerSyncHelper {
                 errorString += "\n\n";
                 for (Throwable e : exceptions) {
                     errorString += e.getClass().getName() + ": " + e.getMessage();
+                }
+                for (String errorMessage : errorMessages) {
+                    errorString += errorMessage + "\n";
                 }
                 if (status == LoginStatus.SSO_TOKEN_MISMATCH) {
                     Intent intent2 = new Intent(BillsListViewActivity.BROADCAST_SSO_TOKEN_MISMATCH);
@@ -1130,6 +1149,7 @@ public class MoneyBusterServerSyncHelper {
         private DBProject project;
         private ICallback callback;
         private List<Throwable> exceptions = new ArrayList<>();
+        private List<String> errorMessages = new ArrayList<>();
 
         public DeleteRemoteProjectTask(long projId, ICallback callback) {
             this.project = dbHelper.getProject(projId);
@@ -1166,6 +1186,7 @@ public class MoneyBusterServerSyncHelper {
             } catch (NextcloudHttpRequestFailedException e) {
                 Log.e(getClass().getSimpleName(), "Catch NC REQ failed", e);
                 status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
             }
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "FINISHED delete device");
@@ -1185,6 +1206,9 @@ public class MoneyBusterServerSyncHelper {
                 errorString += "\n\n";
                 for (Throwable e : exceptions) {
                     errorString += e.getClass().getName() + ": " + e.getMessage();
+                }
+                for (String errorMessage : errorMessages) {
+                    errorString += errorMessage + "\n";
                 }
                 if (status == LoginStatus.SSO_TOKEN_MISMATCH) {
                     Intent intent2 = new Intent(BillsListViewActivity.BROADCAST_SSO_TOKEN_MISMATCH);
@@ -1217,6 +1241,7 @@ public class MoneyBusterServerSyncHelper {
         private DBProject project;
         private ICallback callback;
         private List<Throwable> exceptions = new ArrayList<>();
+        private List<String> errorMessages = new ArrayList<>();
 
         public CreateRemoteProjectTask(DBProject project, ICallback callback) {
             this.project = project;
@@ -1265,6 +1290,7 @@ public class MoneyBusterServerSyncHelper {
                 }
                 exceptions.add(e);
                 status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
             }
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "FINISHED create remote project");
@@ -1284,6 +1310,9 @@ public class MoneyBusterServerSyncHelper {
                 errorString += "\n\n";
                 for (Throwable e : exceptions) {
                     errorString += e.getClass().getName() + ": " + e.getMessage();
+                }
+                for (String errorMessage : errorMessages) {
+                    errorString += errorMessage + "\n";
                 }
             } else {
                 //dbHelper.deleteProject(project.getId());
@@ -1385,6 +1414,7 @@ public class MoneyBusterServerSyncHelper {
         private final List<ICallback> callbacks = new ArrayList<>();
         private CospendClient client;
         private List<Throwable> exceptions = new ArrayList<>();
+        private List<String> errorMessages = new ArrayList<>();
 
         public SyncAccountProjectsTask() {
         }
@@ -1426,13 +1456,10 @@ public class MoneyBusterServerSyncHelper {
                     try {
                         SingleSignOnAccount ssoAccount = SingleAccountHelper.getCurrentSingleSignOnAccount(appContext.getApplicationContext());
                         url = ssoAccount.url;
+                    } catch (NextcloudFilesAppAccountNotFoundException e) {
+                    } catch (NoCurrentAccountSelectedException e) {
                     }
-                    catch (NextcloudFilesAppAccountNotFoundException e) {
-                    }
-                    catch (NoCurrentAccountSelectedException e) {
-                    }
-                }
-                else {
+                } else {
                     url = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS);
                 }
 
@@ -1489,6 +1516,7 @@ public class MoneyBusterServerSyncHelper {
             } catch (NextcloudHttpRequestFailedException e) {
                 Log.e(getClass().getSimpleName(), "Catch REQ FAILED", e);
                 status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
             }
 
             return status;
@@ -1505,6 +1533,9 @@ public class MoneyBusterServerSyncHelper {
                 errorString += "\n\n";
                 for (Throwable e : exceptions) {
                     errorString += e.getClass().getName() + ": " + e.getMessage();
+                }
+                for (String errorMessage : errorMessages) {
+                    errorString += errorMessage + "\n";
                 }
                 // broadcast the error
                 // if the bill list is not visible, no toast
@@ -1529,6 +1560,7 @@ public class MoneyBusterServerSyncHelper {
         private final List<ICallback> callbacks = new ArrayList<>();
         private CospendClient client;
         private List<Throwable> exceptions = new ArrayList<>();
+        private List<String> errorMessages = new ArrayList<>();
 
         public GetNCColorTask() {
 
@@ -1608,6 +1640,7 @@ public class MoneyBusterServerSyncHelper {
             } catch (NextcloudHttpRequestFailedException e) {
                 Log.e(getClass().getSimpleName(), "Catch REQ FAILED", e);
                 status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
             }
 
             return status;
@@ -1624,6 +1657,7 @@ public class MoneyBusterServerSyncHelper {
         private final List<ICallback> callbacks = new ArrayList<>();
         private CospendClient client;
         private List<Throwable> exceptions = new ArrayList<>();
+        private List<String> errorMessages = new ArrayList<>();
 
         public GetNCUserAvatarTask() {
 
@@ -1695,6 +1729,7 @@ public class MoneyBusterServerSyncHelper {
             } catch (NextcloudHttpRequestFailedException e) {
                 Log.e(getClass().getSimpleName(), "Catch REQ FAILED", e);
                 status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
             }
 
             return status;
@@ -1716,6 +1751,7 @@ public class MoneyBusterServerSyncHelper {
         private CospendClient client;
         private long memberId;
         private List<Throwable> exceptions = new ArrayList<>();
+        private List<String> errorMessages = new ArrayList<>();
 
         public UpdateMemberAvatarTask(long memberId) {
             this.memberId = memberId;
@@ -1786,6 +1822,7 @@ public class MoneyBusterServerSyncHelper {
             } catch (NextcloudHttpRequestFailedException e) {
                 Log.e(getClass().getSimpleName(), "Catch REQ FAILED", e);
                 status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
             }
 
             return status;

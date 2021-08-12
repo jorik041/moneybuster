@@ -251,7 +251,7 @@ public class CospendClient {
             throw new ServerResponse.NotModifiedException();
         }
         if (responseCode >= 400) {
-            throw new NextcloudHttpRequestFailedException(responseCode, null);
+            throw new NextcloudHttpRequestFailedException(responseCode, new IOException(""));
         }
 
         Log.i(TAG, "METHOD : "+method);
@@ -315,7 +315,7 @@ public class CospendClient {
             throw new ServerResponse.NotModifiedException();
         }
         if (responseCode >= 400) {
-            throw new NextcloudHttpRequestFailedException(responseCode, null);
+            throw new NextcloudHttpRequestFailedException(responseCode, new IOException(""));
         }
 
         Log.i(TAG, "METHOD : "+method);

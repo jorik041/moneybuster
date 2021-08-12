@@ -721,8 +721,7 @@ public class VersatileProjectSyncClient {
             result.append(line);
         }
         if (responseCode >= 400) {
-            throw new NextcloudHttpRequestFailedException(responseCode, null);
-            // throw new IOException(result.toString());
+            throw new NextcloudHttpRequestFailedException(responseCode, new IOException(result.toString()));
         }
         // create response object
         String etag = con.getHeaderField("ETag");

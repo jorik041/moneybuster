@@ -493,6 +493,9 @@ public class MoneyBusterServerSyncHelper {
                 Log.e(getClass().getSimpleName(), "Catch SSO HTTP req FAILED", e);
                 status = LoginStatus.REQ_FAILED;
                 errorMessages.add(getErrorMessageFromException(e));
+                if (e.getCause() != null) {
+                    exceptions.add(e.getCause());
+                }
             }
             Log.d(getClass().getSimpleName(), "END PUSH LOCAL CHANGES");
             return status;
@@ -871,6 +874,9 @@ public class MoneyBusterServerSyncHelper {
                 Log.e(getClass().getSimpleName(), "Catch NC REQ failed", e);
                 status = LoginStatus.REQ_FAILED;
                 errorMessages.add(getErrorMessageFromException(e));
+                if (e.getCause() != null) {
+                    exceptions.add(e.getCause());
+                }
             }
             return status;
         }
@@ -880,20 +886,21 @@ public class MoneyBusterServerSyncHelper {
             super.onPostExecute(status);
             if (status != LoginStatus.OK) {
                 String errorString = "";
+                for (String errorMessage : errorMessages) {
+                    errorString += errorMessage + "\n";
+                }
+                errorString += "\n";
                 for (Throwable e : exceptions) {
                     JSONObject obj = SupportUtil.getJsonObject(e.getMessage());
                     if (obj != null && obj.has("message")) {
                         try {
                             errorString += obj.getString("message") + "\n";
                         } catch (JSONException jsonEx) {
-                            errorString += e.getMessage() + "\n";
+//                            errorString += e.getMessage() + "\n";
                         }
                     } else {
-                        errorString += e.getMessage() + "\n";
+//                        errorString += e.getMessage() + "\n";
                     }
-                }
-                for (String errorMessage : errorMessages) {
-                    errorString += errorMessage + "\n";
                 }
                 // broadcast the error
                 // if the bills list is not visible, no toast
@@ -952,6 +959,8 @@ public class MoneyBusterServerSyncHelper {
         int errorCode = e.getStatusCode();
         if (errorCode == 503) {
             return appContext.getString(R.string.error_maintenance_mode);
+        } else if (errorCode == 401) {
+            return appContext.getString(R.string.error_401);
         }
         return "";
     }
@@ -1112,11 +1121,12 @@ public class MoneyBusterServerSyncHelper {
                         appContext.getString(status.str)
                 );
                 errorString += "\n\n";
-                for (Throwable e : exceptions) {
-                    errorString += e.getClass().getName() + ": " + e.getMessage();
-                }
                 for (String errorMessage : errorMessages) {
                     errorString += errorMessage + "\n";
+                }
+                errorString += "\n";
+                for (Throwable e : exceptions) {
+                    errorString += e.getClass().getName() + ": " + e.getMessage();
                 }
                 if (status == LoginStatus.SSO_TOKEN_MISMATCH) {
                     Intent intent2 = new Intent(BillsListViewActivity.BROADCAST_SSO_TOKEN_MISMATCH);
@@ -1204,11 +1214,12 @@ public class MoneyBusterServerSyncHelper {
                         appContext.getString(status.str)
                 );
                 errorString += "\n\n";
-                for (Throwable e : exceptions) {
-                    errorString += e.getClass().getName() + ": " + e.getMessage();
-                }
                 for (String errorMessage : errorMessages) {
                     errorString += errorMessage + "\n";
+                }
+                errorString += "\n";
+                for (Throwable e : exceptions) {
+                    errorString += e.getClass().getName() + ": " + e.getMessage();
                 }
                 if (status == LoginStatus.SSO_TOKEN_MISMATCH) {
                     Intent intent2 = new Intent(BillsListViewActivity.BROADCAST_SSO_TOKEN_MISMATCH);
@@ -1308,11 +1319,12 @@ public class MoneyBusterServerSyncHelper {
                         appContext.getString(status.str)
                 );
                 errorString += "\n\n";
-                for (Throwable e : exceptions) {
-                    errorString += e.getClass().getName() + ": " + e.getMessage();
-                }
                 for (String errorMessage : errorMessages) {
                     errorString += errorMessage + "\n";
+                }
+                errorString += "\n";
+                for (Throwable e : exceptions) {
+                    errorString += e.getClass().getName() + ": " + e.getMessage();
                 }
             } else {
                 //dbHelper.deleteProject(project.getId());
@@ -1531,11 +1543,12 @@ public class MoneyBusterServerSyncHelper {
                         appContext.getString(status.str)
                 );
                 errorString += "\n\n";
-                for (Throwable e : exceptions) {
-                    errorString += e.getClass().getName() + ": " + e.getMessage();
-                }
                 for (String errorMessage : errorMessages) {
                     errorString += errorMessage + "\n";
+                }
+                errorString += "\n";
+                for (Throwable e : exceptions) {
+                    errorString += e.getClass().getName() + ": " + e.getMessage();
                 }
                 // broadcast the error
                 // if the bill list is not visible, no toast

@@ -20,6 +20,8 @@
     <string name="setting_payer">Kdo zaplatil?</string>
     <string name="setting_all">Vše</string>
     <string name="setting_none">Žádné</string>
+    <string name="setting_comment">Comment</string>
+    <string name="duplicate_bill">Duplicate bill</string>
     <string name="currency_dialog_title">Převést stávající částku z jiné měny na %s</string>
     <string name="no_currency_error">Není zde žádná další měna</string>
     <string name="setting_amount">Kolik?</string>
@@ -100,10 +102,15 @@
     <string name="action_search">Hledat</string>
     <string name="action_search_in_project">Search in %s</string>
     <string name="simple_error">Chyba</string>
+    <string name="simple_close">Close</string>
     <string name="simple_loading">Načítá se</string>
     <string name="simple_remove">Odstranit</string>
     <string name="sync_error_dialog_title">Synchronizace projektu se nezdařila</string>
-    <string name="sync_error_dialog_content">Synchronizace s projektem %1$s se nezdařila.\n\n%2$s\n\nTento projekt už možná neexistuje. Chcete projekt odstranit lokálně?</string>
+    <string name="sync_error_dialog_full_content">Synchronization with project %1$s failed. Error message:\n\n%2$s\n\nThe associated remote project might not exist anymore. If so, you could remove this project from MoneyBuster.</string>
+    <string name="error_maintenance_mode">The Nextcloud instance is probably in maintenance mode</string>
+    <string name="error_401">401 Unauthorized</string>
+    <string name="error_403">403 Forbidden</string>
+    <string name="error_404">404 Not Found</string>
     <string name="simple_do_nothing">Nedělat nic</string>
     <string name="creating_remote_project">Vytváření vzdáleného projektu</string>
     <string name="simple_cancel">Storno</string>
@@ -185,6 +192,7 @@
     <string name="settings_submit">Připojit</string>
     <string name="settings_submitting">Připojování &#8230;</string>
     <string name="settings_theme_title">Motiv vzhledu</string>
+    <string name="settings_night_mode_title">Theme</string>
     <string name="settings_offline_mode_title">Režim bez připojení k síti</string>
     <string name="settings_offline_mode_summary">Nesynchronizovat automaticky. Synchronizovat pouze na vyžádání uživatelem.</string>
     <string name="settings_smart_sync_title">Inteligentní synchronizace s Cospend</string>
@@ -290,6 +298,7 @@
     <string name="error_create_remote_project_helper">Chyba při vytváření projektu na protějšku: %s</string>
     <string name="error_edit_remote_project_helper">Chyba při upravování projektu na protějšku: %s</string>
     <string name="error_token_mismatch">Prosím v nastavení proveďte opětovné ověření svého SSO účtu</string>
+    <string name="error_req_failed">Request failed</string>
     <!-- Snackbar Actions -->
     <!-- URLs -->
     <!-- About -->
@@ -319,6 +328,7 @@
     <!-- Key / Values for preferences -->
     <string name="pref_value_theme_light">Světlý</string>
     <string name="pref_value_theme_dark">Tmavý</string>
+    <string name="pref_value_theme_system">Follow system</string>
     <string name="avatar">Profilový obrázek</string>
     <string name="fallback_weblogin_text">Vrátit se ke staré metodě přihlašování</string>
     <string name="fallback_weblogin_back">Zpět</string>

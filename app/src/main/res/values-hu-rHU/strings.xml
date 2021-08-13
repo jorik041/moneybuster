@@ -20,6 +20,8 @@
     <string name="setting_payer">Ki fizetett?</string>
     <string name="setting_all">Összes</string>
     <string name="setting_none">Egyik sem</string>
+    <string name="setting_comment">Comment</string>
+    <string name="duplicate_bill">Duplicate bill</string>
     <string name="currency_dialog_title">Jelenlegi összeg átváltása %s -ba</string>
     <string name="no_currency_error">Nincs másik pénznem</string>
     <string name="setting_amount">Mennyi?</string>
@@ -100,10 +102,15 @@
     <string name="action_search">Keresés</string>
     <string name="action_search_in_project">Search in %s</string>
     <string name="simple_error">Hiba</string>
+    <string name="simple_close">Close</string>
     <string name="simple_loading">Betöltés</string>
     <string name="simple_remove">Eltávolítás</string>
     <string name="sync_error_dialog_title">Projekt szinkronizáció sikertelen</string>
-    <string name="sync_error_dialog_content">A(z) %1$s projekttel való szinkronizálás sikertelen.\n\n%2$s\n\nLehetséges, hogy a projekt már nem létezik. El szeretnéd távolítani a helyi projektet?</string>
+    <string name="sync_error_dialog_full_content">Synchronization with project %1$s failed. Error message:\n\n%2$s\n\nThe associated remote project might not exist anymore. If so, you could remove this project from MoneyBuster.</string>
+    <string name="error_maintenance_mode">The Nextcloud instance is probably in maintenance mode</string>
+    <string name="error_401">401 Unauthorized</string>
+    <string name="error_403">403 Forbidden</string>
+    <string name="error_404">404 Not Found</string>
     <string name="simple_do_nothing">Ne csinálj semmit</string>
     <string name="creating_remote_project">Távoli projekt létrehozása</string>
     <string name="simple_cancel">Mégse</string>
@@ -185,6 +192,7 @@
     <string name="settings_submit">Csatlakozás</string>
     <string name="settings_submitting">Kapcsolódás &#8230;</string>
     <string name="settings_theme_title">Téma</string>
+    <string name="settings_night_mode_title">Theme</string>
     <string name="settings_offline_mode_title">Offline mód</string>
     <string name="settings_offline_mode_summary">Ne szinkronizáljon magától. Csak a felhasználó kérésére.</string>
     <string name="settings_smart_sync_title">Okos szinkronizálás a Cospend-el</string>
@@ -290,6 +298,7 @@
     <string name="error_create_remote_project_helper">Hiba távoli projekt létrehozásakor: %s</string>
     <string name="error_edit_remote_project_helper">Hiba távoli projekt szerkesztésekor: %s</string>
     <string name="error_token_mismatch">Kérem hitelesítse újra a SSO fiókját a beállításokban</string>
+    <string name="error_req_failed">Request failed</string>
     <!-- Snackbar Actions -->
     <!-- URLs -->
     <!-- About -->
@@ -319,6 +328,7 @@
     <!-- Key / Values for preferences -->
     <string name="pref_value_theme_light">Világos</string>
     <string name="pref_value_theme_dark">Sötét</string>
+    <string name="pref_value_theme_system">Follow system</string>
     <string name="avatar">Profilkép</string>
     <string name="fallback_weblogin_text">Visszaállítás a régi bejelentkezési metódusra</string>
     <string name="fallback_weblogin_back">Vissza</string>

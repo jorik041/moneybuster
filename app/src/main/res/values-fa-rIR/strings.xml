@@ -20,6 +20,8 @@
     <string name="setting_payer">چه کسی پرداخت کرده؟</string>
     <string name="setting_all">همه</string>
     <string name="setting_none">هیچ کدام</string>
+    <string name="setting_comment">Comment</string>
+    <string name="duplicate_bill">Duplicate bill</string>
     <string name="currency_dialog_title">واحد پولی کنونی را از یک ارز دیگر به %s تبدیل کنید</string>
     <string name="no_currency_error">هیچ واحد پولی اضافی وجود ندارد</string>
     <string name="setting_amount">چقدر؟</string>
@@ -100,10 +102,15 @@
     <string name="action_search">جستجو</string>
     <string name="action_search_in_project">Search in %s</string>
     <string name="simple_error">خطا</string>
+    <string name="simple_close">Close</string>
     <string name="simple_loading">در حال بارگذاری</string>
     <string name="simple_remove">پاک کردن</string>
     <string name="sync_error_dialog_title">هم‌گام‌سازی پروژه شکست خورد</string>
-    <string name="sync_error_dialog_content">هم‌گام‌سازی با پروژه %1$s شکست خورد.\n\n%2$s\n\n این پروژه شاید دیگر وجود نداشته باشد. آیا می‌خواهید پروژه محلی را حذف کنید؟</string>
+    <string name="sync_error_dialog_full_content">Synchronization with project %1$s failed. Error message:\n\n%2$s\n\nThe associated remote project might not exist anymore. If so, you could remove this project from MoneyBuster.</string>
+    <string name="error_maintenance_mode">The Nextcloud instance is probably in maintenance mode</string>
+    <string name="error_401">401 Unauthorized</string>
+    <string name="error_403">403 Forbidden</string>
+    <string name="error_404">404 Not Found</string>
     <string name="simple_do_nothing">کاری نکن</string>
     <string name="creating_remote_project">در حال ساخت پروژه از راه دور</string>
     <string name="simple_cancel">لغو</string>
@@ -185,6 +192,7 @@
     <string name="settings_submit">اتصال</string>
     <string name="settings_submitting">در حال اتصال به &#8230;</string>
     <string name="settings_theme_title">پوسته</string>
+    <string name="settings_night_mode_title">Theme</string>
     <string name="settings_offline_mode_title">حالت آفلاین</string>
     <string name="settings_offline_mode_summary">خودکار هم‌گام‌سازی نکن. تنها هنگامی که کاربر بخواهد هم‌گام‌سازی کن.</string>
     <string name="settings_smart_sync_title">هم‌گام‌سازی هوشمند با Cospend</string>
@@ -290,6 +298,7 @@
     <string name="error_create_remote_project_helper">خطا هنگام ساختن پروژه از راه دور : %s</string>
     <string name="error_edit_remote_project_helper">خطا هنگام ویرایش پروژه از راه دور : %s</string>
     <string name="error_token_mismatch">لطفا حساب SSO خود را در تنظیمات دوباره تایید کنید</string>
+    <string name="error_req_failed">Request failed</string>
     <!-- Snackbar Actions -->
     <!-- URLs -->
     <!-- About -->
@@ -319,6 +328,7 @@
     <!-- Key / Values for preferences -->
     <string name="pref_value_theme_light">روشن</string>
     <string name="pref_value_theme_dark">تاریک</string>
+    <string name="pref_value_theme_system">Follow system</string>
     <string name="avatar">اواتار</string>
     <string name="fallback_weblogin_text">برگشت به شیوه ورود به حساب قبلی</string>
     <string name="fallback_weblogin_back">برگشت</string>

@@ -20,6 +20,8 @@
     <string name="setting_payer">Quem pagou?</string>
     <string name="setting_all">Todos</string>
     <string name="setting_none">Nenhum</string>
+    <string name="setting_comment">Comment</string>
+    <string name="duplicate_bill">Duplicate bill</string>
     <string name="currency_dialog_title">Converter o montante actual de outra unidade monetária para %s</string>
     <string name="no_currency_error">Não existe uma unidade monetária adicional</string>
     <string name="setting_amount">Quanto?</string>
@@ -100,10 +102,15 @@
     <string name="action_search">Pesquisar</string>
     <string name="action_search_in_project">Search in %s</string>
     <string name="simple_error">Erro</string>
+    <string name="simple_close">Close</string>
     <string name="simple_loading">A carregar</string>
     <string name="simple_remove">Remover</string>
     <string name="sync_error_dialog_title">Falha na sincronização do projecto</string>
-    <string name="sync_error_dialog_content">Ocorreu uma falha durante a sincronização do projecto %1$s.\n\n%2$s\n\nEste projecto pode já não existir. Quer remover o projecto localmente?</string>
+    <string name="sync_error_dialog_full_content">Synchronization with project %1$s failed. Error message:\n\n%2$s\n\nThe associated remote project might not exist anymore. If so, you could remove this project from MoneyBuster.</string>
+    <string name="error_maintenance_mode">The Nextcloud instance is probably in maintenance mode</string>
+    <string name="error_401">401 Unauthorized</string>
+    <string name="error_403">403 Forbidden</string>
+    <string name="error_404">404 Not Found</string>
     <string name="simple_do_nothing">Não fazer nada</string>
     <string name="creating_remote_project">Criando projecto remoto</string>
     <string name="simple_cancel">Cancelar</string>
@@ -185,6 +192,7 @@
     <string name="settings_submit">Conectar</string>
     <string name="settings_submitting">Conectando &#8230;</string>
     <string name="settings_theme_title">Tema</string>
+    <string name="settings_night_mode_title">Theme</string>
     <string name="settings_offline_mode_title">Modo desconectado</string>
     <string name="settings_offline_mode_summary">Não sincronizar automaticamente. Sincronizar somente quando o utilizador pedir.</string>
     <string name="settings_smart_sync_title">Sincronização inteligente com o Cospend</string>
@@ -290,6 +298,7 @@
     <string name="error_create_remote_project_helper">Erro na criação do projecto remoto: %s</string>
     <string name="error_edit_remote_project_helper">Erro na edição do projecto remoto: %s</string>
     <string name="error_token_mismatch">Por favor volte a autenticar a sua conta SSO nas configurações</string>
+    <string name="error_req_failed">Request failed</string>
     <!-- Snackbar Actions -->
     <!-- URLs -->
     <!-- About -->
@@ -319,6 +328,7 @@
     <!-- Key / Values for preferences -->
     <string name="pref_value_theme_light">Luminoso</string>
     <string name="pref_value_theme_dark">Escuro</string>
+    <string name="pref_value_theme_system">Follow system</string>
     <string name="avatar">Avatar</string>
     <string name="fallback_weblogin_text">Reverter para o método antigo de início de sessão</string>
     <string name="fallback_weblogin_back">Voltar</string>

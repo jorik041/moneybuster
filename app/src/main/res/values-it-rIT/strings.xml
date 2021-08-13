@@ -20,6 +20,8 @@
     <string name="setting_payer">Chi ha pagato?</string>
     <string name="setting_all">Tutti</string>
     <string name="setting_none">Nessuno</string>
+    <string name="setting_comment">Comment</string>
+    <string name="duplicate_bill">Duplicate bill</string>
     <string name="currency_dialog_title">Converti l\'importo corrente da un\'altra valuta in %s</string>
     <string name="no_currency_error">Non c\'è nessuna valuta aggiuntiva</string>
     <string name="setting_amount">Quanto?</string>
@@ -58,7 +60,7 @@
     <string name="category_reimbursement">Rimborso</string>
     <string name="category_restaurant">Ristorante</string>
     <string name="category_accomodation">Alloggio</string>
-    <string name="category_transport">Transporto</string>
+    <string name="category_transport">Trasporto</string>
     <string name="category_sport">Sport</string>
     <string name="project_type_local">Progetto locale</string>
     <string name="project_type_ihatemoney">Progetto IHateMoney</string>
@@ -98,12 +100,17 @@
     <string name="setting_email">E-mail (remoto)</string>
     <string name="project_added_success">Progetto aggiunto con successo a MoneyBuster</string>
     <string name="action_search">Ricerca</string>
-    <string name="action_search_in_project">Search in %s</string>
+    <string name="action_search_in_project">Cerca in %s</string>
     <string name="simple_error">Errore</string>
+    <string name="simple_close">Close</string>
     <string name="simple_loading">Caricamento</string>
     <string name="simple_remove">Rimuovi</string>
     <string name="sync_error_dialog_title">Sincronizzazione del progetto fallita</string>
-    <string name="sync_error_dialog_content">Sincronizzazione con il progetto %1$s non riuscita.\n\n%2$s\n\nQuesto progetto potrebbe non esistere più. Vuoi rimuovere il progetto localmente?</string>
+    <string name="sync_error_dialog_full_content">Synchronization with project %1$s failed. Error message:\n\n%2$s\n\nThe associated remote project might not exist anymore. If so, you could remove this project from MoneyBuster.</string>
+    <string name="error_maintenance_mode">The Nextcloud instance is probably in maintenance mode</string>
+    <string name="error_401">401 Unauthorized</string>
+    <string name="error_403">403 Forbidden</string>
+    <string name="error_404">404 Not Found</string>
     <string name="simple_do_nothing">Non fare nulla</string>
     <string name="creating_remote_project">Creazione progetto remoto</string>
     <string name="simple_cancel">Annulla</string>
@@ -143,9 +150,9 @@
     <string name="fab_manage_members">Gestisci membri</string>
     <string name="fab_export_project">Esporta progetto</string>
     <string name="drawer_last_sync_text">Ultima sincronizzazione: %1$02d:%2$02d</string>
-    <string name="scan_qrcode_tooltip">Scan a Cospend/IHateMoney QRCode</string>
-    <string name="new_project_from_nextcloud_tooltip">Choose project from Nextcloud account</string>
-    <string name="import_tooltip">Import from CSV file</string>
+    <string name="scan_qrcode_tooltip">Scansiona un codice QRCode di Cospend/IHateMoney</string>
+    <string name="new_project_from_nextcloud_tooltip">Scegli un progetto dal tuo account Nextcloud</string>
+    <string name="import_tooltip">Importa da file CSV</string>
     <string name="import_error_owers">CSV malformato, proprietario errato alla linea %1$d</string>
     <string name="import_error_date">CSV malformato, data errata alla linea %1$d</string>
     <string name="import_error_header">CSV malformato, nomi di colonne errati alla riga %1$d</string>
@@ -168,7 +175,7 @@
     <string name="welcome_dialog_content_v12">Cosa c\'è di nuovo?\n\n* La scansione del QRCode\n* Interfaccia migliore\n* Importa progetto di un Nextcloud account\n* Statistiche migliori\n* e tanto altro :-)</string>
     <string name="welcome_dialog_content_v13">Cosa c\'è di nuovo?\n\n* Filtri nelle statistiche\n* Creazione automatica di fatture di pagamento\n* Ricerca per nome\n* e tanto altro :-)</string>
     <string name="first_welcome_dialog_content">Prima configura l\'account Nextcloud o crea/unisciti a un progetto (IHateMoney o Nextcloud Cospend), poi aggiungi alcuni membri e/o crea alcune spese!\n\nAltre azioni principali:\n* Setta il progetto per generare un piano di rimborso globale\n* Mostra statistiche del progetto\n* Condividi: generare un QRCode che altri possono scansionare per unirsi al progetto\n\nSu Android &gt;= 8. puoi premere a lungo i pulsanti di azione per visualizzare la guida.</string>
-    <string name="changelog">Changelog</string>
+    <string name="changelog">Novità</string>
     <string name="permanent_notification_title">Sincronizzazione permanente</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Aspetto</string>
@@ -185,6 +192,7 @@
     <string name="settings_submit">Connetti</string>
     <string name="settings_submitting">Connessione in corso &#8230;</string>
     <string name="settings_theme_title">Tema</string>
+    <string name="settings_night_mode_title">Theme</string>
     <string name="settings_offline_mode_title">Modalità offline</string>
     <string name="settings_offline_mode_summary">Non sincronizzare automaticamente. Sincronizza solo quando l\'utente lo chiede.</string>
     <string name="settings_smart_sync_title">Sincronizzazione intelligente con Cospend</string>
@@ -230,10 +238,10 @@
     <string name="stats_balance">Saldo</string>
     <string name="fab_statistics">Statistiche del progetto</string>
     <string name="fab_settle">Liquida</string>
-    <string name="project_add_success_message">Project %1$s was successfully added</string>
-    <string name="project_create_success_message">Project %1$s was successfully created</string>
+    <string name="project_add_success_message">Progetto %1$s creato con successo</string>
+    <string name="project_create_success_message">Progetto %1$s é stato creato con successo</string>
     <string name="project_add_success_title">Progetto aggiunto</string>
-    <string name="project_create_success_title">Project created</string>
+    <string name="project_create_success_title">Progetto creato</string>
     <string name="import_bad_url">Link MoneyBuster non valido, impossibile da importare</string>
     <string name="import_no_data">Qualcosa è andato storto durante l\'aggiunta di un nuovo progetto</string>
     <string name="fab_scan_qrcode_import">Importa MB QRCode</string>
@@ -264,7 +272,7 @@
     <string name="error_invalid_sync_interval">L\'intervallo di sincronizzazione deve essere compreso tra 5 e 1440 (24h)</string>
     <string name="project_activity_notification">Progetto %1$s</string>
     <string name="activity_dialog_title">Attività nel progetto %1$s</string>
-    <string name="manage_accounts">Manage accounts</string>
+    <string name="manage_accounts">Gestisci account</string>
     <!-- Certificates -->
     <string name="certificate_notification_connection_security">MoneyBuster - Sicurezza della connessione</string>
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster ha riscontrato un certificato sconosciuto. Vuoi fidarti?</string>
@@ -290,6 +298,7 @@
     <string name="error_create_remote_project_helper">Errore nella creazione del progetto remoto : %s</string>
     <string name="error_edit_remote_project_helper">Errore nella edizione del progetto remoto : %s</string>
     <string name="error_token_mismatch">Prego riattiva il tuo account SSO nelle impostazioni</string>
+    <string name="error_req_failed">Request failed</string>
     <!-- Snackbar Actions -->
     <!-- URLs -->
     <!-- About -->
@@ -319,6 +328,7 @@
     <!-- Key / Values for preferences -->
     <string name="pref_value_theme_light">Chiaro</string>
     <string name="pref_value_theme_dark">Scuro</string>
+    <string name="pref_value_theme_system">Follow system</string>
     <string name="avatar">Immagine di profilo</string>
     <string name="fallback_weblogin_text">Ripristina il vecchio metodo di login</string>
     <string name="fallback_weblogin_back">Indietro</string>

@@ -111,7 +111,7 @@
     <string name="error_maintenance_mode">The Nextcloud instance is probably in maintenance mode</string>
     <string name="error_401">401 Unauthorized</string>
     <string name="error_403">403 Forbidden</string>
-    <string name="error_404">404 No found</string>
+    <string name="error_404">404 Not Found</string>
     <string name="simple_do_nothing">Do nothing</string>
     <string name="creating_remote_project">Creating remote project</string>
     <string name="simple_cancel">Cancel</string>
@@ -367,9 +367,9 @@
     <string name="pref_value_theme_light">Light</string>
     <string name="pref_value_theme_dark">Dark</string>
     <string name="pref_value_theme_system">Follow system</string>
-    <string name="pref_value_night_mode_no">1</string>
-    <string name="pref_value_night_mode_yes">2</string>
-    <string name="pref_value_night_mode_system">-1</string>
+    <string name="pref_value_night_mode_no" translatable="false">1</string>
+    <string name="pref_value_night_mode_yes" translatable="false">2</string>
+    <string name="pref_value_night_mode_system" translatable="false">-1</string>
     <string name="avatar">Avatar</string>
     <string name="fallback_weblogin_text">Revert to old login method</string>
     <string name="fallback_weblogin_back">Back</string>

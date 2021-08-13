@@ -20,6 +20,8 @@
     <string name="setting_payer">Кој плати?</string>
     <string name="setting_all">Сите</string>
     <string name="setting_none">Никој</string>
+    <string name="setting_comment">Comment</string>
+    <string name="duplicate_bill">Duplicate bill</string>
     <string name="currency_dialog_title">Конвертирај го износот во валута %s</string>
     <string name="no_currency_error">Нема други валути</string>
     <string name="setting_amount">Колку?</string>
@@ -100,10 +102,15 @@
     <string name="action_search">Пребарај</string>
     <string name="action_search_in_project">Search in %s</string>
     <string name="simple_error">Грешка</string>
+    <string name="simple_close">Close</string>
     <string name="simple_loading">Се вчитува</string>
     <string name="simple_remove">Отстрани</string>
     <string name="sync_error_dialog_title">Неуспешна синхронизација на проектот</string>
-    <string name="sync_error_dialog_content">Синхтонизацијата со проектот %1$s е неуспешна.\n\n%2$s\n\nОвој проект можеби веќе не постои. Дали сакате да го отстраните проектот локално?</string>
+    <string name="sync_error_dialog_full_content">Synchronization with project %1$s failed. Error message:\n\n%2$s\n\nThe associated remote project might not exist anymore. If so, you could remove this project from MoneyBuster.</string>
+    <string name="error_maintenance_mode">The Nextcloud instance is probably in maintenance mode</string>
+    <string name="error_401">401 Unauthorized</string>
+    <string name="error_403">403 Forbidden</string>
+    <string name="error_404">404 Not Found</string>
     <string name="simple_do_nothing">Не прави ништо</string>
     <string name="creating_remote_project">Креирај далечински проект</string>
     <string name="simple_cancel">Откажи</string>
@@ -185,6 +192,7 @@
     <string name="settings_submit">Поврзи</string>
     <string name="settings_submitting">Поврзување со &#8230;</string>
     <string name="settings_theme_title">Тема</string>
+    <string name="settings_night_mode_title">Theme</string>
     <string name="settings_offline_mode_title">Офлајн режим</string>
     <string name="settings_offline_mode_summary">Не синхронизирај автоматски. Синхронизирај само по побарање на корисник.</string>
     <string name="settings_smart_sync_title">Паметно синхронизирање со Cospend</string>
@@ -290,6 +298,7 @@
     <string name="error_create_remote_project_helper">Грешка при креирање на далечински проект : %s</string>
     <string name="error_edit_remote_project_helper">Грешка при изменување на далечински проект : %s</string>
     <string name="error_token_mismatch">Ве молиме повторно да се најавите на вашата SSO сметка во параметрите</string>
+    <string name="error_req_failed">Request failed</string>
     <!-- Snackbar Actions -->
     <!-- URLs -->
     <!-- About -->
@@ -319,6 +328,7 @@
     <!-- Key / Values for preferences -->
     <string name="pref_value_theme_light">Светла</string>
     <string name="pref_value_theme_dark">Темна</string>
+    <string name="pref_value_theme_system">Follow system</string>
     <string name="avatar">Aватар</string>
     <string name="fallback_weblogin_text">Врати се на стариот начин на најавување</string>
     <string name="fallback_weblogin_back">Назад</string>

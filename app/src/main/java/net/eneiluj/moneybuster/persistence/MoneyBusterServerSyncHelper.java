@@ -961,6 +961,10 @@ public class MoneyBusterServerSyncHelper {
             return appContext.getString(R.string.error_maintenance_mode);
         } else if (errorCode == 401) {
             return appContext.getString(R.string.error_401);
+        } else if (errorCode == 403) {
+            return appContext.getString(R.string.error_403);
+        } else if (errorCode == 404) {
+            return appContext.getString(R.string.error_404);
         }
         return "";
     }

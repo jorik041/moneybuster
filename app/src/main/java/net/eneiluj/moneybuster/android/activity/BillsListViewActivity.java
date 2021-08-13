@@ -670,8 +670,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 long selectedProjectId = preferences.getLong("selected_project", 0);
                 if (selectedProjectId != 0) {
-                    if (db.getActivatedMembersOfProject(selectedProjectId).size() < 2) {
-                        showToast(getString(R.string.edit_bill_impossible_no_member));
+                    if (db.getActivatedMembersOfProject(selectedProjectId).size() < 1) {
+                        showToast(getString(R.string.add_bill_impossible_no_member));
                     }
                     else {
                         createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, selectedProjectId);
@@ -2834,8 +2834,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         long selectedProjectId = preferences.getLong("selected_project", 0);
         if (selectedProjectId != 0) {
-            if (db.getActivatedMembersOfProject(selectedProjectId).size() < 2) {
-                showToast(getString(R.string.edit_bill_impossible_no_member));
+            if (db.getActivatedMembersOfProject(selectedProjectId).size() < 1) {
+                showToast(getString(R.string.add_bill_impossible_no_member));
             } else {
                 createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, selectedProjectId);
                 createIntent.putExtra(EditBillActivity.PARAM_PROJECT_TYPE, db.getProject(selectedProjectId).getType().getId());

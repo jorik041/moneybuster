@@ -94,6 +94,7 @@ import com.nextcloud.android.sso.model.SingleSignOnAccount;
 
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.fragment.NewProjectFragment;
+import net.eneiluj.moneybuster.android.ui.ProjectAdapter;
 import net.eneiluj.moneybuster.android.ui.TextDrawable;
 import net.eneiluj.moneybuster.android.ui.UserAdapter;
 import net.eneiluj.moneybuster.android.ui.UserItem;
@@ -2014,36 +2015,22 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         final long selectedProjectId = preferences.getLong("selected_project", 0);
 
         final List<DBProject> dbProjects = db.getProjects();
-        List<String> projectNames = new ArrayList<>();
         List<Long> projectIds = new ArrayList<>();
         for (DBProject p : dbProjects) {
-            if (p.getName() == null || p.getServerUrl() == null || p.isLocal()) {
-                projectNames.add(p.getRemoteId());
-            }
-            else {
-                projectNames.add(
-                        p.getName()
-                                + "\n(" + p.getRemoteId() + "@"
-                                + p.getServerUrl()
-                                .replace("https://", "")
-                                .replace("http://", "")
-                                .replace("/index.php/apps/cospend", "")
-                                + ")"
-                );
-            }
             projectIds.add(p.getId());
         }
 
-        int checkedItem = -1;
+        int checkedItem;
         if (selectedProjectId != 0) {
             checkedItem = projectIds.indexOf(selectedProjectId);
+        } else {
+            checkedItem = -1;
         }
-        CharSequence[] namescs = projectNames.toArray(new CharSequence[projectNames.size()]);
 
         AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog));
         selectBuilder.setTitle(getString(R.string.choose_project_to_select));
-        // TODO use listadapter with items showing the project type as an icon
-        selectBuilder.setSingleChoiceItems(namescs, checkedItem, new DialogInterface.OnClickListener() {
+        ProjectAdapter projectAdapter = new ProjectAdapter(this, dbProjects, checkedItem);
+        selectBuilder.setSingleChoiceItems(projectAdapter, checkedItem, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // user checked an item

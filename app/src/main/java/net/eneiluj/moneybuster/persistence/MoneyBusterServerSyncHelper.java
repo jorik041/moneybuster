@@ -46,6 +46,7 @@ import net.eneiluj.moneybuster.service.SyncService;
 import net.eneiluj.moneybuster.util.CospendClient;
 import net.eneiluj.moneybuster.util.CospendClientUtil.LoginStatus;
 import net.eneiluj.moneybuster.util.ICallback;
+import net.eneiluj.moneybuster.util.IProjectCreationCallback;
 import net.eneiluj.moneybuster.util.VersatileProjectSyncClient;
 import net.eneiluj.moneybuster.util.ServerResponse;
 import net.eneiluj.moneybuster.util.SupportUtil;
@@ -1036,8 +1037,7 @@ public class MoneyBusterServerSyncHelper {
             } catch (NextcloudFilesAppAccountNotFoundException | NoCurrentAccountSelectedException e) {
                 return false;
             }
-        }
-        else {
+        } else {
             accountUrl = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS).replaceAll("/$", "");
         }
 
@@ -1236,7 +1236,7 @@ public class MoneyBusterServerSyncHelper {
         }
     }
 
-    public boolean createRemoteProject(String remoteId, String name, String email, String password, String ihmUrl, ProjectType projectType, ICallback callback) {
+    public boolean createRemoteProject(String remoteId, String name, String email, String password, String ihmUrl, ProjectType projectType, IProjectCreationCallback callback) {
         if (isSyncPossible()) {
             DBProject proj = new DBProject(0, remoteId, password, name, ihmUrl, email,
                     null, projectType, Long.valueOf(0), null);
@@ -1254,11 +1254,12 @@ public class MoneyBusterServerSyncHelper {
     private class CreateRemoteProjectTask extends AsyncTask<Void, Void, LoginStatus> {
         private VersatileProjectSyncClient client;
         private DBProject project;
-        private ICallback callback;
+        private IProjectCreationCallback callback;
         private List<Throwable> exceptions = new ArrayList<>();
         private List<String> errorMessages = new ArrayList<>();
+        private boolean usePrivateApi = false;
 
-        public CreateRemoteProjectTask(DBProject project, ICallback callback) {
+        public CreateRemoteProjectTask(DBProject project, IProjectCreationCallback callback) {
             this.project = project;
             this.callback = callback;
         }
@@ -1281,6 +1282,7 @@ public class MoneyBusterServerSyncHelper {
                 // determine if we can create authenticated of just anonymous remote project
                 if (canCreateAuthenticatedProject(project)) {
                     response = client.createAuthenticatedRemoteProject(customCertManager, project);
+                    usePrivateApi = true;
                 } else {
                     response = client.createAnonymousRemoteProject(customCertManager, project);
                 }
@@ -1333,7 +1335,7 @@ public class MoneyBusterServerSyncHelper {
             } else {
                 //dbHelper.deleteProject(project.getId());
             }
-            callback.onFinish(project.getRemoteId(), errorString);
+            callback.onFinish(project.getRemoteId(), errorString, usePrivateApi);
         }
     }
 

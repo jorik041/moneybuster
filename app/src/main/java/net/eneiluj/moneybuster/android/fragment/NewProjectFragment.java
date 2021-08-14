@@ -64,6 +64,7 @@ import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.persistence.MoneyBusterServerSyncHelper;
 import net.eneiluj.moneybuster.util.ICallback;
+import net.eneiluj.moneybuster.util.IProjectCreationCallback;
 import net.eneiluj.moneybuster.util.MoneyBuster;
 import net.eneiluj.moneybuster.util.SupportUtil;
 import net.eneiluj.moneybuster.util.ThemeUtils;
@@ -828,7 +829,7 @@ public class NewProjectFragment extends Fragment {
         // join or create local
         boolean todoCreate = getTodoCreate();
         if (!todoCreate || ProjectType.LOCAL.equals(type)) {
-            long pid = saveProject(null);
+            long pid = saveProject(null, false);
             // if it's local, we call that creation, otherwise we can say it's been "added"
             listener.close(pid, !ProjectType.LOCAL.equals(type));
         }
@@ -887,7 +888,7 @@ public class NewProjectFragment extends Fragment {
      *
      * @param callback Observer which is called after save/synchronization
      */
-    protected long saveProject(@Nullable ICallback callback) {
+    protected long saveProject(@Nullable ICallback callback, boolean ignorePassword) {
         ProjectType type = getProjectType();
         String remoteId = getRemoteId();
         String url = null;
@@ -896,11 +897,13 @@ public class NewProjectFragment extends Fragment {
         String name = null;
         if (!type.equals(ProjectType.LOCAL)) {
             url = getUrl();
-            password = getPassword();
+            if (ignorePassword) {
+                password = "";
+            } else {
+                password = getPassword();
+            }
             email = getEmail();
             name = getName();
-        } else {
-
         }
 
         DBProject newProject = new DBProject(
@@ -1010,17 +1013,16 @@ public class NewProjectFragment extends Fragment {
         return newProjectEmail.getText().toString();
     }
 
-    private ICallback createRemoteCallBack = new ICallback() {
+    private IProjectCreationCallback createRemoteCallBack = new IProjectCreationCallback() {
         @Override
         public void onFinish() {
         }
 
-        public void onFinish(String result, String message) {
+        public void onFinish(String result, String message, boolean usePrivateApi) {
             if (message.isEmpty()) {
-                long pid = saveProject(null);
+                long pid = saveProject(null, usePrivateApi);
                 listener.close(pid, false);
-            }
-            else {
+            } else {
                 //showToast(getString(R.string.error_create_remote_project_helper, message), Toast.LENGTH_LONG);
                 androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(
                         new ContextThemeWrapper(

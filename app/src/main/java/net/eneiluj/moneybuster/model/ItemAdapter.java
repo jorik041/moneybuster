@@ -1,10 +1,7 @@
 package net.eneiluj.moneybuster.model;
 
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.text.Html;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +29,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
 
 public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -132,65 +128,72 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final BillViewHolder nvHolder = ((BillViewHolder) holder);
             nvHolder.billSwipeable.setAlpha(1.0f);
             String whatPrefix = "";
-            if ("c".equals(bill.getPaymentMode())) {
+            // payment mode char
+            String oldPaymentMode = bill.getPaymentMode();
+            int newPaymentModeId = bill.getPaymentModeRemoteId();
+            DBPaymentMode pm = db.getPaymentMode(newPaymentModeId, bill.getProjectId());
+            if (pm != null) {
+                whatPrefix += pm.getIcon() + " ";
+            // give priority to new IDs (hardcoded pms)
+            } else if (DBBill.PAYMODE_ID_CARD == newPaymentModeId) {
                 whatPrefix += "\uD83D\uDCB3 ";
-            } else if ("b".equals(bill.getPaymentMode())) {
+            } else if (DBBill.PAYMODE_ID_CASH == newPaymentModeId) {
                 whatPrefix += "💵 ";
-            } else if ("f".equals(bill.getPaymentMode())) {
+            } else if (DBBill.PAYMODE_ID_CHECK == newPaymentModeId) {
                 whatPrefix += "🎫 ";
-            } else if ("t".equals(bill.getPaymentMode())) {
+            } else if (DBBill.PAYMODE_ID_TRANSFER == newPaymentModeId) {
                 whatPrefix += "⇄ ";
-            } else if ("o".equals(bill.getPaymentMode())) {
+            } else if (DBBill.PAYMODE_ID_ONLINE_SERVICE == newPaymentModeId) {
+                whatPrefix += "\uD83C\uDF0E ";
+            // then if no new ID check if old ID is set
+            } else if (DBBill.PAYMODE_CARD.equals(oldPaymentMode)) {
+                whatPrefix += "\uD83D\uDCB3 ";
+            } else if (DBBill.PAYMODE_CASH.equals(oldPaymentMode)) {
+                whatPrefix += "💵 ";
+            } else if (DBBill.PAYMODE_CHECK.equals(oldPaymentMode)) {
+                whatPrefix += "🎫 ";
+            } else if (DBBill.PAYMODE_TRANSFER.equals(oldPaymentMode)) {
+                whatPrefix += "⇄ ";
+            } else if (DBBill.PAYMODE_ONLINE_SERVICE.equals(oldPaymentMode)) {
                 whatPrefix += "\uD83C\uDF0E ";
             }
-            DBCategory cat = db.getCategory(bill.getCategoryRemoteId(), bill.getProjectId());
+            // category char
+            int categoryRemoteId = bill.getCategoryRemoteId();
+            DBCategory cat = db.getCategory(categoryRemoteId, bill.getProjectId());
             if (cat != null) {
-                whatPrefix += cat.getIcon()+" ";
-            }
+                whatPrefix += cat.getIcon() + " ";
             // we keep hardcoded here because of local projects
             // and because new MB + old Cospend might need it
-            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_GROCERIES) {
+            } else if (categoryRemoteId == DBBill.CATEGORY_GROCERIES) {
                 whatPrefix += "\uD83D\uDED2 ";
-            }
-            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_LEISURE) {
+            } else if (categoryRemoteId == DBBill.CATEGORY_LEISURE) {
                 whatPrefix += "\uD83C\uDF89 ";
-            }
-            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_RENT) {
+            } else if (categoryRemoteId == DBBill.CATEGORY_RENT) {
                 whatPrefix += "\uD83C\uDFE0 ";
-            }
-            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_BILLS) {
+            } else if (categoryRemoteId == DBBill.CATEGORY_BILLS) {
                 whatPrefix += "\uD83C\uDF29 ";
-            }
-            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_CULTURE) {
+            } else if (categoryRemoteId == DBBill.CATEGORY_CULTURE) {
                 whatPrefix += "\uD83D\uDEB8 ";
-            }
-            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_HEALTH) {
+            } else if (categoryRemoteId == DBBill.CATEGORY_HEALTH) {
                 whatPrefix += "\uD83D\uDC9A ";
-            }
-            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_SHOPPING) {
+            } else if (categoryRemoteId == DBBill.CATEGORY_SHOPPING) {
                 whatPrefix += "\uD83D\uDECD ";
-            }
-            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_REIMBURSEMENT) {
+            } else if (categoryRemoteId == DBBill.CATEGORY_REIMBURSEMENT) {
                 whatPrefix += "\uD83D\uDCB0 ";
-            }
-            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_RESTAURANT) {
+            } else if (categoryRemoteId == DBBill.CATEGORY_RESTAURANT) {
                 whatPrefix += "\uD83C\uDF74 ";
-            }
-            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_ACCOMODATION) {
+            } else if (categoryRemoteId == DBBill.CATEGORY_ACCOMODATION) {
                 whatPrefix += "\uD83D\uDECC ";
-            }
-            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_TRANSPORT) {
+            } else if (categoryRemoteId == DBBill.CATEGORY_TRANSPORT) {
                 whatPrefix += "\uD83D\uDE8C ";
-            }
-            else if (bill.getCategoryRemoteId() == DBBill.CATEGORY_SPORT) {
+            } else if (categoryRemoteId == DBBill.CATEGORY_SPORT) {
                 whatPrefix += "\uD83C\uDFBE ";
             }
             nvHolder.billTitle.setText(Html.fromHtml(whatPrefix + bill.getWhat()));
 
             if (selected.contains(position)) {
                 nvHolder.avatar.setImageDrawable(ContextCompat.getDrawable(db.getContext(), R.drawable.ic_check_circle_gray_24dp));
-            }
-            else {
+            } else {
                 try {
                     DBMember m = db.getMember(bill.getPayerId());
                     if (m.getAvatar() == null || m.getAvatar().equals("")) {
@@ -237,8 +240,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             if (selected.contains(position)) {
                 nvHolder.billSwipeable.setBackgroundResource(R.color.bg_highlighted);
-            }
-            else {
+            } else {
                 nvHolder.billSwipeable.setBackgroundResource(R.color.bg_normal);
             }
         }
@@ -291,8 +293,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (billPosition >= 0 && billPosition < itemList.size()) {
             if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[GETITEM " + billPosition + "/"+itemList.size()+"]"); }
             return itemList.get(billPosition);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -374,7 +375,6 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private SectionViewHolder(View view) {
             super(view);
             sectionTitle = view.findViewById(R.id.sectionTitle);
-            //ButterKnife.bind(this, view);
         }
     }
 }

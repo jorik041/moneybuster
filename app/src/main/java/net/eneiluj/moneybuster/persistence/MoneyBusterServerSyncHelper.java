@@ -772,9 +772,8 @@ public class MoneyBusterServerSyncHelper {
                         // if smartsync is disabled, we still set last sync timestamp for the sidebar indicator
                         serverSyncTimestamp = System.currentTimeMillis() / 1000;
                     }
-                }
-                // IHATEMONEY => we get all bills
-                else {
+                } else {
+                    // IHATEMONEY => we get all bills
                     remoteBills = billsResponse.getBillsIHM(project.getId(), memberRemoteIdToId);
                     serverSyncTimestamp = System.currentTimeMillis() / 1000;
                 }
@@ -797,10 +796,9 @@ public class MoneyBusterServerSyncHelper {
                         nbPulledNewBills++;
                         newBillsDialogText += "+ " + remoteBill.getWhat() + "\n";
                         Log.d(TAG, "Add local bill : " + remoteBill);
-                    }
-                    // update bill if necessary
-                    // and billOwers if necessary
-                    else {
+                    } else {
+                        // update bill if necessary
+                        // and billOwers if necessary
                         DBBill localBill = localBillsByRemoteId.get(remoteBill.getRemoteId());
                         if (hasChanged(localBill, remoteBill)) {
                             dbHelper.updateBill(
@@ -859,8 +857,7 @@ public class MoneyBusterServerSyncHelper {
                             Log.d(TAG, "Delete local bill : " + localBill);
                         }
                     }
-                }
-                else {
+                } else {
                     for (DBBill localBill : localBills) {
                         // if local bill does not exist remotely
                         if (!remoteBillsByRemoteId.containsKey(localBill.getRemoteId())) {
@@ -1384,14 +1381,14 @@ public class MoneyBusterServerSyncHelper {
     }
 
     private boolean hasChanged(DBBill localBill, DBBill remoteBill) {
-        if (
-                localBill.getPayerId() == remoteBill.getPayerId() &&
-                        localBill.getAmount() == remoteBill.getAmount() &&
-                        localBill.getTimestamp() == remoteBill.getTimestamp() &&
-                        localBill.getWhat().equals(remoteBill.getWhat()) &&
-                        localBill.getComment().equals(remoteBill.getComment()) &&
-                        localBill.getPaymentMode().equals(remoteBill.getPaymentMode()) &&
-                        localBill.getCategoryRemoteId() == remoteBill.getCategoryRemoteId()
+        if (localBill.getPayerId() == remoteBill.getPayerId() &&
+            localBill.getAmount() == remoteBill.getAmount() &&
+            localBill.getTimestamp() == remoteBill.getTimestamp() &&
+            localBill.getWhat().equals(remoteBill.getWhat()) &&
+            localBill.getComment().equals(remoteBill.getComment()) &&
+            localBill.getPaymentMode().equals(remoteBill.getPaymentMode()) &&
+            localBill.getPaymentModeRemoteId() == remoteBill.getPaymentModeRemoteId() &&
+            localBill.getCategoryRemoteId() == remoteBill.getCategoryRemoteId()
         ) {
             String localRepeat = localBill.getRepeat() == null ? DBBill.NON_REPEATED : localBill.getRepeat();
             String remoteRepeat = remoteBill.getRepeat() == null ? DBBill.NON_REPEATED : remoteBill.getRepeat();

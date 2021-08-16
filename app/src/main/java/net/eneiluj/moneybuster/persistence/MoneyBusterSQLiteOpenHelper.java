@@ -370,8 +370,8 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
             Date date;
             Date dateNow = new Date();
             while (cursor.moveToNext()) {
-                id = cursor.getLong(0);
-                dateStr = cursor.getString(1);
+                id = cursor.getLong(cursor.getColumnIndex(key_id));
+                dateStr = cursor.getString(cursor.getColumnIndex("DATE"));
                 try {
                     date = sdfDate.parse(dateStr);
                 } catch (Exception e) {
@@ -532,11 +532,12 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     @NonNull
     private DBAccountProject getAccountProjectFromCursor(@NonNull Cursor cursor) {
         // key_id, key_remoteId, key_password,  key_name, key_ncUrl
-        return new DBAccountProject(cursor.getLong(0),
-                cursor.getString(1),
-                cursor.getString(2),
-                cursor.getString(3),
-                cursor.getString(4)
+        return new DBAccountProject(
+            cursor.getLong(cursor.getColumnIndex(key_id)),
+            cursor.getString(cursor.getColumnIndex(key_remoteId)),
+            cursor.getString(cursor.getColumnIndex(key_password)),
+            cursor.getString(cursor.getColumnIndex(key_name)),
+            cursor.getString(cursor.getColumnIndex(key_ncUrl))
         );
     }
 
@@ -603,12 +604,13 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     @NonNull
     private DBPaymentMode getPaymentModeFromCursor(@NonNull Cursor cursor) {
         // key_id, key_remoteId, key_projectid, key_name,  key_icon, key_color
-        return new DBPaymentMode(cursor.getLong(0),
-                cursor.getLong(1),
-                cursor.getLong(2),
-                cursor.getString(3),
-                cursor.getString(4),
-                cursor.getString(5)
+        return new DBPaymentMode(
+            cursor.getLong(cursor.getColumnIndex(key_id)),
+            cursor.getLong(cursor.getColumnIndex(key_remoteId)),
+            cursor.getLong(cursor.getColumnIndex(key_projectid)),
+            cursor.getString(cursor.getColumnIndex(key_name)),
+            cursor.getString(cursor.getColumnIndex(key_icon)),
+            cursor.getString(cursor.getColumnIndex(key_color))
         );
     }
 
@@ -698,12 +700,13 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     @NonNull
     private DBCategory getCategoryFromCursor(@NonNull Cursor cursor) {
         // key_id, key_remoteId, key_projectid, key_name,  key_icon, key_color
-        return new DBCategory(cursor.getLong(0),
-                cursor.getLong(1),
-                cursor.getLong(2),
-                cursor.getString(3),
-                cursor.getString(4),
-                cursor.getString(5)
+        return new DBCategory(
+            cursor.getLong(cursor.getColumnIndex(key_id)),
+            cursor.getLong(cursor.getColumnIndex(key_remoteId)),
+            cursor.getLong(cursor.getColumnIndex(key_projectid)),
+            cursor.getString(cursor.getColumnIndex(key_name)),
+            cursor.getString(cursor.getColumnIndex(key_icon)),
+            cursor.getString(cursor.getColumnIndex(key_color))
         );
     }
 
@@ -791,11 +794,12 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     @NonNull
     private DBCurrency getCurrencyFromCursor(@NonNull Cursor cursor) {
         // key_id, key_remoteId, key_projectid, key_name,  key_exchangeRate
-        return new DBCurrency(cursor.getLong(0),
-                cursor.getLong(1),
-                cursor.getLong(2),
-                cursor.getString(3),
-                cursor.getDouble(4)
+        return new DBCurrency(
+            cursor.getLong(cursor.getColumnIndex(key_id)),
+            cursor.getLong(cursor.getColumnIndex(key_remoteId)),
+            cursor.getLong(cursor.getColumnIndex(key_projectid)),
+            cursor.getString(cursor.getColumnIndex(key_name)),
+            cursor.getDouble(cursor.getColumnIndex(key_exchangeRate))
         );
     }
 
@@ -905,16 +909,19 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
      */
     @NonNull
     private DBProject getProjectFromCursor(@NonNull Cursor cursor) {
-        return new DBProject(cursor.getLong(0),
-                cursor.getString(1),
-                cursor.getString(2),
-                cursor.getString(3),
-                cursor.getString(4),
-                cursor.getString(5),
-                cursor.getLong(6),
-                ProjectType.getTypeById(cursor.getString(7)),
-                cursor.getLong(8),
-                cursor.getString(9)
+        // key_id, key_remoteId, key_password,  key_name, key_ihmUrl,
+        // key_email, key_lastPayerId, key_type, key_lastSyncTimestamp, key_currencyName
+        return new DBProject(
+            cursor.getLong(cursor.getColumnIndex(key_id)),
+            cursor.getString(cursor.getColumnIndex(key_remoteId)),
+            cursor.getString(cursor.getColumnIndex(key_password)),
+            cursor.getString(cursor.getColumnIndex(key_name)),
+            cursor.getString(cursor.getColumnIndex(key_ihmUrl)),
+            cursor.getString(cursor.getColumnIndex(key_email)),
+            cursor.getLong(cursor.getColumnIndex(key_lastPayerId)),
+            ProjectType.getTypeById(cursor.getString(cursor.getColumnIndex(key_type))),
+            cursor.getLong(cursor.getColumnIndex(key_lastSyncTimestamp)),
+            cursor.getString(cursor.getColumnIndex(key_currencyName))
         );
     }
 
@@ -1196,18 +1203,18 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         // key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight, key_state
         //Log.v("Member","get dbmember "+ cursor.getString(3) + " : "+cursor.getDouble(5));
         return new DBMember(
-                cursor.getLong(0),
-                cursor.getLong(1),
-                cursor.getLong(2),
-                cursor.getString(3),
-                cursor.getInt(4) == 1,
-                cursor.getDouble(5),
-                cursor.getInt(6),
-                cursor.isNull(7) ? null : cursor.getInt(7),
-                cursor.isNull(8) ? null : cursor.getInt(8),
-                cursor.isNull(9) ? null : cursor.getInt(9),
-                cursor.isNull(10) ? null : cursor.getString(10),
-                cursor.isNull(11) ? null : cursor.getString(11)
+            cursor.getLong(cursor.getColumnIndex(key_id)),
+            cursor.getLong(cursor.getColumnIndex(key_remoteId)),
+            cursor.getLong(cursor.getColumnIndex(key_projectid)),
+            cursor.getString(cursor.getColumnIndex(key_name)),
+            cursor.getInt(cursor.getColumnIndex(key_activated)) == 1,
+            cursor.getDouble(cursor.getColumnIndex(key_weight)),
+            cursor.getInt(cursor.getColumnIndex(key_state)),
+            cursor.isNull(cursor.getColumnIndex(key_r)) ? null : cursor.getInt(cursor.getColumnIndex(key_r)),
+            cursor.isNull(cursor.getColumnIndex(key_g)) ? null : cursor.getInt(cursor.getColumnIndex(key_g)),
+            cursor.isNull(cursor.getColumnIndex(key_b)) ? null : cursor.getInt(cursor.getColumnIndex(key_b)),
+            cursor.isNull(cursor.getColumnIndex(key_nc_userid)) ? null : cursor.getString(cursor.getColumnIndex(key_nc_userid)),
+            cursor.isNull(cursor.getColumnIndex(key_avatar)) ? null : cursor.getString(cursor.getColumnIndex(key_avatar))
         );
     }
 
@@ -1537,19 +1544,19 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         // key_id, key_remoteId, key_projectid, key_payer_id, key_amount, key_date, key_what, key_state, key_repeat
         // key_payment_mode, key_category_id, key_comment, key_payment_mode_id
         return new DBBill(
-                cursor.getLong(0),
-                cursor.getLong(1),
-                cursor.getLong(2),
-                cursor.getLong(3),
-                cursor.getDouble(4),
-                cursor.getLong(5),
-                cursor.getString(6),
-                cursor.getInt(7),
-                cursor.getString(8),
-                cursor.getString(9),
-                cursor.getInt(10),
-                cursor.getString(11),
-                cursor.getInt(12)
+                cursor.getLong(cursor.getColumnIndex(key_id)),
+                cursor.getLong(cursor.getColumnIndex(key_remoteId)),
+                cursor.getLong(cursor.getColumnIndex(key_projectid)),
+                cursor.getLong(cursor.getColumnIndex(key_payer_id)),
+                cursor.getDouble(cursor.getColumnIndex(key_amount)),
+                cursor.getLong(cursor.getColumnIndex(key_timestamp)),
+                cursor.getString(cursor.getColumnIndex(key_what)),
+                cursor.getInt(cursor.getColumnIndex(key_state)),
+                cursor.getString(cursor.getColumnIndex(key_repeat)),
+                cursor.getString(cursor.getColumnIndex(key_payment_mode)),
+                cursor.getInt(cursor.getColumnIndex(key_category_id)),
+                cursor.getString(cursor.getColumnIndex(key_comment)),
+                cursor.getInt(cursor.getColumnIndex(key_payment_mode_id))
         );
     }
 
@@ -1613,9 +1620,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     private DBBillOwer getBillOwerFromCursor(@NonNull Cursor cursor) {
         // key_id, key_billId, key_member_id, key_member_remoteId
         return new DBBillOwer(
-                cursor.getLong(0),
-                cursor.getLong(1),
-                cursor.getLong(2)
+            cursor.getLong(cursor.getColumnIndex(key_id)),
+            cursor.getLong(cursor.getColumnIndex(key_billId)),
+            cursor.getLong(cursor.getColumnIndex(key_member_id))
         );
     }
 

@@ -302,8 +302,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                             null
                     );
                     listener.closeOnEdit(project.getId());
-                }
-                else {
+                } else {
                     // edit remote project if necessary
                     String newPwd = getNewPassword();
                     if (newPwd == null || newPwd.equals("")) {
@@ -356,8 +355,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
             /*case R.id.menu_save:
                 if (!SupportUtil.isValidEmail(getEmail())) {
                     showToast(getString(R.string.error_invalid_email), Toast.LENGTH_LONG);
-                }
-                else {
+                } else {
                     //saveProject(null);
                     db.getMoneyBusterServerSyncHelper().editRemoteProject(project.getId(), getName(), getEmail(), getPassword(), editCallBack);
                 }
@@ -436,8 +434,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
         public void onFinish(String result, String message) {
             if (message.isEmpty()) {
                 listener.closeOnEdit(project.getId());
-            }
-            else {
+            } else {
                 showToast(getString(R.string.error_edit_remote_project_helper, message), Toast.LENGTH_LONG);
                 saveButton.clearAnimation();
             }
@@ -456,8 +453,7 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
         public void onFinish(String result, String message) {
             if (message.isEmpty()) {
                 listener.closeOnDelete(Long.valueOf(result));
-            }
-            else {
+            } else {
                 showToast(getString(R.string.error_edit_remote_project_helper, message), Toast.LENGTH_LONG);
                 saveButton.clearAnimation();
             }

@@ -215,8 +215,7 @@ public class NewProjectFragment extends Fragment {
                     whatTodoCreate.setChecked(false);
                     showHideInputFields(true);
                     showHideValidationButtons();
-                }
-                else {
+                } else {
                     whatTodoJoin.setChecked(true);
                 }
             }
@@ -229,8 +228,7 @@ public class NewProjectFragment extends Fragment {
                     whatTodoJoin.setChecked(false);
                     showHideInputFields(true);
                     showHideValidationButtons();
-                }
-                else {
+                } else {
                     whatTodoCreate.setChecked(true);
                 }
             }
@@ -245,8 +243,7 @@ public class NewProjectFragment extends Fragment {
                     whereIhm.setChecked(false);
                     showHideInputFields(true);
                     showHideValidationButtons();
-                }
-                else {
+                } else {
                     whereLocal.setChecked(true);
                 }
             }
@@ -260,8 +257,7 @@ public class NewProjectFragment extends Fragment {
                     whereLocal.setChecked(false);
                     showHideInputFields(true);
                     showHideValidationButtons();
-                }
-                else {
+                } else {
                     whereIhm.setChecked(true);
                 }
             }
@@ -275,8 +271,7 @@ public class NewProjectFragment extends Fragment {
                     whereIhm.setChecked(false);
                     showHideInputFields(true);
                     showHideValidationButtons();
-                }
-                else {
+                } else {
                     whereCospend.setChecked(true);
                 }
             }
@@ -351,8 +346,7 @@ public class NewProjectFragment extends Fragment {
 
                     AlertDialog selectDialog = selectBuilder.create();
                     selectDialog.show();
-                }
-                else {
+                } else {
                     showToast(getString(R.string.choose_account_project_dialog_impossible), Toast.LENGTH_LONG);
                 }
             }
@@ -434,8 +428,7 @@ public class NewProjectFragment extends Fragment {
     private void showHideValidationButtons() {
         if (isFormValid()) {
             fabOk.show();
-        }
-        else {
+        } else {
             fabOk.hide();
         }
     }
@@ -455,8 +448,7 @@ public class NewProjectFragment extends Fragment {
         if (projectId.equals("")) {
             newProjectIdInputLayout.setBackgroundColor(0x55FF0000);
             valid = false;
-        }
-        else {
+        } else {
             newProjectIdInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
         }
 
@@ -465,15 +457,13 @@ public class NewProjectFragment extends Fragment {
             if (projectUrl.equals("") || !isValidUrl(projectUrl)) {
                 newProjectUrlInputLayout.setBackgroundColor(0x55FF0000);
                 valid = false;
-            }
-            else {
+            } else {
                 newProjectUrlInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
             }
             if (projectPassword.equals("")) {
                 newProjectPasswordInputLayout.setBackgroundColor(0x55FF0000);
                 valid = false;
-            }
-            else {
+            } else {
                 newProjectPasswordInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
             }
         }
@@ -484,21 +474,18 @@ public class NewProjectFragment extends Fragment {
                 if (projectName.equals("")) {
                     newProjectNameInputLayout.setBackgroundColor(0x55FF0000);
                     valid = false;
-                }
-                else {
+                } else {
                     newProjectNameInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
                 }
                 if (!SupportUtil.isValidEmail(projectEmail)) {
                     newProjectEmailInputLayout.setBackgroundColor(0x55FF0000);
                     valid = false;
-                }
-                else {
+                } else {
                     newProjectEmailInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
                 }
             }
-        }
-        // join
-        else {
+        } else {
+            // join
             if (type.equals(ProjectType.LOCAL)) {
                 valid = false;
             }
@@ -533,8 +520,7 @@ public class NewProjectFragment extends Fragment {
             whatTodoJoin.setTypeface(Typeface.DEFAULT);
             whatTodoCreate.setTextSize(12);
             whatTodoJoin.setTextSize(10);
-        }
-        else {
+        } else {
             whatTodoCreate.setTypeface(Typeface.DEFAULT);
             whatTodoJoin.setTypeface(Typeface.DEFAULT_BOLD);
             whatTodoCreate.setTextSize(10);
@@ -561,8 +547,7 @@ public class NewProjectFragment extends Fragment {
             nextcloudButton.setVisibility(View.GONE);
             nextcloudCreateButton.setVisibility(View.GONE);
             importButton.setVisibility(View.VISIBLE);
-        }
-        else if (type.equals(ProjectType.IHATEMONEY)) {
+        } else if (type.equals(ProjectType.IHATEMONEY)) {
             whereLocal.setTextSize(10);
             whereIhm.setTextSize(12);
             whereCospend.setTextSize(10);
@@ -583,8 +568,7 @@ public class NewProjectFragment extends Fragment {
             nextcloudButton.setVisibility(View.GONE);
             nextcloudCreateButton.setVisibility(View.GONE);
             importButton.setVisibility(View.GONE);
-        }
-        else if (type.equals(ProjectType.COSPEND)) {
+        } else if (type.equals(ProjectType.COSPEND)) {
             whereLocal.setTextSize(10);
             whereIhm.setTextSize(10);
             whereCospend.setTextSize(12);
@@ -725,8 +709,7 @@ public class NewProjectFragment extends Fragment {
             if (data.getPath().endsWith("/")) {
                 password = "";
                 pid = data.getLastPathSegment();
-            }
-            else {
+            } else {
                 password = data.getLastPathSegment();
                 pid = data.getPathSegments().get(data.getPathSegments().size() - 2);
             }
@@ -744,8 +727,7 @@ public class NewProjectFragment extends Fragment {
             if (data.getPath().endsWith("/")) {
                 password = "";
                 pid = data.getLastPathSegment();
-            }
-            else {
+            } else {
                 password = data.getLastPathSegment();
                 pid = data.getPathSegments().get(data.getPathSegments().size() - 2);
             }
@@ -833,10 +815,9 @@ public class NewProjectFragment extends Fragment {
             long pid = saveProject(null, false);
             // if it's local, we call that creation, otherwise we can say it's been "added"
             listener.close(pid, !ProjectType.LOCAL.equals(type));
-        }
-        // create remote project (we know the type is not local)
-        // the callback will quit this activity
-        else {
+        } else {
+            // create remote project (we know the type is not local)
+            // the callback will quit this activity
             String name = getName();
             if (name == null || name.equals("")) {
                 //showToast(getString(R.string.error_invalid_project_name), Toast.LENGTH_LONG);
@@ -939,13 +920,11 @@ public class NewProjectFragment extends Fragment {
                 whereLocal.setChecked(false);
                 whereIhm.setChecked(false);
                 whereCospend.setChecked(true);
-            }
-            else if (defaultTypeId.equals(ProjectType.IHATEMONEY.getId())) {
+            } else if (defaultTypeId.equals(ProjectType.IHATEMONEY.getId())) {
                 whereLocal.setChecked(false);
                 whereIhm.setChecked(true);
                 whereCospend.setChecked(false);
-            }
-            else if (defaultTypeId.equals(ProjectType.LOCAL.getId())) {
+            } else if (defaultTypeId.equals(ProjectType.LOCAL.getId())) {
                 whereLocal.setChecked(true);
                 whereIhm.setChecked(false);
                 whereCospend.setChecked(false);
@@ -974,11 +953,9 @@ public class NewProjectFragment extends Fragment {
     protected ProjectType getProjectType() {
         if (whereLocal.isChecked()) {
             return ProjectType.LOCAL;
-        }
-        else if (whereIhm.isChecked()) {
+        } else if (whereIhm.isChecked()) {
             return ProjectType.IHATEMONEY;
-        }
-        else {
+        } else {
             return ProjectType.COSPEND;
         }
     }

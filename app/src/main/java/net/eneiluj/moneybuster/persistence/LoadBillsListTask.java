@@ -53,8 +53,7 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
 
         if (projectId != 0) {
             billList = db.searchBills(searchQuery, projectId);
-        }
-        else {
+        } else {
             billList = new ArrayList<>();
         }
 

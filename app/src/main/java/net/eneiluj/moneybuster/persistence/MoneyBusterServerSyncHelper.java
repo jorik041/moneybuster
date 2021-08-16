@@ -370,9 +370,8 @@ public class MoneyBusterServerSyncHelper {
                                 remoteMember.getG(), remoteMember.getB(),
                                 remoteMember.getNcUserId(), ""
                         );
-                    }
-                    // it does not exist, create it remotely
-                    else {
+                    } else {
+                        // it does not exist, create it remotely
                         ServerResponse.CreateRemoteMemberResponse createRemoteMemberResponse = client.createRemoteMember(customCertManager, project, mToAdd);
                         long newRemoteId = Long.valueOf(createRemoteMemberResponse.getStringContent());
                         if (newRemoteId > 0) {
@@ -552,9 +551,8 @@ public class MoneyBusterServerSyncHelper {
                     if (localPaymentMode == null) {
                         Log.d(getClass().getSimpleName(), "Add local pm : " + pm);
                         dbHelper.addPaymentMode(pm);
-                    }
-                    // pm exists, check if needs update
-                    else {
+                    } else {
+                        // pm exists, check if needs update
                         if (pm.getName().equals(localPaymentMode.getName()) &&
                                 pm.getColor().equals(localPaymentMode.getColor()) &&
                                 pm.getIcon().equals(localPaymentMode.getIcon())
@@ -594,9 +592,8 @@ public class MoneyBusterServerSyncHelper {
                     if (localCategory == null) {
                         Log.d(getClass().getSimpleName(), "Add local category : " + c);
                         dbHelper.addCategory(c);
-                    }
-                    // category exists, check if needs update
-                    else {
+                    } else {
+                        // category exists, check if needs update
                         if (c.getName().equals(localCategory.getName()) &&
                                 c.getColor().equals(localCategory.getColor()) &&
                                 c.getIcon().equals(localCategory.getIcon())
@@ -636,9 +633,8 @@ public class MoneyBusterServerSyncHelper {
                     if (localCurrency == null) {
                         Log.d(getClass().getSimpleName(), "Add local currency : " + c);
                         dbHelper.addCurrency(c);
-                    }
-                    // currency exists, check if needs update
-                    else {
+                    } else {
+                        // currency exists, check if needs update
                         if (c.getName().equals(localCurrency.getName()) &&
                                 c.getExchangeRate() == localCurrency.getExchangeRate()
                         ) {
@@ -680,9 +676,8 @@ public class MoneyBusterServerSyncHelper {
                         if (m.getNcUserId() != null && !"".equals(m.getNcUserId())) {
                             updateMemberAvatar(mid);
                         }
-                    }
-                    // member exists, check if needs update
-                    else {
+                    } else {
+                        // member exists, check if needs update
                         boolean ncUserIdChanged = (
                                 (m.getNcUserId() == null && localMember.getNcUserId() != null) ||
                                 (m.getNcUserId() != null && localMember.getNcUserId() == null) ||
@@ -1053,8 +1048,7 @@ public class MoneyBusterServerSyncHelper {
             catch (NoCurrentAccountSelectedException e) {
                 return null;
             }
-        }
-        else {
+        } else {
             url = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS);
             username = preferences.getString(SettingsActivity.SETTINGS_USERNAME, SettingsActivity.DEFAULT_SETTINGS);
             password = preferences.getString(SettingsActivity.SETTINGS_PASSWORD, SettingsActivity.DEFAULT_SETTINGS);
@@ -1460,8 +1454,7 @@ public class MoneyBusterServerSyncHelper {
             catch (NoCurrentAccountSelectedException e) {
                 return null;
             }
-        }
-        else {
+        } else {
             url = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS);
             username = preferences.getString(SettingsActivity.SETTINGS_USERNAME, SettingsActivity.DEFAULT_SETTINGS);
             password = preferences.getString(SettingsActivity.SETTINGS_PASSWORD, SettingsActivity.DEFAULT_SETTINGS);
@@ -1492,8 +1485,7 @@ public class MoneyBusterServerSyncHelper {
 
             if (client != null) {
                 status = pullRemoteProjects();
-            }
-            else {
+            } else {
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
             }
             Log.i(getClass().getSimpleName(), "SYNCHRONIZATION FINISHED");
@@ -1606,8 +1598,7 @@ public class MoneyBusterServerSyncHelper {
                     Intent intent2 = new Intent(BillsListViewActivity.BROADCAST_SSO_TOKEN_MISMATCH);
                     appContext.sendBroadcast(intent2);
                 }
-            }
-            else {
+            } else {
                 Intent intent = new Intent(BillsListViewActivity.BROADCAST_ACCOUNT_PROJECTS_SYNCED);
                 appContext.sendBroadcast(intent);
             }
@@ -1644,8 +1635,7 @@ public class MoneyBusterServerSyncHelper {
 
             if (client != null) {
                 status = getNextcloudColor();
-            }
-            else {
+            } else {
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
             }
 
@@ -1741,8 +1731,7 @@ public class MoneyBusterServerSyncHelper {
 
             if (client != null) {
                 status = getNextcloudUserAvatar();
-            }
-            else {
+            } else {
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
             }
             return status;
@@ -1835,8 +1824,7 @@ public class MoneyBusterServerSyncHelper {
 
             if (client != null) {
                 status = getNextcloudUserAvatar();
-            }
-            else {
+            } else {
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
             }
             return status;

@@ -178,8 +178,7 @@ public class ServerResponse {
         public List<DBBill> getBillsCospend(long projId, Map<Long, Long> memberRemoteIdToId) throws JSONException {
             if (smartSync) {
                 return getBillsFromJSONObject(new JSONObject(getContent()), projId, memberRemoteIdToId);
-            }
-            else {
+            } else {
                 return getBillsFromJSONArray(new JSONArray(getContent()), projId, memberRemoteIdToId);
             }
         }
@@ -437,8 +436,7 @@ public class ServerResponse {
                     g = Integer.parseInt(color.substring(2,4), 16);
                     b = Integer.parseInt(color.substring(4,6), 16);
                 }
-            }
-            else if (obj instanceof JSONObject) {
+            } else if (obj instanceof JSONObject) {
                 JSONObject color = json.getJSONObject("color");
                 if (color.has("r") && !color.isNull("r")) {
                     r = color.getInt("r");

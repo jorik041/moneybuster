@@ -104,8 +104,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                 Boolean useServerColor = (Boolean) newValue;
                 if (useServerColor) {
                     findPreference(getString(R.string.pref_key_color)).setVisible(false);
-                }
-                else {
+                } else {
                     findPreference(getString(R.string.pref_key_color)).setVisible(true);
                 }
                 if (getActivity() != null) {
@@ -173,8 +172,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                 if (newInterval > 1440 || newInterval < 5) {
                     showToast(getString(R.string.error_invalid_sync_interval), Toast.LENGTH_LONG);
                     return false;
-                }
-                else {
+                } else {
                     preference.setSummary((CharSequence) newValue);
                     Intent intent = new Intent(getContext(), SyncService.class);
                     intent.putExtra(CHANGE_SYNC_INTERVAL, newInterval);
@@ -213,8 +211,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                             getContext().startForegroundService(intent);
                         }
                     }
-                }
-                else {
+                } else {
                     syncIntervalPref.setVisible(false);
                     notifyNewPref.setVisible(false);
                     notifyUpdatedPref.setVisible(false);

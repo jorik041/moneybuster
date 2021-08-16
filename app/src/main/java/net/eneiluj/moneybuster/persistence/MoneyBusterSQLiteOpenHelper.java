@@ -177,10 +177,11 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     public static MoneyBusterSQLiteOpenHelper getInstance(Context context) {
-        if (instance == null)
+        if (instance == null) {
             return instance = new MoneyBusterSQLiteOpenHelper(context.getApplicationContext());
-        else
+        } else {
             return instance;
+        }
     }
 
     public MoneyBusterServerSyncHelper getMoneyBusterServerSyncHelper() {

@@ -258,8 +258,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         /*if (!projectType.equals(ProjectType.IHATEMONEY)) {
             billTime.setText(bill.getTime());
-        }
-        else {*/
+        } else {*/
             billTime.setText("");
         //}
     }

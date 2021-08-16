@@ -66,8 +66,7 @@ public class CospendClient {
         if (nextcloudAPI != null) {
             Log.d(getClass().getSimpleName(), "using SSO to get account projects");
             return new ServerResponse.AccountProjectsResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_POST, null));
-        }
-        else {
+        } else {
             return new ServerResponse.AccountProjectsResponse(requestServer(ccm, target, METHOD_POST, null, "", true, false));
         }
     }
@@ -78,8 +77,7 @@ public class CospendClient {
             Log.d(getClass().getSimpleName(), "using SSO to get color");
             //return new ServerResponse.SessionsResponse(new ResponseData("[]", lastETag, lastModified));
             return new ServerResponse.CapabilitiesResponse(requestServerWithSSO(nextcloudAPI, target, METHOD_GET, null));
-        }
-        else {
+        } else {
             return new ServerResponse.CapabilitiesResponse(requestServer(ccm, target, METHOD_GET, null, null, true, true));
         }
     }
@@ -94,8 +92,7 @@ public class CospendClient {
             Log.d(getClass().getSimpleName(), "using SSO to get avatar");
             //return new ServerResponse.SessionsResponse(new ResponseData("[]", lastETag, lastModified));
             return new ServerResponse.AvatarResponse(imageRequestServerWithSSO(nextcloudAPI, target, METHOD_GET, null));
-        }
-        else {
+        } else {
             return new ServerResponse.AvatarResponse(imageRequestServer(ccm, target, METHOD_GET, null, null, true, false));
         }
     }

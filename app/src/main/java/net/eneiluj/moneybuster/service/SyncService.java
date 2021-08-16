@@ -151,16 +151,14 @@ public class SyncService extends Service {
             if (stopService) {
                 Log.d(TAG, "[stop sync service]");
                 stopSelf();
-            }
-            else if (newInterval != 0) {
+            } else if (newInterval != 0) {
                 intervalMinutes = newInterval;
                 requestSync();
                 updateNotificationContent();
                 mSyncWorker.stop();
                 mSyncWorker.setInterval(intervalMinutes * 60);
                 mSyncWorker.startSyncLoop();
-            }
-            else {
+            } else {
                 if (firstRun) {
                     Log.d(TAG, "[start sync service => loop]");
                     mSyncWorker.startSyncLoop();

@@ -458,8 +458,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         if (!db.getMoneyBusterServerSyncHelper().isSyncPossible()) {
             swipeRefreshLayout.setEnabled(false);
-        }
-        else {
+        } else {
             swipeRefreshLayout.setEnabled(true);
             db.getMoneyBusterServerSyncHelper().addCallbackPull(syncCallBack);
             if (DEBUG) {
@@ -639,8 +638,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 Log.d(TAG, "[3 DOTS clicked]");
                 if (fabMenuDrawerEdit.isOpened()) {
                     fabMenuDrawerEdit.close(true);
-                }
-                else {
+                } else {
                     fabMenuDrawerEdit.open(true);
                 }
             }
@@ -673,8 +671,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 if (selectedProjectId != 0) {
                     if (db.getActivatedMembersOfProject(selectedProjectId).size() < 1) {
                         showToast(getString(R.string.add_bill_impossible_no_member));
-                    }
-                    else {
+                    } else {
                         createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, selectedProjectId);
                         createIntent.putExtra(EditBillActivity.PARAM_PROJECT_TYPE, db.getProject(selectedProjectId).getType().getId());
                         startActivityForResult(createIntent, create_bill_cmd);
@@ -730,8 +727,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                 PERMISSION_WRITE
                         );
-                    }
-                    else {
+                    } else {
                         exportCurrentProject();
                     }
                 }
@@ -781,8 +777,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     String projectName;
                     if (proj.getName() == null) {
                         projectName = proj.getRemoteId();
-                    }
-                    else {
+                    } else {
                         projectName = proj.getName();
                     }
 
@@ -952,8 +947,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             }
 
                         });
-                    }
-                    else {
+                    } else {
                         LinearLayout statsCategoryLayout = tView.findViewById(R.id.statsCategoryLayout);
                         statsCategoryLayout.setVisibility(GONE);
                         LinearLayout statsPaymentModeLayout = tView.findViewById(R.id.statsPaymentModeLayout);
@@ -1129,8 +1123,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     String projectName;
                     if (proj.getName() == null) {
                         projectName = proj.getRemoteId();
-                    }
-                    else {
+                    } else {
                         projectName = proj.getName();
                     }
                     final View tView = LayoutInflater.from(view.getContext()).inflate(R.layout.settle_table, null);
@@ -1297,8 +1290,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     if (proj.getServerUrl().contains("index.php/apps/cospend")) {
                         protocol = "cospend";
                         publicWebUrl = proj.getServerUrl() + "/loginproject/" + proj.getRemoteId();
-                    }
-                    else {
+                    } else {
                         protocol = "ihatemoney";
                         publicWebUrl = proj.getServerUrl() + "/" + proj.getRemoteId();
                     }
@@ -1445,8 +1437,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             fabAddBill.hide();
             fabMenuDrawerEdit.setVisibility(GONE);
             //fabBillListAddProject.show();
-        }
-        else {
+        } else {
             fabAddBill.show();
             fabMenuDrawerEdit.setVisibility(VISIBLE);
             //fabBillListAddProject.hide();
@@ -1502,8 +1493,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                 fabMenuDrawerEdit.close(false);
                 drawerLayout.closeDrawers();
-            }
-            else {
+            } else {
                 showToast(getString(R.string.edit_project_local_impossible));
             }
         }
@@ -1705,8 +1695,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             if (paymentMode.equals(DBBill.PAYMODE_NONE)) {
                 paymentMode = null;
             }
-        }
-        else {
+        } else {
             categoryId = 0;
             paymentMode = null;
         }
@@ -1771,8 +1760,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             if (rpaid == 0.0) {
                 pv.setText("--");
                 statsText += "-- | ";
-            }
-            else {
+            } else {
                 pv.setText(numberFormatter.format(rpaid));
                 statsText += numberFormatter.format(rpaid) + " | ";
             }
@@ -1783,8 +1771,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             if (rspent == 0.0) {
                 sv.setText("--");
                 statsText += "-- | ";
-            }
-            else {
+            } else {
                 sv.setText(numberFormatter.format(rspent));
                 statsText += numberFormatter.format(rspent) + " | ";
             }
@@ -1797,12 +1784,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             if (balance > 0) {
                 bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.green));
                 sign = "+";
-            }
-            else if (balance < 0) {
+            } else if (balance < 0) {
                 bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.red));
                 sign = "-";
-            }
-            else {
+            } else {
                 bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
             }
             bv.setText(sign + numberFormatter.format(rbalance));
@@ -1964,8 +1949,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     Log.d(TAG, "[permission WRITE result] "+grantResults[0]);
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         exportCurrentProject();
-                    }
-                    else {
+                    } else {
                         showToast(getString(R.string.write_permission_refused));
                     }
                 }
@@ -2083,9 +2067,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             //+ "@local";
             icon = R.drawable.ic_phone_android_grey_24dp;
             fabManageProject.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_phone_android_white_24dp));
-        }
-        // remote project
-        else {
+        } else {
+            // remote project
             selText = (proj.getName() == null) ? "???" : proj.getName();
             //selText += "";
             /*selText = proj.getRemoteId() + "@";
@@ -2148,8 +2131,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         int color;
         if (r != null && g != null && b != null) {
             color = Color.rgb(memberToEdit.getR(), memberToEdit.getG(), memberToEdit.getB());
-        }
-        else {
+        } else {
             color = TextDrawable.getColorFromName(memberToEdit.getName());
         }
 
@@ -2431,8 +2413,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 if (item.id.equals("project") || item.id.equals("projects")) {
                     if (db.getProjects().size() > 0) {
                         showProjectSelectionDialog();
-                    }
-                    else {
+                    } else {
                         addProject();
                         drawerLayout.closeDrawers();
                     }
@@ -2520,8 +2501,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                         if (originalState == DBBill.STATE_ADDED) {
                             db.deleteBill(dbBill.getId());
-                        }
-                        else {
+                        } else {
                             db.setBillState(dbBill.getId(), DBBill.STATE_DELETED);
                         }
                         adapter.remove(dbBill);
@@ -2535,8 +2515,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                     public void onClick(View v) {
                                         if (originalState == DBBill.STATE_ADDED) {
                                             db.addBill(dbBill);
-                                        }
-                                        else {
+                                        } else {
                                             db.setBillState(dbBill.getId(), originalState);
                                         }
                                         refreshLists();
@@ -2615,8 +2594,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 projId = proj.getId();
                 if (proj.isLocal()) {
                     projName = proj.getRemoteId();
-                }
-                else {
+                } else {
                     projName = (proj.getName() == null) ? "???" : proj.getName();
                 }
             }
@@ -2630,8 +2608,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             } else {
                 subtitle = projName + " - " + getString(R.string.label_all_bills);
             }
-        }
-        else {
+        } else {
             subtitle = getString(R.string.app_name);
         }
         // to display correct name on project selector when project was just added
@@ -2978,12 +2955,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     }
                     db.getMoneyBusterServerSyncHelper().addCallbackPull(syncCallBack);
                     db.getMoneyBusterServerSyncHelper().scheduleSync(false, selectedProjectId);
-                }
-                else {
+                } else {
                     swipeRefreshLayout.setRefreshing(false);
                 }
-            }
-            else {
+            } else {
                 swipeRefreshLayout.setRefreshing(false);
             }
             // then sync the nextcloud account projects
@@ -3030,8 +3005,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                         if (originalState == DBBill.STATE_ADDED) {
                             db.deleteBill(dbBill.getId());
-                        }
-                        else {
+                        } else {
                             db.setBillState(dbBill.getId(), DBBill.STATE_DELETED);
                         }
                     }
@@ -3236,8 +3210,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         refreshLists();
                         if (!db.getMoneyBusterServerSyncHelper().isSyncPossible()) {
                             swipeRefreshLayout.setEnabled(false);
-                        }
-                        else {
+                        } else {
                             swipeRefreshLayout.setEnabled(true);
                             db.getMoneyBusterServerSyncHelper().addCallbackPull(syncCallBack);
                             boolean offlineMode2 = prefs.getBoolean(getString(R.string.pref_key_offline_mode), false);

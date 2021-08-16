@@ -324,8 +324,7 @@ public class EditBillFragment extends Fragment {
 
                     AlertDialog selectDialog = selectBuilder.create();
                     selectDialog.show();
-                }
-                else {
+                } else {
                     showToast(getString(R.string.no_currency_error), Toast.LENGTH_LONG);
                 }
                 // conv method converts, potentially clean "what" and adds an indication about original currency

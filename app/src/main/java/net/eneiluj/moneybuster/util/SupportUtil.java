@@ -266,8 +266,7 @@ public class SupportUtil {
 
             if (round2(balance) > 0.0) {
                 crediters.add(new CreditDebt(memberId, balance));
-            }
-            else if (round2(balance) < 0.0) {
+            } else if (round2(balance) < 0.0) {
                 debiters.add(new CreditDebt(memberId, balance));
             }
         }
@@ -290,8 +289,7 @@ public class SupportUtil {
             {
                 if (cd1.getBalance() == cd2.getBalance()) {
                     return 0;
-                }
-                else {
+                } else {
                     return (cd1.getBalance() < cd2.getBalance()) ? 1 : -1;
                 }
             }
@@ -306,8 +304,7 @@ public class SupportUtil {
             {
                 if (cd1.getBalance() == cd2.getBalance()) {
                     return 0;
-                }
-                else {
+                } else {
                     return (cd1.getBalance() > cd2.getBalance()) ? 1 : -1;
                 }
             }
@@ -324,8 +321,7 @@ public class SupportUtil {
         double amount;
         if (Math.abs(debiterBalance) > Math.abs(crediterBalance)) {
             amount = Math.abs(crediterBalance);
-        }
-        else {
+        } else {
             amount = Math.abs(debiterBalance);
         }
 
@@ -340,8 +336,7 @@ public class SupportUtil {
                 {
                     if (cd1.getBalance() == cd2.getBalance()) {
                         return 0;
-                    }
-                    else {
+                    } else {
                         return (cd1.getBalance() > cd2.getBalance()) ? 1 : -1;
                     }
                 }
@@ -357,8 +352,7 @@ public class SupportUtil {
                 {
                     if (cd1.getBalance() == cd2.getBalance()) {
                         return 0;
-                    }
-                    else {
+                    } else {
                         return (cd1.getBalance() < cd2.getBalance()) ? 1 : -1;
                     }
                 }

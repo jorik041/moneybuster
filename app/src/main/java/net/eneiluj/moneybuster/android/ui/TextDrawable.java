@@ -103,8 +103,7 @@ public class TextDrawable extends Drawable {
         mTextPaint = new Paint();
         if ((r + g + b) / 3 < 220) {
             mTextPaint.setColor(Color.WHITE);
-        }
-        else {
+        } else {
             mTextPaint.setColor(Color.BLACK);
         }
         mTextPaint.setTextSize(radius);
@@ -134,8 +133,7 @@ public class TextDrawable extends Drawable {
         if (r != null && g != null && b != null) {
             return new TextDrawable(name.substring(0, 1).toUpperCase(Locale.getDefault()), r, g, b,
                     radiusInDp, disabled);
-        }
-        else {
+        } else {
             int[] hsl = calculateHSL(name);
             int[] rgb = HSLtoRGB(hsl[0], hsl[1], hsl[2], 1);
 

@@ -1,7 +1,5 @@
 package net.eneiluj.moneybuster.persistence;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,7 +11,6 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
@@ -60,6 +57,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import at.bitfire.cert4android.CustomCertManager;
 import at.bitfire.cert4android.CustomCertService;
@@ -84,7 +82,7 @@ public class MoneyBusterServerSyncHelper {
 
     private static int NOTIFICATION_ID = 1526756699;
 
-    private SharedPreferences preferences;
+    private final SharedPreferences preferences;
 
     private static MoneyBusterServerSyncHelper instance;
 
@@ -118,7 +116,7 @@ public class MoneyBusterServerSyncHelper {
             iCustomCertService = ICustomCertService.Stub.asInterface(iBinder);
             cert4androidReady = true;
             if (isSyncPossible()) {
-                Long lastId = PreferenceManager.getDefaultSharedPreferences(dbHelper.getContext()).getLong("selected_project", 0);
+                long lastId = PreferenceManager.getDefaultSharedPreferences(dbHelper.getContext()).getLong("selected_project", 0);
                 if (lastId != 0) {
                     DBProject proj = dbHelper.getProject(lastId);
                     if (proj != null) {
@@ -141,7 +139,7 @@ public class MoneyBusterServerSyncHelper {
 
     // current state of the synchronization
     private boolean syncActive = false;
-    private static List<Long> projectIdsToSync = new ArrayList<>();
+    private static final List<Long> projectIdsToSync = new ArrayList<>();
 
     // current state of the account projects synchronization
     private boolean syncAccountProjectsActive = false;
@@ -298,7 +296,7 @@ public class MoneyBusterServerSyncHelper {
      */
     private class SyncTask extends AsyncTask<Void, Void, LoginStatus> {
         private final boolean onlyLocalChanges;
-        private DBProject project;
+        private final DBProject project;
         private final List<ICallback> callbacks = new ArrayList<>();
         private VersatileProjectSyncClient client;
         private List<Throwable> exceptions = new ArrayList<>();
@@ -373,7 +371,7 @@ public class MoneyBusterServerSyncHelper {
                     } else {
                         // it does not exist, create it remotely
                         ServerResponse.CreateRemoteMemberResponse createRemoteMemberResponse = client.createRemoteMember(customCertManager, project, mToAdd);
-                        long newRemoteId = Long.valueOf(createRemoteMemberResponse.getStringContent());
+                        long newRemoteId = Long.parseLong(createRemoteMemberResponse.getStringContent());
                         if (newRemoteId > 0) {
                             dbHelper.updateMember(
                                 mToAdd.getId(), null,
@@ -465,7 +463,7 @@ public class MoneyBusterServerSyncHelper {
                 List<DBBill> toAdd = dbHelper.getBillsOfProjectWithState(project.getId(), DBBill.STATE_ADDED);
                 for (DBBill bToAdd : toAdd) {
                     ServerResponse.CreateRemoteBillResponse createRemoteBillResponse = client.createRemoteBill(customCertManager, project, bToAdd, memberIdToRemoteId);
-                    long newRemoteId = Long.valueOf(createRemoteBillResponse.getStringContent());
+                    long newRemoteId = Long.parseLong(createRemoteBillResponse.getStringContent());
                     if (newRemoteId > 0) {
                         dbHelper.updateBill(
                                 bToAdd.getId(), newRemoteId, null,
@@ -696,9 +694,11 @@ public class MoneyBusterServerSyncHelper {
                                 (
                                         // if we get null color, then keep our local color
                                         (m.getR() == null && m.getG() == null && m.getB() == null) ||
-                                        (m.getR() == localMember.getR() &&
-                                            m.getG() == localMember.getG() &&
-                                            m.getB() == localMember.getB())
+                                        (
+                                            Objects.equals(m.getR(), localMember.getR()) &&
+                                            Objects.equals(m.getG(), localMember.getG()) &&
+                                            Objects.equals(m.getB(), localMember.getB())
+                                        )
                                 ) &&
                                 !ncUserIdChanged
                         ) {
@@ -787,7 +787,7 @@ public class MoneyBusterServerSyncHelper {
                 for (DBBill remoteBill : remoteBills) {
                     // add if local does not exist
                     if (!localBillsByRemoteId.containsKey(remoteBill.getRemoteId())) {
-                        long billId = dbHelper.addBill(remoteBill);
+                        dbHelper.addBill(remoteBill);
                         nbPulledNewBills++;
                         newBillsDialogText += "+ " + remoteBill.getWhat() + "\n";
                         Log.d(TAG, "Add local bill : " + remoteBill);
@@ -1096,13 +1096,13 @@ public class MoneyBusterServerSyncHelper {
      */
     private class EditRemoteProjectTask extends AsyncTask<Void, Void, LoginStatus> {
         private VersatileProjectSyncClient client;
-        private String newName;
-        private String newEmail;
-        private String newPassword;
-        private DBProject project;
-        private ICallback callback;
-        private List<Throwable> exceptions = new ArrayList<>();
-        private List<String> errorMessages = new ArrayList<>();
+        private final String newName;
+        private final String newEmail;
+        private final String newPassword;
+        private final DBProject project;
+        private final ICallback callback;
+        private final List<Throwable> exceptions = new ArrayList<>();
+        private final List<String> errorMessages = new ArrayList<>();
 
         public EditRemoteProjectTask(long projId, String newName, String newEmail, String newPassword, ICallback callback) {
             this.project = dbHelper.getProject(projId);
@@ -1120,7 +1120,6 @@ public class MoneyBusterServerSyncHelper {
         @Override
         protected LoginStatus doInBackground(Void... voids) {
             client = createVersatileProjectSyncClient();
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "STARTING edit remote project");
             }
@@ -1195,10 +1194,10 @@ public class MoneyBusterServerSyncHelper {
      */
     private class DeleteRemoteProjectTask extends AsyncTask<Void, Void, LoginStatus> {
         private VersatileProjectSyncClient client;
-        private DBProject project;
-        private ICallback callback;
-        private List<Throwable> exceptions = new ArrayList<>();
-        private List<String> errorMessages = new ArrayList<>();
+        private final DBProject project;
+        private final ICallback callback;
+        private final List<Throwable> exceptions = new ArrayList<>();
+        private final List<String> errorMessages = new ArrayList<>();
 
         public DeleteRemoteProjectTask(long projId, ICallback callback) {
             this.project = dbHelper.getProject(projId);
@@ -1213,7 +1212,6 @@ public class MoneyBusterServerSyncHelper {
         @Override
         protected LoginStatus doInBackground(Void... voids) {
             client = createVersatileProjectSyncClient();
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "STARTING delete remote project");
             }
@@ -1274,7 +1272,7 @@ public class MoneyBusterServerSyncHelper {
     public boolean createRemoteProject(String remoteId, String name, String email, String password, String ihmUrl, ProjectType projectType, IProjectCreationCallback callback) {
         if (isSyncPossible()) {
             DBProject proj = new DBProject(0, remoteId, password, name, ihmUrl, email,
-                    null, projectType, Long.valueOf(0), null);
+                    null, projectType, 0L, null);
             CreateRemoteProjectTask createRemoteProjectTask = new CreateRemoteProjectTask(proj, callback);
             createRemoteProjectTask.execute();
             return true;
@@ -1288,10 +1286,10 @@ public class MoneyBusterServerSyncHelper {
      */
     private class CreateRemoteProjectTask extends AsyncTask<Void, Void, LoginStatus> {
         private VersatileProjectSyncClient client;
-        private DBProject project;
-        private IProjectCreationCallback callback;
-        private List<Throwable> exceptions = new ArrayList<>();
-        private List<String> errorMessages = new ArrayList<>();
+        private final DBProject project;
+        private final IProjectCreationCallback callback;
+        private final List<Throwable> exceptions = new ArrayList<>();
+        private final List<String> errorMessages = new ArrayList<>();
         private boolean usePrivateApi = false;
 
         public CreateRemoteProjectTask(DBProject project, IProjectCreationCallback callback) {
@@ -1307,7 +1305,6 @@ public class MoneyBusterServerSyncHelper {
         @Override
         protected LoginStatus doInBackground(Void... voids) {
             client = createVersatileProjectSyncClient();
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "STARTING create remote project");
             }
@@ -1367,9 +1364,9 @@ public class MoneyBusterServerSyncHelper {
                 for (Throwable e : exceptions) {
                     errorString += e.getClass().getName() + ": " + e.getMessage();
                 }
-            } else {
-                //dbHelper.deleteProject(project.getId());
-            }
+            } /*else {
+                dbHelper.deleteProject(project.getId());
+            }*/
             callback.onFinish(project.getRemoteId(), errorString, usePrivateApi);
         }
     }
@@ -1423,7 +1420,7 @@ public class MoneyBusterServerSyncHelper {
         }
     }
 
-    private NextcloudAPI.ApiConnectedListener apiCallback = new NextcloudAPI.ApiConnectedListener() {
+    private final NextcloudAPI.ApiConnectedListener apiCallback = new NextcloudAPI.ApiConnectedListener() {
         @Override
         public void onConnected() {
             // ignore this one..
@@ -1465,8 +1462,8 @@ public class MoneyBusterServerSyncHelper {
     private class SyncAccountProjectsTask extends AsyncTask<Void, Void, LoginStatus> {
         private final List<ICallback> callbacks = new ArrayList<>();
         private CospendClient client;
-        private List<Throwable> exceptions = new ArrayList<>();
-        private List<String> errorMessages = new ArrayList<>();
+        private final List<Throwable> exceptions = new ArrayList<>();
+        private final List<String> errorMessages = new ArrayList<>();
 
         public SyncAccountProjectsTask() {
         }
@@ -1543,7 +1540,7 @@ public class MoneyBusterServerSyncHelper {
                                 "",
                                 null,
                                 ProjectType.COSPEND,
-                                Long.valueOf(0),
+                                0L,
                                 null
                         );
                         dbHelper.addProject(newProj);
@@ -1610,8 +1607,8 @@ public class MoneyBusterServerSyncHelper {
 
         private final List<ICallback> callbacks = new ArrayList<>();
         private CospendClient client;
-        private List<Throwable> exceptions = new ArrayList<>();
-        private List<String> errorMessages = new ArrayList<>();
+        private final List<Throwable> exceptions = new ArrayList<>();
+        private final List<String> errorMessages = new ArrayList<>();
 
         public GetNCColorTask() {
 
@@ -1706,8 +1703,8 @@ public class MoneyBusterServerSyncHelper {
 
         private final List<ICallback> callbacks = new ArrayList<>();
         private CospendClient client;
-        private List<Throwable> exceptions = new ArrayList<>();
-        private List<String> errorMessages = new ArrayList<>();
+        private final List<Throwable> exceptions = new ArrayList<>();
+        private final List<String> errorMessages = new ArrayList<>();
 
         public GetNCUserAvatarTask() {
 
@@ -1832,7 +1829,7 @@ public class MoneyBusterServerSyncHelper {
 
         private LoginStatus getNextcloudUserAvatar() {
             Log.d(getClass().getSimpleName(), "getNextcloudUserAvatar() "+memberId);
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
+            //SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
             //String lastETag = preferences.getString(SettingsActivity.SETTINGS_KEY_ETAG, null);
             //long lastModified = preferences.getLong(SettingsActivity.SETTINGS_KEY_LAST_MODIFIED, 0);
             LoginStatus status = LoginStatus.OK;

@@ -121,7 +121,7 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
             long newTimestamp = System.currentTimeMillis() / 1000;
             newBill = new DBBill(0, 0, projectId, 0, 0, newTimestamp,
                     "", DBBill.STATE_ADDED, DBBill.NON_REPEATED,
-                    DBBill.PAYMODE_NONE, DBBill.CATEGORY_NONE, "");
+                    DBBill.PAYMODE_NONE, DBBill.CATEGORY_NONE, "", DBBill.PAYMODE_ID_NONE);
             fragment = EditBillFragment.newInstanceWithNewBill(newBill, getProjectType());
         } else {
             db = MoneyBusterSQLiteOpenHelper.getInstance(this);
@@ -129,7 +129,7 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
             newBill = new DBBill(0, 0, projectId, btd.getPayerId(), btd.getAmount(),
                     btd.getTimestamp() + 1, btd.getWhat(), DBBill.STATE_ADDED,
                     btd.getRepeat(), btd.getPaymentMode(), btd.getCategoryRemoteId(),
-                    btd.getComment());
+                    btd.getComment(), btd.getPaymentModeRemoteId());
             List<DBBillOwer> btdOwers = btd.getBillOwers();
             List<DBBillOwer> newBillOwers = new ArrayList<>();
             for (DBBillOwer btdOwer : btdOwers) {

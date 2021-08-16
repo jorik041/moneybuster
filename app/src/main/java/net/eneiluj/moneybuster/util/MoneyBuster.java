@@ -4,12 +4,17 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.util.ArrayMap;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
 import net.eneiluj.moneybuster.R;
+import net.eneiluj.moneybuster.model.DBBill;
+
+import java.util.HashMap;
+import java.util.Map;
 
 //import android.preference.PreferenceManager;
 

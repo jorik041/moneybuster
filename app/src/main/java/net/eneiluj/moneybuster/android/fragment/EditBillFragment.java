@@ -55,6 +55,7 @@ import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBCategory;
 import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.DBPaymentMode;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
@@ -678,15 +679,20 @@ public class EditBillFragment extends Fragment {
         long newPayerId = getPayerId();
         String newRepeat = DBBill.NON_REPEATED;
         String newPaymentMode = DBBill.PAYMODE_NONE;
+        int newPaymentModeId = DBBill.PAYMODE_ID_NONE;
         int newCategoryId = DBBill.CATEGORY_NONE;
 
         if (ProjectType.COSPEND.equals(projectType)) {
             newRepeat = getRepeat();
-            newPaymentMode = getPaymentMode();
+            newPaymentModeId = getPaymentModeId();
             newCategoryId = getCategoryId();
         } else if (ProjectType.LOCAL.equals(projectType)) {
-            newPaymentMode = getPaymentMode();
+            newPaymentModeId = getPaymentModeId();
             newCategoryId = getCategoryId();
+        }
+        // still save old payment mode id
+        if (DBBill.newPmIdToOld.containsKey(newPaymentModeId)) {
+            newPaymentMode = DBBill.newPmIdToOld.get(newPaymentModeId);
         }
 
         List<Long> newOwersIds = getOwersIds();
@@ -713,6 +719,7 @@ public class EditBillFragment extends Fragment {
                     bill.getPayerId() == newPayerId &&
                     newRepeat.equals(bill.getRepeat()) &&
                     newPaymentMode.equals(bill.getPaymentMode()) &&
+                    newPaymentModeId == bill.getPaymentModeRemoteId() &&
                     newCategoryId == bill.getCategoryRemoteId() &&
                     bill.getComment().equals(newComment) &&
                     !owersChanged
@@ -720,18 +727,21 @@ public class EditBillFragment extends Fragment {
                 Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed " + bill.getWhat() + " " + newWhat);
             } else {
                 Log.d(TAG, "====== update bill");
-                db.updateBillAndSync(bill, newPayerId, newAmount, newTimestamp, newWhat, newOwersIds,
-                                     newRepeat, newPaymentMode, newCategoryId, newComment);
+                db.updateBillAndSync(
+                    bill, newPayerId, newAmount, newTimestamp, newWhat, newOwersIds,
+                    newRepeat, newPaymentMode, newPaymentModeId, newCategoryId, newComment
+                );
                 //listener.onBillUpdated(bill);
                 //listener.close();
             }
-        }
-        // this is a new bill
-        else {
+        } else {
+            // this is a new bill
             // add the bill
-            DBBill newBill = new DBBill(0, 0, bill.getProjectId(), newPayerId, newAmount,
-                    newTimestamp, newWhat, DBBill.STATE_ADDED, newRepeat, newPaymentMode,
-                    newCategoryId, newComment);
+            DBBill newBill = new DBBill(
+                0, 0, bill.getProjectId(), newPayerId, newAmount,
+                newTimestamp, newWhat, DBBill.STATE_ADDED, newRepeat,
+                newPaymentMode, newCategoryId, newComment, newPaymentModeId
+            );
             for (long newOwerId : newOwersIds) {
                 newBill.getBillOwers().add(new DBBillOwer(0, 0, newOwerId));
             }
@@ -972,35 +982,53 @@ public class EditBillFragment extends Fragment {
             }
 
             // PAYMENT MODE
+            List<DBPaymentMode> userPaymentModes = db.getPaymentModes(bill.getProjectId());
+            String[] hardCodedPaymentModeNamesTmp = new String[]{
+                "❌ "+getString(R.string.payment_mode_none),
+                "\uD83D\uDCB3 "+getString(R.string.payment_mode_credit_card),
+                "\uD83D\uDCB5 "+getString(R.string.payment_mode_cash),
+                "\uD83C\uDFAB "+getString(R.string.payment_mode_check),
+                "⇄ "+getString(R.string.payment_mode_transfer),
+                "\uD83C\uDF0E "+getString(R.string.payment_mode_online)
+            };
+            String[] hardCodedPaymentModeIdsTmp = new String[]{"0", "-1", "-2", "-3", "-4", "-5"};
+
+            List<String> paymentModeIdList = new ArrayList<>();
+            paymentModeIdList.add(hardCodedPaymentModeIdsTmp[0]);
             List<String> paymentModeNameList = new ArrayList<>();
-            paymentModeNameList.add("❌ "+getString(R.string.payment_mode_none));
-            paymentModeNameList.add("\uD83D\uDCB3 "+getString(R.string.payment_mode_credit_card));
-            paymentModeNameList.add("\uD83D\uDCB5 "+getString(R.string.payment_mode_cash));
-            paymentModeNameList.add("\uD83C\uDFAB "+getString(R.string.payment_mode_check));
-            paymentModeNameList.add("⇄ "+getString(R.string.payment_mode_transfer));
-            paymentModeNameList.add("\uD83C\uDF0E "+getString(R.string.payment_mode_online));
+            paymentModeNameList.add(hardCodedPaymentModeNamesTmp[0]);
+            for (DBPaymentMode pm : userPaymentModes) {
+                paymentModeIdList.add(String.valueOf(pm.getRemoteId()));
+                paymentModeNameList.add(pm.getIcon() + " " + pm.getName());
+            }
+            for (int i = 1; i < hardCodedPaymentModeIdsTmp.length; i++) {
+                paymentModeIdList.add(hardCodedPaymentModeIdsTmp[i]);
+            }
+            for (int i = 1; i < hardCodedPaymentModeNamesTmp.length; i++) {
+                paymentModeNameList.add(hardCodedPaymentModeNamesTmp[i]);
+            }
 
+            String[] paymentModeIds = paymentModeIdList.toArray(new String[paymentModeIdList.size()]);
             String[] paymentModeNames = paymentModeNameList.toArray(new String[paymentModeNameList.size()]);
-            //String[] repeatNames = getResources().getStringArray(R.array.repeatBillEntries);
 
-            String[] paymentModeIds = getResources().getStringArray(R.array.paymentModeValues);
-            int indexP = Arrays.asList(paymentModeIds).indexOf(bill.getPaymentMode());
+            int indexPm = paymentModeIdList.indexOf(String.valueOf(bill.getPaymentModeRemoteId()));
+            Log.d(TAG, "PM of loaded bill "+bill.getPaymentModeRemoteId());
 
-            ArrayList<Map<String, String>> dataP = new ArrayList<>();
+            ArrayList<Map<String, String>> dataPm = new ArrayList<>();
             for (int i = 0; i < paymentModeNames.length; i++) {
                 HashMap<String, String> hashMap = new HashMap<>();
                 hashMap.put("name", paymentModeNames[i]);
                 hashMap.put("id", paymentModeIds[i]);
-                dataP.add(hashMap);
+                dataPm.add(hashMap);
             }
-            String[] fromP = {"name", "id"};
-            int[] toP = new int[]{android.R.id.text1};
-            SimpleAdapter simpleAdapterP = new SimpleAdapter(this.getContext(), dataP, android.R.layout.simple_spinner_item, fromP, toP);
-            simpleAdapterP.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            editPaymentMode.setAdapter(simpleAdapterP);
+            String[] fromPm = {"name", "id"};
+            int[] toPm = new int[]{android.R.id.text1};
+            SimpleAdapter simpleAdapterPm = new SimpleAdapter(this.getContext(), dataPm, android.R.layout.simple_spinner_item, fromPm, toPm);
+            simpleAdapterPm.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            editPaymentMode.setAdapter(simpleAdapterPm);
 
-            if (indexP > -1) {
-                editPaymentMode.setSelection(indexP);
+            if (indexPm > -1) {
+                editPaymentMode.setSelection(indexPm);
             } else {
                 editPaymentMode.setSelection(0);
             }
@@ -1155,13 +1183,13 @@ public class EditBillFragment extends Fragment {
         }
     }
 
-    private String getPaymentMode() {
+    private int getPaymentModeId() {
         int i = editPaymentMode.getSelectedItemPosition();
         if (i < 0) {
-            return DBBill.PAYMODE_NONE;
+            return DBBill.PAYMODE_ID_NONE;
         } else {
             Map<String, String> item = (Map<String, String>) editPaymentMode.getSelectedItem();
-            return item.get("id");
+            return Integer.parseInt(item.get("id"));
         }
     }
 
@@ -1171,7 +1199,7 @@ public class EditBillFragment extends Fragment {
             return DBBill.CATEGORY_NONE;
         } else {
             Map<String, String> item = (Map<String, String>) editCategory.getSelectedItem();
-            return Integer.valueOf(item.get("id"));
+            return Integer.parseInt(item.get("id"));
         }
     }
 

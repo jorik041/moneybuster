@@ -59,6 +59,7 @@ import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBCategory;
 import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.DBPaymentMode;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
@@ -1103,7 +1104,7 @@ public class NewProjectFragment extends Fragment {
                 int row = 0;
                 int nbCols;
                 String icon, color, categoryname, categoryid, currencyname, exchangeRate,
-                    what, payer_name, owersStr, paymentmode, comment;
+                    what, payer_name, owersStr, paymentmode, paymentmodeid, paymentmodename, comment;
                 long timestamp;
                 String dateStr;
                 Date date;
@@ -1113,12 +1114,14 @@ public class NewProjectFragment extends Fragment {
                 double amount, payer_weight;
                 Map<String, Integer> columns = new HashMap<>();
                 int c;
+                List<DBPaymentMode> paymentModes = new ArrayList<>();
                 List<DBCategory> categories = new ArrayList<>();
                 List<DBCurrency> currencies = new ArrayList<>();
                 List<DBBill> bills = new ArrayList<>();
                 Map<String, Boolean> membersActive = new HashMap<>();
                 Map<String, Double> membersweight = new HashMap<>();
                 Map<Long, Long> categoryIdConv = new HashMap<>();
+                Map<Long, Long> paymentModeIdConv = new HashMap<>();
                 Map<Long, String> billRemoteIdToPayerName = new HashMap<>();
                 Map<Long, String> billRemoteIdToOwerStr = new HashMap<>();
                 List<Long> owerIds = new ArrayList<>();
@@ -1169,6 +1172,12 @@ public class NewProjectFragment extends Fragment {
                             categoryid = nextLine[columns.get("categoryid")];
                             categoryname = nextLine[columns.get("categoryname")];
                             categories.add(new DBCategory(0, Long.valueOf(categoryid), 0, categoryname, icon, color));
+                        } else if (currentSection.equals("paymentmodes")) {
+                            icon = nextLine[columns.get("icon")];
+                            color = nextLine[columns.get("color")];
+                            paymentmodeid = nextLine[columns.get("categoryid")];
+                            paymentmodename = nextLine[columns.get("categoryname")];
+                            paymentModes.add(new DBPaymentMode(0, Long.valueOf(paymentmodeid), 0, paymentmodename, icon, color));
                         } else if (currentSection.equals("currencies")) {
                             currencyname = nextLine[columns.get("currencyname")];
                             exchangeRate = nextLine[columns.get("exchange_rate")];
@@ -1201,6 +1210,7 @@ public class NewProjectFragment extends Fragment {
                             owersStr = nextLine[columns.get("owers")];
                             payer_active = columns.containsKey("payer_active") && nextLine[columns.get("payer_active")].equals("1");
                             categoryid = (columns.containsKey("categoryid") && !"".equals(nextLine[columns.get("categoryid")])) ? nextLine[columns.get("categoryid")] : "0";
+                            paymentmodeid = (columns.containsKey("paymentmodeid") && !"".equals(nextLine[columns.get("paymentmodeid")])) ? nextLine[columns.get("paymentmodeid")] : "0";
                             paymentmode = columns.containsKey("paymentmode") ? nextLine[columns.get("paymentmode")] : null;
 
                             membersActive.put(payer_name, payer_active);
@@ -1225,10 +1235,11 @@ public class NewProjectFragment extends Fragment {
                                     }
                                 }
                                 bills.add(
-                                        new DBBill(0, row, 0, 0, amount, timestamp, what,
-                                                DBBill.STATE_OK, "n", paymentmode,
-                                                Integer.parseInt(categoryid), comment
-                                        )
+                                    new DBBill(
+                                        0, row, 0, 0, amount, timestamp, what,
+                                        DBBill.STATE_OK, "n", paymentmode,
+                                        Integer.parseInt(categoryid), comment, Integer.parseInt(paymentmodeid)
+                                    )
                                 );
                                 billRemoteIdToPayerName.put(Long.valueOf(row), payer_name);
                             }
@@ -1245,6 +1256,11 @@ public class NewProjectFragment extends Fragment {
                 long pid = db.addProject(newProject);
                 Log.v(TAG, "NEW PROJECT ID : "+pid);
 
+                // add payment modes
+                for (DBPaymentMode pm: paymentModes) {
+                    long pmDbId = db.addPaymentMode(new DBPaymentMode(0, pm.getRemoteId(), pid, pm.getName(), pm.getIcon(), pm.getColor()));
+                    paymentModeIdConv.put(pm.getRemoteId(), pmDbId);
+                }
                 // add categories
                 for (DBCategory cat: categories) {
                     long catDbId = db.addCategory(new DBCategory(0, cat.getRemoteId(), pid, cat.getName(), cat.getIcon(), cat.getColor()));
@@ -1275,9 +1291,14 @@ public class NewProjectFragment extends Fragment {
                     for (int i = 0; i < owersArray.length; i++) {
                         owerIds.add(memberNameToId.get(owersArray[i]));
                     }
-                    long billDbId = db.addBill(new DBBill(0, 0, pid, payerId, b.getAmount(),
+                    long billDbId = db.addBill(
+                        new DBBill(
+                            0, 0, pid, payerId, b.getAmount(),
                             b.getTimestamp(), b.getWhat(), DBBill.STATE_OK, "n",
-                            b.getPaymentMode(), b.getCategoryRemoteId(), b.getComment()));
+                            b.getPaymentMode(), b.getCategoryRemoteId(), b.getComment(),
+                            b.getPaymentModeRemoteId()
+                        )
+                    );
                     // add bill owers
                     for (Long owerId: owerIds) {
                         db.addBillower(billDbId, owerId);

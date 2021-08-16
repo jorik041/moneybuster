@@ -1680,7 +1680,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     timestamp, getString(R.string.settle_bill_what),
                     DBBill.STATE_ADDED, DBBill.NON_REPEATED,
                     DBBill.PAYMODE_NONE, DBBill.CATEGORY_NONE,
-                    "");
+                    "", DBBill.PAYMODE_ID_NONE);
             bill.getBillOwers().add(new DBBillOwer(0, 0, receiverId));
             db.addBill(bill);
         }
@@ -1732,8 +1732,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         String projectName;
         if (proj.getName() == null) {
             projectName = proj.getRemoteId();
-        }
-        else {
+        } else {
             projectName = proj.getName();
         }
         String statsText = getString(R.string.share_stats_intro, projectName) + "\n\n";

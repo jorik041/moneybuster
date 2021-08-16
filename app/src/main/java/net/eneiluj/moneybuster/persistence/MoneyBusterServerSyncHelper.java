@@ -40,6 +40,7 @@ import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBCategory;
 import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.DBPaymentMode;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.service.SyncService;
@@ -470,8 +471,9 @@ public class MoneyBusterServerSyncHelper {
                         dbHelper.updateBill(
                                 bToAdd.getId(), newRemoteId, null,
                                 null, null, null,
-                                DBBill.STATE_OK, null, null, null,
-                                null
+                                DBBill.STATE_OK, null,
+                                null, null,
+                                null, null
                         );
                     }
                 }
@@ -534,6 +536,48 @@ public class MoneyBusterServerSyncHelper {
                     project.setCurrencyName(currencyName);
                     dbHelper.updateProject(project.getId(), name, email,
                             null, null, null, currencyName);
+                }
+
+                // get payment modes
+                List<DBPaymentMode> remotePaymentModes = projResponse.getPaymentModes(project.getId());
+                Map<Long, DBPaymentMode> remotePaymentModesByRemoteId = new HashMap<>();
+                for (DBPaymentMode remotePaymentMode : remotePaymentModes) {
+                    remotePaymentModesByRemoteId.put(remotePaymentMode.getRemoteId(), remotePaymentMode);
+                }
+
+                // add/update/delete payment modes
+                for (DBPaymentMode pm : remotePaymentModes) {
+                    DBPaymentMode localPaymentMode = dbHelper.getPaymentMode(pm.getRemoteId(), project.getId());
+                    // pm does not exist locally, add it
+                    if (localPaymentMode == null) {
+                        Log.d(getClass().getSimpleName(), "Add local pm : " + pm);
+                        dbHelper.addPaymentMode(pm);
+                    }
+                    // pm exists, check if needs update
+                    else {
+                        if (pm.getName().equals(localPaymentMode.getName()) &&
+                                pm.getColor().equals(localPaymentMode.getColor()) &&
+                                pm.getIcon().equals(localPaymentMode.getIcon())
+                        ) {
+                            // alright
+                            Log.d(getClass().getSimpleName(), "Nothing to do for pm : " + localPaymentMode);
+                        } else {
+                            Log.d(getClass().getSimpleName(), "Update local pm : " + pm);
+
+                            dbHelper.updatePaymentMode(
+                                    localPaymentMode.getId(), pm.getName(), pm.getIcon(), pm.getColor()
+                            );
+                        }
+                    }
+                }
+
+                // delete local pms which are not there remotely
+                List<DBPaymentMode> localPaymentModes = dbHelper.getPaymentModes(project.getId());
+                for (DBPaymentMode localPaymentMode : localPaymentModes) {
+                    if (!remotePaymentModesByRemoteId.containsKey(localPaymentMode.getRemoteId())) {
+                        dbHelper.deletePaymentMode(localPaymentMode.getId());
+                        Log.d(TAG, "Delete local pm : " + localPaymentMode);
+                    }
                 }
 
                 // get categories
@@ -763,8 +807,8 @@ public class MoneyBusterServerSyncHelper {
                                     localBill.getId(), null, remoteBill.getPayerId(),
                                     remoteBill.getAmount(), remoteBill.getTimestamp(),
                                     remoteBill.getWhat(), DBBill.STATE_OK, remoteBill.getRepeat(),
-                                    remoteBill.getPaymentMode(), remoteBill.getCategoryRemoteId(),
-                                    remoteBill.getComment()
+                                    remoteBill.getPaymentMode(), remoteBill.getPaymentModeRemoteId(),
+                                    remoteBill.getCategoryRemoteId(), remoteBill.getComment()
                             );
                             nbPulledUpdatedBills++;
                             updatedBillsDialogText += "✏ " + remoteBill.getWhat() + "\n";

@@ -250,7 +250,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 key_payment_mode + " TEXT DEFAULT \"n\", " +
                 key_category_id + " INTEGER DEFAULT 0, " +
                 key_repeat + " TEXT, " +
-                key_comment + " TEXT DEFAULT \"\")");
+                key_comment + " TEXT DEFAULT \"\", " +
+                key_payment_mode_id + " INTEGER DEFAULT 0)"
+        );
     }
 
     //key_id, key_billId, key_member_remoteId

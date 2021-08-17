@@ -5,7 +5,28 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-## 0.1.10 – 2021-08-03
+## 0.1.12 – 2021-08-17
+### Added
+- bill duplication from bill edition
+- "comment" field for local and cospend projects
+  [#70](https://gitlab.com/eneiluj/moneybuster/issues/70) @mMuck1
+- new theme setting choice to follow system settings
+  [#69](https://gitlab.com/eneiluj/moneybuster/issues/69) @Mynacol
+
+### Changed
+- remove project deletion button in project sync error dialog
+  [#71](https://gitlab.com/eneiluj/moneybuster/issues/71) @jedie
+- remove per-member bill counter in sidebar
+- improve request error messages, inform if server is in maintenance mode
+- now possible to create bills with only one member
+- improve project selector design, add type icons
+- adapt to new custom payment modes management
+
+### Fixed
+- fix project creation using NC account, don't store the password locally
+  [#58](https://gitlab.com/eneiluj/moneybuster/issues/58) @call-me-matt
+
+## 0.1.11 – 2021-08-03
 ### Fixed
 - bug in Android 5, project sync with spaces in passwords
 [#72](https://gitlab.com/eneiluj/moneybuster/issues/72) @hugodu69

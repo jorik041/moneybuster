@@ -29,7 +29,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.util.List;
-import java.util.Map;
 
 import at.bitfire.cert4android.CustomCertManager;
 

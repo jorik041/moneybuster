@@ -12,8 +12,6 @@ import net.eneiluj.moneybuster.BuildConfig;
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.util.SupportUtil;
 
-//import android.support.v4.app.Fragment;
-
 public class AboutFragmentCreditsTab extends Fragment {
 
     TextView aboutVersion;
@@ -26,7 +24,6 @@ public class AboutFragmentCreditsTab extends Fragment {
         aboutVersion = v.findViewById(R.id.about_version);
         aboutMaintainer = v.findViewById(R.id.about_maintainer);
         aboutTranslators = v.findViewById(R.id.about_translators);
-        //ButterKnife.bind(this, v);
         SupportUtil.setHtml(aboutVersion, R.string.about_version, "v" + BuildConfig.VERSION_NAME);
         SupportUtil.setHtml(aboutMaintainer, R.string.about_maintainer);
         SupportUtil.setHtml(aboutTranslators, R.string.about_translators_crowdin, getString(R.string.url_translations));

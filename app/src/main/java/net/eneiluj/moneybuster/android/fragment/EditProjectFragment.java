@@ -1,10 +1,7 @@
 package net.eneiluj.moneybuster.android.fragment;
 
-//import android.app.AlertDialog;
-
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,7 +20,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
@@ -37,9 +33,6 @@ import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.SupportUtil;
-import net.eneiluj.moneybuster.util.ThemeUtils;
-
-//import android.support.v7.preference.PreferenceFragmentCompat;
 
 public class EditProjectFragment extends PreferenceFragmentCompat {
 

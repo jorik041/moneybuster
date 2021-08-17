@@ -1,5 +1,6 @@
 package net.eneiluj.moneybuster.persistence;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -25,7 +26,6 @@ import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.DBPaymentMode;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
-import net.eneiluj.moneybuster.util.MoneyBuster;
 import net.eneiluj.moneybuster.util.SupportUtil;
 
 import java.text.SimpleDateFormat;
@@ -35,8 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-//import android.util.ArrayMap;
 
 /**
  * Helps to add, get, update and delete bills, members, projects with the option to trigger a sync with the server.
@@ -301,6 +299,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 key_exchangeRate + " FLOAT)");
     }
 
+    @SuppressLint("Range")
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 2) {
@@ -529,6 +528,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
      * @param cursor database cursor
      * @return DBProject
      */
+    @SuppressLint("Range")
     @NonNull
     private DBAccountProject getAccountProjectFromCursor(@NonNull Cursor cursor) {
         // key_id, key_remoteId, key_password,  key_name, key_ncUrl
@@ -601,6 +601,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
      * @param cursor database cursor
      * @return DBProject
      */
+    @SuppressLint("Range")
     @NonNull
     private DBPaymentMode getPaymentModeFromCursor(@NonNull Cursor cursor) {
         // key_id, key_remoteId, key_projectid, key_name,  key_icon, key_color
@@ -697,6 +698,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
      * @param cursor database cursor
      * @return DBProject
      */
+    @SuppressLint("Range")
     @NonNull
     private DBCategory getCategoryFromCursor(@NonNull Cursor cursor) {
         // key_id, key_remoteId, key_projectid, key_name,  key_icon, key_color
@@ -791,6 +793,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         return currencies;
     }
 
+    @SuppressLint("Range")
     @NonNull
     private DBCurrency getCurrencyFromCursor(@NonNull Cursor cursor) {
         // key_id, key_remoteId, key_projectid, key_name,  key_exchangeRate
@@ -907,6 +910,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
      * @param cursor database cursor
      * @return DBProject
      */
+    @SuppressLint("Range")
     @NonNull
     private DBProject getProjectFromCursor(@NonNull Cursor cursor) {
         // key_id, key_remoteId, key_password,  key_name, key_ihmUrl,
@@ -1198,6 +1202,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     /**
      *
      */
+    @SuppressLint("Range")
     @NonNull
     private DBMember getMemberFromCursor(@NonNull Cursor cursor) {
         // key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight, key_state
@@ -1539,6 +1544,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     /**
      *
      */
+    @SuppressLint("Range")
     @NonNull
     private DBBill getBillFromCursor(@NonNull Cursor cursor) {
         // key_id, key_remoteId, key_projectid, key_payer_id, key_amount, key_date, key_what, key_state, key_repeat
@@ -1616,6 +1622,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     /**
      *
      */
+    @SuppressLint("Range")
     @NonNull
     private DBBillOwer getBillOwerFromCursor(@NonNull Cursor cursor) {
         // key_id, key_billId, key_member_id, key_member_remoteId

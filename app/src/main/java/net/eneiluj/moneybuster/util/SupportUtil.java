@@ -49,8 +49,6 @@ import javax.net.ssl.TrustManager;
 
 import at.bitfire.cert4android.CustomCertManager;
 
-//import android.preference.PreferenceManager;
-//import android.util.ArrayMap;
 
 /**
  * Some helper functionality in alike the Android support library.

@@ -14,7 +14,6 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.preference.CheckBoxPreference;
@@ -40,7 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import at.bitfire.cert4android.CustomCertManager;
-
 
 public class PreferencesFragment extends PreferenceFragmentCompat implements PreferenceFragmentCompat.OnPreferenceStartScreenCallback{
 

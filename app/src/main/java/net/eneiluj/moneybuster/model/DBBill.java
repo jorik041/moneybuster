@@ -3,7 +3,6 @@ package net.eneiluj.moneybuster.model;
 import android.util.Log;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;

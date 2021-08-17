@@ -23,7 +23,6 @@
 
 package net.eneiluj.moneybuster.android.ui;
 
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -34,9 +33,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.preference.PreferenceManager;
-
-import net.eneiluj.moneybuster.R;
 
 import org.apache.commons.codec.binary.Hex;
 

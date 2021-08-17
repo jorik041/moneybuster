@@ -11,8 +11,6 @@ import androidx.fragment.app.Fragment;
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.util.SupportUtil;
 
-//import android.support.v4.app.Fragment;
-
 public class AboutFragmentContributingTab extends Fragment {
 
     TextView aboutSource;

@@ -1,10 +1,5 @@
 package net.eneiluj.moneybuster.util;
 
-//import android.preference.PreferenceManager;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
 import android.util.Log;
 
 import net.eneiluj.moneybuster.model.DBAccountProject;
@@ -23,10 +18,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -555,7 +548,10 @@ public class ServerResponse {
         }
         // old MB, new Cospend is ok as Cospend provides the old pm ID
         // new MB, old Cospend => set payment mode ID from old one
-        if (!DBBill.PAYMODE_NONE.equals(paymentMode) && paymentModeRemoteId == DBBill.PAYMODE_ID_NONE) {
+        if (!DBBill.PAYMODE_NONE.equals(paymentMode)
+                && !"".equals(paymentMode)
+                && paymentModeRemoteId == DBBill.PAYMODE_ID_NONE) {
+            Log.d("PaymentMode", "old: " + paymentMode + " and new: " + paymentModeRemoteId);
             paymentModeRemoteId = DBBill.oldPmIdToNew.get(paymentMode);
         }
         DBBill bill = new DBBill(

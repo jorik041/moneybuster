@@ -264,7 +264,7 @@
     <string name="drawer_no_project">Нема проекти.\nКликни тука за да креираш/додадеш</string>
     <string name="drawer_no_account">Кликни овде за да се поврзеш со Nextcloud сметка</string>
     <string name="choose_project_to_select">Избери проект</string>
-    <string name="edit_bill_impossible_no_member">Најмалку двајца активирани членови треба за да додадете сметка</string>
+    <string name="add_bill_impossible_no_member">At least one activated member is required to add a bill</string>
     <string name="edit_project_local_impossible">Невозможно за локални проекти</string>
     <string name="choose_account_project_dialog_title">Изберете проект од вашата сметка на Nextcloud</string>
     <string name="choose_account_project_dialog_impossible">Нема проект на Cospend во вашата сметка на Nextcloud</string>

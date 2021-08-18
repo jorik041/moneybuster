@@ -264,7 +264,7 @@
     <string name="drawer_no_project">暂无项目。\n点这里创建或添加一个。</string>
     <string name="drawer_no_account">Click here to connect to a Nextcloud account</string>
     <string name="choose_project_to_select">选择项目</string>
-    <string name="edit_bill_impossible_no_member">需要至少两名已激活成员以添加账单</string>
+    <string name="add_bill_impossible_no_member">At least one activated member is required to add a bill</string>
     <string name="edit_project_local_impossible">不可用于本地项目</string>
     <string name="choose_account_project_dialog_title">从您的 Nextcloud 帐户中选择一个项目</string>
     <string name="choose_account_project_dialog_impossible">您的 Nextcloud 帐户中没有 Cospend 项目</string>

@@ -264,7 +264,7 @@
     <string name="drawer_no_project">Brak projektu.\nDotknij tutaj, aby utworzyć/dodać</string>
     <string name="drawer_no_account">Kliknij tutaj, aby połączyć się z kontem Nextcloud</string>
     <string name="choose_project_to_select">Wybierz projekt</string>
-    <string name="edit_bill_impossible_no_member">Aby dodać rachunek, potrzeba co najmniej dwóch aktywowanych członków</string>
+    <string name="add_bill_impossible_no_member">At least one activated member is required to add a bill</string>
     <string name="edit_project_local_impossible">Niemożliwe w przypadku projektów lokalnych</string>
     <string name="choose_account_project_dialog_title">Wybierz projekt z konta Nextcloud</string>
     <string name="choose_account_project_dialog_impossible">Brak projektu Cospend na twoim koncie Nextcloud</string>

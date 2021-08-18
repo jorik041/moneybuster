@@ -20,8 +20,8 @@
     <string name="setting_payer">Chi ha pagato?</string>
     <string name="setting_all">Tutti</string>
     <string name="setting_none">Nessuno</string>
-    <string name="setting_comment">Comment</string>
-    <string name="duplicate_bill">Duplicate bill</string>
+    <string name="setting_comment">Commento</string>
+    <string name="duplicate_bill">Duplica fattura</string>
     <string name="currency_dialog_title">Converti l\'importo corrente da un\'altra valuta in %s</string>
     <string name="no_currency_error">Non c\'è nessuna valuta aggiuntiva</string>
     <string name="setting_amount">Quanto?</string>
@@ -102,12 +102,12 @@
     <string name="action_search">Ricerca</string>
     <string name="action_search_in_project">Cerca in %s</string>
     <string name="simple_error">Errore</string>
-    <string name="simple_close">Close</string>
+    <string name="simple_close">Chiudi</string>
     <string name="simple_loading">Caricamento</string>
     <string name="simple_remove">Rimuovi</string>
     <string name="sync_error_dialog_title">Sincronizzazione del progetto fallita</string>
-    <string name="sync_error_dialog_full_content">Synchronization with project %1$s failed. Error message:\n\n%2$s\n\nThe associated remote project might not exist anymore. If so, you could remove this project from MoneyBuster.</string>
-    <string name="error_maintenance_mode">The Nextcloud instance is probably in maintenance mode</string>
+    <string name="sync_error_dialog_full_content">Sincronizzazione con il progetto %1$s fallita. Messaggio di errore:\n\n%2$s\n\nIl progetto remoto associato potrebbe non esistere più. Se è così, puoi rimuovere questo progetto da MoneyBuster.</string>
+    <string name="error_maintenance_mode">L\'istanza Nextcloud è probabilmente in modalità manutenzione</string>
     <string name="error_401">401 Unauthorized</string>
     <string name="error_403">403 Forbidden</string>
     <string name="error_404">404 Not Found</string>
@@ -192,7 +192,7 @@
     <string name="settings_submit">Connetti</string>
     <string name="settings_submitting">Connessione in corso &#8230;</string>
     <string name="settings_theme_title">Tema</string>
-    <string name="settings_night_mode_title">Theme</string>
+    <string name="settings_night_mode_title">Tema</string>
     <string name="settings_offline_mode_title">Modalità offline</string>
     <string name="settings_offline_mode_summary">Non sincronizzare automaticamente. Sincronizza solo quando l\'utente lo chiede.</string>
     <string name="settings_smart_sync_title">Sincronizzazione intelligente con Cospend</string>
@@ -264,7 +264,7 @@
     <string name="drawer_no_project">Non c\'è nessun progetto.\nTocca qui per crearne/aggiungerne uno</string>
     <string name="drawer_no_account">Clicca qui per connetterti a un account Nextcloud</string>
     <string name="choose_project_to_select">Seleziona un progetto</string>
-    <string name="edit_bill_impossible_no_member">Sono necessari almeno due membri attivati per aggiungere una spesa</string>
+    <string name="add_bill_impossible_no_member">At least one activated member is required to add a bill</string>
     <string name="edit_project_local_impossible">Impossibile per progetti locali</string>
     <string name="choose_account_project_dialog_title">Scegli un progetto dal tuo account Nextcloud</string>
     <string name="choose_account_project_dialog_impossible">Non c\'è un progetto Cospend nel tuo account Nextcloud</string>
@@ -298,7 +298,7 @@
     <string name="error_create_remote_project_helper">Errore nella creazione del progetto remoto : %s</string>
     <string name="error_edit_remote_project_helper">Errore nella edizione del progetto remoto : %s</string>
     <string name="error_token_mismatch">Prego riattiva il tuo account SSO nelle impostazioni</string>
-    <string name="error_req_failed">Request failed</string>
+    <string name="error_req_failed">Richiesta fallita</string>
     <!-- Snackbar Actions -->
     <!-- URLs -->
     <!-- About -->
@@ -328,7 +328,7 @@
     <!-- Key / Values for preferences -->
     <string name="pref_value_theme_light">Chiaro</string>
     <string name="pref_value_theme_dark">Scuro</string>
-    <string name="pref_value_theme_system">Follow system</string>
+    <string name="pref_value_theme_system">Predefinito di sistema</string>
     <string name="avatar">Immagine di profilo</string>
     <string name="fallback_weblogin_text">Ripristina il vecchio metodo di login</string>
     <string name="fallback_weblogin_back">Indietro</string>

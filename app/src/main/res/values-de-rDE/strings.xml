@@ -20,8 +20,8 @@
     <string name="setting_payer">Wer hat gezahlt?</string>
     <string name="setting_all">Alle</string>
     <string name="setting_none">Keiner</string>
-    <string name="setting_comment">Comment</string>
-    <string name="duplicate_bill">Duplicate bill</string>
+    <string name="setting_comment">Kommentar</string>
+    <string name="duplicate_bill">Ausgabe duplizieren</string>
     <string name="currency_dialog_title">Rechne den aktuellen Betrag aus einer anderen Währung in %s um</string>
     <string name="no_currency_error">Es gibt keine zusätzliche Währung</string>
     <string name="setting_amount">Wie viel?</string>
@@ -100,17 +100,17 @@
     <string name="setting_email">E-Mail (Remote)</string>
     <string name="project_added_success">Projekt erfolgreich zu MoneyBuster hinzugefügt</string>
     <string name="action_search">Suche</string>
-    <string name="action_search_in_project">Search in %s</string>
+    <string name="action_search_in_project">In %s suchen</string>
     <string name="simple_error">Fehler</string>
-    <string name="simple_close">Close</string>
+    <string name="simple_close">Schließen</string>
     <string name="simple_loading">Wird geladen</string>
     <string name="simple_remove">Entfernen</string>
     <string name="sync_error_dialog_title">Projekt-Sync fehlgeschlagen</string>
     <string name="sync_error_dialog_full_content">Synchronization with project %1$s failed. Error message:\n\n%2$s\n\nThe associated remote project might not exist anymore. If so, you could remove this project from MoneyBuster.</string>
     <string name="error_maintenance_mode">The Nextcloud instance is probably in maintenance mode</string>
-    <string name="error_401">401 Unauthorized</string>
-    <string name="error_403">403 Forbidden</string>
-    <string name="error_404">404 Not Found</string>
+    <string name="error_401">401 Nicht berechtigt</string>
+    <string name="error_403">403 Nicht Erlaubt</string>
+    <string name="error_404">404 Nicht gefunden</string>
     <string name="simple_do_nothing">Nichts machen</string>
     <string name="creating_remote_project">Erstelle Remote-Projekt</string>
     <string name="simple_cancel">Abbrechen</string>
@@ -150,9 +150,9 @@
     <string name="fab_manage_members">Mitglieder verwalten</string>
     <string name="fab_export_project">Projekt exportieren</string>
     <string name="drawer_last_sync_text">Letzter Sync: %1$02d:%2$02d</string>
-    <string name="scan_qrcode_tooltip">Scan a Cospend/IHateMoney QRCode</string>
-    <string name="new_project_from_nextcloud_tooltip">Choose project from Nextcloud account</string>
-    <string name="import_tooltip">Import from CSV file</string>
+    <string name="scan_qrcode_tooltip">QR-Code von Cospend/IHateMoney scannen</string>
+    <string name="new_project_from_nextcloud_tooltip">Wähle ein Projekt aus deinem Nextcloud Konto</string>
+    <string name="import_tooltip">CSV-Datei importieren</string>
     <string name="import_error_owers">Fehlerhafte CSV, inkorrekte Schuldner in Zeile %1$d</string>
     <string name="import_error_date">Fehlerhafte CSV, falsches Datum auf der Linie %1$d</string>
     <string name="import_error_header">Fehlerhafte CSV, inkorrekte Spaltennamen in Zeile %1$d</string>
@@ -192,7 +192,7 @@
     <string name="settings_submit">Verbinden</string>
     <string name="settings_submitting">Verbinde &#8230;</string>
     <string name="settings_theme_title">Oberfläche</string>
-    <string name="settings_night_mode_title">Theme</string>
+    <string name="settings_night_mode_title">Thema</string>
     <string name="settings_offline_mode_title">Offline Modus</string>
     <string name="settings_offline_mode_summary">Nicht automatisch synchronisieren. Synchronisiere nur, wenn der Benutzer fragt.</string>
     <string name="settings_smart_sync_title">Intelligente Synchronisierung mit Cospend</string>
@@ -238,10 +238,10 @@
     <string name="stats_balance">Saldo</string>
     <string name="fab_statistics">Projektstatistik</string>
     <string name="fab_settle">Abrechnen</string>
-    <string name="project_add_success_message">Project %1$s was successfully added</string>
-    <string name="project_create_success_message">Project %1$s was successfully created</string>
+    <string name="project_add_success_message">Projekt %1$s wurde erfolgreich erstellt</string>
+    <string name="project_create_success_message">Projekt %1$s wurde erfolgreich erstellt</string>
     <string name="project_add_success_title">Projekt hinzugefügt</string>
-    <string name="project_create_success_title">Project created</string>
+    <string name="project_create_success_title">Projekt erstellt</string>
     <string name="import_bad_url">Fehlerhafter MoneyBuster Link, Import unmöglich</string>
     <string name="import_no_data">Beim Hinzufügen des Projektes ist ein Fehler aufgetreten</string>
     <string name="fab_scan_qrcode_import">MB QR-Code importieren</string>
@@ -264,7 +264,7 @@
     <string name="drawer_no_project">Es gibt kein Projekt.\nTippe hier, um eines zu erstellen/hinzuzufügen</string>
     <string name="drawer_no_account">Hier klicken, um sich mit einem Nextcloud-Konto zu verbinden</string>
     <string name="choose_project_to_select">Projekt auswählen</string>
-    <string name="edit_bill_impossible_no_member">Mindestens zwei aktivierte Mitglieder sind erforderlich, um eine Ausgabe hinzuzufügen</string>
+    <string name="add_bill_impossible_no_member">At least one activated member is required to add a bill</string>
     <string name="edit_project_local_impossible">Für lokale Projekte nicht möglich</string>
     <string name="choose_account_project_dialog_title">Wähle ein Projekt aus deinem Nextcloud Konto</string>
     <string name="choose_account_project_dialog_impossible">Es gibt kein Cospend-Projekt in deinem Nextcloud Konto</string>
@@ -298,7 +298,7 @@
     <string name="error_create_remote_project_helper">Fehler bei der Projekterstellung: %s</string>
     <string name="error_edit_remote_project_helper">Fehler bei der Projektbearbeitung: %s</string>
     <string name="error_token_mismatch">Bitte überprüfe dein SSO-Konto in den Einstellungen erneut</string>
-    <string name="error_req_failed">Request failed</string>
+    <string name="error_req_failed">Anfrage fehlgeschlagen</string>
     <!-- Snackbar Actions -->
     <!-- URLs -->
     <!-- About -->
@@ -328,7 +328,7 @@
     <!-- Key / Values for preferences -->
     <string name="pref_value_theme_light">Hell</string>
     <string name="pref_value_theme_dark">Dunkel</string>
-    <string name="pref_value_theme_system">Follow system</string>
+    <string name="pref_value_theme_system">System folgen</string>
     <string name="avatar">Profilbild</string>
     <string name="fallback_weblogin_text">Zur alten Login-Methode zurückkehren</string>
     <string name="fallback_weblogin_back">Zurück</string>

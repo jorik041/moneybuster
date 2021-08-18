@@ -264,7 +264,7 @@
     <string name="drawer_no_project">Δεν υπάρχει έργο.\nΠατήστε εδώ για να δημιουργήσετε/προσθέσετε ένα</string>
     <string name="drawer_no_account">Click here to connect to a Nextcloud account</string>
     <string name="choose_project_to_select">Επιλογή έργου</string>
-    <string name="edit_bill_impossible_no_member">Για την προσθήκη ενός λογαριασμού απαιτούνται τουλάχιστον δύο ενεργοποιημένα μέλη</string>
+    <string name="add_bill_impossible_no_member">At least one activated member is required to add a bill</string>
     <string name="edit_project_local_impossible">Αδύνατο για τοπικά έργα</string>
     <string name="choose_account_project_dialog_title">Επιλέξτε ένα έργο από τον λογαριασμό σας Nextcloud</string>
     <string name="choose_account_project_dialog_impossible">Δεν υπάρχει κανένα έργο Cospend στον λογαριασμό σας Nextcloud</string>

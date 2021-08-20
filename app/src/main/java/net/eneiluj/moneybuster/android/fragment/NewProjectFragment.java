@@ -872,8 +872,10 @@ public class NewProjectFragment extends Fragment {
         String url = null;
         String password = null;
         String email = null;
-        String name = null;
-        if (!type.equals(ProjectType.LOCAL)) {
+        String name;
+        if (type.equals(ProjectType.LOCAL)) {
+            name = getRemoteId();
+        } else {
             url = getUrl();
             if (ignorePassword) {
                 password = "";
@@ -886,7 +888,7 @@ public class NewProjectFragment extends Fragment {
 
         DBProject newProject = new DBProject(
                 0, remoteId, password, name, url,
-                email, null, type, Long.valueOf(0), null
+                email, null, type, 0L, null
         );
         long pid = db.addProject(newProject);
 
@@ -897,7 +899,7 @@ public class NewProjectFragment extends Fragment {
 
         showToast(getString(R.string.project_added_success), Toast.LENGTH_LONG);
 
-        Log.i(TAG, "PROJECT local id : "+pid+" : "+newProject);
+        Log.i(TAG, "PROJECT local id : " + pid + " : " + newProject);
         return pid;
     }
 

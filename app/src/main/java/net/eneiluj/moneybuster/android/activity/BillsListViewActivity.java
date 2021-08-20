@@ -1827,7 +1827,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         // just a way to write all members
         for (DBMember m : members) {
             payerActive = m.isActivated() ? 1 : 0;
-            fileContent += "deleteMeIfYouWant,1,1970-01-01,\"" + m.getName() + "\"," + m.getWeight() + "," +
+            fileContent += "deleteMeIfYouWant,1,1970-01-01,666,\"" + m.getName() + "\"," + m.getWeight() + "," +
                     payerActive + ",\"" + m.getName() + "\",n,,\n";
         }
         for (DBBill b : bills) {

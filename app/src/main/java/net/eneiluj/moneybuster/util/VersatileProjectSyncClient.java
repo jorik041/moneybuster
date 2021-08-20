@@ -8,7 +8,6 @@ import androidx.annotation.WorkerThread;
 
 import com.nextcloud.android.sso.aidl.NextcloudRequest;
 import com.nextcloud.android.sso.api.NextcloudAPI;
-import com.nextcloud.android.sso.api.QueryParam;
 import com.nextcloud.android.sso.api.Response;
 import com.nextcloud.android.sso.exceptions.NextcloudHttpRequestFailedException;
 import com.nextcloud.android.sso.exceptions.TokenMismatchException;
@@ -32,6 +31,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -590,18 +590,18 @@ public class VersatileProjectSyncClient {
     private ResponseData requestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, List<String> paramKeys, List<String> paramValues) throws TokenMismatchException, NextcloudHttpRequestFailedException {
         StringBuffer result = new StringBuffer();
 
-        List<QueryParam> qParams = null;
+        Map<String, String> params = null;
         if (paramKeys != null && paramValues != null) {
-            qParams = new ArrayList<>();
+            params = new HashMap<>();
             for (int i=0; i < paramKeys.size(); i++) {
                 String key = paramKeys.get(i);
                 String value = paramValues.get(i);
-                qParams.add(new QueryParam(key, value));
+                params.put(key, value);
             }
         }
 
         NextcloudRequest nextcloudRequest;
-        if (qParams == null) {
+        if (params == null) {
             nextcloudRequest = new NextcloudRequest.Builder()
                     .setMethod(method)
                     .setUrl(target).build();
@@ -609,7 +609,8 @@ public class VersatileProjectSyncClient {
             nextcloudRequest = new NextcloudRequest.Builder()
                     .setMethod(method)
                     .setUrl(target)
-                    .setParameter(qParams)
+                    // TODO replace with new stuff
+                    .setParameter(params)
                     .build();
         }
 

@@ -10,7 +10,6 @@ import androidx.annotation.WorkerThread;
 
 import com.nextcloud.android.sso.aidl.NextcloudRequest;
 import com.nextcloud.android.sso.api.NextcloudAPI;
-import com.nextcloud.android.sso.api.QueryParam;
 import com.nextcloud.android.sso.api.Response;
 import com.nextcloud.android.sso.exceptions.NextcloudHttpRequestFailedException;
 import com.nextcloud.android.sso.exceptions.TokenMismatchException;
@@ -29,6 +28,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.Map;
 
 import at.bitfire.cert4android.CustomCertManager;
 
@@ -96,11 +96,11 @@ public class CospendClient {
         }
     }
 
-    private VersatileProjectSyncClient.ResponseData requestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, List<QueryParam> qParams) throws TokenMismatchException, NextcloudHttpRequestFailedException {
+    private VersatileProjectSyncClient.ResponseData requestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, Map<String, String> params) throws TokenMismatchException, NextcloudHttpRequestFailedException {
         StringBuffer result = new StringBuffer();
 
         NextcloudRequest nextcloudRequest;
-        if (qParams == null) {
+        if (params == null) {
             nextcloudRequest = new NextcloudRequest.Builder()
                     .setMethod(method)
                     .setUrl(target).build();
@@ -108,7 +108,7 @@ public class CospendClient {
             nextcloudRequest = new NextcloudRequest.Builder()
                     .setMethod(method)
                     .setUrl(target)
-                    .setParameter(qParams)
+                    .setParameter(params)
                     .build();
         }
 
@@ -148,12 +148,12 @@ public class CospendClient {
         return new VersatileProjectSyncClient.ResponseData(result.toString(), "", 0);
     }
 
-    private VersatileProjectSyncClient.ResponseData imageRequestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, List<QueryParam> qParams) throws TokenMismatchException, NextcloudHttpRequestFailedException {
+    private VersatileProjectSyncClient.ResponseData imageRequestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, Map<String, String> params) throws TokenMismatchException, NextcloudHttpRequestFailedException {
         StringBuffer result = new StringBuffer();
         String strBase64 = "";
 
         NextcloudRequest nextcloudRequest;
-        if (qParams == null) {
+        if (params == null) {
             nextcloudRequest = new NextcloudRequest.Builder()
                     .setMethod(method)
                     .setUrl(target).build();
@@ -161,7 +161,7 @@ public class CospendClient {
             nextcloudRequest = new NextcloudRequest.Builder()
                     .setMethod(method)
                     .setUrl(target)
-                    .setParameter(qParams)
+                    .setParameter(params)
                     .build();
         }
 

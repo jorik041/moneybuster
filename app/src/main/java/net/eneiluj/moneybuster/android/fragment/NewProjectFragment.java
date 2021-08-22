@@ -1160,13 +1160,26 @@ public class NewProjectFragment extends Fragment {
                                 mainCurrencyName = currencyname;
                             }
                             currencies.add(new DBCurrency(0, 0, 0, currencyname, Double.parseDouble(exchangeRate)));
-                        } else if (currentSection == "bills") {
-                            what = nextLine[columns.get("what")];
-                            comment = nextLine[columns.get("comment")];
-                            amount = Double.parseDouble(nextLine[columns.get("amount")]);
+                        } else if ("bills".equals(currentSection)) {
+                            // skip lines with only empty field values
+                            boolean allFieldsEmpty = true;
+                            for (String field: nextLine) {
+                                if (!"".equals(field)) {
+                                    allFieldsEmpty = false;
+                                    break;
+                                }
+                            }
+                            if (allFieldsEmpty) {
+                                previousLineEmpty = true;
+                                row++;
+                                continue;
+                            }
+                            what = columns.containsKey("what") ? nextLine[columns.get("what")] : "";
+                            comment = columns.containsKey("comment") ? nextLine[columns.get("comment")] : "";
+                            amount = columns.containsKey("amount") ? Double.parseDouble(nextLine[columns.get("amount")]) : 0;
                             // get timestamp in priority
                             if (columns.containsKey("timestamp")) {
-                                timestamp = Long.valueOf(nextLine[columns.get("timestamp")]);
+                                timestamp = Long.parseLong(nextLine[columns.get("timestamp")]);
                             } else if (columns.containsKey("date")) {
                                 dateStr = nextLine[columns.get("date")];
                                 try {
@@ -1180,9 +1193,9 @@ public class NewProjectFragment extends Fragment {
                                 timestamp = 0;
                             }
 
-                            payer_name = nextLine[columns.get("payer_name")];
-                            payer_weight = Double.parseDouble(nextLine[columns.get("payer_weight")]);
-                            owersStr = nextLine[columns.get("owers")];
+                            payer_name = columns.containsKey("payer_name") ? nextLine[columns.get("payer_name")] : "";
+                            payer_weight = columns.containsKey("payer_name") ? Double.parseDouble(nextLine[columns.get("payer_weight")]) : 1;
+                            owersStr = columns.containsKey("owers") ? nextLine[columns.get("owers")] : "";
                             payer_active = columns.containsKey("payer_active") && nextLine[columns.get("payer_active")].equals("1");
                             categoryid = (columns.containsKey("categoryid") && !"".equals(nextLine[columns.get("categoryid")])) ? nextLine[columns.get("categoryid")] : "0";
                             paymentmodeid = (columns.containsKey("paymentmodeid") && !"".equals(nextLine[columns.get("paymentmodeid")])) ? nextLine[columns.get("paymentmodeid")] : "0";
@@ -1198,7 +1211,7 @@ public class NewProjectFragment extends Fragment {
                             // ignore "deleteMeIfYouWant" bills that are just there
                             // to make sure we add members
                             if (!"deleteMeIfYouWant".equals(what)) {
-                                billRemoteIdToOwerStr.put(Long.valueOf(row), owersStr);
+                                billRemoteIdToOwerStr.put((long) row, owersStr);
                                 owersArray = owersStr.split(", ");
                                 for (int i = 0; i < owersArray.length; i++) {
                                     if (owersArray[i].trim().length() == 0) {

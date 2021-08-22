@@ -1826,9 +1826,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fileContent += "what,amount,date,timestamp,payer_name,payer_weight,payer_active,owers,repeat,categoryid,paymentmode\n";
         // just a way to write all members
         for (DBMember m : members) {
-            payerActive = m.isActivated() ? 1 : 0;
-            fileContent += "deleteMeIfYouWant,1,1970-01-01,666,\"" + m.getName() + "\"," + m.getWeight() + "," +
-                    payerActive + ",\"" + m.getName() + "\",n,,\n";
+            DBBill fakeBill = new DBBill(
+                    0, 0, projectId, m.getId(), 1, 666,
+                    "deleteMeIfYouWant", DBBill.STATE_OK, DBBill.NON_REPEATED,
+                    DBBill.PAYMODE_NONE, 0, "", 0
+            );
+            List<DBBillOwer> fakeBillOwers = new ArrayList<>();
+            fakeBillOwers.add(new DBBillOwer(0, 0, m.getId()));
+            fakeBill.setBillOwers(fakeBillOwers);
+            bills.add(0, fakeBill);
         }
         for (DBBill b : bills) {
             payerId = b.getPayerId();

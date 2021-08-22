@@ -1105,9 +1105,15 @@ public class NewProjectFragment extends Fragment {
                 CSVReader reader = new CSVReader(inputStreamReader);
                 String[] nextLine;
                 while ((nextLine = reader.readNext()) != null) {
-                    Log.d(TAG, "LEN "+nextLine.length+" = "+nextLine[0]);
-                    // if len==1 and content == "" => empty line
-                    if (nextLine.length == 1 && nextLine[0].equals("")) {
+                    // check if all fields are empty
+                    boolean allFieldsEmpty = true;
+                    for (String field: nextLine) {
+                        if (!"".equals(field)) {
+                            allFieldsEmpty = false;
+                            break;
+                        }
+                    }
+                    if (allFieldsEmpty) {
                         previousLineEmpty = true;
                     } else if (row == 0 || previousLineEmpty) {
                         previousLineEmpty = false;
@@ -1146,13 +1152,13 @@ public class NewProjectFragment extends Fragment {
                             color = nextLine[columns.get("color")];
                             categoryid = nextLine[columns.get("categoryid")];
                             categoryname = nextLine[columns.get("categoryname")];
-                            categories.add(new DBCategory(0, Long.valueOf(categoryid), 0, categoryname, icon, color));
+                            categories.add(new DBCategory(0, Long.parseLong(categoryid), 0, categoryname, icon, color));
                         } else if (currentSection.equals("paymentmodes")) {
                             icon = nextLine[columns.get("icon")];
                             color = nextLine[columns.get("color")];
                             paymentmodeid = nextLine[columns.get("categoryid")];
                             paymentmodename = nextLine[columns.get("categoryname")];
-                            paymentModes.add(new DBPaymentMode(0, Long.valueOf(paymentmodeid), 0, paymentmodename, icon, color));
+                            paymentModes.add(new DBPaymentMode(0, Long.parseLong(paymentmodeid), 0, paymentmodename, icon, color));
                         } else if (currentSection.equals("currencies")) {
                             currencyname = nextLine[columns.get("currencyname")];
                             exchangeRate = nextLine[columns.get("exchange_rate")];
@@ -1161,19 +1167,6 @@ public class NewProjectFragment extends Fragment {
                             }
                             currencies.add(new DBCurrency(0, 0, 0, currencyname, Double.parseDouble(exchangeRate)));
                         } else if ("bills".equals(currentSection)) {
-                            // skip lines with only empty field values
-                            boolean allFieldsEmpty = true;
-                            for (String field: nextLine) {
-                                if (!"".equals(field)) {
-                                    allFieldsEmpty = false;
-                                    break;
-                                }
-                            }
-                            if (allFieldsEmpty) {
-                                previousLineEmpty = true;
-                                row++;
-                                continue;
-                            }
                             what = columns.containsKey("what") ? nextLine[columns.get("what")] : "";
                             comment = columns.containsKey("comment") ? nextLine[columns.get("comment")] : "";
                             amount = columns.containsKey("amount") ? Double.parseDouble(nextLine[columns.get("amount")]) : 0;
@@ -1229,7 +1222,7 @@ public class NewProjectFragment extends Fragment {
                                         Integer.parseInt(categoryid), comment, Integer.parseInt(paymentmodeid)
                                     )
                                 );
-                                billRemoteIdToPayerName.put(Long.valueOf(row), payer_name);
+                                billRemoteIdToPayerName.put((long) row, payer_name);
                             }
                         }
                     }

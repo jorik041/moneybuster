@@ -457,6 +457,7 @@ public class ServerResponse {
             JSONArray jsonBillIds = json.getJSONArray("allBillIds");
             for (int i = 0; i < jsonBillIds.length(); i++) {
                 billIds.add(jsonBillIds.getLong(i));
+                Log.e("billid", "BILLID " + jsonBillIds.getLong(i));
             }
         }
         return billIds;

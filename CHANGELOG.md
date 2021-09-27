@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-## 0.1.12 – 2021-08-17
+## 0.1.12 – 2021-09-26
 ### Added
 - bill duplication from bill edition
 - "comment" field for local and cospend projects
@@ -21,8 +21,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - now possible to create bills with only one member
 - improve project selector design, add type icons
 - adapt to new custom payment modes management
+  [#74](https://gitlab.com/eneiluj/moneybuster/issues/74) @OSevangelist
 
 ### Fixed
+- make import more robust, consider lines with empty values as empty lines
+  [#73](https://gitlab.com/eneiluj/moneybuster/issues/73) @kyzkazk
+- fix missing field in exported dummy bills
+  [#73](https://gitlab.com/eneiluj/moneybuster/issues/73) @kyzkazk
 - fix project creation using NC account, don't store the password locally
   [#58](https://gitlab.com/eneiluj/moneybuster/issues/58) @call-me-matt
 

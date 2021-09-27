@@ -20,8 +20,8 @@
     <string name="setting_payer">Kdo zaplatil?</string>
     <string name="setting_all">Vše</string>
     <string name="setting_none">Žádné</string>
-    <string name="setting_comment">Comment</string>
-    <string name="duplicate_bill">Duplicate bill</string>
+    <string name="setting_comment">Komentář</string>
+    <string name="duplicate_bill">Duplikovat účet</string>
     <string name="currency_dialog_title">Převést stávající částku z jiné měny na %s</string>
     <string name="no_currency_error">Není zde žádná další měna</string>
     <string name="setting_amount">Kolik?</string>
@@ -68,7 +68,7 @@
     <string name="new_project_what_todo">Co chcete udělat?</string>
     <string name="new_project_where">Kde?</string>
     <string name="where_local">Jen můj telefon (lokální)</string>
-    <string name="where_ihm">IHateMoney server</string>
+    <string name="where_ihm">Server s IHateMoney</string>
     <string name="where_cospend">Cospend Nextcloud aplikace</string>
     <string name="where_local_short">Místní</string>
     <string name="where_ihm_short">IHateMoney</string>
@@ -100,17 +100,17 @@
     <string name="setting_email">E-mail (vzdálený)</string>
     <string name="project_added_success">Projekt úspěšně přidán do MoneyBuster</string>
     <string name="action_search">Hledat</string>
-    <string name="action_search_in_project">Search in %s</string>
+    <string name="action_search_in_project">Hledat v %s</string>
     <string name="simple_error">Chyba</string>
-    <string name="simple_close">Close</string>
+    <string name="simple_close">Zavřít</string>
     <string name="simple_loading">Načítá se</string>
     <string name="simple_remove">Odstranit</string>
     <string name="sync_error_dialog_title">Synchronizace projektu se nezdařila</string>
-    <string name="sync_error_dialog_full_content">Synchronization with project %1$s failed. Error message:\n\n%2$s\n\nThe associated remote project might not exist anymore. If so, you could remove this project from MoneyBuster.</string>
-    <string name="error_maintenance_mode">The Nextcloud instance is probably in maintenance mode</string>
-    <string name="error_401">401 Unauthorized</string>
-    <string name="error_403">403 Forbidden</string>
-    <string name="error_404">404 Not Found</string>
+    <string name="sync_error_dialog_full_content">Synchronizace s projektem %1$s se nezdařila. Chybové hlášení:\n\n%2$s\n\nPřidružený vzdálený projekt už možná neexistuje. Pokud tomu tak je, můžete ho odstranit z MoneyBuster.</string>
+    <string name="error_maintenance_mode">Na dané instanci Nextcloud pravděpodobně probíhá údržba</string>
+    <string name="error_401">401 (chybí oprávnění)</string>
+    <string name="error_403">403 (zamítnuto)</string>
+    <string name="error_404">404 (nenalezeno)</string>
     <string name="simple_do_nothing">Nedělat nic</string>
     <string name="creating_remote_project">Vytváření vzdáleného projektu</string>
     <string name="simple_cancel">Storno</string>
@@ -150,9 +150,9 @@
     <string name="fab_manage_members">Spravovat členy</string>
     <string name="fab_export_project">Exportovat projekt</string>
     <string name="drawer_last_sync_text">Naposledy synchronizováno: %1$02d:%2$02d</string>
-    <string name="scan_qrcode_tooltip">Scan a Cospend/IHateMoney QRCode</string>
-    <string name="new_project_from_nextcloud_tooltip">Choose project from Nextcloud account</string>
-    <string name="import_tooltip">Import from CSV file</string>
+    <string name="scan_qrcode_tooltip">Naskenujte QR kód z Cospend/IHateMoney</string>
+    <string name="new_project_from_nextcloud_tooltip">Vyberte projekt z Nextcloud účtu</string>
+    <string name="import_tooltip">Import z CSV souboru</string>
     <string name="import_error_owers">Pokažené CSV, chybní dlužníci na řádku %1$d</string>
     <string name="import_error_date">Pokažené CSV, chybné datum na řádku %1$d</string>
     <string name="import_error_header">Pokažené CSV, chybné názvy sloupců na řádku %1$d</string>
@@ -192,7 +192,7 @@
     <string name="settings_submit">Připojit</string>
     <string name="settings_submitting">Připojování &#8230;</string>
     <string name="settings_theme_title">Motiv vzhledu</string>
-    <string name="settings_night_mode_title">Theme</string>
+    <string name="settings_night_mode_title">Motiv vzhledu</string>
     <string name="settings_offline_mode_title">Režim bez připojení k síti</string>
     <string name="settings_offline_mode_summary">Nesynchronizovat automaticky. Synchronizovat pouze na vyžádání uživatelem.</string>
     <string name="settings_smart_sync_title">Inteligentní synchronizace s Cospend</string>
@@ -238,10 +238,10 @@
     <string name="stats_balance">Zůstatek</string>
     <string name="fab_statistics">Statistiky projektu</string>
     <string name="fab_settle">Vypořádat</string>
-    <string name="project_add_success_message">Project %1$s was successfully added</string>
-    <string name="project_create_success_message">Project %1$s was successfully created</string>
+    <string name="project_add_success_message">Projekt %1$s byl úspěšně přidán</string>
+    <string name="project_create_success_message">Projekt %1$s byl úspěšně vytvořen</string>
     <string name="project_add_success_title">Projekt přidán</string>
-    <string name="project_create_success_title">Project created</string>
+    <string name="project_create_success_title">Projekt vytvořen</string>
     <string name="import_bad_url">Pokažený odkaz MoneyBuster, nelze importovat</string>
     <string name="import_no_data">Při přidávání nového projektu se něco pokazilo</string>
     <string name="fab_scan_qrcode_import">Importovat MB QR kód</string>
@@ -264,7 +264,7 @@
     <string name="drawer_no_project">Není zde žádný projekt.\nVytvoříte/přidáte ho klepnutím sem</string>
     <string name="drawer_no_account">Pro připojení k Nextcloud účtu klikněte sem</string>
     <string name="choose_project_to_select">Vyberte projekt</string>
-    <string name="add_bill_impossible_no_member">At least one activated member is required to add a bill</string>
+    <string name="add_bill_impossible_no_member">Pro přidání účtu je zapotřebí alespoň jednoho aktivovaného člena</string>
     <string name="edit_project_local_impossible">Nemožné pro lokální projekty</string>
     <string name="choose_account_project_dialog_title">Vyberte projekt ze svého Nextcloud účtu</string>
     <string name="choose_account_project_dialog_impossible">Ve vašem Nextcloud účtu není žádný Cospend projekt</string>
@@ -298,7 +298,7 @@
     <string name="error_create_remote_project_helper">Chyba při vytváření projektu na protějšku: %s</string>
     <string name="error_edit_remote_project_helper">Chyba při upravování projektu na protějšku: %s</string>
     <string name="error_token_mismatch">Prosím v nastavení proveďte opětovné ověření svého SSO účtu</string>
-    <string name="error_req_failed">Request failed</string>
+    <string name="error_req_failed">Požadavek se nezdařil</string>
     <!-- Snackbar Actions -->
     <!-- URLs -->
     <!-- About -->
@@ -328,7 +328,7 @@
     <!-- Key / Values for preferences -->
     <string name="pref_value_theme_light">Světlý</string>
     <string name="pref_value_theme_dark">Tmavý</string>
-    <string name="pref_value_theme_system">Follow system</string>
+    <string name="pref_value_theme_system">Dle nastavení systému</string>
     <string name="avatar">Profilový obrázek</string>
     <string name="fallback_weblogin_text">Vrátit se ke staré metodě přihlašování</string>
     <string name="fallback_weblogin_back">Zpět</string>

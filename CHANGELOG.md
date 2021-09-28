@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-## 0.1.12 – 2021-09-26
+## 0.1.12 – 2021-09-28
 ### Added
 - bill duplication from bill edition
 - "comment" field for local and cospend projects

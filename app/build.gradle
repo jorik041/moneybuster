@@ -7,8 +7,8 @@ android {
         applicationId "net.eneiluj.moneybuster"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 31
-        versionName "0.1.11"
+        versionCode 32
+        versionName "0.1.12"
         vectorDrawables.useSupportLibrary true
         resValue "string", "applicationId", applicationId
     }

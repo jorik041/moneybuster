@@ -166,7 +166,7 @@ public class SupportUtil {
                                   Map<Long, Double> membersBalance,
                                   Map<Long, Double> membersPaid,
                                   Map<Long, Double> membersSpent,
-                                  int catId, String paymentMode,
+                                  int catId, int paymentModeId,
                                   String dateMin, String dateMax) {
         int nbBills = 0;
         Map<Long, Double> membersWeight = new HashMap<>();
@@ -186,9 +186,9 @@ public class SupportUtil {
         for (DBBill b : dbBills) {
             // don't take deleted bills and respect category filter
             if (b.getState() != DBBill.STATE_DELETED &&
-                    (catId == 0 || catId == -100 || b.getCategoryRemoteId() == catId) &&
+                    (catId == -1000 || catId == -100 || b.getCategoryRemoteId() == catId) &&
                     (catId != -100 || b.getCategoryRemoteId() != DBBill.CATEGORY_REIMBURSEMENT) &&
-                    (paymentMode == null || b.getPaymentMode().equals(paymentMode)) &&
+                    (paymentModeId == -1000 || b.getPaymentModeRemoteId() == paymentModeId) &&
                     (dateMin == null || b.getDate().compareTo(dateMin) >= 0) &&
                     (dateMax == null || b.getDate().compareTo(dateMax) <= 0)) {
                 nbBills++;

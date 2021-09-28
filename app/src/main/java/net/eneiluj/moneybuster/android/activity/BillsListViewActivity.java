@@ -101,6 +101,7 @@ import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBCategory;
 import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.DBPaymentMode;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.Item;
 import net.eneiluj.moneybuster.model.ItemAdapter;
@@ -809,6 +810,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             hardCodedCategoryNamesTmp = new String[]{
                                     getString(R.string.category_all),
                                     getString(R.string.category_all_except_reimbursement),
+                                    getString(R.string.category_none),
                                     "\uD83D\uDED2 " + getString(R.string.category_groceries),
                                     "\uD83C\uDF89 " + getString(R.string.category_leisure),
                                     "\uD83C\uDFE0 " + getString(R.string.category_rent),
@@ -822,15 +824,19 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                     "\uD83D\uDE8C " + getString(R.string.category_transport),
                                     "\uD83C\uDFBE " + getString(R.string.category_sport)
                             };
-                            hardCodedCategoryIdsTmp = new String[]{"0", "-100", "-1", "-2", "-3", "-4", "-5", "-6", "-10", "-11", "-12", "-13", "-14", "-15"};
+                            hardCodedCategoryIdsTmp = new String[]{
+                                "-1000", "-100", "0", "-1", "-2", "-3", "-4", "-5", "-6",
+                                "-10", "-11", "-12", "-13", "-14", "-15"
+                            };
                         } else {
                             // COSPEND projects => just "no cat" and "reimbursement"
                             hardCodedCategoryNamesTmp = new String[]{
                                     getString(R.string.category_all),
                                     getString(R.string.category_all_except_reimbursement),
+                                    getString(R.string.category_none),
                                     "\uD83D\uDCB0 " + getString(R.string.category_reimbursement)
                             };
-                            hardCodedCategoryIdsTmp = new String[]{"0", "-100", "-11"};
+                            hardCodedCategoryIdsTmp = new String[]{"-1000", "-100", "0", "-11"};
                         }
 
                         List<DBCategory> userCategories = db.getCategories(selectedProjectId);
@@ -838,17 +844,19 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         List<String> categoryIdList = new ArrayList<>();
                         categoryIdList.add(hardCodedCategoryIdsTmp[0]);
                         categoryIdList.add(hardCodedCategoryIdsTmp[1]);
+                        categoryIdList.add(hardCodedCategoryIdsTmp[2]);
                         List<String> categoryNameList = new ArrayList<>();
                         categoryNameList.add(hardCodedCategoryNamesTmp[0]);
                         categoryNameList.add(hardCodedCategoryNamesTmp[1]);
+                        categoryNameList.add(hardCodedCategoryNamesTmp[2]);
                         for (DBCategory cat : userCategories) {
                             categoryIdList.add(String.valueOf(cat.getRemoteId()));
                             categoryNameList.add(cat.getIcon()+" "+cat.getName());
                         }
-                        for (int i = 2; i < hardCodedCategoryIdsTmp.length; i++) {
+                        for (int i = 3; i < hardCodedCategoryIdsTmp.length; i++) {
                             categoryIdList.add(hardCodedCategoryIdsTmp[i]);
                         }
-                        for (int i = 2; i < hardCodedCategoryNamesTmp.length; i++) {
+                        for (int i = 3; i < hardCodedCategoryNamesTmp.length; i++) {
                             categoryNameList.add(hardCodedCategoryNamesTmp[i]);
                         }
 
@@ -896,17 +904,34 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                         // PAYMENT MODE
                         List<String> paymentModeNameList = new ArrayList<>();
+                        List<String> paymentModeIdList = new ArrayList<>();
+
                         paymentModeNameList.add(getString(R.string.payment_mode_all));
-                        paymentModeNameList.add("\uD83D\uDCB3 "+getString(R.string.payment_mode_credit_card));
-                        paymentModeNameList.add("\uD83D\uDCB5 "+getString(R.string.payment_mode_cash));
-                        paymentModeNameList.add("\uD83C\uDFAB "+getString(R.string.payment_mode_check));
-                        paymentModeNameList.add("⇄ "+getString(R.string.payment_mode_transfer));
-                        paymentModeNameList.add("\uD83C\uDF0E "+getString(R.string.payment_mode_online));
+                        paymentModeIdList.add("-1000");
+                        paymentModeNameList.add(getString(R.string.payment_mode_none));
+                        paymentModeIdList.add("0");
+                        // local projects => hardcoded pms
+                        if (ProjectType.LOCAL.equals(proj.getType())) {
+                            paymentModeNameList.add("\uD83D\uDCB3 "+getString(R.string.payment_mode_credit_card));
+                            paymentModeIdList.add("-1");
+                            paymentModeNameList.add("\uD83D\uDCB5 "+getString(R.string.payment_mode_cash));
+                            paymentModeIdList.add("-2");
+                            paymentModeNameList.add("\uD83C\uDFAB "+getString(R.string.payment_mode_check));
+                            paymentModeIdList.add("-3");
+                            paymentModeNameList.add("⇄ "+getString(R.string.payment_mode_transfer));
+                            paymentModeIdList.add("-4");
+                            paymentModeNameList.add("\uD83C\uDF0E "+getString(R.string.payment_mode_online));
+                            paymentModeIdList.add("-5");
+                        }
+
+                        List<DBPaymentMode> userPaymentModes = db.getPaymentModes(selectedProjectId);
+                        for (DBPaymentMode pm : userPaymentModes) {
+                            paymentModeIdList.add(String.valueOf(pm.getRemoteId()));
+                            paymentModeNameList.add(pm.getIcon() + " " + pm.getName());
+                        }
 
                         String[] paymentModeNames = paymentModeNameList.toArray(new String[paymentModeNameList.size()]);
-                        //String[] repeatNames = getResources().getStringArray(R.array.repeatBillEntries);
-
-                        String[] paymentModeIds = getResources().getStringArray(R.array.paymentModeValues);
+                        String[] paymentModeIds = paymentModeIdList.toArray(new String[paymentModeIdList.size()]);
 
                         ArrayList<Map<String, String>> dataP = new ArrayList<>();
                         for (int i = 0; i < paymentModeNames.length; i++) {
@@ -1164,7 +1189,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     int nbBills = SupportUtil.getStatsOfProject(
                             proj.getId(), db,
                             membersNbBills, membersBalance, membersPaid, membersSpent,
-                            0, null, null, null
+                            -1000, -1000, null, null
                     );
 
                     List<DBMember> membersSortedByName = db.getMembersOfProject(proj.getId(), MoneyBusterSQLiteOpenHelper.key_name);
@@ -1680,25 +1705,22 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         final DBProject proj = db.getProject(selectedProjectId);
         // get filter values
         int categoryId;
-        String paymentMode;
+        int paymentModeId;
         if (!proj.getType().equals(ProjectType.IHATEMONEY)) {
             Spinner statsCategorySpinner = tView.findViewById(R.id.statsCategorySpinner);
             Map<String, String> item = (Map<String, String>) statsCategorySpinner.getSelectedItem();
-            categoryId = Integer.valueOf(item.get("id"));
+            categoryId = Integer.parseInt(item.get("id"));
 
             Spinner statsPaymentModeSpinner = tView.findViewById(R.id.statsPaymentModeSpinner);
             Map<String, String> itemP = (Map<String, String>) statsPaymentModeSpinner.getSelectedItem();
-            paymentMode = itemP.get("id");
-            if (paymentMode.equals(DBBill.PAYMODE_NONE)) {
-                paymentMode = null;
-            }
+            paymentModeId = Integer.parseInt(itemP.get("id"));
         } else {
-            categoryId = 0;
-            paymentMode = null;
+            categoryId = -1;
+            paymentModeId = -1;
         }
 
         Log.v(TAG, "DATESSSS "+ dateMin + " and "+dateMax);
-        Log.v(TAG, "CATGFIL "+ categoryId + " and PAYMODEFIL "+paymentMode);
+        Log.v(TAG, "CATGFIL "+ categoryId + " and PAYMODEFIL "+paymentModeId);
 
         // get stats
         Map<Long, Integer> membersNbBills = new HashMap<>();
@@ -1711,7 +1733,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         int nbBills = SupportUtil.getStatsOfProject(
                 selectedProjectId, db,
                 membersNbBills, membersBalance, membersPaid, membersSpent,
-                categoryId, paymentMode, dateMin, dateMax
+                categoryId, paymentModeId, dateMin, dateMax
         );
 
         List<DBMember> membersSortedByName = db.getMembersOfProject(selectedProjectId, null);
@@ -2359,7 +2381,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             int nbBills = SupportUtil.getStatsOfProject(
                 selectedProjectId, db,
                 membersNbBills, membersBalance, membersPaid, membersSpent,
-                0, null, null, null
+                -1000, -1000, null, null
             );
 
             itemAll.count = null;

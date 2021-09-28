@@ -980,15 +980,24 @@ public class EditBillFragment extends Fragment {
 
             // PAYMENT MODE
             List<DBPaymentMode> userPaymentModes = db.getPaymentModes(bill.getProjectId());
-            String[] hardCodedPaymentModeNamesTmp = new String[]{
-                "❌ "+getString(R.string.payment_mode_none),
-                "\uD83D\uDCB3 "+getString(R.string.payment_mode_credit_card),
-                "\uD83D\uDCB5 "+getString(R.string.payment_mode_cash),
-                "\uD83C\uDFAB "+getString(R.string.payment_mode_check),
-                "⇄ "+getString(R.string.payment_mode_transfer),
-                "\uD83C\uDF0E "+getString(R.string.payment_mode_online)
-            };
-            String[] hardCodedPaymentModeIdsTmp = new String[]{"0", "-1", "-2", "-3", "-4", "-5"};
+            String[] hardCodedPaymentModeNamesTmp;
+            String[] hardCodedPaymentModeIdsTmp;
+            if (ProjectType.LOCAL.equals(projectType)) {
+                hardCodedPaymentModeNamesTmp = new String[]{
+                        "❌ " + getString(R.string.payment_mode_none),
+                        "\uD83D\uDCB3 " + getString(R.string.payment_mode_credit_card),
+                        "\uD83D\uDCB5 " + getString(R.string.payment_mode_cash),
+                        "\uD83C\uDFAB " + getString(R.string.payment_mode_check),
+                        "⇄ " + getString(R.string.payment_mode_transfer),
+                        "\uD83C\uDF0E " + getString(R.string.payment_mode_online)
+                };
+                hardCodedPaymentModeIdsTmp = new String[]{"0", "-1", "-2", "-3", "-4", "-5"};
+            } else {
+                hardCodedPaymentModeNamesTmp = new String[]{
+                        "❌ " + getString(R.string.payment_mode_none)
+                };
+                hardCodedPaymentModeIdsTmp = new String[]{"0"};
+            }
 
             List<String> paymentModeIdList = new ArrayList<>();
             paymentModeIdList.add(hardCodedPaymentModeIdsTmp[0]);

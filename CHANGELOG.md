@@ -5,6 +5,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## 0.1.13 – 2021-10-01
+### Changed
+- new category and payment mode filter entries
+  [#74](https://gitlab.com/eneiluj/moneybuster/issues/74) @OSevangelist
+
+### Fixed
+- payment mode list everywhere
+  [#74](https://gitlab.com/eneiluj/moneybuster/issues/74) @OSevangelist
+
 ## 0.1.12 – 2021-09-28
 ### Added
 - bill duplication from bill edition

@@ -424,6 +424,8 @@ public class VersatileProjectSyncClient {
         String username = null;
         String password = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
+            paramKeys.add("comment");
+            paramValues.add(bill.getComment());
             paramKeys.add("timestamp");
             paramValues.add(String.valueOf(bill.getTimestamp()));
             paramKeys.add("payed_for");

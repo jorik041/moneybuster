@@ -714,6 +714,7 @@ public class EditBillFragment extends Fragment {
                     bill.getTimestamp() == newTimestamp &&
                     bill.getAmount() == newAmount &&
                     bill.getPayerId() == newPayerId &&
+                    newComment.equals(bill.getComment()) &&
                     newRepeat.equals(bill.getRepeat()) &&
                     newPaymentMode.equals(bill.getPaymentMode()) &&
                     newPaymentModeId == bill.getPaymentModeRemoteId() &&

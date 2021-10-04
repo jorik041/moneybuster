@@ -1134,8 +1134,8 @@ public class MoneyBusterServerSyncHelper {
         return (isCospend && projUrl.equals(accountUrl));
     }
 
-    public boolean editRemoteProject(long projId, String newName, String newEmail, String newPassword,
-                                     @Nullable String newMainCurrencyName, ICallback callback) {
+    public boolean editRemoteProject(long projId, @Nullable String newName, @Nullable String newEmail,
+                                     @Nullable String newPassword, @Nullable String newMainCurrencyName, ICallback callback) {
         updateNetworkStatus();
         if (isSyncPossible()) {
             EditRemoteProjectTask editRemoteProjectTask = new EditRemoteProjectTask(projId, newName, newEmail, newPassword, newMainCurrencyName, callback);
@@ -1160,8 +1160,8 @@ public class MoneyBusterServerSyncHelper {
         private final List<Throwable> exceptions = new ArrayList<>();
         private final List<String> errorMessages = new ArrayList<>();
 
-        public EditRemoteProjectTask(long projId, String newName, String newEmail, String newPassword,
-                                     @Nullable String newMainCurrencyName, ICallback callback) {
+        public EditRemoteProjectTask(long projId, @Nullable String newName, @Nullable String newEmail,
+                                     @Nullable String newPassword, @Nullable String newMainCurrencyName, ICallback callback) {
             this.project = dbHelper.getProject(projId);
             this.newName = newName;
             this.newEmail = newEmail;

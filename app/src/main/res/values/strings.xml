@@ -230,6 +230,7 @@
 
 
     <string name="project_sync_success">Project %s synchronized</string>
+    <string name="currency_saved_success">Main currency saved</string>
     <string name="file_saved_success">Project saved in %s</string>
     <string name="write_permission_refused">Write permission refused, impossible to write file</string>
     <string name="add_member_dialog_title">New member name</string>

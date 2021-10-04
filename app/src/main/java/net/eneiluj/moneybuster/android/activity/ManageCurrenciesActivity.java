@@ -7,7 +7,9 @@ import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
+import net.eneiluj.moneybuster.util.ICallback;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -35,6 +38,25 @@ public class ManageCurrenciesActivity extends AppCompatActivity {
     private LinearLayout currenciesTable;
 
     private long selectedProjectID;
+
+    private ICallback editMainCurrencyCallBack = new ICallback() {
+        @Override
+        public void onFinish() {
+        }
+
+        public void onFinish(String result, String message) {
+            if (message.isEmpty()) {
+                showToast(getString(R.string.currency_saved_success), Toast.LENGTH_LONG);
+            } else {
+                // error
+                showToast(getString(R.string.error_edit_remote_project_helper, message), Toast.LENGTH_LONG);
+            }
+        }
+
+        @Override
+        public void onScheduled() {
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +102,11 @@ public class ManageCurrenciesActivity extends AppCompatActivity {
                 mainCurrencyTextEdit.clearFocus();
                 db.updateProject(selectedProjectID, null, null, null, null, null, newMaincurrencyName);
                 db.syncIfRemote(db.getProject(selectedProjectID));
+                if (!db.getMoneyBusterServerSyncHelper()
+                        .editRemoteProject(selectedProjectID, null, null, null, newMaincurrencyName, editMainCurrencyCallBack)
+                ) {
+                    showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
+                }
             }
         });
 
@@ -212,5 +239,11 @@ public class ManageCurrenciesActivity extends AppCompatActivity {
             currenciesTable.addView(row);
 
         }
+    }
+
+    protected void showToast(CharSequence text, int duration) {
+        Context context = this;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 }

@@ -149,17 +149,23 @@ public class VersatileProjectSyncClient {
         return new ServerResponse.ProjectResponse(requestServer(ccm, target, METHOD_GET, null, null, lastETag, username, password));
     }
 
-    public ServerResponse.EditRemoteProjectResponse editRemoteProject(CustomCertManager ccm, DBProject project, String newName, String newEmail, String newPassword,
-                                                                      @Nullable String newMainCurrencyName) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
+    public ServerResponse.EditRemoteProjectResponse editRemoteProject(
+            CustomCertManager ccm, DBProject project, @Nullable String newName, @Nullable String newEmail, @Nullable String newPassword,
+            @Nullable String newMainCurrencyName) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
-        paramKeys.add("name");
-        paramValues.add(newName == null ? "" : newName);
-        paramKeys.add("contact_email");
-        paramValues.add(newEmail == null ? "" : newEmail);
-        paramKeys.add("password");
-        paramValues.add(newPassword == null ? "" : newPassword);
-        // todo add new currency name after asking for api
+        if (newName != null) {
+            paramKeys.add("name");
+            paramValues.add(newName);
+        }
+        if (newEmail != null) {
+            paramKeys.add("contact_email");
+            paramValues.add(newEmail);
+        }
+        if (newPassword != null) {
+            paramKeys.add("password");
+            paramValues.add(newPassword);
+        }
 
         String target;
         String username = null;

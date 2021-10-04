@@ -2,35 +2,36 @@ package net.eneiluj.moneybuster.android.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.Window;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.fragment.EditBillFragment;
 import net.eneiluj.moneybuster.model.DBBill;
+import net.eneiluj.moneybuster.model.DBBillOwer;
+import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.ProjectType;
-import net.eneiluj.moneybuster.util.ThemeUtils;
+import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
-
-//import android.support.v4.app.Fragment;
 
 public class EditBillActivity extends AppCompatActivity implements EditBillFragment.BillFragmentListener {
 
     public static final String PARAM_BILL_ID = "billId";
     public static final String PARAM_PROJECT_ID = "projectId";
     public static final String PARAM_PROJECT_TYPE = "projectType";
+    public static final String PARAM_BILL_ID_TO_DUPLICATE = "billToDuplicate";
+
+    protected MoneyBusterSQLiteOpenHelper db;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
 
@@ -113,11 +114,35 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
     protected void launchNewBill(long projectId) {
         Intent intent = getIntent();
 
-        long newTimestamp = System.currentTimeMillis() / 1000;
-        DBBill newBill = new DBBill(0, 0, projectId, 0, 0, newTimestamp,
-                "", DBBill.STATE_ADDED, DBBill.NON_REPEATED, DBBill.PAYMODE_NONE, DBBill.CATEGORY_NONE);
+        long billIdToDuplicate = intent.getLongExtra(PARAM_BILL_ID_TO_DUPLICATE, 0);
 
-        fragment = EditBillFragment.newInstanceWithNewBill(newBill, getProjectType());
+        DBBill newBill;
+        if (billIdToDuplicate == 0) {
+            long newTimestamp = System.currentTimeMillis() / 1000;
+            newBill = new DBBill(0, 0, projectId, 0, 0, newTimestamp,
+                    "", DBBill.STATE_ADDED, DBBill.NON_REPEATED,
+                    DBBill.PAYMODE_NONE, DBBill.CATEGORY_NONE, "", DBBill.PAYMODE_ID_NONE);
+            fragment = EditBillFragment.newInstanceWithNewBill(newBill, getProjectType());
+        } else {
+            db = MoneyBusterSQLiteOpenHelper.getInstance(this);
+            DBBill btd = db.getBill(billIdToDuplicate);
+            newBill = new DBBill(0, 0, projectId, btd.getPayerId(), btd.getAmount(),
+                    btd.getTimestamp() + 1, btd.getWhat(), DBBill.STATE_ADDED,
+                    btd.getRepeat(), btd.getPaymentMode(), btd.getCategoryRemoteId(),
+                    btd.getComment(), btd.getPaymentModeRemoteId());
+            List<DBBillOwer> btdOwers = btd.getBillOwers();
+            List<DBBillOwer> newBillOwers = new ArrayList<>();
+            for (DBBillOwer btdOwer : btdOwers) {
+                long mid = btdOwer.getMemberId();
+                DBMember member = db.getMember(mid);
+                if (member.isActivated()) {
+                    newBillOwers.add(btdOwer);
+                }
+            }
+            newBill.setBillOwers(newBillOwers);
+            fragment = EditBillFragment.newInstanceWithDuplicatedBill(newBill, getProjectType());
+        }
+
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
     }
 
@@ -142,6 +167,14 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
      */
     public void close() {
         fragment.onCloseBill();
+        finish();
+    }
+
+    public void closeAndDuplicate(long billId) {
+        fragment.onCloseBill();
+        final Intent data = new Intent();
+        data.putExtra(BillsListViewActivity.BILL_TO_DUPLICATE, billId);
+        setResult(RESULT_OK, data);
         finish();
     }
 

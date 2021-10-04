@@ -20,6 +20,8 @@
     <string name="setting_payer">Qui a payé ?</string>
     <string name="setting_all">Tous</string>
     <string name="setting_none">Aucun</string>
+    <string name="setting_comment">Commentaire</string>
+    <string name="duplicate_bill">Dupliquer la facture</string>
     <string name="currency_dialog_title">Convertir le montant actuel depuis autre devise vers %s</string>
     <string name="no_currency_error">Il n\'y a pas de devise supplémentaire</string>
     <string name="setting_amount">Combien ?</string>
@@ -98,11 +100,17 @@
     <string name="setting_email">E-mail (distant)</string>
     <string name="project_added_success">Projet ajouté avec succès dans MoneyBuster</string>
     <string name="action_search">Chercher</string>
+    <string name="action_search_in_project">Chercher dans %s</string>
     <string name="simple_error">Erreur</string>
+    <string name="simple_close">Fermer</string>
     <string name="simple_loading">Chargement</string>
     <string name="simple_remove">Enlever</string>
     <string name="sync_error_dialog_title">Échec de la synchro du projet</string>
-    <string name="sync_error_dialog_content">La synchronisation avec le projet %1$s a échoué.\n\n%2$s\n\nCe projet pourrait ne plus exister. Voulez-vous supprimer le projet localement ?</string>
+    <string name="sync_error_dialog_full_content">La synchronisation avec le projet %1$s a échoué. Message d\'erreur :\n\n%2$s\n\nLe projet distant associé pourrait ne plus exister. Si c\'est le cas, vous pouvez retirer ce projet de MoneyBuster.</string>
+    <string name="error_maintenance_mode">L\'instance Nextcloud est probablement en mode maintenance</string>
+    <string name="error_401">401 Non autorisé</string>
+    <string name="error_403">403 Interdit</string>
+    <string name="error_404">404 Non trouvé</string>
     <string name="simple_do_nothing">Ne rien faire</string>
     <string name="creating_remote_project">Création du projet distant</string>
     <string name="simple_cancel">Annuler</string>
@@ -142,6 +150,9 @@
     <string name="fab_manage_members">Gérer les membres</string>
     <string name="fab_export_project">Exporter le projet</string>
     <string name="drawer_last_sync_text">Dernière synchro : %1$02d:%2$02d</string>
+    <string name="scan_qrcode_tooltip">Scannez un QRCode Cospend/IHateMoney</string>
+    <string name="new_project_from_nextcloud_tooltip">Choisir un projet du compte Nextcloud</string>
+    <string name="import_tooltip">Importer depuis un fichier CSV</string>
     <string name="import_error_owers">CSV mal formé, mauvais débiteur à la ligne %1$d</string>
     <string name="import_error_date">CSV mal formé, mauvaise date à la ligne %1$d</string>
     <string name="import_error_header">CSV mal formé, mauvais nom de colonne à la ligne %1$d</string>
@@ -181,6 +192,7 @@
     <string name="settings_submit">Se connecter</string>
     <string name="settings_submitting">Connexion en cours &#8230;</string>
     <string name="settings_theme_title">Thème</string>
+    <string name="settings_night_mode_title">Thème</string>
     <string name="settings_offline_mode_title">Mode hors-ligne</string>
     <string name="settings_offline_mode_summary">Ne pas synchroniser automatiquement. Seulement à la demande de l\'utilisateur.</string>
     <string name="settings_smart_sync_title">Synchronisation intelligente avec Cospend</string>
@@ -226,8 +238,10 @@
     <string name="stats_balance">Solde</string>
     <string name="fab_statistics">Statistiques du projet</string>
     <string name="fab_settle">Remboursements</string>
-    <string name="project_add_success">Le projet %1$s a bien été créé</string>
+    <string name="project_add_success_message">Le projet %1$s a bien été ajouté</string>
+    <string name="project_create_success_message">Le projet %1$s a bien été créé</string>
     <string name="project_add_success_title">Projet ajouté</string>
+    <string name="project_create_success_title">Projet créé</string>
     <string name="import_bad_url">Lien MoneyBuster mal formé, impossible d\'importer</string>
     <string name="import_no_data">Une erreur s\'est produite lors de l\'ajout d\'un nouveau projet</string>
     <string name="fab_scan_qrcode_import">Importer un QRCode MB</string>
@@ -250,7 +264,7 @@
     <string name="drawer_no_project">Aucun projet trouvé.\nAppuyez ici pour en créer/ajouter un</string>
     <string name="drawer_no_account">Cliquez ici pour vous connecter à un compte Nextcloud</string>
     <string name="choose_project_to_select">Sélectionnez un projet</string>
-    <string name="edit_bill_impossible_no_member">Au moins deux membres actifs sont nécessaires pour ajouter une facture</string>
+    <string name="add_bill_impossible_no_member">Au moins un membre actif est nécessaire pour ajouter une facture</string>
     <string name="edit_project_local_impossible">Impossible pour les projets locaux</string>
     <string name="choose_account_project_dialog_title">Choisissez un projet provenant de votre compte Nextcloud</string>
     <string name="choose_account_project_dialog_impossible">Aucun projet Cospend trouvé dans votre compte Nextcloud</string>
@@ -284,6 +298,7 @@
     <string name="error_create_remote_project_helper">Erreur à la création du projet distant : %s</string>
     <string name="error_edit_remote_project_helper">Erreur à l\'édition du projet distant : %s</string>
     <string name="error_token_mismatch">Veuillez ré-authentifier votre compte SSO dans les paramètres</string>
+    <string name="error_req_failed">La requête a échoué</string>
     <!-- Snackbar Actions -->
     <!-- URLs -->
     <!-- About -->
@@ -313,6 +328,7 @@
     <!-- Key / Values for preferences -->
     <string name="pref_value_theme_light">Clair</string>
     <string name="pref_value_theme_dark">Sombre</string>
+    <string name="pref_value_theme_system">Suivre le système</string>
     <string name="avatar">Avatar</string>
     <string name="fallback_weblogin_text">Revenir à l\'ancienne méthode d\'authentification</string>
     <string name="fallback_weblogin_back">Précédent</string>

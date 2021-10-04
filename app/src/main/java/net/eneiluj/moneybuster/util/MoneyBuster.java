@@ -3,14 +3,16 @@ package net.eneiluj.moneybuster.util;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
-//import android.preference.PreferenceManager;
+import net.eneiluj.moneybuster.R;
+
 
 public class MoneyBuster extends Application {
-    private static final String DARK_THEME = "darkTheme";
+    private static final String MODE_NIGHT = "modeNight";
 
     @Override
     public void onCreate() {
@@ -18,16 +20,26 @@ public class MoneyBuster extends Application {
         super.onCreate();
     }
 
-    public static void setAppTheme(Boolean darkTheme) {
-        if (darkTheme) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
+    public static void setAppTheme(int mode) {
+        AppCompatDelegate.setDefaultNightMode(mode);
     }
 
-    public static boolean getAppTheme(Context context) {
+    public static int getAppTheme(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(DARK_THEME, false);
+        String strValue = prefs.getString(context.getString(R.string.pref_key_night_mode), String.valueOf(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM));
+        return Integer.parseInt(strValue);
+    }
+
+    public static boolean isDarkTheme(Context context) {
+        int currentNightMode = context.getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK;
+        switch (currentNightMode) {
+            case Configuration.UI_MODE_NIGHT_NO:
+            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                return false;
+            case Configuration.UI_MODE_NIGHT_YES:
+                return true;
+        }
+        return false;
     }
 }

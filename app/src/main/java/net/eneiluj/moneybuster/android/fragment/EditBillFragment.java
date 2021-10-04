@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -55,6 +54,7 @@ import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBCategory;
 import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.DBPaymentMode;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
@@ -64,7 +64,6 @@ import net.eneiluj.moneybuster.util.SupportUtil;
 import net.eneiluj.moneybuster.util.ThemeUtils;
 
 import java.security.NoSuchAlgorithmException;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,6 +82,8 @@ public class EditBillFragment extends Fragment {
     public interface BillFragmentListener {
         void close();
 
+        void closeAndDuplicate(long billId);
+
         void closeOnDelete(long billId);
 
         void onBillUpdated(DBBill bill);
@@ -90,12 +91,14 @@ public class EditBillFragment extends Fragment {
 
     private static final String PARAM_BILL_ID = "billId";
     private static final String PARAM_NEWBILL = "newBill";
+    private static final String PARAM_NEWBILL_IS_DUPLICATED = "newBillIsDuplicated";
     private static final String PARAM_PROJECT_TYPE = "projectType";
     private static final String SAVEDKEY_BILL = "bill";
     private static final String SAVEDKEY_PROJECT_TYPE = "type";
     private static final String SAVEDKEY_ORIGINAL_BILL = "original_bill";
 
     protected DBBill bill;
+    protected boolean billIsDuplicated = false;
 
     private MoneyBusterSQLiteOpenHelper db;
     private BillFragmentListener listener;
@@ -104,6 +107,7 @@ public class EditBillFragment extends Fragment {
 
     private ActionBar toolbar;
     private EditText editWhat;
+    private EditText editComment;
     private EditText editDate;
     private EditText editTime;
     private String isoDate;
@@ -117,8 +121,11 @@ public class EditBillFragment extends Fragment {
     private FloatingActionButton fabSaveBill;
     private Button bAll;
     private Button bNone;
+    private Button duplicateButton;
+    private LinearLayout duplicateLayout;
     private LinearLayout editTimeLayout;
     private LinearLayout editRepeatLayout;
+    private LinearLayout editCommentLayout;
     private LinearLayout editPaymentModeLayout;
     private LinearLayout editCategoryLayout;
 
@@ -148,6 +155,7 @@ public class EditBillFragment extends Fragment {
             toolbar.setTitle(R.string.simple_new_bill);
         }
         editWhat = view.findViewById(R.id.editWhat);
+        editComment = view.findViewById(R.id.editComment);
         editAmount = view.findViewById(R.id.editAmount);
         currencyIcon = view.findViewById(R.id.currencyIcon);
         editDate = view.findViewById(R.id.editDate);
@@ -161,12 +169,13 @@ public class EditBillFragment extends Fragment {
         editCategory = view.findViewById(R.id.editCategorySpinner);
         editTimeLayout = view.findViewById(R.id.editTimeLayout);
         editRepeatLayout = view.findViewById(R.id.editRepeatLayout);
+        editCommentLayout = view.findViewById(R.id.editCommentLayout);
         editPaymentModeLayout = view.findViewById(R.id.editPaymentModeLayout);
         editCategoryLayout = view.findViewById(R.id.editCategoryLayout);
         fabSaveBill = view.findViewById(R.id.fab_edit_ok);
 
         // color
-        boolean darkTheme = MoneyBuster.getAppTheme(getContext());
+        boolean darkTheme = MoneyBuster.isDarkTheme(getContext());
         // if dark theme and main color is black, make fab button lighter/gray
         if (darkTheme && ThemeUtils.primaryColor(getContext()) == Color.BLACK) {
             fabSaveBill.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
@@ -200,6 +209,19 @@ public class EditBillFragment extends Fragment {
                 for (Map.Entry<Long, CheckBox> entry : owerCheckboxes.entrySet()) {
                     entry.getValue().setChecked(false);
                 }
+            }
+
+        });
+        duplicateButton = view.findViewById(R.id.duplicateBillButton);
+        duplicateLayout = view.findViewById(R.id.duplicateBillLayout);
+        if (bill.getId() == 0) {
+            duplicateLayout.setVisibility(View.GONE);
+        }
+        duplicateButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                listener.closeAndDuplicate(bill.getId());
             }
 
         });
@@ -300,8 +322,7 @@ public class EditBillFragment extends Fragment {
 
                     AlertDialog selectDialog = selectBuilder.create();
                     selectDialog.show();
-                }
-                else {
+                } else {
                     showToast(getString(R.string.no_currency_error), Toast.LENGTH_LONG);
                 }
                 // conv method converts, potentially clean "what" and adds an indication about original currency
@@ -313,6 +334,18 @@ public class EditBillFragment extends Fragment {
         editWhat.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 Log.d(TAG, "WHWHWHWHAAAATTT");
+                showHideValidationButtons();
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+        editComment.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                Log.d(TAG, "COMMENT");
                 showHideValidationButtons();
             }
 
@@ -500,6 +533,7 @@ public class EditBillFragment extends Fragment {
                 }
                 //bill = db.getBill(db.addBill(cloudBill));
                 bill = newBill;
+                billIsDuplicated = getArguments().getBoolean(PARAM_NEWBILL_IS_DUPLICATED, false);
             }
         } else {
             bill = (DBBill) savedInstanceState.getSerializable(SAVEDKEY_BILL);
@@ -636,20 +670,26 @@ public class EditBillFragment extends Fragment {
     protected void saveBill(@Nullable ICallback callback) {
         Log.d(getClass().getSimpleName(), "CUSTOM saveData()");
         String newWhat = getWhat();
+        String newComment = getComment();
         long newTimestamp = getTimestamp();
         double newAmount = getAmount();
         long newPayerId = getPayerId();
         String newRepeat = DBBill.NON_REPEATED;
         String newPaymentMode = DBBill.PAYMODE_NONE;
+        int newPaymentModeId = DBBill.PAYMODE_ID_NONE;
         int newCategoryId = DBBill.CATEGORY_NONE;
 
         if (ProjectType.COSPEND.equals(projectType)) {
             newRepeat = getRepeat();
-            newPaymentMode = getPaymentMode();
+            newPaymentModeId = getPaymentModeId();
             newCategoryId = getCategoryId();
         } else if (ProjectType.LOCAL.equals(projectType)) {
-            newPaymentMode = getPaymentMode();
+            newPaymentModeId = getPaymentModeId();
             newCategoryId = getCategoryId();
+        }
+        // still save old payment mode id
+        if (DBBill.newPmIdToOld.containsKey(newPaymentModeId)) {
+            newPaymentMode = DBBill.newPmIdToOld.get(newPaymentModeId);
         }
 
         List<Long> newOwersIds = getOwersIds();
@@ -674,25 +714,32 @@ public class EditBillFragment extends Fragment {
                     bill.getTimestamp() == newTimestamp &&
                     bill.getAmount() == newAmount &&
                     bill.getPayerId() == newPayerId &&
+                    newComment.equals(bill.getComment()) &&
                     newRepeat.equals(bill.getRepeat()) &&
                     newPaymentMode.equals(bill.getPaymentMode()) &&
+                    newPaymentModeId == bill.getPaymentModeRemoteId() &&
                     newCategoryId == bill.getCategoryRemoteId() &&
+                    bill.getComment().equals(newComment) &&
                     !owersChanged
             ) {
                 Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed " + bill.getWhat() + " " + newWhat);
             } else {
                 Log.d(TAG, "====== update bill");
-                db.updateBillAndSync(bill, newPayerId, newAmount, newTimestamp, newWhat, newOwersIds,
-                                     newRepeat, newPaymentMode, newCategoryId);
+                db.updateBillAndSync(
+                    bill, newPayerId, newAmount, newTimestamp, newWhat, newOwersIds,
+                    newRepeat, newPaymentMode, newPaymentModeId, newCategoryId, newComment
+                );
                 //listener.onBillUpdated(bill);
                 //listener.close();
             }
-        }
-        // this is a new bill
-        else {
+        } else {
+            // this is a new bill
             // add the bill
-            DBBill newBill = new DBBill(0, 0, bill.getProjectId(), newPayerId, newAmount,
-                    newTimestamp, newWhat, DBBill.STATE_ADDED, newRepeat, newPaymentMode, newCategoryId);
+            DBBill newBill = new DBBill(
+                0, 0, bill.getProjectId(), newPayerId, newAmount,
+                newTimestamp, newWhat, DBBill.STATE_ADDED, newRepeat,
+                newPaymentMode, newCategoryId, newComment, newPaymentModeId
+            );
             for (long newOwerId : newOwersIds) {
                 newBill.getBillOwers().add(new DBBillOwer(0, 0, newOwerId));
             }
@@ -728,12 +775,24 @@ public class EditBillFragment extends Fragment {
         return f;
     }
 
+    public static EditBillFragment newInstanceWithDuplicatedBill(DBBill newBill, ProjectType projectType) {
+        EditBillFragment f = new EditBillFragment();
+        Bundle b = new Bundle();
+        b.putSerializable(PARAM_NEWBILL, newBill);
+        b.putString(PARAM_PROJECT_TYPE, projectType.getId());
+        b.putBoolean(PARAM_NEWBILL_IS_DUPLICATED, true);
+        f.setArguments(b);
+        return f;
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "ACT EDIT BILL CREATED");
 
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        if (bill.getId() == 0 && "".equals(bill.getWhat())) {
+            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        }
 
         // manage currency icon
         DBProject proj = db.getProject(bill.getProjectId());
@@ -764,7 +823,8 @@ public class EditBillFragment extends Fragment {
 
                 final CheckBox cb = row.findViewById(R.id.owerBox);
 
-                if (bill.getId() == 0 || owerIndex != -1) {
+                if ((bill.getId() == 0 && !billIsDuplicated)
+                        || owerIndex != -1) {
                     cb.setChecked(true);
                 }
                 cb.setText(member.getName());
@@ -859,15 +919,17 @@ public class EditBillFragment extends Fragment {
             }
         }
 
+        editComment.setText(bill.getComment());
+        editWhat.setText(bill.getWhat());
+        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         // select what and show keyboard if this is a new bill
-        if (bill.getId() == 0) {
+        if (bill.getId() == 0 && "".equals(bill.getWhat())) {
             editWhat.setSelectAllOnFocus(true);
             editWhat.requestFocus();
             // show keyboard
-            InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         } else {
-            editWhat.setText(bill.getWhat());
+            inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
         }
 
         Log.v(TAG, "BEFORE TIME INIT");
@@ -879,9 +941,10 @@ public class EditBillFragment extends Fragment {
         editAmount.setText(SupportUtil.normalNumberFormat.format(bill.getAmount()));
 
         // hide the validation button so that it appears if a value changes
-
-        fabSaveBill.hide();
-        Log.d(TAG, "HIIIIIIIIIIDE FAB");
+        if (bill.getId() != 0 || "".equals(bill.getWhat())) {
+            fabSaveBill.hide();
+            Log.d(TAG, "HIIIIIIIIIIDE FAB");
+        }
 
         if (!ProjectType.IHATEMONEY.equals(projectType)) {
             List<String> repeatNameList = new ArrayList<>();
@@ -917,35 +980,62 @@ public class EditBillFragment extends Fragment {
             }
 
             // PAYMENT MODE
+            List<DBPaymentMode> userPaymentModes = db.getPaymentModes(bill.getProjectId());
+            String[] hardCodedPaymentModeNamesTmp;
+            String[] hardCodedPaymentModeIdsTmp;
+            if (ProjectType.LOCAL.equals(projectType)) {
+                hardCodedPaymentModeNamesTmp = new String[]{
+                        "❌ " + getString(R.string.payment_mode_none),
+                        "\uD83D\uDCB3 " + getString(R.string.payment_mode_credit_card),
+                        "\uD83D\uDCB5 " + getString(R.string.payment_mode_cash),
+                        "\uD83C\uDFAB " + getString(R.string.payment_mode_check),
+                        "⇄ " + getString(R.string.payment_mode_transfer),
+                        "\uD83C\uDF0E " + getString(R.string.payment_mode_online)
+                };
+                hardCodedPaymentModeIdsTmp = new String[]{"0", "-1", "-2", "-3", "-4", "-5"};
+            } else {
+                hardCodedPaymentModeNamesTmp = new String[]{
+                        "❌ " + getString(R.string.payment_mode_none)
+                };
+                hardCodedPaymentModeIdsTmp = new String[]{"0"};
+            }
+
+            List<String> paymentModeIdList = new ArrayList<>();
+            paymentModeIdList.add(hardCodedPaymentModeIdsTmp[0]);
             List<String> paymentModeNameList = new ArrayList<>();
-            paymentModeNameList.add("❌ "+getString(R.string.payment_mode_none));
-            paymentModeNameList.add("\uD83D\uDCB3 "+getString(R.string.payment_mode_credit_card));
-            paymentModeNameList.add("\uD83D\uDCB5 "+getString(R.string.payment_mode_cash));
-            paymentModeNameList.add("\uD83C\uDFAB "+getString(R.string.payment_mode_check));
-            paymentModeNameList.add("⇄ "+getString(R.string.payment_mode_transfer));
-            paymentModeNameList.add("\uD83C\uDF0E "+getString(R.string.payment_mode_online));
+            paymentModeNameList.add(hardCodedPaymentModeNamesTmp[0]);
+            for (DBPaymentMode pm : userPaymentModes) {
+                paymentModeIdList.add(String.valueOf(pm.getRemoteId()));
+                paymentModeNameList.add(pm.getIcon() + " " + pm.getName());
+            }
+            for (int i = 1; i < hardCodedPaymentModeIdsTmp.length; i++) {
+                paymentModeIdList.add(hardCodedPaymentModeIdsTmp[i]);
+            }
+            for (int i = 1; i < hardCodedPaymentModeNamesTmp.length; i++) {
+                paymentModeNameList.add(hardCodedPaymentModeNamesTmp[i]);
+            }
 
+            String[] paymentModeIds = paymentModeIdList.toArray(new String[paymentModeIdList.size()]);
             String[] paymentModeNames = paymentModeNameList.toArray(new String[paymentModeNameList.size()]);
-            //String[] repeatNames = getResources().getStringArray(R.array.repeatBillEntries);
 
-            String[] paymentModeIds = getResources().getStringArray(R.array.paymentModeValues);
-            int indexP = Arrays.asList(paymentModeIds).indexOf(bill.getPaymentMode());
+            int indexPm = paymentModeIdList.indexOf(String.valueOf(bill.getPaymentModeRemoteId()));
+            Log.d(TAG, "PM of loaded bill "+bill.getPaymentModeRemoteId());
 
-            ArrayList<Map<String, String>> dataP = new ArrayList<>();
+            ArrayList<Map<String, String>> dataPm = new ArrayList<>();
             for (int i = 0; i < paymentModeNames.length; i++) {
                 HashMap<String, String> hashMap = new HashMap<>();
                 hashMap.put("name", paymentModeNames[i]);
                 hashMap.put("id", paymentModeIds[i]);
-                dataP.add(hashMap);
+                dataPm.add(hashMap);
             }
-            String[] fromP = {"name", "id"};
-            int[] toP = new int[]{android.R.id.text1};
-            SimpleAdapter simpleAdapterP = new SimpleAdapter(this.getContext(), dataP, android.R.layout.simple_spinner_item, fromP, toP);
-            simpleAdapterP.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            editPaymentMode.setAdapter(simpleAdapterP);
+            String[] fromPm = {"name", "id"};
+            int[] toPm = new int[]{android.R.id.text1};
+            SimpleAdapter simpleAdapterPm = new SimpleAdapter(this.getContext(), dataPm, android.R.layout.simple_spinner_item, fromPm, toPm);
+            simpleAdapterPm.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            editPaymentMode.setAdapter(simpleAdapterPm);
 
-            if (indexP > -1) {
-                editPaymentMode.setSelection(indexP);
+            if (indexPm > -1) {
+                editPaymentMode.setSelection(indexPm);
             } else {
                 editPaymentMode.setSelection(0);
             }
@@ -1025,6 +1115,7 @@ public class EditBillFragment extends Fragment {
         if (ProjectType.IHATEMONEY.equals(projectType)) {
             editTimeLayout.setVisibility(View.GONE);
             editRepeatLayout.setVisibility(View.GONE);
+            editCommentLayout.setVisibility(View.GONE);
             editPaymentModeLayout.setVisibility(View.GONE);
             editCategoryLayout.setVisibility(View.GONE);
         } else if (ProjectType.LOCAL.equals(projectType)) {
@@ -1034,6 +1125,10 @@ public class EditBillFragment extends Fragment {
 
     protected String getWhat() {
         return editWhat.getText().toString();
+    }
+
+    protected String getComment() {
+        return editComment.getText().toString();
     }
 
     protected Long getTimestamp() {
@@ -1095,13 +1190,13 @@ public class EditBillFragment extends Fragment {
         }
     }
 
-    private String getPaymentMode() {
+    private int getPaymentModeId() {
         int i = editPaymentMode.getSelectedItemPosition();
         if (i < 0) {
-            return DBBill.PAYMODE_NONE;
+            return DBBill.PAYMODE_ID_NONE;
         } else {
             Map<String, String> item = (Map<String, String>) editPaymentMode.getSelectedItem();
-            return item.get("id");
+            return Integer.parseInt(item.get("id"));
         }
     }
 
@@ -1111,7 +1206,7 @@ public class EditBillFragment extends Fragment {
             return DBBill.CATEGORY_NONE;
         } else {
             Map<String, String> item = (Map<String, String>) editCategory.getSelectedItem();
-            return Integer.valueOf(item.get("id"));
+            return Integer.parseInt(item.get("id"));
         }
     }
 

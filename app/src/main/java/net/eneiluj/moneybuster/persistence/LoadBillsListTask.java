@@ -19,7 +19,6 @@ import net.eneiluj.moneybuster.model.Item;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -53,8 +52,7 @@ public class LoadBillsListTask extends AsyncTask<Void, Void, List<Item>> {
 
         if (projectId != 0) {
             billList = db.searchBills(searchQuery, projectId);
-        }
-        else {
+        } else {
             billList = new ArrayList<>();
         }
 

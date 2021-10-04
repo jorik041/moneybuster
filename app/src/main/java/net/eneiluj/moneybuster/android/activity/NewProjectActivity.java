@@ -2,26 +2,19 @@ package net.eneiluj.moneybuster.android.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.Window;
 import android.widget.Toast;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.fragment.NewProjectFragment;
 import net.eneiluj.moneybuster.model.ProjectType;
-import net.eneiluj.moneybuster.util.ThemeUtils;
 
 public class NewProjectActivity extends AppCompatActivity implements NewProjectFragment.NewProjectFragmentListener {
-
-    //public static final String PARAM_PROJECT_ID = "projectId";
 
     protected NewProjectFragment fragment;
 
@@ -40,7 +33,6 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        //Log.d(getClass().getSimpleName(), "onNewIntent: " + intent.getLongExtra(PARAM_PROJECT_ID, 0));
         Log.d(getClass().getSimpleName(), "onNewIntent: ");
         setIntent(intent);
         if (fragment != null) {
@@ -72,41 +64,51 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
             if (data == null) {
                 showToast(getString(R.string.import_no_data), Toast.LENGTH_LONG);
                 shouldCloseActivity = true;
-            }
-            else if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 2) {
+            } else if (data.getScheme().equals("cospend") && data.getPathSegments().size() >= 1) {
                 if (data.getPath().endsWith("/")) {
                     defaultProjectPassword = "";
                     defaultProjectId = data.getLastPathSegment();
+                } else {
+                    defaultProjectPassword = data.getLastPathSegment();
+                    defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
                 }
-                else {
+                defaultNcUrl = "https://" +
+                        data.getHost() + data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
+                defaultProjectType = ProjectType.COSPEND;
+            } else if (data.getScheme().equals("ihatemoney") && data.getPathSegments().size() >= 1) {
+                if (data.getPath().endsWith("/")) {
+                    defaultProjectPassword = "";
+                    defaultProjectId = data.getLastPathSegment();
+                } else {
+                    defaultProjectPassword = data.getLastPathSegment();
+                    defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
+                }
+                defaultIhmUrl = "https://" +
+                        data.getHost() + data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
+                defaultProjectType = ProjectType.IHATEMONEY;
+            } else if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 2) {
+                if (data.getPath().endsWith("/")) {
+                    defaultProjectPassword = "";
+                    defaultProjectId = data.getLastPathSegment();
+                } else {
                     defaultProjectPassword = data.getLastPathSegment();
                     defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
                 }
                 defaultNcUrl = "https:/" +
                         data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
                 defaultProjectType = ProjectType.COSPEND;
-            }
-            else if (data.getHost().equals("net.eneiluj.moneybuster.ihatemoney") && data.getPathSegments().size() >= 2) {
+            } else if (data.getHost().equals("net.eneiluj.moneybuster.ihatemoney") && data.getPathSegments().size() >= 2) {
                 if (data.getPath().endsWith("/")) {
                     defaultProjectPassword = "";
                     defaultProjectId = data.getLastPathSegment();
-                }
-                else {
+                } else {
                     defaultProjectPassword = data.getLastPathSegment();
                     defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
                 }
                 defaultIhmUrl = "https:/" +
                         data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
                 defaultProjectType = ProjectType.IHATEMONEY;
-            }
-            else if (data.getHost().equals("ihatemoney.org") && data.getPathSegments().size() == 1) {
-                defaultProjectPassword = "";
-                defaultProjectId = data.getLastPathSegment();
-
-                defaultIhmUrl = "https://ihatemoney.org";
-                defaultProjectType = ProjectType.IHATEMONEY;
-            }
-            else {
+            } else {
                 showToast(getString(R.string.import_bad_url), Toast.LENGTH_LONG);
                 shouldCloseActivity = true;
             }
@@ -120,20 +122,20 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
 
         if (shouldCloseActivity) {
-            close(0);
+            close(0, false);
         }
     }
 
     @Override
     public void onBackPressed() {
-        close(0);
+        close(0, false);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                close(0);
+                close(0, false);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -143,10 +145,14 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
     /**
      * Send result and closes the Activity
      */
-    public void close(long pid) {
+    public void close(long pid, boolean justAdded) {
         fragment.onCloseProject();
         final Intent data = new Intent();
-        data.putExtra(BillsListViewActivity.CREATED_PROJECT, pid);
+        if (justAdded) {
+            data.putExtra(BillsListViewActivity.ADDED_PROJECT, pid);
+        } else {
+            data.putExtra(BillsListViewActivity.CREATED_PROJECT, pid);
+        }
         setResult(RESULT_OK, data);
         finish();
     }

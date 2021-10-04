@@ -1,33 +1,24 @@
 package net.eneiluj.moneybuster.android.fragment;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
@@ -43,18 +34,16 @@ import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider;
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.service.SyncService;
 import net.eneiluj.moneybuster.util.MoneyBuster;
-import net.eneiluj.moneybuster.util.ThemeUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import at.bitfire.cert4android.CustomCertManager;
-
-//import android.support.v4.app.Fragment;
 
 public class PreferencesFragment extends PreferenceFragmentCompat implements PreferenceFragmentCompat.OnPreferenceStartScreenCallback{
 
     public final static String STOP_SYNC_SERVICE = "net.eneiluj.moneybuster.STOP_SYNC_SERVICE";
     public final static String CHANGE_SYNC_INTERVAL = "net.eneiluj.moneybuster.CHANGE_SYNC_INTERVAL";
-
-    private ActionBar toolbar;
 
     @Override
     public Fragment getCallbackFragment() {
@@ -98,7 +87,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
             }
         });
 
-        final SwitchPreferenceCompat themePref = (SwitchPreferenceCompat) findPreference(getString(R.string.pref_key_theme));
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 
         final CheckBoxPreference useServerColorPref = (CheckBoxPreference) findPreference(getString(R.string.pref_key_use_server_color));
@@ -114,8 +102,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                 Boolean useServerColor = (Boolean) newValue;
                 if (useServerColor) {
                     findPreference(getString(R.string.pref_key_color)).setVisible(false);
-                }
-                else {
+                } else {
                     findPreference(getString(R.string.pref_key_color)).setVisible(true);
                 }
                 if (getActivity() != null) {
@@ -125,23 +112,32 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
             }
         });
 
-        Boolean darkTheme = sp.getBoolean(getString(R.string.pref_key_theme), false);
+        // night mode
+        final Preference nightModePref = findPreference(getString(R.string.pref_key_night_mode));
+        ListPreference nightModeListPref = (ListPreference) nightModePref;
+        List<String> nightModeList = new ArrayList<>();
+        nightModeList.add(getString(R.string.pref_value_theme_light));
+        nightModeList.add(getString(R.string.pref_value_theme_dark));
+        nightModeList.add(getString(R.string.pref_value_theme_system));
+        CharSequence[] providerEntries = nightModeList.toArray(new CharSequence[nightModeList.size()]);
+        nightModeListPref.setEntries(providerEntries);
 
-        setThemePreferenceSummary(themePref, darkTheme);
-        setThemePreferenceIcon(themePref, darkTheme);
+        String nightModeValue = sp.getString(getString(R.string.pref_key_night_mode), getString(R.string.pref_value_night_mode_system));
+        setNightModeSummary(nightModePref, nightModeValue);
+        setNightModePreferenceIcon(nightModePref, nightModeValue);
 
-        themePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        nightModePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                Boolean darkTheme = (Boolean) newValue;
-                MoneyBuster.setAppTheme(darkTheme);
-                setThemePreferenceSummary(themePref, darkTheme);
-                setThemePreferenceIcon(themePref, darkTheme);
-                //getActivity().setResult(Activity.RESULT_OK);
-                //getActivity().finish();
-                if (getActivity() != null) {
+                int nightMode = Integer.parseInt((String) newValue);
+                MoneyBuster.setAppTheme(nightMode);
+                setNightModeSummary(nightModePref, (String) newValue);
+                setNightModePreferenceIcon(nightModePref, (String) newValue);
+                // no need to recreate the activity
+                // this is done since AppCompat v1.1.0 according to https://developer.android.com/guide/topics/ui/look-and-feel/darktheme#change-themes
+                /*if (getActivity() != null) {
                     getActivity().recreate();
-                }
+                }*/
                 return true;
             }
         });
@@ -174,8 +170,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                 if (newInterval > 1440 || newInterval < 5) {
                     showToast(getString(R.string.error_invalid_sync_interval), Toast.LENGTH_LONG);
                     return false;
-                }
-                else {
+                } else {
                     preference.setSummary((CharSequence) newValue);
                     Intent intent = new Intent(getContext(), SyncService.class);
                     intent.putExtra(CHANGE_SYNC_INTERVAL, newInterval);
@@ -214,8 +209,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                             getContext().startForegroundService(intent);
                         }
                     }
-                }
-                else {
+                } else {
                     syncIntervalPref.setVisible(false);
                     notifyNewPref.setVisible(false);
                     notifyUpdatedPref.setVisible(false);
@@ -248,19 +242,23 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
         toast.show();
     }
 
-    private void setThemePreferenceIcon(Preference preference, boolean darkThemeActive) {
-        if (darkThemeActive) {
-            preference.setIcon(R.drawable.ic_brightness_2_grey_24dp);
-        } else {
-            preference.setIcon(R.drawable.ic_sunny_grey_24dp);
+    private void setNightModeSummary(Preference nightModePref, String nightModeValue) {
+        if (nightModeValue.equals(getString(R.string.pref_value_night_mode_system))) {
+            nightModePref.setSummary(getString(R.string.pref_value_theme_system));
+        } else if (nightModeValue.equals(getString(R.string.pref_value_night_mode_no))) {
+            nightModePref.setSummary(getString(R.string.pref_value_theme_light));
+        } else if (nightModeValue.equals(getString(R.string.pref_value_night_mode_yes))) {
+            nightModePref.setSummary(getString(R.string.pref_value_theme_dark));
         }
     }
 
-    private void setThemePreferenceSummary(SwitchPreferenceCompat themePref, Boolean darkTheme) {
-        if (darkTheme) {
-            themePref.setSummary(getString(R.string.pref_value_theme_dark));
-        } else {
-            themePref.setSummary(getString(R.string.pref_value_theme_light));
+    private void setNightModePreferenceIcon(Preference preference, String nightModeValue) {
+        if (nightModeValue.equals(getString(R.string.pref_value_night_mode_system))) {
+            preference.setIcon(R.drawable.ic_settings_grey600_24dp);
+        } else if (nightModeValue.equals(getString(R.string.pref_value_night_mode_no))) {
+            preference.setIcon(R.drawable.ic_sunny_grey_24dp);
+        } else if (nightModeValue.equals(getString(R.string.pref_value_night_mode_yes))) {
+            preference.setIcon(R.drawable.ic_brightness_2_grey_24dp);
         }
     }
 

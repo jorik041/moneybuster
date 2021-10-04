@@ -13,6 +13,7 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.preference.PreferenceManager;
 
@@ -23,6 +24,9 @@ import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.Transaction;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -45,8 +49,6 @@ import javax.net.ssl.TrustManager;
 
 import at.bitfire.cert4android.CustomCertManager;
 
-//import android.preference.PreferenceManager;
-//import android.util.ArrayMap;
 
 /**
  * Some helper functionality in alike the Android support library.
@@ -164,7 +166,7 @@ public class SupportUtil {
                                   Map<Long, Double> membersBalance,
                                   Map<Long, Double> membersPaid,
                                   Map<Long, Double> membersSpent,
-                                  int catId, String paymentMode,
+                                  int catId, int paymentModeId,
                                   String dateMin, String dateMax) {
         int nbBills = 0;
         Map<Long, Double> membersWeight = new HashMap<>();
@@ -184,9 +186,9 @@ public class SupportUtil {
         for (DBBill b : dbBills) {
             // don't take deleted bills and respect category filter
             if (b.getState() != DBBill.STATE_DELETED &&
-                    (catId == 0 || catId == -100 || b.getCategoryRemoteId() == catId) &&
+                    (catId == -1000 || catId == -100 || b.getCategoryRemoteId() == catId) &&
                     (catId != -100 || b.getCategoryRemoteId() != DBBill.CATEGORY_REIMBURSEMENT) &&
-                    (paymentMode == null || b.getPaymentMode().equals(paymentMode)) &&
+                    (paymentModeId == -1000 || b.getPaymentModeRemoteId() == paymentModeId) &&
                     (dateMin == null || b.getDate().compareTo(dateMin) >= 0) &&
                     (dateMax == null || b.getDate().compareTo(dateMax) <= 0)) {
                 nbBills++;
@@ -262,8 +264,7 @@ public class SupportUtil {
 
             if (round2(balance) > 0.0) {
                 crediters.add(new CreditDebt(memberId, balance));
-            }
-            else if (round2(balance) < 0.0) {
+            } else if (round2(balance) < 0.0) {
                 debiters.add(new CreditDebt(memberId, balance));
             }
         }
@@ -286,8 +287,7 @@ public class SupportUtil {
             {
                 if (cd1.getBalance() == cd2.getBalance()) {
                     return 0;
-                }
-                else {
+                } else {
                     return (cd1.getBalance() < cd2.getBalance()) ? 1 : -1;
                 }
             }
@@ -302,8 +302,7 @@ public class SupportUtil {
             {
                 if (cd1.getBalance() == cd2.getBalance()) {
                     return 0;
-                }
-                else {
+                } else {
                     return (cd1.getBalance() > cd2.getBalance()) ? 1 : -1;
                 }
             }
@@ -320,8 +319,7 @@ public class SupportUtil {
         double amount;
         if (Math.abs(debiterBalance) > Math.abs(crediterBalance)) {
             amount = Math.abs(crediterBalance);
-        }
-        else {
+        } else {
             amount = Math.abs(debiterBalance);
         }
 
@@ -336,8 +334,7 @@ public class SupportUtil {
                 {
                     if (cd1.getBalance() == cd2.getBalance()) {
                         return 0;
-                    }
-                    else {
+                    } else {
                         return (cd1.getBalance() > cd2.getBalance()) ? 1 : -1;
                     }
                 }
@@ -353,8 +350,7 @@ public class SupportUtil {
                 {
                     if (cd1.getBalance() == cd2.getBalance()) {
                         return 0;
-                    }
-                    else {
+                    } else {
                         return (cd1.getBalance() < cd2.getBalance()) ? 1 : -1;
                     }
                 }
@@ -402,6 +398,14 @@ public class SupportUtil {
             // or other notification behaviors after this
             NotificationManager notificationManager = ctx.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    public static @Nullable JSONObject getJsonObject(String text) {
+        try {
+            return new JSONObject(text);
+        } catch (JSONException ex) {
+            return null;
         }
     }
 

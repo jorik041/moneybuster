@@ -13,7 +13,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -55,8 +54,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
@@ -83,6 +80,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.zxing.WriterException;
 import com.larswerkman.lobsterpicker.LobsterPicker;
 import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider;
@@ -93,6 +91,7 @@ import com.nextcloud.android.sso.model.SingleSignOnAccount;
 
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.fragment.NewProjectFragment;
+import net.eneiluj.moneybuster.android.ui.ProjectAdapter;
 import net.eneiluj.moneybuster.android.ui.TextDrawable;
 import net.eneiluj.moneybuster.android.ui.UserAdapter;
 import net.eneiluj.moneybuster.android.ui.UserItem;
@@ -102,6 +101,7 @@ import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBCategory;
 import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.DBPaymentMode;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.Item;
 import net.eneiluj.moneybuster.model.ItemAdapter;
@@ -161,9 +161,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     public final static String CREATED_BILL = "net.eneiluj.moneybuster.created_bill";
     public final static String CREATED_PROJECT = "net.eneiluj.moneybuster.created_project";
+    public final static String ADDED_PROJECT = "net.eneiluj.moneybuster.added_project";
     public final static String EDITED_PROJECT = "net.eneiluj.moneybuster.edited_project";
     public final static String DELETED_PROJECT = "net.eneiluj.moneybuster.deleted_project";
     public final static String DELETED_BILL = "net.eneiluj.moneybuster.deleted_bill";
+    public final static String BILL_TO_DUPLICATE = "net.eneiluj.moneybuster.bill_to_duplicate";
     public static final String ADAPTER_KEY_ALL = "all";
 
     public final static String CREDENTIALS_CHANGED = "net.eneiluj.moneybuster.CREDENTIALS_CHANGED";
@@ -225,6 +227,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private ActionMode mActionMode;
     private MoneyBusterSQLiteOpenHelper db = null;
     private SearchView searchView = null;
+    private MaterialTextView searchText = null;
     private ICallback syncCallBack = new ICallback() {
         @Override
         public void onFinish() {
@@ -289,6 +292,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         menuButton = findViewById(R.id.menu_button);
         accountButton = findViewById(R.id.launchAccountSwitcher);
         searchView = findViewById(R.id.search_view);
+        searchText = findViewById(R.id.search_text);
         homeToolbar = findViewById(R.id.home_toolbar);
         appBar = findViewById(R.id.appBar);
 
@@ -454,8 +458,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         if (!db.getMoneyBusterServerSyncHelper().isSyncPossible()) {
             swipeRefreshLayout.setEnabled(false);
-        }
-        else {
+        } else {
             swipeRefreshLayout.setEnabled(true);
             db.getMoneyBusterServerSyncHelper().addCallbackPull(syncCallBack);
             if (DEBUG) {
@@ -635,8 +638,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 Log.d(TAG, "[3 DOTS clicked]");
                 if (fabMenuDrawerEdit.isOpened()) {
                     fabMenuDrawerEdit.close(true);
-                }
-                else {
+                } else {
                     fabMenuDrawerEdit.open(true);
                 }
             }
@@ -667,10 +669,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 long selectedProjectId = preferences.getLong("selected_project", 0);
                 if (selectedProjectId != 0) {
-                    if (db.getActivatedMembersOfProject(selectedProjectId).size() < 2) {
-                        showToast(getString(R.string.edit_bill_impossible_no_member));
-                    }
-                    else {
+                    if (db.getActivatedMembersOfProject(selectedProjectId).size() < 1) {
+                        showToast(getString(R.string.add_bill_impossible_no_member));
+                    } else {
                         createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, selectedProjectId);
                         createIntent.putExtra(EditBillActivity.PARAM_PROJECT_TYPE, db.getProject(selectedProjectId).getType().getId());
                         startActivityForResult(createIntent, create_bill_cmd);
@@ -726,8 +727,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                 PERMISSION_WRITE
                         );
-                    }
-                    else {
+                    } else {
                         exportCurrentProject();
                     }
                 }
@@ -785,8 +785,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     String projectName;
                     if (proj.getName() == null) {
                         projectName = proj.getRemoteId();
-                    }
-                    else {
+                    } else {
                         projectName = proj.getName();
                     }
 
@@ -821,6 +820,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             hardCodedCategoryNamesTmp = new String[]{
                                     getString(R.string.category_all),
                                     getString(R.string.category_all_except_reimbursement),
+                                    getString(R.string.category_none),
                                     "\uD83D\uDED2 " + getString(R.string.category_groceries),
                                     "\uD83C\uDF89 " + getString(R.string.category_leisure),
                                     "\uD83C\uDFE0 " + getString(R.string.category_rent),
@@ -834,15 +834,19 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                     "\uD83D\uDE8C " + getString(R.string.category_transport),
                                     "\uD83C\uDFBE " + getString(R.string.category_sport)
                             };
-                            hardCodedCategoryIdsTmp = new String[]{"0", "-100", "-1", "-2", "-3", "-4", "-5", "-6", "-10", "-11", "-12", "-13", "-14", "-15"};
+                            hardCodedCategoryIdsTmp = new String[]{
+                                "-1000", "-100", "0", "-1", "-2", "-3", "-4", "-5", "-6",
+                                "-10", "-11", "-12", "-13", "-14", "-15"
+                            };
                         } else {
                             // COSPEND projects => just "no cat" and "reimbursement"
                             hardCodedCategoryNamesTmp = new String[]{
                                     getString(R.string.category_all),
                                     getString(R.string.category_all_except_reimbursement),
+                                    getString(R.string.category_none),
                                     "\uD83D\uDCB0 " + getString(R.string.category_reimbursement)
                             };
-                            hardCodedCategoryIdsTmp = new String[]{"0", "-100", "-11"};
+                            hardCodedCategoryIdsTmp = new String[]{"-1000", "-100", "0", "-11"};
                         }
 
                         List<DBCategory> userCategories = db.getCategories(selectedProjectId);
@@ -850,17 +854,19 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         List<String> categoryIdList = new ArrayList<>();
                         categoryIdList.add(hardCodedCategoryIdsTmp[0]);
                         categoryIdList.add(hardCodedCategoryIdsTmp[1]);
+                        categoryIdList.add(hardCodedCategoryIdsTmp[2]);
                         List<String> categoryNameList = new ArrayList<>();
                         categoryNameList.add(hardCodedCategoryNamesTmp[0]);
                         categoryNameList.add(hardCodedCategoryNamesTmp[1]);
+                        categoryNameList.add(hardCodedCategoryNamesTmp[2]);
                         for (DBCategory cat : userCategories) {
                             categoryIdList.add(String.valueOf(cat.getRemoteId()));
                             categoryNameList.add(cat.getIcon()+" "+cat.getName());
                         }
-                        for (int i = 2; i < hardCodedCategoryIdsTmp.length; i++) {
+                        for (int i = 3; i < hardCodedCategoryIdsTmp.length; i++) {
                             categoryIdList.add(hardCodedCategoryIdsTmp[i]);
                         }
-                        for (int i = 2; i < hardCodedCategoryNamesTmp.length; i++) {
+                        for (int i = 3; i < hardCodedCategoryNamesTmp.length; i++) {
                             categoryNameList.add(hardCodedCategoryNamesTmp[i]);
                         }
 
@@ -908,17 +914,34 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                         // PAYMENT MODE
                         List<String> paymentModeNameList = new ArrayList<>();
+                        List<String> paymentModeIdList = new ArrayList<>();
+
                         paymentModeNameList.add(getString(R.string.payment_mode_all));
-                        paymentModeNameList.add("\uD83D\uDCB3 "+getString(R.string.payment_mode_credit_card));
-                        paymentModeNameList.add("\uD83D\uDCB5 "+getString(R.string.payment_mode_cash));
-                        paymentModeNameList.add("\uD83C\uDFAB "+getString(R.string.payment_mode_check));
-                        paymentModeNameList.add("⇄ "+getString(R.string.payment_mode_transfer));
-                        paymentModeNameList.add("\uD83C\uDF0E "+getString(R.string.payment_mode_online));
+                        paymentModeIdList.add("-1000");
+                        paymentModeNameList.add(getString(R.string.payment_mode_none));
+                        paymentModeIdList.add("0");
+                        // local projects => hardcoded pms
+                        if (ProjectType.LOCAL.equals(proj.getType())) {
+                            paymentModeNameList.add("\uD83D\uDCB3 "+getString(R.string.payment_mode_credit_card));
+                            paymentModeIdList.add("-1");
+                            paymentModeNameList.add("\uD83D\uDCB5 "+getString(R.string.payment_mode_cash));
+                            paymentModeIdList.add("-2");
+                            paymentModeNameList.add("\uD83C\uDFAB "+getString(R.string.payment_mode_check));
+                            paymentModeIdList.add("-3");
+                            paymentModeNameList.add("⇄ "+getString(R.string.payment_mode_transfer));
+                            paymentModeIdList.add("-4");
+                            paymentModeNameList.add("\uD83C\uDF0E "+getString(R.string.payment_mode_online));
+                            paymentModeIdList.add("-5");
+                        }
+
+                        List<DBPaymentMode> userPaymentModes = db.getPaymentModes(selectedProjectId);
+                        for (DBPaymentMode pm : userPaymentModes) {
+                            paymentModeIdList.add(String.valueOf(pm.getRemoteId()));
+                            paymentModeNameList.add(pm.getIcon() + " " + pm.getName());
+                        }
 
                         String[] paymentModeNames = paymentModeNameList.toArray(new String[paymentModeNameList.size()]);
-                        //String[] repeatNames = getResources().getStringArray(R.array.repeatBillEntries);
-
-                        String[] paymentModeIds = getResources().getStringArray(R.array.paymentModeValues);
+                        String[] paymentModeIds = paymentModeIdList.toArray(new String[paymentModeIdList.size()]);
 
                         ArrayList<Map<String, String>> dataP = new ArrayList<>();
                         for (int i = 0; i < paymentModeNames.length; i++) {
@@ -956,8 +979,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             }
 
                         });
-                    }
-                    else {
+                    } else {
                         LinearLayout statsCategoryLayout = tView.findViewById(R.id.statsCategoryLayout);
                         statsCategoryLayout.setVisibility(GONE);
                         LinearLayout statsPaymentModeLayout = tView.findViewById(R.id.statsPaymentModeLayout);
@@ -1133,8 +1155,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     String projectName;
                     if (proj.getName() == null) {
                         projectName = proj.getRemoteId();
-                    }
-                    else {
+                    } else {
                         projectName = proj.getName();
                     }
                     final View tView = LayoutInflater.from(view.getContext()).inflate(R.layout.settle_table, null);
@@ -1178,7 +1199,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     int nbBills = SupportUtil.getStatsOfProject(
                             proj.getId(), db,
                             membersNbBills, membersBalance, membersPaid, membersSpent,
-                            0, null, null, null
+                            -1000, -1000, null, null
                     );
 
                     List<DBMember> membersSortedByName = db.getMembersOfProject(proj.getId(), MoneyBusterSQLiteOpenHelper.key_name);
@@ -1295,20 +1316,19 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                             .replace("/index.php/apps/cospend", "");
                     String password = proj.getPassword();
 
-                    String hostEnd;
+                    String protocol;
                     final String publicWebUrl;
                     String publicWebLink;
                     if (proj.getServerUrl().contains("index.php/apps/cospend")) {
-                        hostEnd = "cospend";
+                        protocol = "cospend";
                         publicWebUrl = proj.getServerUrl() + "/loginproject/" + proj.getRemoteId();
-                    }
-                    else {
-                        hostEnd = "ihatemoney";
+                    } else {
+                        protocol = "ihatemoney";
                         publicWebUrl = proj.getServerUrl() + "/" + proj.getRemoteId();
                     }
                     publicWebLink = "<a href=\"" + publicWebUrl + "\">" + publicWebUrl + "</a>";
 
-                    final String shareUrl = "https://net.eneiluj.moneybuster." + hostEnd + "/" +
+                    final String shareUrl = protocol + "://" +
                             url + "/" + projId + "/" + password;
                     final String shareLink = "<a href=\"" + shareUrl + "\">" + shareUrl + "</a>";
 
@@ -1410,13 +1430,12 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
 
         // color
-        boolean darkTheme = MoneyBuster.getAppTheme(this);
+        boolean darkTheme = MoneyBuster.isDarkTheme(this);
         // if dark theme and main color is black, make fab button lighter/gray
         if (darkTheme && ThemeUtils.primaryColor(this) == Color.BLACK) {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
             //fabBillListAddProject.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
-        }
-        else {
+        } else {
             fabAddBill.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
             //fabBillListAddProject.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.primaryColor(this)));
         }
@@ -1452,8 +1471,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             fabAddBill.hide();
             fabMenuDrawerEdit.setVisibility(GONE);
             //fabBillListAddProject.show();
-        }
-        else {
+        } else {
             fabAddBill.show();
             fabMenuDrawerEdit.setVisibility(VISIBLE);
             //fabBillListAddProject.hide();
@@ -1509,8 +1527,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                 fabMenuDrawerEdit.close(false);
                 drawerLayout.closeDrawers();
-            }
-            else {
+            } else {
                 showToast(getString(R.string.edit_project_local_impossible));
             }
         }
@@ -1685,7 +1702,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             DBBill bill = new DBBill(
                     0, 0, projectId, owerId, amount,
                     timestamp, getString(R.string.settle_bill_what),
-                    DBBill.STATE_ADDED, DBBill.NON_REPEATED, DBBill.PAYMODE_NONE, DBBill.CATEGORY_NONE);
+                    DBBill.STATE_ADDED, DBBill.NON_REPEATED,
+                    DBBill.PAYMODE_NONE, DBBill.CATEGORY_NONE,
+                    "", DBBill.PAYMODE_ID_NONE);
             bill.getBillOwers().add(new DBBillOwer(0, 0, receiverId));
             db.addBill(bill);
         }
@@ -1698,26 +1717,22 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         final DBProject proj = db.getProject(selectedProjectId);
         // get filter values
         int categoryId;
-        String paymentMode;
+        int paymentModeId;
         if (!proj.getType().equals(ProjectType.IHATEMONEY)) {
             Spinner statsCategorySpinner = tView.findViewById(R.id.statsCategorySpinner);
             Map<String, String> item = (Map<String, String>) statsCategorySpinner.getSelectedItem();
-            categoryId = Integer.valueOf(item.get("id"));
+            categoryId = Integer.parseInt(item.get("id"));
 
             Spinner statsPaymentModeSpinner = tView.findViewById(R.id.statsPaymentModeSpinner);
             Map<String, String> itemP = (Map<String, String>) statsPaymentModeSpinner.getSelectedItem();
-            paymentMode = itemP.get("id");
-            if (paymentMode.equals(DBBill.PAYMODE_NONE)) {
-                paymentMode = null;
-            }
-        }
-        else {
-            categoryId = 0;
-            paymentMode = null;
+            paymentModeId = Integer.parseInt(itemP.get("id"));
+        } else {
+            categoryId = -1;
+            paymentModeId = -1;
         }
 
         Log.v(TAG, "DATESSSS "+ dateMin + " and "+dateMax);
-        Log.v(TAG, "CATGFIL "+ categoryId + " and PAYMODEFIL "+paymentMode);
+        Log.v(TAG, "CATGFIL "+ categoryId + " and PAYMODEFIL "+paymentModeId);
 
         // get stats
         Map<Long, Integer> membersNbBills = new HashMap<>();
@@ -1730,15 +1745,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         int nbBills = SupportUtil.getStatsOfProject(
                 selectedProjectId, db,
                 membersNbBills, membersBalance, membersPaid, membersSpent,
-                categoryId, paymentMode, dateMin, dateMax
+                categoryId, paymentModeId, dateMin, dateMax
         );
 
         List<DBMember> membersSortedByName = db.getMembersOfProject(selectedProjectId, null);
         String projectName;
         if (proj.getName() == null) {
             projectName = proj.getRemoteId();
-        }
-        else {
+        } else {
             projectName = proj.getName();
         }
         String statsText = getString(R.string.share_stats_intro, projectName) + "\n\n";
@@ -1777,8 +1791,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             if (rpaid == 0.0) {
                 pv.setText("--");
                 statsText += "-- | ";
-            }
-            else {
+            } else {
                 pv.setText(numberFormatter.format(rpaid));
                 statsText += numberFormatter.format(rpaid) + " | ";
             }
@@ -1789,8 +1802,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             if (rspent == 0.0) {
                 sv.setText("--");
                 statsText += "-- | ";
-            }
-            else {
+            } else {
                 sv.setText(numberFormatter.format(rspent));
                 statsText += numberFormatter.format(rspent) + " | ";
             }
@@ -1803,12 +1815,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             if (balance > 0) {
                 bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.green));
                 sign = "+";
-            }
-            else if (balance < 0) {
+            } else if (balance < 0) {
                 bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.red));
                 sign = "-";
-            }
-            else {
+            } else {
                 bv.setTextColor(ContextCompat.getColor(view.getContext(), R.color.fg_default));
             }
             bv.setText(sign + numberFormatter.format(rbalance));
@@ -1850,9 +1860,15 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fileContent += "what,amount,date,timestamp,payer_name,payer_weight,payer_active,owers,repeat,categoryid,paymentmode\n";
         // just a way to write all members
         for (DBMember m : members) {
-            payerActive = m.isActivated() ? 1 : 0;
-            fileContent += "deleteMeIfYouWant,1,1970-01-01,\"" + m.getName() + "\"," + m.getWeight() + "," +
-                    payerActive + ",\"" + m.getName() + "\",n,,\n";
+            DBBill fakeBill = new DBBill(
+                    0, 0, projectId, m.getId(), 1, 666,
+                    "deleteMeIfYouWant", DBBill.STATE_OK, DBBill.NON_REPEATED,
+                    DBBill.PAYMODE_NONE, 0, "", 0
+            );
+            List<DBBillOwer> fakeBillOwers = new ArrayList<>();
+            fakeBillOwers.add(new DBBillOwer(0, 0, m.getId()));
+            fakeBill.setBillOwers(fakeBillOwers);
+            bills.add(0, fakeBill);
         }
         for (DBBill b : bills) {
             payerId = b.getPayerId();
@@ -1970,8 +1986,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     Log.d(TAG, "[permission WRITE result] "+grantResults[0]);
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         exportCurrentProject();
-                    }
-                    else {
+                    } else {
                         showToast(getString(R.string.write_permission_refused));
                     }
                 }
@@ -2020,35 +2035,22 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         final long selectedProjectId = preferences.getLong("selected_project", 0);
 
         final List<DBProject> dbProjects = db.getProjects();
-        List<String> projectNames = new ArrayList<>();
         List<Long> projectIds = new ArrayList<>();
         for (DBProject p : dbProjects) {
-            if (p.getName() == null || p.getServerUrl() == null || p.isLocal()) {
-                projectNames.add(p.getRemoteId());
-            }
-            else {
-                projectNames.add(
-                        p.getName()
-                                + "\n(" + p.getRemoteId() + "@"
-                                + p.getServerUrl()
-                                .replace("https://", "")
-                                .replace("http://", "")
-                                .replace("/index.php/apps/cospend", "")
-                                + ")"
-                );
-            }
             projectIds.add(p.getId());
         }
 
-        int checkedItem = -1;
+        int checkedItem;
         if (selectedProjectId != 0) {
             checkedItem = projectIds.indexOf(selectedProjectId);
+        } else {
+            checkedItem = -1;
         }
-        CharSequence[] namescs = projectNames.toArray(new CharSequence[projectNames.size()]);
 
         AlertDialog.Builder selectBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog));
         selectBuilder.setTitle(getString(R.string.choose_project_to_select));
-        selectBuilder.setSingleChoiceItems(namescs, checkedItem, new DialogInterface.OnClickListener() {
+        ProjectAdapter projectAdapter = new ProjectAdapter(this, dbProjects, checkedItem);
+        selectBuilder.setSingleChoiceItems(projectAdapter, checkedItem, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // user checked an item
@@ -2083,10 +2085,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             if (dbProjects.size() > 0) {
                 proj = dbProjects.get(0);
                 preferences.edit().putLong("selected_project", proj.getId()).apply();
-            }
-            else {
+            } else {
                 itemsMenu.set(1, new NavigationAdapter.NavigationItem("project", getString(R.string.drawer_no_project), null, R.drawable.ic_folder_open_grey600_24dp, false));
                 listNavigationMenu.getAdapter().notifyItemChanged(1);
+                searchText.setText(getString(R.string.action_search));
                 return;
             }
         }
@@ -2101,10 +2103,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             selText = proj.getRemoteId();
             //+ "@local";
             icon = R.drawable.ic_phone_android_grey_24dp;
-            fabManageProject.setImageDrawable(getDrawable(R.drawable.ic_phone_android_white_24dp));
-        }
-        // remote project
-        else {
+            fabManageProject.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_phone_android_white_24dp));
+        } else {
+            // remote project
             selText = (proj.getName() == null) ? "???" : proj.getName();
             //selText += "";
             /*selText = proj.getRemoteId() + "@";
@@ -2115,11 +2116,18 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
              */
             if (ProjectType.COSPEND.equals(proj.getType())) {
                 icon = R.drawable.ic_cospend_grey_24dp;
-                fabManageProject.setImageDrawable(getDrawable(R.drawable.ic_cospend_white_24dp));
+                fabManageProject.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_cospend_white_24dp));
             } else {
                 icon = R.drawable.ic_ihm_grey_24dp;
-                fabManageProject.setImageDrawable(getDrawable(R.drawable.ic_ihm_white_24dp));
+                fabManageProject.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_ihm_white_24dp));
             }
+        }
+
+        // search text
+        if (proj.getName() == null || "".equals(proj.getName())) {
+            searchText.setText(getString(R.string.action_search));
+        } else {
+            searchText.setText(getString(R.string.action_search_in_project, proj.getName()));
         }
 
         itemsMenu.set(1, new NavigationAdapter.NavigationItem("project", selText, null, icon, false));
@@ -2160,8 +2168,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         int color;
         if (r != null && g != null && b != null) {
             color = Color.rgb(memberToEdit.getR(), memberToEdit.getG(), memberToEdit.getB());
-        }
-        else {
+        } else {
             color = TextDrawable.getColorFromName(memberToEdit.getName());
         }
 
@@ -2384,22 +2391,19 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             HashMap<Long, Double> membersSpent = new HashMap<>();
 
             int nbBills = SupportUtil.getStatsOfProject(
-                    selectedProjectId, db,
-                    membersNbBills, membersBalance, membersPaid, membersSpent,
-                    0, null, null, null
+                selectedProjectId, db,
+                membersNbBills, membersBalance, membersPaid, membersSpent,
+                -1000, -1000, null, null
             );
 
-            itemAll.count = nbBills;
+            itemAll.count = null;
             items.add(itemAll);
 
-            NumberFormat balanceFormatter = new DecimalFormat("#0.00");
             NumberFormat weightFormatter = new DecimalFormat("#.##");
 
             for (DBMember m : dbMembers) {
                 double balance = membersBalance.get(m.getId());
                 double rBalance = Math.round( balance * 100.0 ) / 100.0;
-                double rAbsBalance = Math.round( Math.abs(balance) * 100.0 ) / 100.0;
-                String balanceStr = balanceFormatter.format(rAbsBalance).replace(",", ".");
 
                 // add member in sidebar list if he/she's activated or the balance is not "zero"
                 if (m.isActivated() || balance <= -0.01 || balance >= 0.01) {
@@ -2407,17 +2411,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     if (m.getWeight() != 1) {
                         weightStr = " x" + weightFormatter.format(m.getWeight()).replace(",", ".");
                     }
-                    String sign = "";
-                    if (rBalance > 0.0) {
-                        sign = "+";
-                    }
-                    else if (rBalance < 0.0) {
-                         sign = "-";
-                    }
                     NavigationAdapter.NavigationItem it = new NavigationAdapter.NavigationItem(
                             String.valueOf(m.getId()),
-                            m.getName()+" ("+sign+balanceStr+")"+weightStr,
-                            membersNbBills.get(m.getId()),
+                            m.getName() + weightStr,
+                            rBalance,
                             R.drawable.ic_person_grey_24dp,
                             true
                     );
@@ -2453,8 +2450,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 if (item.id.equals("project") || item.id.equals("projects")) {
                     if (db.getProjects().size() > 0) {
                         showProjectSelectionDialog();
-                    }
-                    else {
+                    } else {
                         addProject();
                         drawerLayout.closeDrawers();
                     }
@@ -2542,8 +2538,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                         if (originalState == DBBill.STATE_ADDED) {
                             db.deleteBill(dbBill.getId());
-                        }
-                        else {
+                        } else {
                             db.setBillState(dbBill.getId(), DBBill.STATE_DELETED);
                         }
                         adapter.remove(dbBill);
@@ -2557,8 +2552,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                     public void onClick(View v) {
                                         if (originalState == DBBill.STATE_ADDED) {
                                             db.addBill(dbBill);
-                                        }
-                                        else {
+                                        } else {
                                             db.setBillState(dbBill.getId(), originalState);
                                         }
                                         refreshLists();
@@ -2637,8 +2631,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 projId = proj.getId();
                 if (proj.isLocal()) {
                     projName = proj.getRemoteId();
-                }
-                else {
+                } else {
                     projName = (proj.getName() == null) ? "???" : proj.getName();
                 }
             }
@@ -2652,8 +2645,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             } else {
                 subtitle = projName + " - " + getString(R.string.label_all_bills);
             }
-        }
-        else {
+        } else {
             subtitle = getString(R.string.app_name);
         }
         // to display correct name on project selector when project was just added
@@ -2758,15 +2750,31 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             listView.scrollToPosition(0);
         } else if (requestCode == addproject) {
             long pid = data.getLongExtra(CREATED_PROJECT, 0);
+            boolean created = true;
+            if (pid == 0) {
+                created = false;
+                pid = data.getLongExtra(ADDED_PROJECT, 0);
+            }
             if (DEBUG) { Log.d(TAG, "BILLS request code : addproject " + pid); }
             if (pid != 0) {
                 setSelectedProject(pid);
                 Log.d(TAG, "CREATED project id: " + pid);
                 DBProject addedProj = db.getProject(pid);
+                String message;
+                String title;
+                if (created) {
+                    Log.e(TAG, "CREATED !!!");
+                    title = getString(R.string.project_create_success_title);
+                    message = getString(R.string.project_create_success_message, addedProj.getRemoteId());
+                } else {
+                    Log.e(TAG, "ADDED !!!");
+                    title = getString(R.string.project_add_success_title);
+                    message = getString(R.string.project_add_success_message, addedProj.getRemoteId());
+                }
                 showDialog(
-                        getString(R.string.project_add_success, addedProj.getRemoteId()),
-                        getString(R.string.project_add_success_title),
-                        R.drawable.ic_add_circle_white_24dp
+                    message,
+                    title,
+                    R.drawable.ic_add_circle_white_24dp
                 );
             }
         } else if (requestCode == editproject) {
@@ -2784,7 +2792,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 }
             }
         } else if (requestCode == show_single_bill_cmd) {
-
+            if (data != null) {
+                long billId = data.getLongExtra(BILL_TO_DUPLICATE, 0);
+                Log.d(TAG, "onActivityResult show_single_bill_cmd BILL ID TO DUPLICATE : " + billId);
+                if (billId != 0) {
+                    duplicateBill(billId);
+                }
+            }
         } else if (requestCode == scan_qrcode_import_cmd) {
             if (data != null) {
                 // adapt after project has been deleted
@@ -2811,6 +2825,22 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 if (MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(getApplicationContext())) {
                     Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(CospendClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
                 }
+            }
+        }
+    }
+
+    private void duplicateBill(Long billId) {
+        Intent createIntent = new Intent(getApplicationContext(), EditBillActivity.class);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        long selectedProjectId = preferences.getLong("selected_project", 0);
+        if (selectedProjectId != 0) {
+            if (db.getActivatedMembersOfProject(selectedProjectId).size() < 1) {
+                showToast(getString(R.string.add_bill_impossible_no_member));
+            } else {
+                createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, selectedProjectId);
+                createIntent.putExtra(EditBillActivity.PARAM_PROJECT_TYPE, db.getProject(selectedProjectId).getType().getId());
+                createIntent.putExtra(EditBillActivity.PARAM_BILL_ID_TO_DUPLICATE, billId);
+                startActivityForResult(createIntent, create_bill_cmd);
             }
         }
     }
@@ -2879,7 +2909,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             }
         } else {
             avatarView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_nextcloud_logo_white));
-            accountButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_account_circle_grey_24dp));
+            accountButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_account_circle_grey_24dp));
         }
     }
 
@@ -2962,12 +2992,10 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     }
                     db.getMoneyBusterServerSyncHelper().addCallbackPull(syncCallBack);
                     db.getMoneyBusterServerSyncHelper().scheduleSync(false, selectedProjectId);
-                }
-                else {
+                } else {
                     swipeRefreshLayout.setRefreshing(false);
                 }
-            }
-            else {
+            } else {
                 swipeRefreshLayout.setRefreshing(false);
             }
             // then sync the nextcloud account projects
@@ -3014,8 +3042,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                         if (originalState == DBBill.STATE_ADDED) {
                             db.deleteBill(dbBill.getId());
-                        }
-                        else {
+                        } else {
                             db.setBillState(dbBill.getId(), DBBill.STATE_DELETED);
                         }
                     }
@@ -3113,13 +3140,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     long projectId = intent.getLongExtra(BROADCAST_PROJECT_ID, 0);
                     if (projectId != 0) {
                         DBProject project = db.getProject(projectId);
-                        String dialogContent = getString(R.string.sync_error_dialog_content, project.getName(), errorMessage);
+                        String dialogContent = getString(R.string.sync_error_dialog_full_content, project.getName(), errorMessage);
 
                         android.app.AlertDialog.Builder builder;
                         builder = new android.app.AlertDialog.Builder(new ContextThemeWrapper(BillsListViewActivity.this, R.style.AppThemeDialog));
                         builder.setTitle(getString(R.string.sync_error_dialog_title))
                                 .setMessage(dialogContent)
-                                .setPositiveButton(getString(R.string.simple_remove), new DialogInterface.OnClickListener() {
+                                /*.setPositiveButton(getString(R.string.simple_remove), new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         db.deleteProject(projectId);
                                         List<DBProject> dbProjects = db.getProjects();
@@ -3133,10 +3160,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                                         synchronize();
                                         showToast(getString(R.string.remove_project_confirmation, project.getName()));
                                     }
-                                })
-                                .setNegativeButton(getString(R.string.simple_do_nothing), new DialogInterface.OnClickListener() {
+                                })*/
+                                .setPositiveButton(getString(R.string.simple_close), new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
-
                                     }
                                 })
                                 .setIcon(R.drawable.ic_sync_grey_24dp)
@@ -3221,8 +3247,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                         refreshLists();
                         if (!db.getMoneyBusterServerSyncHelper().isSyncPossible()) {
                             swipeRefreshLayout.setEnabled(false);
-                        }
-                        else {
+                        } else {
                             swipeRefreshLayout.setEnabled(true);
                             db.getMoneyBusterServerSyncHelper().addCallbackPull(syncCallBack);
                             boolean offlineMode2 = prefs.getBoolean(getString(R.string.pref_key_offline_mode), false);

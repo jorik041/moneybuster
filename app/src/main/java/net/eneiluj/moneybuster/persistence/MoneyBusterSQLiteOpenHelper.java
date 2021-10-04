@@ -1,5 +1,6 @@
 package net.eneiluj.moneybuster.persistence;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -22,6 +23,7 @@ import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBCategory;
 import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.DBPaymentMode;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.util.SupportUtil;
@@ -34,8 +36,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-//import android.util.ArrayMap;
-
 /**
  * Helps to add, get, update and delete bills, members, projects with the option to trigger a sync with the server.
  */
@@ -43,7 +43,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String TAG = MoneyBusterSQLiteOpenHelper.class.getSimpleName();
 
-    private static final int database_version = 13;
+    private static final int database_version = 16;
     private static final String database_name = "IHATEMONEY";
 
     private static final String table_members = "MEMBERS";
@@ -83,7 +83,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     //private static final String key_state = "STATE";
     private static final String key_repeat = "REPEAT";
     private static final String key_payment_mode = "PAYMENTMODE";
+    private static final String key_payment_mode_id = "PAYMENTMODEID";
     private static final String key_category_id = "CATEGORYID";
+    private static final String key_comment = "COMMENT";
 
     private static final String table_billowers = "BILLOWERS";
     //private static final String key_id = "ID";
@@ -106,6 +108,14 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String key_icon = "ICON";
     private static final String key_color = "COLOR";
 
+    private static final String table_payment_modes = "PAYMENTMODES";
+    //private static final String key_id = "ID";
+    //private static final String key_remoteId = "REMOTEID";
+    //private static final String key_projectId = "PROJECTID";
+    //private static final String key_name = "NAME";
+    //private static final String key_icon = "ICON";
+    //private static final String key_color = "COLOR";
+
     private static final String table_currencies = "CURRENCIES";
     //private static final String key_id = "ID";
     //private static final String key_remoteId = "REMOTEID";
@@ -126,7 +136,8 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String[] columnsBills = {
             key_id, key_remoteId, key_projectid, key_payer_id, key_amount,
-            key_timestamp, key_what, key_state, key_repeat, key_payment_mode, key_category_id
+            key_timestamp, key_what, key_state, key_repeat, key_payment_mode, key_category_id,
+            key_comment, key_payment_mode_id
     };
 
     private static final String[] columnsBillowers = {
@@ -138,6 +149,10 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     };
 
     private static final String[] columnsCategories = {
+            key_id, key_remoteId, key_projectid, key_name,  key_icon, key_color
+    };
+
+    private static final String[] columnsPaymentModes = {
             key_id, key_remoteId, key_projectid, key_name,  key_icon, key_color
     };
 
@@ -160,10 +175,11 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     public static MoneyBusterSQLiteOpenHelper getInstance(Context context) {
-        if (instance == null)
+        if (instance == null) {
             return instance = new MoneyBusterSQLiteOpenHelper(context.getApplicationContext());
-        else
+        } else {
             return instance;
+        }
     }
 
     public MoneyBusterServerSyncHelper getMoneyBusterServerSyncHelper() {
@@ -183,6 +199,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         createTableProjects(db, table_projects);
         createTableAccountProjects(db, table_account_projects);
         createTableCategories(db, table_categories);
+        createTablePaymentModes(db, table_payment_modes);
         createTableCurrencies(db, table_currencies);
         createIndexes(db);
     }
@@ -230,7 +247,10 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 key_timestamp + " INTEGER, " +
                 key_payment_mode + " TEXT DEFAULT \"n\", " +
                 key_category_id + " INTEGER DEFAULT 0, " +
-                key_repeat + " TEXT)");
+                key_repeat + " TEXT, " +
+                key_comment + " TEXT DEFAULT \"\", " +
+                key_payment_mode_id + " INTEGER DEFAULT 0)"
+        );
     }
 
     //key_id, key_billId, key_member_remoteId
@@ -260,6 +280,16 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 key_color + " TEXT)");
     }
 
+    private void createTablePaymentModes(SQLiteDatabase db, String tableName) {
+        db.execSQL("CREATE TABLE " + tableName + " ( " +
+                key_id + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                key_remoteId + " INTEGER, " +
+                key_projectid + " INTEGER, " +
+                key_name + " TEXT, " +
+                key_icon + " TEXT, " +
+                key_color + " TEXT)");
+    }
+
     private void createTableCurrencies(SQLiteDatabase db, String tableName) {
         db.execSQL("CREATE TABLE " + tableName + " ( " +
                 key_id + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -270,6 +300,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 key_state + " INTEGER)");
     }
 
+    @SuppressLint("Range")
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 2) {
@@ -339,8 +370,8 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
             Date date;
             Date dateNow = new Date();
             while (cursor.moveToNext()) {
-                id = cursor.getLong(0);
-                dateStr = cursor.getString(1);
+                id = cursor.getLong(cursor.getColumnIndex(key_id));
+                dateStr = cursor.getString(cursor.getColumnIndex("DATE"));
                 try {
                     date = sdfDate.parse(dateStr);
                 } catch (Exception e) {
@@ -367,6 +398,32 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + table_members + " ADD COLUMN " + key_avatar + " TEXT DEFAULT NULL");
         }
         if (oldVersion < 13) {
+            db.execSQL("ALTER TABLE " + table_bills + " ADD COLUMN " + key_comment + " TEXT DEFAULT \"\"");
+        }
+        if (oldVersion < 14) {
+            // reset last sync for all projects to get comments
+            List<DBProject> projects = getProjectsCustom("", new String[]{}, default_order, db);
+            for (DBProject project : projects) {
+                updateProject(project.getId(), project.getName(), project.getEmail(),
+                        project.getPassword(), project.getLastPayerId(), project.getType(),
+                        (long) 0, project.getCurrencyName(), db);
+            }
+        }
+        if (oldVersion < 15) {
+            db.execSQL("ALTER TABLE " + table_bills + " ADD COLUMN " + key_payment_mode_id + " INTEGER DEFAULT 0");
+
+            // set new IDs in all bills
+            ContentValues values;
+            for (String key : DBBill.oldPmIdToNew.keySet()) {
+                values = new ContentValues();
+                values.put(key_payment_mode_id, DBBill.oldPmIdToNew.get(key));
+                db.update(table_bills, values, key_payment_mode + " = ?",  new String[]{key});
+            }
+
+            createTablePaymentModes(db, table_payment_modes);
+            createIndex(db, table_payment_modes, key_id);
+        }
+        if (oldVersion < 16) {
             db.execSQL("ALTER TABLE " + table_currencies + " ADD COLUMN " + key_state + " INTEGER DEFAULT " + DBBill.STATE_OK);
         }
     }
@@ -383,6 +440,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         db.delete(table_billowers, null, null);
         db.delete(table_account_projects, null, null);
         db.delete(table_categories, null, null);
+        db.delete(table_payment_modes, null, null);
         db.delete(table_currencies, null, null);
     }
 
@@ -394,6 +452,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE " + table_billowers);
         db.execSQL("DROP TABLE " + table_account_projects);
         db.execSQL("DROP TABLE " + table_categories);
+        db.execSQL("DROP TABLE " + table_payment_modes);
         db.execSQL("DROP TABLE " + table_currencies);
         onCreate(db);
     }
@@ -413,6 +472,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         createIndex(db, table_billowers, key_id);
         createIndex(db, table_account_projects, key_id);
         createIndex(db, table_categories, key_id);
+        createIndex(db, table_payment_modes, key_id);
         createIndex(db, table_currencies, key_id);
     }
 
@@ -472,20 +532,117 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
      * @param cursor database cursor
      * @return DBProject
      */
+    @SuppressLint("Range")
     @NonNull
     private DBAccountProject getAccountProjectFromCursor(@NonNull Cursor cursor) {
         // key_id, key_remoteId, key_password,  key_name, key_ncUrl
-        return new DBAccountProject(cursor.getLong(0),
-                cursor.getString(1),
-                cursor.getString(2),
-                cursor.getString(3),
-                cursor.getString(4)
+        return new DBAccountProject(
+            cursor.getLong(cursor.getColumnIndex(key_id)),
+            cursor.getString(cursor.getColumnIndex(key_remoteId)),
+            cursor.getString(cursor.getColumnIndex(key_password)),
+            cursor.getString(cursor.getColumnIndex(key_name)),
+            cursor.getString(cursor.getColumnIndex(key_ncUrl))
         );
     }
 
     public void clearAccountProjects() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(table_account_projects, null, null);
+    }
+
+    public long addPaymentMode(DBPaymentMode paymentMode) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(key_remoteId, paymentMode.getRemoteId());
+        values.put(key_projectid, paymentMode.getProjectId());
+        values.put(key_name, paymentMode.getName());
+        values.put(key_icon, paymentMode.getIcon());
+        values.put(key_color, paymentMode.getColor());
+        return db.insert(table_payment_modes, null, values);
+    }
+
+    public DBPaymentMode getPaymentMode(long id) {
+        List<DBPaymentMode> paymentModes = getPaymentModesCustom(key_id + " = ?", new String[]{String.valueOf(id)}, null);
+        return paymentModes.isEmpty() ? null : paymentModes.get(0);
+    }
+
+    public DBPaymentMode getPaymentMode(long remoteId, long projectId) {
+        List<DBPaymentMode> paymentModes = getPaymentModesCustom(
+                key_remoteId + " = ? AND " + key_projectid + " = ?",
+                new String[]{String.valueOf(remoteId), String.valueOf(projectId)},
+                null
+        );
+        return paymentModes.isEmpty() ? null : paymentModes.get(0);
+    }
+
+    @NonNull
+    public List<DBPaymentMode> getPaymentModes(long projectId) {
+        return getPaymentModesCustom(key_projectid + " = ?", new String[]{String.valueOf(projectId)}, null);
+    }
+
+    @NonNull
+    @WorkerThread
+    private List<DBPaymentMode> getPaymentModesCustom(@NonNull String selection, @NonNull String[] selectionArgs, @Nullable String orderBy) {
+        return getPaymentModesCustom(selection, selectionArgs, orderBy, getReadableDatabase());
+    }
+
+    @NonNull
+    @WorkerThread
+    private List<DBPaymentMode> getPaymentModesCustom(@NonNull String selection, @NonNull String[] selectionArgs, @Nullable String orderBy, SQLiteDatabase db) {
+        if (selectionArgs.length > 2) {
+            Log.v("Payment mode", selection + "   ----   " + selectionArgs[0] + " " + selectionArgs[1] + " " + selectionArgs[2]);
+        }
+        Cursor cursor = db.query(table_payment_modes, columnsPaymentModes, selection, selectionArgs, null, null, orderBy);
+        List<DBPaymentMode> paymentModes = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            paymentModes.add(getPaymentModeFromCursor(cursor));
+        }
+        cursor.close();
+        return paymentModes;
+    }
+
+    /**
+     * @param cursor database cursor
+     * @return DBProject
+     */
+    @SuppressLint("Range")
+    @NonNull
+    private DBPaymentMode getPaymentModeFromCursor(@NonNull Cursor cursor) {
+        // key_id, key_remoteId, key_projectid, key_name,  key_icon, key_color
+        return new DBPaymentMode(
+            cursor.getLong(cursor.getColumnIndex(key_id)),
+            cursor.getLong(cursor.getColumnIndex(key_remoteId)),
+            cursor.getLong(cursor.getColumnIndex(key_projectid)),
+            cursor.getString(cursor.getColumnIndex(key_name)),
+            cursor.getString(cursor.getColumnIndex(key_icon)),
+            cursor.getString(cursor.getColumnIndex(key_color))
+        );
+    }
+
+    public void updatePaymentMode(long paymentModeId, @Nullable String newName, @Nullable String newIcon,
+                               @Nullable String newColor) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        if (newName != null) {
+            values.put(key_name, newName);
+        }
+        if (newIcon != null) {
+            values.put(key_icon, newIcon);
+        }
+        if (newColor != null) {
+            values.put(key_color, newColor);
+        }
+        if (values.size() > 0) {
+            int rows = db.update(table_payment_modes, values, key_id + " = ?",
+                    new String[]{String.valueOf(paymentModeId)});
+        }
+    }
+
+    public void deletePaymentMode(long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(table_payment_modes,
+                key_id + " = ?",
+                new String[]{String.valueOf(id)});
     }
 
     public long addCategory(DBCategory category) {
@@ -545,15 +702,17 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
      * @param cursor database cursor
      * @return DBProject
      */
+    @SuppressLint("Range")
     @NonNull
     private DBCategory getCategoryFromCursor(@NonNull Cursor cursor) {
         // key_id, key_remoteId, key_projectid, key_name,  key_icon, key_color
-        return new DBCategory(cursor.getLong(0),
-                cursor.getLong(1),
-                cursor.getLong(2),
-                cursor.getString(3),
-                cursor.getString(4),
-                cursor.getString(5)
+        return new DBCategory(
+            cursor.getLong(cursor.getColumnIndex(key_id)),
+            cursor.getLong(cursor.getColumnIndex(key_remoteId)),
+            cursor.getLong(cursor.getColumnIndex(key_projectid)),
+            cursor.getString(cursor.getColumnIndex(key_name)),
+            cursor.getString(cursor.getColumnIndex(key_icon)),
+            cursor.getString(cursor.getColumnIndex(key_color))
         );
     }
 
@@ -655,15 +814,17 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         return currencies;
     }
 
+    @SuppressLint("Range")
     @NonNull
     private DBCurrency getCurrencyFromCursor(@NonNull Cursor cursor) {
-        // key_id, key_remoteId, key_projectid, key_name,  key_exchangeRate, key_state
-        return new DBCurrency(cursor.getLong(0),
-                cursor.getLong(1),
-                cursor.getLong(2),
-                cursor.getString(3),
-                cursor.getDouble(4),
-                cursor.getInt(5)
+        // key_id, key_remoteId, key_projectid, key_name,  key_exchangeRate
+        return new DBCurrency(
+            cursor.getLong(cursor.getColumnIndex(key_id)),
+            cursor.getLong(cursor.getColumnIndex(key_remoteId)),
+            cursor.getLong(cursor.getColumnIndex(key_projectid)),
+            cursor.getString(cursor.getColumnIndex(key_name)),
+            cursor.getDouble(cursor.getColumnIndex(key_exchangeRate)),
+            cursor.getInt(cursor.getColumnIndex(key_state))
         );
     }
 
@@ -771,18 +932,22 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
      * @param cursor database cursor
      * @return DBProject
      */
+    @SuppressLint("Range")
     @NonNull
     private DBProject getProjectFromCursor(@NonNull Cursor cursor) {
-        return new DBProject(cursor.getLong(0),
-                cursor.getString(1),
-                cursor.getString(2),
-                cursor.getString(3),
-                cursor.getString(4),
-                cursor.getString(5),
-                cursor.getLong(6),
-                ProjectType.getTypeById(cursor.getString(7)),
-                cursor.getLong(8),
-                cursor.getString(9)
+        // key_id, key_remoteId, key_password,  key_name, key_ihmUrl,
+        // key_email, key_lastPayerId, key_type, key_lastSyncTimestamp, key_currencyName
+        return new DBProject(
+            cursor.getLong(cursor.getColumnIndex(key_id)),
+            cursor.getString(cursor.getColumnIndex(key_remoteId)),
+            cursor.getString(cursor.getColumnIndex(key_password)),
+            cursor.getString(cursor.getColumnIndex(key_name)),
+            cursor.getString(cursor.getColumnIndex(key_ihmUrl)),
+            cursor.getString(cursor.getColumnIndex(key_email)),
+            cursor.getLong(cursor.getColumnIndex(key_lastPayerId)),
+            ProjectType.getTypeById(cursor.getString(cursor.getColumnIndex(key_type))),
+            cursor.getLong(cursor.getColumnIndex(key_lastSyncTimestamp)),
+            cursor.getString(cursor.getColumnIndex(key_currencyName))
         );
     }
 
@@ -1047,23 +1212,24 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     /**
      *
      */
+    @SuppressLint("Range")
     @NonNull
     private DBMember getMemberFromCursor(@NonNull Cursor cursor) {
         // key_id, key_remoteId, key_projectid, key_name, key_activated, key_weight, key_state
         //Log.v("Member","get dbmember "+ cursor.getString(3) + " : "+cursor.getDouble(5));
         return new DBMember(
-                cursor.getLong(0),
-                cursor.getLong(1),
-                cursor.getLong(2),
-                cursor.getString(3),
-                cursor.getInt(4) == 1,
-                cursor.getDouble(5),
-                cursor.getInt(6),
-                cursor.isNull(7) ? null : cursor.getInt(7),
-                cursor.isNull(8) ? null : cursor.getInt(8),
-                cursor.isNull(9) ? null : cursor.getInt(9),
-                cursor.isNull(10) ? null : cursor.getString(10),
-                cursor.isNull(11) ? null : cursor.getString(11)
+            cursor.getLong(cursor.getColumnIndex(key_id)),
+            cursor.getLong(cursor.getColumnIndex(key_remoteId)),
+            cursor.getLong(cursor.getColumnIndex(key_projectid)),
+            cursor.getString(cursor.getColumnIndex(key_name)),
+            cursor.getInt(cursor.getColumnIndex(key_activated)) == 1,
+            cursor.getDouble(cursor.getColumnIndex(key_weight)),
+            cursor.getInt(cursor.getColumnIndex(key_state)),
+            cursor.isNull(cursor.getColumnIndex(key_r)) ? null : cursor.getInt(cursor.getColumnIndex(key_r)),
+            cursor.isNull(cursor.getColumnIndex(key_g)) ? null : cursor.getInt(cursor.getColumnIndex(key_g)),
+            cursor.isNull(cursor.getColumnIndex(key_b)) ? null : cursor.getInt(cursor.getColumnIndex(key_b)),
+            cursor.isNull(cursor.getColumnIndex(key_nc_userid)) ? null : cursor.getString(cursor.getColumnIndex(key_nc_userid)),
+            cursor.isNull(cursor.getColumnIndex(key_avatar)) ? null : cursor.getString(cursor.getColumnIndex(key_avatar))
         );
     }
 
@@ -1087,7 +1253,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_state, b.getState());
         values.put(key_repeat, b.getRepeat());
         values.put(key_payment_mode, b.getPaymentMode());
+        values.put(key_payment_mode_id, b.getPaymentModeRemoteId());
         values.put(key_category_id, b.getCategoryRemoteId());
+        values.put(key_comment, b.getComment());
 
         long billId = db.insert(table_bills, null, values);
 
@@ -1099,7 +1267,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     public void updateBill(long remoteId, long projId, long newPayerId, double newAmount,
                            @Nullable Long newTimestamp, @Nullable String newWhat, int newState,
-                           @Nullable String newRepeat, @Nullable String newPaymentMode, int newCategoryId) {
+                           @Nullable String newRepeat,
+                           @Nullable String newPaymentMode, @Nullable Integer newPaymentModeRemoteId,
+                           int newCategoryId, @Nullable String newComment) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -1109,6 +1279,12 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         if (newWhat != null) {
             values.put(key_what, newWhat);
         }
+        if (newComment != null) {
+            values.put(key_comment, newComment);
+        }
+        if (newPaymentModeRemoteId != null) {
+            values.put(key_payment_mode_id, newPaymentModeRemoteId);
+        }
         values.put(key_payer_id, newPayerId);
         values.put(key_amount, newAmount);
         values.put(key_state, newState);
@@ -1116,7 +1292,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         values.put(key_payment_mode, newPaymentMode);
         values.put(key_category_id, newCategoryId);
         if (values.size() > 0) {
-            int rows = db.update(table_bills, values, key_remoteId + " = ? AND "+key_projectid+" = ?",
+            int rows = db.update(table_bills, values, key_remoteId + " = ? AND " + key_projectid + " = ?",
                     new String[]{String.valueOf(remoteId), String.valueOf(projId)});
         }
     }
@@ -1132,8 +1308,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     public void updateBill(long billId, @Nullable Long newRemoteId, @Nullable Long newPayerId,
                            @Nullable Double newAmount, @Nullable Long newTimestamp,
                            @Nullable String newWhat, @Nullable Integer newState,
-                           @Nullable String newRepeat, @Nullable String newPaymentMode,
-                           @Nullable Integer newCategoryId) {
+                           @Nullable String newRepeat,
+                           @Nullable String newPaymentMode, @Nullable Integer newPaymentModeRemoteId,
+                           @Nullable Integer newCategoryId, @Nullable String newComment) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -1161,8 +1338,14 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         if (newPaymentMode != null) {
             values.put(key_payment_mode, newPaymentMode);
         }
+        if (newPaymentModeRemoteId != null) {
+            values.put(key_payment_mode_id, newPaymentModeRemoteId);
+        }
         if (newCategoryId != null) {
             values.put(key_category_id, newCategoryId);
+        }
+        if (newComment != null) {
+            values.put(key_comment, newComment);
         }
         if (values.size() > 0) {
             int rows = db.update(table_bills, values, key_id + " = ?",
@@ -1173,7 +1356,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     public void updateBillAndSync(DBBill bill, long newPayerId, double newAmount,
                                   @Nullable Long newTimestamp, @Nullable String newWhat,
                                   @Nullable List<Long> newOwersIds, @Nullable String newRepeat,
-                                  @Nullable String newPaymentMode, @Nullable Integer newCategoryId) {
+                                  @Nullable String newPaymentMode, @Nullable Integer newPaymentModeRemoteId,
+                                  @Nullable Integer newCategoryId,
+                                  @Nullable String newComment) {
         // bill values
         // state
         int newState = DBBill.STATE_EDITED;
@@ -1181,7 +1366,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
             newState = DBBill.STATE_ADDED;
         }
         updateBill(bill.getId(), null, newPayerId, newAmount, newTimestamp, newWhat, newState,
-                   newRepeat, newPaymentMode, newCategoryId);
+                   newRepeat, newPaymentMode, newPaymentModeRemoteId, newCategoryId, newComment);
 
         // bill owers
         List<DBBillOwer> dbBillOwers = getBillowersOfBill(bill.getId());
@@ -1381,22 +1566,25 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     /**
      *
      */
+    @SuppressLint("Range")
     @NonNull
     private DBBill getBillFromCursor(@NonNull Cursor cursor) {
         // key_id, key_remoteId, key_projectid, key_payer_id, key_amount, key_date, key_what, key_state, key_repeat
-        // key_payment_mode, key_category_id
+        // key_payment_mode, key_category_id, key_comment, key_payment_mode_id
         return new DBBill(
-                cursor.getLong(0),
-                cursor.getLong(1),
-                cursor.getLong(2),
-                cursor.getLong(3),
-                cursor.getDouble(4),
-                cursor.getLong(5),
-                cursor.getString(6),
-                cursor.getInt(7),
-                cursor.getString(8),
-                cursor.getString(9),
-                cursor.getInt(10)
+                cursor.getLong(cursor.getColumnIndex(key_id)),
+                cursor.getLong(cursor.getColumnIndex(key_remoteId)),
+                cursor.getLong(cursor.getColumnIndex(key_projectid)),
+                cursor.getLong(cursor.getColumnIndex(key_payer_id)),
+                cursor.getDouble(cursor.getColumnIndex(key_amount)),
+                cursor.getLong(cursor.getColumnIndex(key_timestamp)),
+                cursor.getString(cursor.getColumnIndex(key_what)),
+                cursor.getInt(cursor.getColumnIndex(key_state)),
+                cursor.getString(cursor.getColumnIndex(key_repeat)),
+                cursor.getString(cursor.getColumnIndex(key_payment_mode)),
+                cursor.getInt(cursor.getColumnIndex(key_category_id)),
+                cursor.getString(cursor.getColumnIndex(key_comment)),
+                cursor.getInt(cursor.getColumnIndex(key_payment_mode_id))
         );
     }
 
@@ -1456,13 +1644,14 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     /**
      *
      */
+    @SuppressLint("Range")
     @NonNull
     private DBBillOwer getBillOwerFromCursor(@NonNull Cursor cursor) {
         // key_id, key_billId, key_member_id, key_member_remoteId
         return new DBBillOwer(
-                cursor.getLong(0),
-                cursor.getLong(1),
-                cursor.getLong(2)
+            cursor.getLong(cursor.getColumnIndex(key_id)),
+            cursor.getLong(cursor.getColumnIndex(key_billId)),
+            cursor.getLong(cursor.getColumnIndex(key_member_id))
         );
     }
 

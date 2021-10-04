@@ -97,7 +97,7 @@ public class NewProjectFragment extends Fragment {
     private final static int import_file_cmd = 123;
 
     public interface NewProjectFragmentListener {
-        void close(long pid);
+        void close(long pid, boolean justAdded);
     }
 
     @Nullable
@@ -213,8 +213,7 @@ public class NewProjectFragment extends Fragment {
                     whatTodoCreate.setChecked(false);
                     showHideInputFields(true);
                     showHideValidationButtons();
-                }
-                else {
+                } else {
                     whatTodoJoin.setChecked(true);
                 }
             }
@@ -227,8 +226,7 @@ public class NewProjectFragment extends Fragment {
                     whatTodoJoin.setChecked(false);
                     showHideInputFields(true);
                     showHideValidationButtons();
-                }
-                else {
+                } else {
                     whatTodoCreate.setChecked(true);
                 }
             }
@@ -243,8 +241,7 @@ public class NewProjectFragment extends Fragment {
                     whereIhm.setChecked(false);
                     showHideInputFields(true);
                     showHideValidationButtons();
-                }
-                else {
+                } else {
                     whereLocal.setChecked(true);
                 }
             }
@@ -258,8 +255,7 @@ public class NewProjectFragment extends Fragment {
                     whereLocal.setChecked(false);
                     showHideInputFields(true);
                     showHideValidationButtons();
-                }
-                else {
+                } else {
                     whereIhm.setChecked(true);
                 }
             }
@@ -273,8 +269,7 @@ public class NewProjectFragment extends Fragment {
                     whereIhm.setChecked(false);
                     showHideInputFields(true);
                     showHideValidationButtons();
-                }
-                else {
+                } else {
                     whereCospend.setChecked(true);
                 }
             }
@@ -287,7 +282,7 @@ public class NewProjectFragment extends Fragment {
             }
         });
 
-        boolean darkTheme = MoneyBuster.getAppTheme(getContext());
+        boolean darkTheme = MoneyBuster.isDarkTheme(getContext());
         // if dark theme and main color is black, make fab button lighter/gray
         if (darkTheme && ThemeUtils.primaryColor(getContext()) == Color.BLACK) {
             fabOk.setBackgroundTintList(ColorStateList.valueOf(Color.DKGRAY));
@@ -349,8 +344,7 @@ public class NewProjectFragment extends Fragment {
 
                     AlertDialog selectDialog = selectBuilder.create();
                     selectDialog.show();
-                }
-                else {
+                } else {
                     showToast(getString(R.string.choose_account_project_dialog_impossible), Toast.LENGTH_LONG);
                 }
             }
@@ -432,8 +426,7 @@ public class NewProjectFragment extends Fragment {
     private void showHideValidationButtons() {
         if (isFormValid()) {
             fabOk.show();
-        }
-        else {
+        } else {
             fabOk.hide();
         }
     }
@@ -453,8 +446,7 @@ public class NewProjectFragment extends Fragment {
         if (projectId.equals("")) {
             newProjectIdInputLayout.setBackgroundColor(0x55FF0000);
             valid = false;
-        }
-        else {
+        } else {
             newProjectIdInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
         }
 
@@ -463,15 +455,13 @@ public class NewProjectFragment extends Fragment {
             if (projectUrl.equals("") || !isValidUrl(projectUrl)) {
                 newProjectUrlInputLayout.setBackgroundColor(0x55FF0000);
                 valid = false;
-            }
-            else {
+            } else {
                 newProjectUrlInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
             }
             if (projectPassword.equals("")) {
                 newProjectPasswordInputLayout.setBackgroundColor(0x55FF0000);
                 valid = false;
-            }
-            else {
+            } else {
                 newProjectPasswordInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
             }
         }
@@ -482,21 +472,18 @@ public class NewProjectFragment extends Fragment {
                 if (projectName.equals("")) {
                     newProjectNameInputLayout.setBackgroundColor(0x55FF0000);
                     valid = false;
-                }
-                else {
+                } else {
                     newProjectNameInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
                 }
                 if (!SupportUtil.isValidEmail(projectEmail)) {
                     newProjectEmailInputLayout.setBackgroundColor(0x55FF0000);
                     valid = false;
-                }
-                else {
+                } else {
                     newProjectEmailInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
                 }
             }
-        }
-        // join
-        else {
+        } else {
+            // join
             if (type.equals(ProjectType.LOCAL)) {
                 valid = false;
             }
@@ -531,8 +518,7 @@ public class NewProjectFragment extends Fragment {
             whatTodoJoin.setTypeface(Typeface.DEFAULT);
             whatTodoCreate.setTextSize(12);
             whatTodoJoin.setTextSize(10);
-        }
-        else {
+        } else {
             whatTodoCreate.setTypeface(Typeface.DEFAULT);
             whatTodoJoin.setTypeface(Typeface.DEFAULT_BOLD);
             whatTodoCreate.setTextSize(10);
@@ -559,8 +545,7 @@ public class NewProjectFragment extends Fragment {
             nextcloudButton.setVisibility(View.GONE);
             nextcloudCreateButton.setVisibility(View.GONE);
             importButton.setVisibility(View.VISIBLE);
-        }
-        else if (type.equals(ProjectType.IHATEMONEY)) {
+        } else if (type.equals(ProjectType.IHATEMONEY)) {
             whereLocal.setTextSize(10);
             whereIhm.setTextSize(12);
             whereCospend.setTextSize(10);
@@ -581,8 +566,7 @@ public class NewProjectFragment extends Fragment {
             nextcloudButton.setVisibility(View.GONE);
             nextcloudCreateButton.setVisibility(View.GONE);
             importButton.setVisibility(View.GONE);
-        }
-        else if (type.equals(ProjectType.COSPEND)) {
+        } else if (type.equals(ProjectType.COSPEND)) {
             whereLocal.setTextSize(10);
             whereIhm.setTextSize(10);
             whereCospend.setTextSize(12);
@@ -683,12 +667,47 @@ public class NewProjectFragment extends Fragment {
         String password;
         String url;
         String pid;
-        if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 2) {
+        if (data.getScheme().equals("cospend") && data.getPathSegments().size() >= 1) {
             if (data.getPath().endsWith("/")) {
                 password = "";
                 pid = data.getLastPathSegment();
+            } else {
+                password = data.getLastPathSegment();
+                pid = data.getPathSegments().get(data.getPathSegments().size() - 2);
             }
-            else {
+            url = "https://" +
+                    data.getHost() + data.getPath().replaceAll("/"+pid+"/" + password + "$", "");
+            newProjectPassword.setText(password);
+            newProjectId.setText(pid);
+            newProjectUrl.setText(url);
+            whereLocal.setChecked(false);
+            whereIhm.setChecked(false);
+            whereCospend.setChecked(true);
+            showHideInputFields(false);
+            showHideValidationButtons();
+        } else if (data.getScheme().equals("ihatemoney") && data.getPathSegments().size() >= 1) {
+            if (data.getPath().endsWith("/")) {
+                password = "";
+                pid = data.getLastPathSegment();
+            } else {
+                password = data.getLastPathSegment();
+                pid = data.getPathSegments().get(data.getPathSegments().size() - 2);
+            }
+            url = "https://" +
+                    data.getHost() + data.getPath().replaceAll("/" + pid + "/" + password + "$", "");
+            newProjectPassword.setText(password);
+            newProjectId.setText(pid);
+            newProjectUrl.setText(url);
+            whereLocal.setChecked(false);
+            whereIhm.setChecked(true);
+            whereCospend.setChecked(false);
+            showHideInputFields(false);
+            showHideValidationButtons();
+        } else if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 2) {
+            if (data.getPath().endsWith("/")) {
+                password = "";
+                pid = data.getLastPathSegment();
+            } else {
                 password = data.getLastPathSegment();
                 pid = data.getPathSegments().get(data.getPathSegments().size() - 2);
             }
@@ -702,13 +721,11 @@ public class NewProjectFragment extends Fragment {
             whereCospend.setChecked(true);
             showHideInputFields(false);
             showHideValidationButtons();
-        }
-        else if (data.getHost().equals("net.eneiluj.moneybuster.ihatemoney") && data.getPathSegments().size() >= 2) {
+        } else if (data.getHost().equals("net.eneiluj.moneybuster.ihatemoney") && data.getPathSegments().size() >= 2) {
             if (data.getPath().endsWith("/")) {
                 password = "";
                 pid = data.getLastPathSegment();
-            }
-            else {
+            } else {
                 password = data.getLastPathSegment();
                 pid = data.getPathSegments().get(data.getPathSegments().size() - 2);
             }
@@ -722,29 +739,14 @@ public class NewProjectFragment extends Fragment {
             whereCospend.setChecked(false);
             showHideInputFields(false);
             showHideValidationButtons();
-        }
-        else if (data.getHost().equals("ihatemoney.org") && data.getPathSegments().size() == 1) {
-            password = "";
-            pid = data.getLastPathSegment();
-            url = "https://ihatemoney.org";
-            newProjectPassword.setText(password);
-            newProjectId.setText(pid);
-            newProjectUrl.setText(url);
-            whereLocal.setChecked(false);
-            whereIhm.setChecked(true);
-            whereCospend.setChecked(false);
-            showHideInputFields(false);
-            showHideValidationButtons();
-        }
-        else {
+        } else {
             showToast(getString(R.string.import_bad_url), Toast.LENGTH_LONG);
             return;
         }
 
         if (isFormValid()) {
             onPressOk();
-        }
-        else {
+        } else {
             if (getPassword().equals("")) {
                 newProjectPassword.requestFocus();
             }
@@ -808,12 +810,12 @@ public class NewProjectFragment extends Fragment {
         // join or create local
         boolean todoCreate = getTodoCreate();
         if (!todoCreate || ProjectType.LOCAL.equals(type)) {
-            long pid = saveProject(null);
-            listener.close(pid);
-        }
-        // create remote project (we know the type is not local)
-        // the callback will quit this activity
-        else {
+            long pid = saveProject(null, false);
+            // if it's local, we call that creation, otherwise we can say it's been "added"
+            listener.close(pid, !ProjectType.LOCAL.equals(type));
+        } else {
+            // create remote project (we know the type is not local)
+            // the callback will quit this activity
             String name = getName();
             if (name == null || name.equals("")) {
                 //showToast(getString(R.string.error_invalid_project_name), Toast.LENGTH_LONG);
@@ -866,25 +868,29 @@ public class NewProjectFragment extends Fragment {
      *
      * @param callback Observer which is called after save/synchronization
      */
-    protected long saveProject(@Nullable ICallback callback) {
+    protected long saveProject(@Nullable ICallback callback, boolean ignorePassword) {
         ProjectType type = getProjectType();
         String remoteId = getRemoteId();
         String url = null;
         String password = null;
         String email = null;
-        String name = null;
-        if (!type.equals(ProjectType.LOCAL)) {
+        String name;
+        if (type.equals(ProjectType.LOCAL)) {
+            name = getRemoteId();
+        } else {
             url = getUrl();
-            password = getPassword();
+            if (ignorePassword) {
+                password = "";
+            } else {
+                password = getPassword();
+            }
             email = getEmail();
             name = getName();
-        } else {
-
         }
 
         DBProject newProject = new DBProject(
                 0, remoteId, password, name, url,
-                email, null, type, Long.valueOf(0), null
+                email, null, type, 0L, null
         );
         long pid = db.addProject(newProject);
 
@@ -895,7 +901,7 @@ public class NewProjectFragment extends Fragment {
 
         showToast(getString(R.string.project_added_success), Toast.LENGTH_LONG);
 
-        Log.i(TAG, "PROJECT local id : "+pid+" : "+newProject);
+        Log.i(TAG, "PROJECT local id : " + pid + " : " + newProject);
         return pid;
     }
 
@@ -914,13 +920,11 @@ public class NewProjectFragment extends Fragment {
                 whereLocal.setChecked(false);
                 whereIhm.setChecked(false);
                 whereCospend.setChecked(true);
-            }
-            else if (defaultTypeId.equals(ProjectType.IHATEMONEY.getId())) {
+            } else if (defaultTypeId.equals(ProjectType.IHATEMONEY.getId())) {
                 whereLocal.setChecked(false);
                 whereIhm.setChecked(true);
                 whereCospend.setChecked(false);
-            }
-            else if (defaultTypeId.equals(ProjectType.LOCAL.getId())) {
+            } else if (defaultTypeId.equals(ProjectType.LOCAL.getId())) {
                 whereLocal.setChecked(true);
                 whereIhm.setChecked(false);
                 whereCospend.setChecked(false);
@@ -949,11 +953,9 @@ public class NewProjectFragment extends Fragment {
     protected ProjectType getProjectType() {
         if (whereLocal.isChecked()) {
             return ProjectType.LOCAL;
-        }
-        else if (whereIhm.isChecked()) {
+        } else if (whereIhm.isChecked()) {
             return ProjectType.IHATEMONEY;
-        }
-        else {
+        } else {
             return ProjectType.COSPEND;
         }
     }
@@ -989,17 +991,16 @@ public class NewProjectFragment extends Fragment {
         return newProjectEmail.getText().toString();
     }
 
-    private ICallback createRemoteCallBack = new ICallback() {
+    private IProjectCreationCallback createRemoteCallBack = new IProjectCreationCallback() {
         @Override
         public void onFinish() {
         }
 
-        public void onFinish(String result, String message) {
+        public void onFinish(String result, String message, boolean usePrivateApi) {
             if (message.isEmpty()) {
-                long pid = saveProject(null);
-                listener.close(pid);
-            }
-            else {
+                long pid = saveProject(null, usePrivateApi);
+                listener.close(pid, false);
+            } else {
                 //showToast(getString(R.string.error_create_remote_project_helper, message), Toast.LENGTH_LONG);
                 androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(
                         new ContextThemeWrapper(
@@ -1080,7 +1081,7 @@ public class NewProjectFragment extends Fragment {
                 int row = 0;
                 int nbCols;
                 String icon, color, categoryname, categoryid, currencyname, exchangeRate,
-                    what, payer_name, owersStr, paymentmode;
+                    what, payer_name, owersStr, paymentmode, paymentmodeid, paymentmodename, comment;
                 long timestamp;
                 String dateStr;
                 Date date;
@@ -1090,12 +1091,14 @@ public class NewProjectFragment extends Fragment {
                 double amount, payer_weight;
                 Map<String, Integer> columns = new HashMap<>();
                 int c;
+                List<DBPaymentMode> paymentModes = new ArrayList<>();
                 List<DBCategory> categories = new ArrayList<>();
                 List<DBCurrency> currencies = new ArrayList<>();
                 List<DBBill> bills = new ArrayList<>();
                 Map<String, Boolean> membersActive = new HashMap<>();
                 Map<String, Double> membersweight = new HashMap<>();
                 Map<Long, Long> categoryIdConv = new HashMap<>();
+                Map<Long, Long> paymentModeIdConv = new HashMap<>();
                 Map<Long, String> billRemoteIdToPayerName = new HashMap<>();
                 Map<Long, String> billRemoteIdToOwerStr = new HashMap<>();
                 List<Long> owerIds = new ArrayList<>();
@@ -1104,9 +1107,15 @@ public class NewProjectFragment extends Fragment {
                 CSVReader reader = new CSVReader(inputStreamReader);
                 String[] nextLine;
                 while ((nextLine = reader.readNext()) != null) {
-                    Log.d(TAG, "LEN "+nextLine.length+" = "+nextLine[0]);
-                    // if len==1 and content == "" => empty line
-                    if (nextLine.length == 1 && nextLine[0].equals("")) {
+                    // check if all fields are empty
+                    boolean allFieldsEmpty = true;
+                    for (String field: nextLine) {
+                        if (!"".equals(field)) {
+                            allFieldsEmpty = false;
+                            break;
+                        }
+                    }
+                    if (allFieldsEmpty) {
                         previousLineEmpty = true;
                     } else if (row == 0 || previousLineEmpty) {
                         previousLineEmpty = false;
@@ -1145,7 +1154,13 @@ public class NewProjectFragment extends Fragment {
                             color = nextLine[columns.get("color")];
                             categoryid = nextLine[columns.get("categoryid")];
                             categoryname = nextLine[columns.get("categoryname")];
-                            categories.add(new DBCategory(0, Long.valueOf(categoryid), 0, categoryname, icon, color));
+                            categories.add(new DBCategory(0, Long.parseLong(categoryid), 0, categoryname, icon, color));
+                        } else if (currentSection.equals("paymentmodes")) {
+                            icon = nextLine[columns.get("icon")];
+                            color = nextLine[columns.get("color")];
+                            paymentmodeid = nextLine[columns.get("categoryid")];
+                            paymentmodename = nextLine[columns.get("categoryname")];
+                            paymentModes.add(new DBPaymentMode(0, Long.parseLong(paymentmodeid), 0, paymentmodename, icon, color));
                         } else if (currentSection.equals("currencies")) {
                             currencyname = nextLine[columns.get("currencyname")];
                             exchangeRate = nextLine[columns.get("exchange_rate")];
@@ -1153,12 +1168,13 @@ public class NewProjectFragment extends Fragment {
                                 mainCurrencyName = currencyname;
                             }
                             currencies.add(new DBCurrency(0, 0, 0, currencyname, Double.parseDouble(exchangeRate), DBBill.STATE_OK));
-                        } else if (currentSection == "bills") {
-                            what = nextLine[columns.get("what")];
-                            amount = Double.parseDouble(nextLine[columns.get("amount")]);
+                        } else if ("bills".equals(currentSection)) {
+                            what = columns.containsKey("what") ? nextLine[columns.get("what")] : "";
+                            comment = columns.containsKey("comment") ? nextLine[columns.get("comment")] : "";
+                            amount = columns.containsKey("amount") ? Double.parseDouble(nextLine[columns.get("amount")]) : 0;
                             // get timestamp in priority
                             if (columns.containsKey("timestamp")) {
-                                timestamp = Long.valueOf(nextLine[columns.get("timestamp")]);
+                                timestamp = Long.parseLong(nextLine[columns.get("timestamp")]);
                             } else if (columns.containsKey("date")) {
                                 dateStr = nextLine[columns.get("date")];
                                 try {
@@ -1172,11 +1188,12 @@ public class NewProjectFragment extends Fragment {
                                 timestamp = 0;
                             }
 
-                            payer_name = nextLine[columns.get("payer_name")];
-                            payer_weight = Double.parseDouble(nextLine[columns.get("payer_weight")]);
-                            owersStr = nextLine[columns.get("owers")];
+                            payer_name = columns.containsKey("payer_name") ? nextLine[columns.get("payer_name")] : "";
+                            payer_weight = columns.containsKey("payer_name") ? Double.parseDouble(nextLine[columns.get("payer_weight")]) : 1;
+                            owersStr = columns.containsKey("owers") ? nextLine[columns.get("owers")] : "";
                             payer_active = columns.containsKey("payer_active") && nextLine[columns.get("payer_active")].equals("1");
                             categoryid = (columns.containsKey("categoryid") && !"".equals(nextLine[columns.get("categoryid")])) ? nextLine[columns.get("categoryid")] : "0";
+                            paymentmodeid = (columns.containsKey("paymentmodeid") && !"".equals(nextLine[columns.get("paymentmodeid")])) ? nextLine[columns.get("paymentmodeid")] : "0";
                             paymentmode = columns.containsKey("paymentmode") ? nextLine[columns.get("paymentmode")] : null;
 
                             membersActive.put(payer_name, payer_active);
@@ -1189,7 +1206,7 @@ public class NewProjectFragment extends Fragment {
                             // ignore "deleteMeIfYouWant" bills that are just there
                             // to make sure we add members
                             if (!"deleteMeIfYouWant".equals(what)) {
-                                billRemoteIdToOwerStr.put(Long.valueOf(row), owersStr);
+                                billRemoteIdToOwerStr.put((long) row, owersStr);
                                 owersArray = owersStr.split(", ");
                                 for (int i = 0; i < owersArray.length; i++) {
                                     if (owersArray[i].trim().length() == 0) {
@@ -1201,11 +1218,13 @@ public class NewProjectFragment extends Fragment {
                                     }
                                 }
                                 bills.add(
-                                        new DBBill(0, row, 0, 0, amount, timestamp, what,
-                                                DBBill.STATE_OK, "n", paymentmode, Integer.parseInt(categoryid)
-                                        )
+                                    new DBBill(
+                                        0, row, 0, 0, amount, timestamp, what,
+                                        DBBill.STATE_OK, "n", paymentmode,
+                                        Integer.parseInt(categoryid), comment, Integer.parseInt(paymentmodeid)
+                                    )
                                 );
-                                billRemoteIdToPayerName.put(Long.valueOf(row), payer_name);
+                                billRemoteIdToPayerName.put((long) row, payer_name);
                             }
                         }
                     }
@@ -1220,6 +1239,11 @@ public class NewProjectFragment extends Fragment {
                 long pid = db.addProject(newProject);
                 Log.v(TAG, "NEW PROJECT ID : "+pid);
 
+                // add payment modes
+                for (DBPaymentMode pm: paymentModes) {
+                    long pmDbId = db.addPaymentMode(new DBPaymentMode(0, pm.getRemoteId(), pid, pm.getName(), pm.getIcon(), pm.getColor()));
+                    paymentModeIdConv.put(pm.getRemoteId(), pmDbId);
+                }
                 // add categories
                 for (DBCategory cat: categories) {
                     long catDbId = db.addCategory(new DBCategory(0, cat.getRemoteId(), pid, cat.getName(), cat.getIcon(), cat.getColor()));
@@ -1250,13 +1274,19 @@ public class NewProjectFragment extends Fragment {
                     for (int i = 0; i < owersArray.length; i++) {
                         owerIds.add(memberNameToId.get(owersArray[i]));
                     }
-                    long billDbId = db.addBill(new DBBill(0, 0, pid, payerId, b.getAmount(), b.getTimestamp(),
-                            b.getWhat(), DBBill.STATE_OK, "n", b.getPaymentMode(), b.getCategoryRemoteId()));
+                    long billDbId = db.addBill(
+                        new DBBill(
+                            0, 0, pid, payerId, b.getAmount(),
+                            b.getTimestamp(), b.getWhat(), DBBill.STATE_OK, "n",
+                            b.getPaymentMode(), b.getCategoryRemoteId(), b.getComment(),
+                            b.getPaymentModeRemoteId()
+                        )
+                    );
                     // add bill owers
                     for (Long owerId: owerIds) {
                         db.addBillower(billDbId, owerId);
                     }
-                    listener.close(pid);
+                    listener.close(pid, false);
                 }
             } catch (IOException e) {
 

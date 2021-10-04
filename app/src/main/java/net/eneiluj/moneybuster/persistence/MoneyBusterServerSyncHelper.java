@@ -1,7 +1,5 @@
 package net.eneiluj.moneybuster.persistence;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,11 +11,11 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
@@ -25,6 +23,7 @@ import androidx.preference.PreferenceManager;
 import com.google.gson.GsonBuilder;
 import com.nextcloud.android.sso.api.NextcloudAPI;
 import com.nextcloud.android.sso.exceptions.NextcloudFilesAppAccountNotFoundException;
+import com.nextcloud.android.sso.exceptions.NextcloudHttpRequestFailedException;
 import com.nextcloud.android.sso.exceptions.NoCurrentAccountSelectedException;
 import com.nextcloud.android.sso.exceptions.TokenMismatchException;
 import com.nextcloud.android.sso.helper.SingleAccountHelper;
@@ -39,23 +38,27 @@ import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBCategory;
 import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.DBPaymentMode;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.service.SyncService;
 import net.eneiluj.moneybuster.util.CospendClient;
 import net.eneiluj.moneybuster.util.CospendClientUtil.LoginStatus;
 import net.eneiluj.moneybuster.util.ICallback;
+import net.eneiluj.moneybuster.util.IProjectCreationCallback;
 import net.eneiluj.moneybuster.util.VersatileProjectSyncClient;
 import net.eneiluj.moneybuster.util.ServerResponse;
 import net.eneiluj.moneybuster.util.SupportUtil;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import at.bitfire.cert4android.CustomCertManager;
 import at.bitfire.cert4android.CustomCertService;
@@ -80,7 +83,7 @@ public class MoneyBusterServerSyncHelper {
 
     private static int NOTIFICATION_ID = 1526756699;
 
-    private SharedPreferences preferences;
+    private final SharedPreferences preferences;
 
     private static MoneyBusterServerSyncHelper instance;
 
@@ -114,7 +117,7 @@ public class MoneyBusterServerSyncHelper {
             iCustomCertService = ICustomCertService.Stub.asInterface(iBinder);
             cert4androidReady = true;
             if (isSyncPossible()) {
-                Long lastId = PreferenceManager.getDefaultSharedPreferences(dbHelper.getContext()).getLong("selected_project", 0);
+                long lastId = PreferenceManager.getDefaultSharedPreferences(dbHelper.getContext()).getLong("selected_project", 0);
                 if (lastId != 0) {
                     DBProject proj = dbHelper.getProject(lastId);
                     if (proj != null) {
@@ -137,7 +140,7 @@ public class MoneyBusterServerSyncHelper {
 
     // current state of the synchronization
     private boolean syncActive = false;
-    private static List<Long> projectIdsToSync = new ArrayList<>();
+    private static final List<Long> projectIdsToSync = new ArrayList<>();
 
     // current state of the account projects synchronization
     private boolean syncAccountProjectsActive = false;
@@ -294,10 +297,11 @@ public class MoneyBusterServerSyncHelper {
      */
     private class SyncTask extends AsyncTask<Void, Void, LoginStatus> {
         private final boolean onlyLocalChanges;
-        private DBProject project;
+        private final DBProject project;
         private final List<ICallback> callbacks = new ArrayList<>();
         private VersatileProjectSyncClient client;
         private List<Throwable> exceptions = new ArrayList<>();
+        private List<String> errorMessages = new ArrayList<>();
         private int nbPulledNewBills = 0;
         private int nbPulledUpdatedBills = 0;
         private int nbPulledDeletedBills = 0;
@@ -365,11 +369,10 @@ public class MoneyBusterServerSyncHelper {
                                 remoteMember.getG(), remoteMember.getB(),
                                 remoteMember.getNcUserId(), ""
                         );
-                    }
-                    // it does not exist, create it remotely
-                    else {
+                    } else {
+                        // it does not exist, create it remotely
                         ServerResponse.CreateRemoteMemberResponse createRemoteMemberResponse = client.createRemoteMember(customCertManager, project, mToAdd);
-                        long newRemoteId = Long.valueOf(createRemoteMemberResponse.getStringContent());
+                        long newRemoteId = Long.parseLong(createRemoteMemberResponse.getStringContent());
                         if (newRemoteId > 0) {
                             dbHelper.updateMember(
                                 mToAdd.getId(), null,
@@ -461,12 +464,14 @@ public class MoneyBusterServerSyncHelper {
                 List<DBBill> toAdd = dbHelper.getBillsOfProjectWithState(project.getId(), DBBill.STATE_ADDED);
                 for (DBBill bToAdd : toAdd) {
                     ServerResponse.CreateRemoteBillResponse createRemoteBillResponse = client.createRemoteBill(customCertManager, project, bToAdd, memberIdToRemoteId);
-                    long newRemoteId = Long.valueOf(createRemoteBillResponse.getStringContent());
+                    long newRemoteId = Long.parseLong(createRemoteBillResponse.getStringContent());
                     if (newRemoteId > 0) {
                         dbHelper.updateBill(
                                 bToAdd.getId(), newRemoteId, null,
                                 null, null, null,
-                                DBBill.STATE_OK, null, null, null
+                                DBBill.STATE_OK, null,
+                                null, null,
+                                null, null
                         );
                     }
                 }
@@ -538,6 +543,13 @@ public class MoneyBusterServerSyncHelper {
             } catch (TokenMismatchException e) {
                 Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
+            } catch (NextcloudHttpRequestFailedException e) {
+                Log.e(getClass().getSimpleName(), "Catch SSO HTTP req FAILED", e);
+                status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
+                if (e.getCause() != null) {
+                    exceptions.add(e.getCause());
+                }
             }
             Log.d(getClass().getSimpleName(), "END PUSH LOCAL CHANGES");
             return status;
@@ -577,6 +589,47 @@ public class MoneyBusterServerSyncHelper {
                             null, null, null, currencyName);
                 }
 
+                // get payment modes
+                List<DBPaymentMode> remotePaymentModes = projResponse.getPaymentModes(project.getId());
+                Map<Long, DBPaymentMode> remotePaymentModesByRemoteId = new HashMap<>();
+                for (DBPaymentMode remotePaymentMode : remotePaymentModes) {
+                    remotePaymentModesByRemoteId.put(remotePaymentMode.getRemoteId(), remotePaymentMode);
+                }
+
+                // add/update/delete payment modes
+                for (DBPaymentMode pm : remotePaymentModes) {
+                    DBPaymentMode localPaymentMode = dbHelper.getPaymentMode(pm.getRemoteId(), project.getId());
+                    // pm does not exist locally, add it
+                    if (localPaymentMode == null) {
+                        Log.d(getClass().getSimpleName(), "Add local pm : " + pm);
+                        dbHelper.addPaymentMode(pm);
+                    } else {
+                        // pm exists, check if needs update
+                        if (pm.getName().equals(localPaymentMode.getName()) &&
+                                pm.getColor().equals(localPaymentMode.getColor()) &&
+                                pm.getIcon().equals(localPaymentMode.getIcon())
+                        ) {
+                            // alright
+                            Log.d(getClass().getSimpleName(), "Nothing to do for pm : " + localPaymentMode);
+                        } else {
+                            Log.d(getClass().getSimpleName(), "Update local pm : " + pm);
+
+                            dbHelper.updatePaymentMode(
+                                    localPaymentMode.getId(), pm.getName(), pm.getIcon(), pm.getColor()
+                            );
+                        }
+                    }
+                }
+
+                // delete local pms which are not there remotely
+                List<DBPaymentMode> localPaymentModes = dbHelper.getPaymentModes(project.getId());
+                for (DBPaymentMode localPaymentMode : localPaymentModes) {
+                    if (!remotePaymentModesByRemoteId.containsKey(localPaymentMode.getRemoteId())) {
+                        dbHelper.deletePaymentMode(localPaymentMode.getId());
+                        Log.d(TAG, "Delete local pm : " + localPaymentMode);
+                    }
+                }
+
                 // get categories
                 List<DBCategory> remoteCategories = projResponse.getCategories(project.getId());
                 Map<Long, DBCategory> remoteCategoriesByRemoteId = new HashMap<>();
@@ -591,9 +644,8 @@ public class MoneyBusterServerSyncHelper {
                     if (localCategory == null) {
                         Log.d(getClass().getSimpleName(), "Add local category : " + c);
                         dbHelper.addCategory(c);
-                    }
-                    // category exists, check if needs update
-                    else {
+                    } else {
+                        // category exists, check if needs update
                         if (c.getName().equals(localCategory.getName()) &&
                                 c.getColor().equals(localCategory.getColor()) &&
                                 c.getIcon().equals(localCategory.getIcon())
@@ -633,9 +685,8 @@ public class MoneyBusterServerSyncHelper {
                     if (localCurrency == null) {
                         Log.d(getClass().getSimpleName(), "Add local currency : " + c);
                         dbHelper.addCurrency(c);
-                    }
-                    // currency exists, check if needs update
-                    else {
+                    } else {
+                        // currency exists, check if needs update
                         if (c.getName().equals(localCurrency.getName()) &&
                                 c.getExchangeRate() == localCurrency.getExchangeRate()
                         ) {
@@ -677,9 +728,8 @@ public class MoneyBusterServerSyncHelper {
                         if (m.getNcUserId() != null && !"".equals(m.getNcUserId())) {
                             updateMemberAvatar(mid);
                         }
-                    }
-                    // member exists, check if needs update
-                    else {
+                    } else {
+                        // member exists, check if needs update
                         boolean ncUserIdChanged = (
                                 (m.getNcUserId() == null && localMember.getNcUserId() != null) ||
                                 (m.getNcUserId() != null && localMember.getNcUserId() == null) ||
@@ -698,9 +748,11 @@ public class MoneyBusterServerSyncHelper {
                                 (
                                         // if we get null color, then keep our local color
                                         (m.getR() == null && m.getG() == null && m.getB() == null) ||
-                                        (m.getR() == localMember.getR() &&
-                                            m.getG() == localMember.getG() &&
-                                            m.getB() == localMember.getB())
+                                        (
+                                            Objects.equals(m.getR(), localMember.getR()) &&
+                                            Objects.equals(m.getG(), localMember.getG()) &&
+                                            Objects.equals(m.getB(), localMember.getB())
+                                        )
                                 ) &&
                                 !ncUserIdChanged
                         ) {
@@ -769,9 +821,8 @@ public class MoneyBusterServerSyncHelper {
                         // if smartsync is disabled, we still set last sync timestamp for the sidebar indicator
                         serverSyncTimestamp = System.currentTimeMillis() / 1000;
                     }
-                }
-                // IHATEMONEY => we get all bills
-                else {
+                } else {
+                    // IHATEMONEY => we get all bills
                     remoteBills = billsResponse.getBillsIHM(project.getId(), memberRemoteIdToId);
                     serverSyncTimestamp = System.currentTimeMillis() / 1000;
                 }
@@ -790,21 +841,21 @@ public class MoneyBusterServerSyncHelper {
                 for (DBBill remoteBill : remoteBills) {
                     // add if local does not exist
                     if (!localBillsByRemoteId.containsKey(remoteBill.getRemoteId())) {
-                        long billId = dbHelper.addBill(remoteBill);
+                        dbHelper.addBill(remoteBill);
                         nbPulledNewBills++;
                         newBillsDialogText += "+ " + remoteBill.getWhat() + "\n";
                         Log.d(TAG, "Add local bill : " + remoteBill);
-                    }
-                    // update bill if necessary
-                    // and billOwers if necessary
-                    else {
+                    } else {
+                        // update bill if necessary
+                        // and billOwers if necessary
                         DBBill localBill = localBillsByRemoteId.get(remoteBill.getRemoteId());
                         if (hasChanged(localBill, remoteBill)) {
                             dbHelper.updateBill(
                                     localBill.getId(), null, remoteBill.getPayerId(),
                                     remoteBill.getAmount(), remoteBill.getTimestamp(),
                                     remoteBill.getWhat(), DBBill.STATE_OK, remoteBill.getRepeat(),
-                                    remoteBill.getPaymentMode(), remoteBill.getCategoryRemoteId()
+                                    remoteBill.getPaymentMode(), remoteBill.getPaymentModeRemoteId(),
+                                    remoteBill.getCategoryRemoteId(), remoteBill.getComment()
                             );
                             nbPulledUpdatedBills++;
                             updatedBillsDialogText += "✏ " + remoteBill.getWhat() + "\n";
@@ -855,8 +906,7 @@ public class MoneyBusterServerSyncHelper {
                             Log.d(TAG, "Delete local bill : " + localBill);
                         }
                     }
-                }
-                else {
+                } else {
                     for (DBBill localBill : localBills) {
                         // if local bill does not exist remotely
                         if (!remoteBillsByRemoteId.containsKey(localBill.getRemoteId())) {
@@ -911,6 +961,13 @@ public class MoneyBusterServerSyncHelper {
             } catch (TokenMismatchException e) {
                 Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
+            } catch (NextcloudHttpRequestFailedException e) {
+                Log.e(getClass().getSimpleName(), "Catch NC REQ failed", e);
+                status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
+                if (e.getCause() != null) {
+                    exceptions.add(e.getCause());
+                }
             }
             return status;
         }
@@ -920,8 +977,21 @@ public class MoneyBusterServerSyncHelper {
             super.onPostExecute(status);
             if (status != LoginStatus.OK) {
                 String errorString = "";
+                for (String errorMessage : errorMessages) {
+                    errorString += errorMessage + "\n";
+                }
+                errorString += "\n";
                 for (Throwable e : exceptions) {
-                    errorString += e.getMessage() + "\n";
+                    JSONObject obj = SupportUtil.getJsonObject(e.getMessage());
+                    if (obj != null && obj.has("message")) {
+                        try {
+                            errorString += obj.getString("message") + "\n";
+                        } catch (JSONException jsonEx) {
+//                            errorString += e.getMessage() + "\n";
+                        }
+                    } else {
+//                        errorString += e.getMessage() + "\n";
+                    }
                 }
                 // broadcast the error
                 // if the bills list is not visible, no toast
@@ -976,6 +1046,20 @@ public class MoneyBusterServerSyncHelper {
         }
     }
 
+    public String getErrorMessageFromException(NextcloudHttpRequestFailedException e) {
+        int errorCode = e.getStatusCode();
+        if (errorCode == 503) {
+            return appContext.getString(R.string.error_maintenance_mode);
+        } else if (errorCode == 401) {
+            return appContext.getString(R.string.error_401);
+        } else if (errorCode == 403) {
+            return appContext.getString(R.string.error_403);
+        } else if (errorCode == 404) {
+            return appContext.getString(R.string.error_404);
+        }
+        return "";
+    }
+
     public void notifyProjectEvent(String dialogContent, String notificationContent, long projectId) {
         // intent of notification
         Intent ptIntent = new Intent(appContext.getApplicationContext(), BillsListViewActivity.class);
@@ -1018,8 +1102,7 @@ public class MoneyBusterServerSyncHelper {
             catch (NoCurrentAccountSelectedException e) {
                 return null;
             }
-        }
-        else {
+        } else {
             url = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS);
             username = preferences.getString(SettingsActivity.SETTINGS_USERNAME, SettingsActivity.DEFAULT_SETTINGS);
             password = preferences.getString(SettingsActivity.SETTINGS_PASSWORD, SettingsActivity.DEFAULT_SETTINGS);
@@ -1043,8 +1126,7 @@ public class MoneyBusterServerSyncHelper {
             } catch (NextcloudFilesAppAccountNotFoundException | NoCurrentAccountSelectedException e) {
                 return false;
             }
-        }
-        else {
+        } else {
             accountUrl = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS).replaceAll("/$", "");
         }
 
@@ -1052,10 +1134,11 @@ public class MoneyBusterServerSyncHelper {
         return (isCospend && projUrl.equals(accountUrl));
     }
 
-    public boolean editRemoteProject(long projId, String newName, String newEmail, String newPassword, ICallback callback) {
+    public boolean editRemoteProject(long projId, String newName, String newEmail, String newPassword,
+                                     @Nullable String newMainCurrencyName, ICallback callback) {
         updateNetworkStatus();
         if (isSyncPossible()) {
-            EditRemoteProjectTask editRemoteProjectTask = new EditRemoteProjectTask(projId, newName, newEmail, newPassword, callback);
+            EditRemoteProjectTask editRemoteProjectTask = new EditRemoteProjectTask(projId, newName, newEmail, newPassword, newMainCurrencyName, callback);
             editRemoteProjectTask.execute();
             return true;
         }
@@ -1068,18 +1151,22 @@ public class MoneyBusterServerSyncHelper {
      */
     private class EditRemoteProjectTask extends AsyncTask<Void, Void, LoginStatus> {
         private VersatileProjectSyncClient client;
-        private String newName;
-        private String newEmail;
-        private String newPassword;
-        private DBProject project;
-        private ICallback callback;
-        private List<Throwable> exceptions = new ArrayList<>();
+        private final String newName;
+        private final String newEmail;
+        private final String newPassword;
+        private final String newMainCurrencyName;
+        private final DBProject project;
+        private final ICallback callback;
+        private final List<Throwable> exceptions = new ArrayList<>();
+        private final List<String> errorMessages = new ArrayList<>();
 
-        public EditRemoteProjectTask(long projId, String newName, String newEmail, String newPassword, ICallback callback) {
+        public EditRemoteProjectTask(long projId, String newName, String newEmail, String newPassword,
+                                     @Nullable String newMainCurrencyName, ICallback callback) {
             this.project = dbHelper.getProject(projId);
             this.newName = newName;
             this.newEmail = newEmail;
             this.newPassword = newPassword;
+            this.newMainCurrencyName = newMainCurrencyName;
             this.callback = callback;
         }
 
@@ -1091,13 +1178,14 @@ public class MoneyBusterServerSyncHelper {
         @Override
         protected LoginStatus doInBackground(Void... voids) {
             client = createVersatileProjectSyncClient();
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "STARTING edit remote project");
             }
             LoginStatus status = LoginStatus.OK;
             try {
-                ServerResponse.EditRemoteProjectResponse response = client.editRemoteProject(customCertManager, project, newName, newEmail, newPassword);
+                ServerResponse.EditRemoteProjectResponse response = client.editRemoteProject(
+                    customCertManager, project, newName, newEmail, newPassword, newMainCurrencyName
+                );
                 if (BillsListViewActivity.DEBUG) {
                     Log.i(getClass().getSimpleName(), "RESPONSE edit remote project : " + response.getStringContent());
                 }
@@ -1110,6 +1198,10 @@ public class MoneyBusterServerSyncHelper {
             } catch (TokenMismatchException e) {
                 Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
+            } catch (NextcloudHttpRequestFailedException e) {
+                Log.e(getClass().getSimpleName(), "Catch NC REQ failed", e);
+                status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
             }
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "FINISHED edit remote project");
@@ -1127,6 +1219,10 @@ public class MoneyBusterServerSyncHelper {
                         appContext.getString(status.str)
                 );
                 errorString += "\n\n";
+                for (String errorMessage : errorMessages) {
+                    errorString += errorMessage + "\n";
+                }
+                errorString += "\n";
                 for (Throwable e : exceptions) {
                     errorString += e.getClass().getName() + ": " + e.getMessage();
                 }
@@ -1158,9 +1254,10 @@ public class MoneyBusterServerSyncHelper {
      */
     private class DeleteRemoteProjectTask extends AsyncTask<Void, Void, LoginStatus> {
         private VersatileProjectSyncClient client;
-        private DBProject project;
-        private ICallback callback;
-        private List<Throwable> exceptions = new ArrayList<>();
+        private final DBProject project;
+        private final ICallback callback;
+        private final List<Throwable> exceptions = new ArrayList<>();
+        private final List<String> errorMessages = new ArrayList<>();
 
         public DeleteRemoteProjectTask(long projId, ICallback callback) {
             this.project = dbHelper.getProject(projId);
@@ -1175,7 +1272,6 @@ public class MoneyBusterServerSyncHelper {
         @Override
         protected LoginStatus doInBackground(Void... voids) {
             client = createVersatileProjectSyncClient();
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "STARTING delete remote project");
             }
@@ -1194,6 +1290,10 @@ public class MoneyBusterServerSyncHelper {
             } catch (TokenMismatchException e) {
                 Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
+            } catch (NextcloudHttpRequestFailedException e) {
+                Log.e(getClass().getSimpleName(), "Catch NC REQ failed", e);
+                status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
             }
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "FINISHED delete device");
@@ -1211,6 +1311,10 @@ public class MoneyBusterServerSyncHelper {
                         appContext.getString(status.str)
                 );
                 errorString += "\n\n";
+                for (String errorMessage : errorMessages) {
+                    errorString += errorMessage + "\n";
+                }
+                errorString += "\n";
                 for (Throwable e : exceptions) {
                     errorString += e.getClass().getName() + ": " + e.getMessage();
                 }
@@ -1225,10 +1329,10 @@ public class MoneyBusterServerSyncHelper {
         }
     }
 
-    public boolean createRemoteProject(String remoteId, String name, String email, String password, String ihmUrl, ProjectType projectType, ICallback callback) {
+    public boolean createRemoteProject(String remoteId, String name, String email, String password, String ihmUrl, ProjectType projectType, IProjectCreationCallback callback) {
         if (isSyncPossible()) {
             DBProject proj = new DBProject(0, remoteId, password, name, ihmUrl, email,
-                    null, projectType, Long.valueOf(0), null);
+                    null, projectType, 0L, null);
             CreateRemoteProjectTask createRemoteProjectTask = new CreateRemoteProjectTask(proj, callback);
             createRemoteProjectTask.execute();
             return true;
@@ -1242,11 +1346,13 @@ public class MoneyBusterServerSyncHelper {
      */
     private class CreateRemoteProjectTask extends AsyncTask<Void, Void, LoginStatus> {
         private VersatileProjectSyncClient client;
-        private DBProject project;
-        private ICallback callback;
-        private List<Throwable> exceptions = new ArrayList<>();
+        private final DBProject project;
+        private final IProjectCreationCallback callback;
+        private final List<Throwable> exceptions = new ArrayList<>();
+        private final List<String> errorMessages = new ArrayList<>();
+        private boolean usePrivateApi = false;
 
-        public CreateRemoteProjectTask(DBProject project, ICallback callback) {
+        public CreateRemoteProjectTask(DBProject project, IProjectCreationCallback callback) {
             this.project = project;
             this.callback = callback;
         }
@@ -1259,7 +1365,6 @@ public class MoneyBusterServerSyncHelper {
         @Override
         protected LoginStatus doInBackground(Void... voids) {
             client = createVersatileProjectSyncClient();
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "STARTING create remote project");
             }
@@ -1269,6 +1374,7 @@ public class MoneyBusterServerSyncHelper {
                 // determine if we can create authenticated of just anonymous remote project
                 if (canCreateAuthenticatedProject(project)) {
                     response = client.createAuthenticatedRemoteProject(customCertManager, project);
+                    usePrivateApi = true;
                 } else {
                     response = client.createAnonymousRemoteProject(customCertManager, project);
                 }
@@ -1287,6 +1393,13 @@ public class MoneyBusterServerSyncHelper {
                 }
                 exceptions.add(e);
                 status = LoginStatus.CONNECTION_FAILED;
+            } catch (NextcloudHttpRequestFailedException e) {
+                if (BillsListViewActivity.DEBUG) {
+                    Log.e(getClass().getSimpleName(), "Exception", e);
+                }
+                exceptions.add(e);
+                status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
             }
             if (BillsListViewActivity.DEBUG) {
                 Log.i(getClass().getSimpleName(), "FINISHED create remote project");
@@ -1304,24 +1417,29 @@ public class MoneyBusterServerSyncHelper {
                         appContext.getString(status.str)
                 );
                 errorString += "\n\n";
+                for (String errorMessage : errorMessages) {
+                    errorString += errorMessage + "\n";
+                }
+                errorString += "\n";
                 for (Throwable e : exceptions) {
                     errorString += e.getClass().getName() + ": " + e.getMessage();
                 }
-            } else {
-                //dbHelper.deleteProject(project.getId());
-            }
-            callback.onFinish(project.getRemoteId(), errorString);
+            } /*else {
+                dbHelper.deleteProject(project.getId());
+            }*/
+            callback.onFinish(project.getRemoteId(), errorString, usePrivateApi);
         }
     }
 
     private boolean hasChanged(DBBill localBill, DBBill remoteBill) {
-        if (
-                localBill.getPayerId() == remoteBill.getPayerId() &&
-                        localBill.getAmount() == remoteBill.getAmount() &&
-                        localBill.getTimestamp() == remoteBill.getTimestamp() &&
-                        localBill.getWhat().equals(remoteBill.getWhat()) &&
-                        localBill.getPaymentMode().equals(remoteBill.getPaymentMode()) &&
-                        localBill.getCategoryRemoteId() == remoteBill.getCategoryRemoteId()
+        if (localBill.getPayerId() == remoteBill.getPayerId() &&
+            localBill.getAmount() == remoteBill.getAmount() &&
+            localBill.getTimestamp() == remoteBill.getTimestamp() &&
+            localBill.getWhat().equals(remoteBill.getWhat()) &&
+            localBill.getComment().equals(remoteBill.getComment()) &&
+            localBill.getPaymentMode().equals(remoteBill.getPaymentMode()) &&
+            localBill.getPaymentModeRemoteId() == remoteBill.getPaymentModeRemoteId() &&
+            localBill.getCategoryRemoteId() == remoteBill.getCategoryRemoteId()
         ) {
             String localRepeat = localBill.getRepeat() == null ? DBBill.NON_REPEATED : localBill.getRepeat();
             String remoteRepeat = remoteBill.getRepeat() == null ? DBBill.NON_REPEATED : remoteBill.getRepeat();
@@ -1362,7 +1480,7 @@ public class MoneyBusterServerSyncHelper {
         }
     }
 
-    private NextcloudAPI.ApiConnectedListener apiCallback = new NextcloudAPI.ApiConnectedListener() {
+    private final NextcloudAPI.ApiConnectedListener apiCallback = new NextcloudAPI.ApiConnectedListener() {
         @Override
         public void onConnected() {
             // ignore this one..
@@ -1393,8 +1511,7 @@ public class MoneyBusterServerSyncHelper {
             catch (NoCurrentAccountSelectedException e) {
                 return null;
             }
-        }
-        else {
+        } else {
             url = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS);
             username = preferences.getString(SettingsActivity.SETTINGS_USERNAME, SettingsActivity.DEFAULT_SETTINGS);
             password = preferences.getString(SettingsActivity.SETTINGS_PASSWORD, SettingsActivity.DEFAULT_SETTINGS);
@@ -1405,7 +1522,8 @@ public class MoneyBusterServerSyncHelper {
     private class SyncAccountProjectsTask extends AsyncTask<Void, Void, LoginStatus> {
         private final List<ICallback> callbacks = new ArrayList<>();
         private CospendClient client;
-        private List<Throwable> exceptions = new ArrayList<>();
+        private final List<Throwable> exceptions = new ArrayList<>();
+        private final List<String> errorMessages = new ArrayList<>();
 
         public SyncAccountProjectsTask() {
         }
@@ -1424,8 +1542,7 @@ public class MoneyBusterServerSyncHelper {
 
             if (client != null) {
                 status = pullRemoteProjects();
-            }
-            else {
+            } else {
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
             }
             Log.i(getClass().getSimpleName(), "SYNCHRONIZATION FINISHED");
@@ -1447,13 +1564,10 @@ public class MoneyBusterServerSyncHelper {
                     try {
                         SingleSignOnAccount ssoAccount = SingleAccountHelper.getCurrentSingleSignOnAccount(appContext.getApplicationContext());
                         url = ssoAccount.url;
+                    } catch (NextcloudFilesAppAccountNotFoundException e) {
+                    } catch (NoCurrentAccountSelectedException e) {
                     }
-                    catch (NextcloudFilesAppAccountNotFoundException e) {
-                    }
-                    catch (NoCurrentAccountSelectedException e) {
-                    }
-                }
-                else {
+                } else {
                     url = preferences.getString(SettingsActivity.SETTINGS_URL, SettingsActivity.DEFAULT_SETTINGS);
                 }
 
@@ -1486,7 +1600,7 @@ public class MoneyBusterServerSyncHelper {
                                 "",
                                 null,
                                 ProjectType.COSPEND,
-                                Long.valueOf(0),
+                                0L,
                                 null
                         );
                         dbHelper.addProject(newProj);
@@ -1507,6 +1621,10 @@ public class MoneyBusterServerSyncHelper {
             } catch (TokenMismatchException e) {
                 Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
+            } catch (NextcloudHttpRequestFailedException e) {
+                Log.e(getClass().getSimpleName(), "Catch REQ FAILED", e);
+                status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
             }
 
             return status;
@@ -1521,6 +1639,10 @@ public class MoneyBusterServerSyncHelper {
                         appContext.getString(status.str)
                 );
                 errorString += "\n\n";
+                for (String errorMessage : errorMessages) {
+                    errorString += errorMessage + "\n";
+                }
+                errorString += "\n";
                 for (Throwable e : exceptions) {
                     errorString += e.getClass().getName() + ": " + e.getMessage();
                 }
@@ -1533,8 +1655,7 @@ public class MoneyBusterServerSyncHelper {
                     Intent intent2 = new Intent(BillsListViewActivity.BROADCAST_SSO_TOKEN_MISMATCH);
                     appContext.sendBroadcast(intent2);
                 }
-            }
-            else {
+            } else {
                 Intent intent = new Intent(BillsListViewActivity.BROADCAST_ACCOUNT_PROJECTS_SYNCED);
                 appContext.sendBroadcast(intent);
             }
@@ -1546,7 +1667,8 @@ public class MoneyBusterServerSyncHelper {
 
         private final List<ICallback> callbacks = new ArrayList<>();
         private CospendClient client;
-        private List<Throwable> exceptions = new ArrayList<>();
+        private final List<Throwable> exceptions = new ArrayList<>();
+        private final List<String> errorMessages = new ArrayList<>();
 
         public GetNCColorTask() {
 
@@ -1570,8 +1692,7 @@ public class MoneyBusterServerSyncHelper {
 
             if (client != null) {
                 status = getNextcloudColor();
-            }
-            else {
+            } else {
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
             }
 
@@ -1604,8 +1725,7 @@ public class MoneyBusterServerSyncHelper {
                     int intColor = Color.parseColor(color);
                     Log.d(getClass().getSimpleName(), "COLOR from server is "+color);
                     editor.putInt(appContext.getString(R.string.pref_key_server_color), intColor);
-                }
-                else {
+                } else {
                     //editor.remove(SettingsActivity.SETTINGS_KEY_ETAG);
                 }
 
@@ -1624,6 +1744,10 @@ public class MoneyBusterServerSyncHelper {
             } catch (TokenMismatchException e) {
                 Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
+            } catch (NextcloudHttpRequestFailedException e) {
+                Log.e(getClass().getSimpleName(), "Catch REQ FAILED", e);
+                status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
             }
 
             return status;
@@ -1639,7 +1763,8 @@ public class MoneyBusterServerSyncHelper {
 
         private final List<ICallback> callbacks = new ArrayList<>();
         private CospendClient client;
-        private List<Throwable> exceptions = new ArrayList<>();
+        private final List<Throwable> exceptions = new ArrayList<>();
+        private final List<String> errorMessages = new ArrayList<>();
 
         public GetNCUserAvatarTask() {
 
@@ -1663,8 +1788,7 @@ public class MoneyBusterServerSyncHelper {
 
             if (client != null) {
                 status = getNextcloudUserAvatar();
-            }
-            else {
+            } else {
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
             }
             return status;
@@ -1689,8 +1813,7 @@ public class MoneyBusterServerSyncHelper {
                 if (avatar != null && !avatar.isEmpty()) {
                     //Log.d(getClass().getSimpleName(), "avatar from server is "+avatar);
                     editor.putString(appContext.getString(R.string.pref_key_avatar), avatar);
-                }
-                else {
+                } else {
                     //editor.remove(SettingsActivity.SETTINGS_KEY_ETAG);
                 }
 
@@ -1709,6 +1832,10 @@ public class MoneyBusterServerSyncHelper {
             } catch (TokenMismatchException e) {
                 Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
+            } catch (NextcloudHttpRequestFailedException e) {
+                Log.e(getClass().getSimpleName(), "Catch REQ FAILED", e);
+                status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
             }
 
             return status;
@@ -1730,6 +1857,7 @@ public class MoneyBusterServerSyncHelper {
         private CospendClient client;
         private long memberId;
         private List<Throwable> exceptions = new ArrayList<>();
+        private List<String> errorMessages = new ArrayList<>();
 
         public UpdateMemberAvatarTask(long memberId) {
             this.memberId = memberId;
@@ -1753,8 +1881,7 @@ public class MoneyBusterServerSyncHelper {
 
             if (client != null) {
                 status = getNextcloudUserAvatar();
-            }
-            else {
+            } else {
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
             }
             return status;
@@ -1762,7 +1889,7 @@ public class MoneyBusterServerSyncHelper {
 
         private LoginStatus getNextcloudUserAvatar() {
             Log.d(getClass().getSimpleName(), "getNextcloudUserAvatar() "+memberId);
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
+            //SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
             //String lastETag = preferences.getString(SettingsActivity.SETTINGS_KEY_ETAG, null);
             //long lastModified = preferences.getLong(SettingsActivity.SETTINGS_KEY_LAST_MODIFIED, 0);
             LoginStatus status = LoginStatus.OK;
@@ -1797,6 +1924,10 @@ public class MoneyBusterServerSyncHelper {
             } catch (TokenMismatchException e) {
                 Log.e(getClass().getSimpleName(), "Catch MISMATCHTOKEN", e);
                 status = LoginStatus.SSO_TOKEN_MISMATCH;
+            } catch (NextcloudHttpRequestFailedException e) {
+                Log.e(getClass().getSimpleName(), "Catch REQ FAILED", e);
+                status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
             }
 
             return status;

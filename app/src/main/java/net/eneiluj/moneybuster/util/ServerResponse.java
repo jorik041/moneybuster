@@ -1,10 +1,5 @@
 package net.eneiluj.moneybuster.util;
 
-//import android.preference.PreferenceManager;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
 import android.util.Log;
 
 import net.eneiluj.moneybuster.model.DBAccountProject;
@@ -13,6 +8,7 @@ import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBCategory;
 import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.DBPaymentMode;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,10 +18,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -72,6 +66,10 @@ public class ServerResponse {
 
         public List<DBCategory> getCategories(long projId) throws JSONException {
             return getCategoriesFromJSON(new JSONObject(getContent()), projId);
+        }
+
+        public List<DBPaymentMode> getPaymentModes(long projId) throws JSONException {
+            return getPaymentModesFromJSON(new JSONObject(getContent()), projId);
         }
 
         public List<DBCurrency> getCurrencies(long projId) throws JSONException {
@@ -203,8 +201,7 @@ public class ServerResponse {
         public List<DBBill> getBillsCospend(long projId, Map<Long, Long> memberRemoteIdToId) throws JSONException {
             if (smartSync) {
                 return getBillsFromJSONObject(new JSONObject(getContent()), projId, memberRemoteIdToId);
-            }
-            else {
+            } else {
                 return getBillsFromJSONArray(new JSONArray(getContent()), projId, memberRemoteIdToId);
             }
         }
@@ -356,6 +353,39 @@ public class ServerResponse {
         return new DBCategory(0, remoteId, projId, name, icon, color);
     }
 
+    protected List<DBPaymentMode> getPaymentModesFromJSON(JSONObject json, long projId) throws JSONException {
+        List<DBPaymentMode> paymentModes = new ArrayList<>();
+
+        if (json.has("paymentmodes") && json.get("paymentmodes") instanceof JSONObject) {
+            JSONObject jsonPms = json.getJSONObject("paymentmodes");
+            Iterator<String> keys = jsonPms.keys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                if (jsonPms.get(key) instanceof JSONObject) {
+                    paymentModes.add(getPaymentModeFromJSON(jsonPms.getJSONObject(key), key, projId));
+                }
+            }
+        }
+        return paymentModes;
+    }
+
+    protected DBPaymentMode getPaymentModeFromJSON(JSONObject json, String remoteIdStr, long projId) throws JSONException {
+        long remoteId = Long.valueOf(remoteIdStr);
+        String name = "";
+        String color = "";
+        String icon = "";
+        if (json.has("color") && !json.isNull("color")) {
+            color = json.getString("color");
+        }
+        if (json.has("icon") && !json.isNull("icon")) {
+            icon = json.getString("icon");
+        }
+        if (json.has("name") && !json.isNull("name")) {
+            name = json.getString("name");
+        }
+        return new DBPaymentMode(0, remoteId, projId, name, icon, color);
+    }
+
     protected List<DBCurrency> getCurrenciesFromJSON(JSONObject json, long projId) throws JSONException {
         List<DBCurrency> currencies = new ArrayList<>();
 
@@ -429,8 +459,7 @@ public class ServerResponse {
                     g = Integer.parseInt(color.substring(2,4), 16);
                     b = Integer.parseInt(color.substring(4,6), 16);
                 }
-            }
-            else if (obj instanceof JSONObject) {
+            } else if (obj instanceof JSONObject) {
                 JSONObject color = json.getJSONObject("color");
                 if (color.has("r") && !color.isNull("r")) {
                     r = color.getInt("r");
@@ -458,6 +487,7 @@ public class ServerResponse {
             JSONArray jsonBillIds = json.getJSONArray("allBillIds");
             for (int i = 0; i < jsonBillIds.length(); i++) {
                 billIds.add(jsonBillIds.getLong(i));
+                Log.e("billid", "BILLID " + jsonBillIds.getLong(i));
             }
         }
         return billIds;
@@ -485,8 +515,7 @@ public class ServerResponse {
         if (json.has("bills") && !json.isNull("bills")) {
             JSONArray jsonBills = json.getJSONArray("bills");
             bills = getBillsFromJSONArray(jsonBills, projId, memberRemoteIdToId);
-        }
-        else {
+        } else {
             bills = new ArrayList<>();
         }
         return bills;
@@ -501,8 +530,10 @@ public class ServerResponse {
         Date date;
         long timestamp = 0;
         String what = "";
+        String comment = "";
         String repeat = DBBill.NON_REPEATED;
         String paymentMode = DBBill.PAYMODE_NONE;
+        int paymentModeRemoteId = DBBill.PAYMODE_ID_NONE;
         int categoryId = DBBill.CATEGORY_NONE;
         if (!json.isNull("id")) {
             remoteId = json.getLong("id");
@@ -530,6 +561,9 @@ public class ServerResponse {
         if (!json.isNull("what")) {
             what = json.getString("what");
         }
+        if (!json.isNull("comment")) {
+            comment = json.getString("comment");
+        }
         if (json.has("repeat") && !json.isNull("repeat")) {
             repeat = json.getString("repeat");
         }
@@ -540,8 +574,21 @@ public class ServerResponse {
             categoryId = json.getInt("categoryid");
             Log.d("PLOP", "LOADED CATTTTTTTTTTTT " + categoryId);
         }
-        DBBill bill = new DBBill(0, remoteId, projId, payerId, amount, timestamp, what,
-                DBBill.STATE_OK, repeat, paymentMode, categoryId);
+        if (json.has("paymentmodeid") && !json.isNull("paymentmodeid")) {
+            paymentModeRemoteId = json.getInt("paymentmodeid");
+        }
+        // old MB, new Cospend is ok as Cospend provides the old pm ID
+        // new MB, old Cospend => set payment mode ID from old one
+        if (!DBBill.PAYMODE_NONE.equals(paymentMode)
+                && !"".equals(paymentMode)
+                && paymentModeRemoteId == DBBill.PAYMODE_ID_NONE) {
+            Log.d("PaymentMode", "old: " + paymentMode + " and new: " + paymentModeRemoteId);
+            paymentModeRemoteId = DBBill.oldPmIdToNew.get(paymentMode);
+        }
+        DBBill bill = new DBBill(
+            0, remoteId, projId, payerId, amount, timestamp, what,
+            DBBill.STATE_OK, repeat, paymentMode, categoryId, comment, paymentModeRemoteId
+        );
         bill.setBillOwers(getBillOwersFromJson(json, memberRemoteIdToId));
         return bill;
     }

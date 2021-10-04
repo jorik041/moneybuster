@@ -1,17 +1,7 @@
-/*
- * Copyright (c) 2017 Bartek Fabiszewski
- * http://www.fabiszewski.net
- *
- * This file is part of μlogger-android.
- * Licensed under GPL, either version 3, or any later.
- * See <http://www.gnu.org/licenses/>
- */
-
 package net.eneiluj.moneybuster.service;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -30,7 +20,6 @@ import android.os.IBinder;
 import android.os.Looper;
 
 import androidx.preference.PreferenceManager;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
 import android.util.Log;
@@ -48,11 +37,6 @@ import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.util.SupportUtil;
 
-/**
- * Background service logging positions to database
- * and synchronizing with remote server.
- *
- */
 
 public class SyncService extends Service {
 
@@ -151,16 +135,14 @@ public class SyncService extends Service {
             if (stopService) {
                 Log.d(TAG, "[stop sync service]");
                 stopSelf();
-            }
-            else if (newInterval != 0) {
+            } else if (newInterval != 0) {
                 intervalMinutes = newInterval;
                 requestSync();
                 updateNotificationContent();
                 mSyncWorker.stop();
                 mSyncWorker.setInterval(intervalMinutes * 60);
                 mSyncWorker.startSyncLoop();
-            }
-            else {
+            } else {
                 if (firstRun) {
                     Log.d(TAG, "[start sync service => loop]");
                     mSyncWorker.startSyncLoop();

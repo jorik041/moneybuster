@@ -3,11 +3,12 @@ package net.eneiluj.moneybuster.model;
 import android.util.Log;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class DBBill implements Item, Serializable {
 
@@ -19,16 +20,44 @@ public class DBBill implements Item, Serializable {
     private double amount;
     private long timestamp;
     private String what;
+    private String comment;
     // OK, ADDED, EDITED, DELETED
     private int state;
 
     private String repeat;
     private String paymentMode;
+    private int paymentModeRemoteId;
     public static final String PAYMODE_NONE = "n";
     public static final String PAYMODE_CARD = "c";
     public static final String PAYMODE_CASH = "b";
     public static final String PAYMODE_CHECK = "f";
     public static final String PAYMODE_TRANSFER = "t";
+    public static final String PAYMODE_ONLINE_SERVICE = "o";
+
+    public static final int PAYMODE_ID_NONE = 0;
+    public static final int PAYMODE_ID_CARD = -1;
+    public static final int PAYMODE_ID_CASH = -2;
+    public static final int PAYMODE_ID_CHECK = -3;
+    public static final int PAYMODE_ID_TRANSFER = -4;
+    public static final int PAYMODE_ID_ONLINE_SERVICE = -5;
+
+    public static final Map<String, Integer> oldPmIdToNew = new HashMap<String, Integer>() {{
+        put(PAYMODE_NONE, PAYMODE_ID_NONE);
+        put(PAYMODE_CARD, PAYMODE_ID_CARD);
+        put(PAYMODE_CASH, PAYMODE_ID_CASH);
+        put(PAYMODE_CHECK, PAYMODE_ID_CHECK);
+        put(PAYMODE_TRANSFER, PAYMODE_ID_TRANSFER);
+        put(PAYMODE_ONLINE_SERVICE, PAYMODE_ID_ONLINE_SERVICE);
+    }};
+
+    public static final Map<Integer, String> newPmIdToOld = new HashMap<Integer, String>() {{
+        put(PAYMODE_ID_NONE, PAYMODE_NONE);
+        put(PAYMODE_ID_CARD, PAYMODE_CARD);
+        put(PAYMODE_ID_CASH, PAYMODE_CASH);
+        put(PAYMODE_ID_CHECK, PAYMODE_CHECK);
+        put(PAYMODE_ID_TRANSFER, PAYMODE_TRANSFER);
+        put(PAYMODE_ID_ONLINE_SERVICE, PAYMODE_ONLINE_SERVICE);
+    }};
 
     private int categoryRemoteId;
     public static final int CATEGORY_NONE = 0;
@@ -55,7 +84,9 @@ public class DBBill implements Item, Serializable {
     public static final String NON_REPEATED = "n";
 
     public DBBill(long id, long remoteId, long projectId, long payerId, double amount,
-                  long timestamp, String what, int state, String repeat, String paymentMode, int categoryRemoteId) {
+                  long timestamp, String what, int state, String repeat,
+                  String paymentMode, int categoryRemoteId,
+                  String comment, int paymentModeRemoteId) {
         this.id = id;
         this.remoteId = remoteId;
         this.projectId = projectId;
@@ -65,7 +96,9 @@ public class DBBill implements Item, Serializable {
         this.what = what;
         this.repeat = repeat;
         this.paymentMode = paymentMode;
+        this.paymentModeRemoteId = paymentModeRemoteId;
         this.categoryRemoteId = categoryRemoteId;
+        this.comment = comment;
 
         this.billOwers = new ArrayList<>();
 
@@ -168,6 +201,14 @@ public class DBBill implements Item, Serializable {
         this.what = what;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     public String getRepeat() {
         return repeat;
     }
@@ -182,6 +223,14 @@ public class DBBill implements Item, Serializable {
 
     public void setPaymentMode(String paymentMode) {
         this.paymentMode = paymentMode;
+    }
+
+    public int getPaymentModeRemoteId() {
+        return paymentModeRemoteId;
+    }
+
+    public void setPaymentModeRemoteId(int paymentModeRemoteId) {
+        this.paymentModeRemoteId = paymentModeRemoteId;
     }
 
     public int getCategoryRemoteId() {

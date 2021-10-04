@@ -2,14 +2,11 @@ package net.eneiluj.moneybuster.android.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -19,9 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.android.fragment.EditProjectFragment;
-import net.eneiluj.moneybuster.android.fragment.PreferencesFragment;
 import net.eneiluj.moneybuster.model.DBProject;
-import net.eneiluj.moneybuster.util.ThemeUtils;
 
 public class EditProjectActivity extends AppCompatActivity implements EditProjectFragment.EditProjectFragmentListener {
 

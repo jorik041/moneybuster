@@ -34,7 +34,8 @@
         <activity
             android:name="net.eneiluj.moneybuster.android.activity.BillsListViewActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -81,7 +82,14 @@
             android:label="@string/simple_add_project"
             android:parentActivityName="net.eneiluj.moneybuster.android.activity.BillsListViewActivity"
             android:windowSoftInputMode="stateHidden"
-            android:launchMode="standard">
+            android:launchMode="standard"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="*" android:pathPrefix="/" android:scheme="cospend" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -92,13 +100,13 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:host="net.eneiluj.moneybuster.ihatemoney" android:pathPrefix="/" android:scheme="https" />
+                <data android:host="*" android:pathPrefix="/" android:scheme="ihatemoney" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:host="ihatemoney.org" android:pathPrefix="/" android:scheme="https" />
+                <data android:host="net.eneiluj.moneybuster.ihatemoney" android:pathPrefix="/" android:scheme="https" />
             </intent-filter>
         </activity>
 
@@ -128,7 +136,8 @@
             android:icon="@drawable/ic_dollar_grey_24dp"
             android:label="@string/action_add_project"
             android:description="@string/action_add_project"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>

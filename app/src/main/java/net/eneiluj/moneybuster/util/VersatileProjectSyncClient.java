@@ -743,7 +743,7 @@ public class VersatileProjectSyncClient {
         return new ResponseData(result.toString(), etag, lastModified);
     }
 
-    public ServerResponse.CreateRemoteCurrencyResponse createRemoteCurrency(CustomCertManager ccm, DBProject project, DBCurrency currency) throws IOException, TokenMismatchException {
+    public ServerResponse.CreateRemoteCurrencyResponse createRemoteCurrency(CustomCertManager ccm, DBProject project, DBCurrency currency) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
         paramKeys.add("name");
@@ -779,7 +779,7 @@ public class VersatileProjectSyncClient {
         return new ServerResponse.CreateRemoteCurrencyResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, username, password));
     }
 
-    public ServerResponse.EditRemoteCurrencyResponse editRemoteCurrency(CustomCertManager ccm, DBProject project, DBCurrency currency) throws IOException, TokenMismatchException {
+    public ServerResponse.EditRemoteCurrencyResponse editRemoteCurrency(CustomCertManager ccm, DBProject project, DBCurrency currency) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
         paramKeys.add("name");
@@ -817,7 +817,7 @@ public class VersatileProjectSyncClient {
         return new ServerResponse.EditRemoteCurrencyResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, username, password));
     }
 
-    public ServerResponse.DeleteRemoteCurrencyResponse deleteRemoteCurrency(CustomCertManager ccm, DBProject project, long currencyRemoteId) throws IOException, TokenMismatchException {
+    public ServerResponse.DeleteRemoteCurrencyResponse deleteRemoteCurrency(CustomCertManager ccm, DBProject project, long currencyRemoteId) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         String target;
         String username = null;
         String password = null;

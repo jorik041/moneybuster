@@ -1,5 +1,6 @@
 package net.eneiluj.moneybuster.android.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -59,11 +60,13 @@ import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBCategory;
 import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.DBPaymentMode;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.persistence.MoneyBusterServerSyncHelper;
 import net.eneiluj.moneybuster.util.ICallback;
+import net.eneiluj.moneybuster.util.IProjectCreationCallback;
 import net.eneiluj.moneybuster.util.MoneyBuster;
 import net.eneiluj.moneybuster.util.SupportUtil;
 import net.eneiluj.moneybuster.util.ThemeUtils;
@@ -1034,6 +1037,7 @@ public class NewProjectFragment extends Fragment {
         toast.show();
     }
 
+    @SuppressLint("Range")
     public String getFileName(Uri uri) {
         String result = null;
         if (uri.getScheme().equals("content")) {

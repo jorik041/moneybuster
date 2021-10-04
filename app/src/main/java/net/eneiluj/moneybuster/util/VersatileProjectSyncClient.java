@@ -148,7 +148,8 @@ public class VersatileProjectSyncClient {
         return new ServerResponse.ProjectResponse(requestServer(ccm, target, METHOD_GET, null, null, lastETag, username, password));
     }
 
-    public ServerResponse.EditRemoteProjectResponse editRemoteProject(CustomCertManager ccm, DBProject project, String newName, String newEmail, String newPassword) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
+    public ServerResponse.EditRemoteProjectResponse editRemoteProject(CustomCertManager ccm, DBProject project, String newName, String newEmail, String newPassword,
+                                                                      @Nullable String newMainCurrencyName) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         List<String> paramKeys = new ArrayList<>();
         List<String> paramValues = new ArrayList<>();
         paramKeys.add("name");
@@ -162,6 +163,10 @@ public class VersatileProjectSyncClient {
         String username = null;
         String password = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
+            if (newMainCurrencyName != null) {
+                paramKeys.add("currencyname");
+                paramValues.add(newMainCurrencyName);
+            }
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
                 password = this.password;

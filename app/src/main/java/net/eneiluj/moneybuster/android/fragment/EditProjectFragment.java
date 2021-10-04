@@ -317,7 +317,9 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                     }
 
                     if (!newPwd.equals(project.getPassword()) || !newName.equals(project.getName()) || !newEmail.equals(project.getEmail())) {
-                        if (!db.getMoneyBusterServerSyncHelper().editRemoteProject(project.getId(), newName, newEmail, newPwd, editCallBack)) {
+                        if (!db.getMoneyBusterServerSyncHelper()
+                                .editRemoteProject(project.getId(), newName, newEmail, newPwd, null, editCallBack)
+                        ) {
                             showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
                             saveButton.clearAnimation();
                         }

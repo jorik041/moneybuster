@@ -15,6 +15,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
@@ -1080,10 +1081,11 @@ public class MoneyBusterServerSyncHelper {
         return (isCospend && projUrl.equals(accountUrl));
     }
 
-    public boolean editRemoteProject(long projId, String newName, String newEmail, String newPassword, ICallback callback) {
+    public boolean editRemoteProject(long projId, String newName, String newEmail, String newPassword,
+                                     @Nullable String newMainCurrencyName, ICallback callback) {
         updateNetworkStatus();
         if (isSyncPossible()) {
-            EditRemoteProjectTask editRemoteProjectTask = new EditRemoteProjectTask(projId, newName, newEmail, newPassword, callback);
+            EditRemoteProjectTask editRemoteProjectTask = new EditRemoteProjectTask(projId, newName, newEmail, newPassword, newMainCurrencyName, callback);
             editRemoteProjectTask.execute();
             return true;
         }
@@ -1099,16 +1101,19 @@ public class MoneyBusterServerSyncHelper {
         private final String newName;
         private final String newEmail;
         private final String newPassword;
+        private final String newMainCurrencyName;
         private final DBProject project;
         private final ICallback callback;
         private final List<Throwable> exceptions = new ArrayList<>();
         private final List<String> errorMessages = new ArrayList<>();
 
-        public EditRemoteProjectTask(long projId, String newName, String newEmail, String newPassword, ICallback callback) {
+        public EditRemoteProjectTask(long projId, String newName, String newEmail, String newPassword,
+                                     @Nullable String newMainCurrencyName, ICallback callback) {
             this.project = dbHelper.getProject(projId);
             this.newName = newName;
             this.newEmail = newEmail;
             this.newPassword = newPassword;
+            this.newMainCurrencyName = newMainCurrencyName;
             this.callback = callback;
         }
 
@@ -1125,7 +1130,9 @@ public class MoneyBusterServerSyncHelper {
             }
             LoginStatus status = LoginStatus.OK;
             try {
-                ServerResponse.EditRemoteProjectResponse response = client.editRemoteProject(customCertManager, project, newName, newEmail, newPassword);
+                ServerResponse.EditRemoteProjectResponse response = client.editRemoteProject(
+                    customCertManager, project, newName, newEmail, newPassword, newMainCurrencyName
+                );
                 if (BillsListViewActivity.DEBUG) {
                     Log.i(getClass().getSimpleName(), "RESPONSE edit remote project : " + response.getStringContent());
                 }

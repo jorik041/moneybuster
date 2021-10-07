@@ -6,6 +6,7 @@ import androidx.preference.PreferenceManager;
 import net.eneiluj.moneybuster.R;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBCurrency;
+import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.util.ICallback;
 
@@ -101,9 +102,10 @@ public class ManageCurrenciesActivity extends AppCompatActivity {
                 String newMaincurrencyName = mainCurrencyTextEdit.getText().toString();
                 mainCurrencyTextEdit.clearFocus();
                 db.updateProject(selectedProjectID, null, null, null, null, null, newMaincurrencyName);
+                DBProject project = db.getProject(selectedProjectID);
                 db.syncIfRemote(db.getProject(selectedProjectID));
                 if (!db.getMoneyBusterServerSyncHelper()
-                        .editRemoteProject(selectedProjectID, null, null, null, newMaincurrencyName, editMainCurrencyCallBack)
+                        .editRemoteProject(selectedProjectID, project.getName(), null, null, newMaincurrencyName, editMainCurrencyCallBack)
                 ) {
                     showToast(getString(R.string.remote_project_operation_no_network), Toast.LENGTH_LONG);
                 }

@@ -679,7 +679,9 @@ public class EditBillFragment extends Fragment {
         int newPaymentModeId = DBBill.PAYMODE_ID_NONE;
         int newCategoryId = DBBill.CATEGORY_NONE;
 
-        if (ProjectType.COSPEND.equals(projectType)) {
+        if (usesOldPaymentModes()) {
+            newPaymentMode = getOldPaymentModeId();
+        } else if (ProjectType.COSPEND.equals(projectType)) {
             newRepeat = getRepeat();
             newPaymentModeId = getPaymentModeId();
             newCategoryId = getCategoryId();
@@ -688,7 +690,7 @@ public class EditBillFragment extends Fragment {
             newCategoryId = getCategoryId();
         }
         // still save old payment mode id
-        if (DBBill.newPmIdToOld.containsKey(newPaymentModeId)) {
+        if (!usesOldPaymentModes() && DBBill.newPmIdToOld.containsKey(newPaymentModeId)) {
             newPaymentMode = DBBill.newPmIdToOld.get(newPaymentModeId);
         }
 
@@ -993,6 +995,16 @@ public class EditBillFragment extends Fragment {
                         "\uD83C\uDF0E " + getString(R.string.payment_mode_online)
                 };
                 hardCodedPaymentModeIdsTmp = new String[]{"0", "-1", "-2", "-3", "-4", "-5"};
+            } else if (usesOldPaymentModes()) {
+                hardCodedPaymentModeNamesTmp = new String[]{
+                        "❌ " + getString(R.string.payment_mode_none),
+                        "\uD83D\uDCB3 " + getString(R.string.payment_mode_credit_card),
+                        "\uD83D\uDCB5 " + getString(R.string.payment_mode_cash),
+                        "\uD83C\uDFAB " + getString(R.string.payment_mode_check),
+                        "⇄ " + getString(R.string.payment_mode_transfer),
+                        "\uD83C\uDF0E " + getString(R.string.payment_mode_online)
+                };
+                hardCodedPaymentModeIdsTmp = new String[]{"n", "c", "b", "f", "t", "o"};
             } else {
                 hardCodedPaymentModeNamesTmp = new String[]{
                         "❌ " + getString(R.string.payment_mode_none)
@@ -1018,7 +1030,12 @@ public class EditBillFragment extends Fragment {
             String[] paymentModeIds = paymentModeIdList.toArray(new String[paymentModeIdList.size()]);
             String[] paymentModeNames = paymentModeNameList.toArray(new String[paymentModeNameList.size()]);
 
-            int indexPm = paymentModeIdList.indexOf(String.valueOf(bill.getPaymentModeRemoteId()));
+            int indexPm;
+            if (usesOldPaymentModes()) {
+                indexPm = paymentModeIdList.indexOf(String.valueOf(bill.getPaymentMode()));
+            } else {
+                indexPm = paymentModeIdList.indexOf(String.valueOf(bill.getPaymentModeRemoteId()));
+            }
             Log.d(TAG, "PM of loaded bill "+bill.getPaymentModeRemoteId());
 
             ArrayList<Map<String, String>> dataPm = new ArrayList<>();
@@ -1123,6 +1140,14 @@ public class EditBillFragment extends Fragment {
         }
     }
 
+    private boolean usesOldPaymentModes() {
+        List<DBPaymentMode> userPaymentModes = db.getPaymentModes(bill.getProjectId());
+        return (
+            ProjectType.COSPEND.equals(projectType)
+            && userPaymentModes.size() == 0
+        );
+    }
+
     protected String getWhat() {
         return editWhat.getText().toString();
     }
@@ -1197,6 +1222,16 @@ public class EditBillFragment extends Fragment {
         } else {
             Map<String, String> item = (Map<String, String>) editPaymentMode.getSelectedItem();
             return Integer.parseInt(item.get("id"));
+        }
+    }
+
+    private String getOldPaymentModeId() {
+        int i = editPaymentMode.getSelectedItemPosition();
+        if (i < 0) {
+            return DBBill.PAYMODE_NONE;
+        } else {
+            Map<String, String> item = (Map<String, String>) editPaymentMode.getSelectedItem();
+            return item.get("id");
         }
     }
 

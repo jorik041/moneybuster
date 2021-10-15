@@ -62,6 +62,8 @@ import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.MoneyBuster;
 import net.eneiluj.moneybuster.util.SupportUtil;
 import net.eneiluj.moneybuster.util.ThemeUtils;
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
 
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -1174,14 +1176,26 @@ public class EditBillFragment extends Fragment {
 
     protected double getAmount() {
         String amount = editAmount.getText().toString();
-        if (amount == null || amount.equals("")) {
-            return 0.0;
+        // formula or simple number
+        boolean isSimpleNumber = amount.matches("[0-9,.]+");
+        if (isSimpleNumber) {
+            try {
+                return Double.parseDouble(amount.replace(',', '.'));
+            } catch (Exception e) {
+                return 0.0;
+            }
+        } else {
+            boolean isFormula = amount.matches("[0-9,.()\\-+/*]+");
+            if (isFormula) {
+                try {
+                    Expression calc = new ExpressionBuilder(amount).build();
+                    return calc.evaluate();
+                } catch (Exception e) {
+                    return 0.0;
+                }
+            }
         }
-        try {
-            return Double.valueOf(amount.replace(',', '.'));
-        } catch (Exception e) {
-            return 0.0;
-        }
+        return 0.0;
     }
 
     protected long getPayerId() {

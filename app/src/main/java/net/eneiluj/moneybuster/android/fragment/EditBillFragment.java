@@ -1176,16 +1176,17 @@ public class EditBillFragment extends Fragment {
 
     protected double getAmount() {
         String amount = editAmount.getText().toString();
+        amount = amount.replace(',', '.');
         // formula or simple number
-        boolean isSimpleNumber = amount.matches("[0-9,.]+");
+        boolean isSimpleNumber = amount.matches("[0-9.]+");
         if (isSimpleNumber) {
             try {
-                return Double.parseDouble(amount.replace(',', '.'));
+                return Double.parseDouble(amount);
             } catch (Exception e) {
                 return 0.0;
             }
         } else {
-            boolean isFormula = amount.matches("[0-9,.()\\-+/*]+");
+            boolean isFormula = amount.matches("[0-9.()\\-+/*]+");
             if (isFormula) {
                 try {
                     Expression calc = new ExpressionBuilder(amount).build();

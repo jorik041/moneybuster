@@ -2117,9 +2117,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             if (ProjectType.COSPEND.equals(proj.getType())) {
                 icon = R.drawable.ic_cospend_grey_24dp;
                 fabManageProject.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_cospend_white_24dp));
+                fabManageCurrencies.setVisibility(VISIBLE);
             } else {
                 icon = R.drawable.ic_ihm_grey_24dp;
                 fabManageProject.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_ihm_white_24dp));
+                fabManageCurrencies.setVisibility(GONE);
             }
         }
 

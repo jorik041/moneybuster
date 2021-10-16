@@ -44,7 +44,15 @@
         android:summary="@string/settings_offline_mode_summary"
         android:title="@string/settings_offline_mode_title" />
 
-    <Preference
+        <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:icon="@drawable/ic_nextcloud_logo_grey"
+        android:key="@string/pref_key_show_nextcloud_settings"
+        android:summary="@string/settings_show_nextcloud_settings_summary"
+        android:title="@string/settings_show_nextcloud_settings_title" />
+
+        <Preference
+        android:key="@string/pref_key_nextcloud_account_settings"
         android:icon="@drawable/ic_account_circle_grey_24dp"
         android:title="@string/settings_server_settings">
         <intent

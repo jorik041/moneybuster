@@ -509,6 +509,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 GradientDrawable.Orientation.LEFT_RIGHT, colors);
         drawerLayout.findViewById(R.id.drawer_top_layout).setBackground(gradientDrawable);
 
+        // hide nextcloud related stuff if needed
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean showNextcloudSettings = preferences.getBoolean(getString(R.string.pref_key_show_nextcloud_settings), true);
+        if (!showNextcloudSettings) {
+            drawerLayout.findViewById(R.id.configuredAccountLayout).setVisibility(GONE);
+            drawerLayout.findViewById(R.id.launchAccountSwitcher).setVisibility(GONE);
+        }
+
         ImageView logoView = drawerLayout.findViewById(R.id.drawer_logo);
         logoView.setColorFilter(ThemeUtils.primaryColor(this), PorterDuff.Mode.OVERLAY);
 

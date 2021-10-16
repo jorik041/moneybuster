@@ -198,6 +198,8 @@
     <string name="settings_night_mode_title">Theme</string>
     <string name="settings_offline_mode_title">Offline mode</string>
     <string name="settings_offline_mode_summary">Do not automatically sync. Only sync when user asks.</string>
+    <string name="settings_show_nextcloud_settings_summary">Disable this if you don\'t use Nextcloud and Cospend and just want to create/join IHateMoney and local projects.</string>
+    <string name="settings_show_nextcloud_settings_title">Show Nextcloud settings</string>
     <string name="settings_smart_sync_title">Smart sync with Cospend</string>
     <string name="settings_smart_sync_summary">Only get bills which have changed since last synchronisation. This is faster and uses less data. Compatible with Cospend >= 0.2.0</string>
     <string name="settings_color_title">App main color</string>
@@ -357,6 +359,8 @@
     <string name="pref_key_avatar" translatable="false">ncAvatar</string>
     <string name="pref_key_use_server_color" translatable="false">useServerColor</string>
     <string name="pref_key_offline_mode" translatable="false">offlineMode</string>
+    <string name="pref_key_show_nextcloud_settings" translatable="false">showNextcloudSettings</string>
+    <string name="pref_key_nextcloud_account_settings" translatable="false">nextcloudAccountSettings</string>
     <string name="pref_key_smart_sync" translatable="false">smartSync</string>
     <string name="pref_key_autostart" translatable="false">autostart</string>
     <string name="pref_key_periodical_sync" translatable="false">periodicalSync</string>

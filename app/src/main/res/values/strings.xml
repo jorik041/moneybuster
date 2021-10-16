@@ -22,6 +22,7 @@
     <string name="setting_all">All</string>
     <string name="setting_none">None</string>
     <string name="currency_manager">Currency manager</string>
+    <string name="currency_management_unavailable">Currency management is only available for Cospend projects</string>
     <string name="setting_comment">Comment</string>
     <string name="duplicate_bill">Duplicate bill</string>
     <string name="currency_dialog_title">Convert current amount from another currency into %s</string>

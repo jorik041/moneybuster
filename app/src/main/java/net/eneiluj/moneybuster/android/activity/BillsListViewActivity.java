@@ -768,8 +768,17 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         fabManageCurrencies.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                Intent createIntent = new Intent(getApplicationContext(), ManageCurrenciesActivity.class);
-                startActivity(createIntent);
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                long selectedProjectId = preferences.getLong("selected_project", 0);
+                if (selectedProjectId != 0) {
+                    final DBProject proj = db.getProject(selectedProjectId);
+                    if (proj != null && proj.getType().equals(ProjectType.COSPEND)) {
+                        Intent createIntent = new Intent(getApplicationContext(), ManageCurrenciesActivity.class);
+                        startActivity(createIntent);
+                    } else {
+                        showToast(getString(R.string.currency_management_unavailable));
+                    }
+                }
             }
         });
 
@@ -2117,11 +2126,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             if (ProjectType.COSPEND.equals(proj.getType())) {
                 icon = R.drawable.ic_cospend_grey_24dp;
                 fabManageProject.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_cospend_white_24dp));
-                fabManageCurrencies.setVisibility(VISIBLE);
+                //fabManageCurrencies.show(false);
+                //fabManageCurrencies.setVisibility(VISIBLE);
             } else {
                 icon = R.drawable.ic_ihm_grey_24dp;
                 fabManageProject.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_ihm_white_24dp));
-                fabManageCurrencies.setVisibility(GONE);
+                //fabManageCurrencies.hide(false);
+                //fabManageCurrencies.setVisibility(GONE);
             }
         }
 

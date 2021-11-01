@@ -2622,8 +2622,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         ProjectType type = ProjectType.LOCAL;
         if (selectedProjectId != 0) {
             DBProject proj = db.getProject(selectedProjectId);
-            type = proj.getType();
             if (proj != null) {
+                type = proj.getType();
                 projId = proj.getId();
                 if (proj.isLocal()) {
                     projName = proj.getRemoteId();

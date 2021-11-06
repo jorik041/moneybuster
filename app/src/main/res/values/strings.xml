@@ -22,6 +22,7 @@
     <string name="setting_all">All</string>
     <string name="setting_none">None</string>
     <string name="currency_manager">Currency manager</string>
+    <string name="add_currency_title">Add currency</string>
     <string name="currency_management_unavailable">Currency management is only available for Cospend projects</string>
     <string name="setting_comment">Comment</string>
     <string name="duplicate_bill">Duplicate bill</string>
@@ -29,8 +30,8 @@
     <string name="no_currency_error">There is no additional currency</string>
     <string name="main_currency">Main currency</string>
     <string name="no_main_currency">Main currency must be set before adding others</string>
-    <string name="currency_edit_name">Currency</string>
-    <string name="currency_rate">Rate</string>
+    <string name="currency_edit_name">Name</string>
+    <string name="currency_rate">Exchange rate</string>
     <string name="setting_amount">How much?</string>
     <string name="setting_amount_long">How much did it cost?</string>
     <string name="setting_owers">For whom?</string>

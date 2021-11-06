@@ -1,6 +1,7 @@
 package net.eneiluj.moneybuster.android.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
 import net.eneiluj.moneybuster.R;
@@ -11,6 +12,7 @@ import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 import net.eneiluj.moneybuster.util.ICallback;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -49,8 +51,8 @@ public class ManageCurrenciesActivity extends AppCompatActivity {
             if (message.isEmpty()) {
                 showToast(getString(R.string.currency_saved_success), Toast.LENGTH_LONG);
             } else {
-                // error
-                showToast(getString(R.string.error_edit_remote_project_helper, message), Toast.LENGTH_LONG);
+                // there was an error
+                showDialog(getString(R.string.error_edit_remote_project_helper, message), getString(R.string.currency_manager), 0);
             }
         }
 
@@ -58,6 +60,20 @@ public class ManageCurrenciesActivity extends AppCompatActivity {
         public void onScheduled() {
         }
     };
+
+    private void showDialog(String msg, String title, int icon) {
+        android.app.AlertDialog.Builder builder;
+        builder = new android.app.AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog));
+        builder.setTitle(title)
+                .setMessage(msg)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setIcon(icon)
+                .show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

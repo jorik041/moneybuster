@@ -1,6 +1,8 @@
 # Authors
 
-* Julien Veyssier <eneiluj@posteo.net> (Developper)
+* Julien Veyssier <eneiluj@posteo.net> (Developer)
+* @AndyScherzinger (Developer, play store release)
+* Matthias Weis @ma11753 (Developer)
 * @Salamandar
 * @Michael-Hofer
 * @jwsp1
@@ -12,7 +14,6 @@
 * @Aldarone
 * @jeisonp
 * @nicocool84
-* @AndyScherzinger (Developper, play store release)
 * @eMerzh
 * @denics
 * @jreybert

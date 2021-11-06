@@ -75,6 +75,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 public class EditBillFragment extends Fragment {
 
@@ -622,6 +623,35 @@ public class EditBillFragment extends Fragment {
         }
     }
 
+    public void onBackPressed() {
+        if (!valuesHaveChanged()) {
+            listener.close();
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                new ContextThemeWrapper(
+                        getContext(),
+                        R.style.AppThemeDialog
+                )
+        );
+        builder.setTitle(getString(R.string.save_or_discard_bill_dialog_title));
+        builder.setMessage(getString(R.string.save_or_discard_bill_dialog_message));
+        builder.setPositiveButton(getString(R.string.save_or_discard_bill_dialog_save), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                saveBillAsked();
+            }
+        });
+        builder.setNegativeButton(getString(R.string.save_or_discard_bill_dialog_discard), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                listener.close();
+            }
+        });
+        builder.show();
+    }
+
     private void saveBillAsked() {
         if (getWhat() == null || getWhat().equals("") || getWhat().contains(",")) {
             showToast(getString(R.string.error_invalid_bill_what), Toast.LENGTH_LONG);
@@ -663,14 +693,7 @@ public class EditBillFragment extends Fragment {
         inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
     }
 
-    /**
-     * Save the current state in the database and schedule synchronization if needed.
-     *
-     * @param callback Observer which is called after save/synchronization
-     */
-
-    protected void saveBill(@Nullable ICallback callback) {
-        Log.d(getClass().getSimpleName(), "CUSTOM saveData()");
+    private boolean valuesHaveChanged() {
         String newWhat = getWhat();
         String newComment = getComment();
         long newTimestamp = getTimestamp();
@@ -683,19 +706,17 @@ public class EditBillFragment extends Fragment {
 
         if (usesOldPaymentModes()) {
             newPaymentMode = getOldPaymentModeId();
-        } else if (ProjectType.COSPEND.equals(projectType)) {
-            newRepeat = getRepeat();
+        } else {
             newPaymentModeId = getPaymentModeId();
             newCategoryId = getCategoryId();
-        } else if (ProjectType.LOCAL.equals(projectType)) {
-            newPaymentModeId = getPaymentModeId();
-            newCategoryId = getCategoryId();
+            if (ProjectType.COSPEND.equals(projectType)) {
+                newRepeat = getRepeat();
+            }
         }
         // still save old payment mode id
         if (!usesOldPaymentModes() && DBBill.newPmIdToOld.containsKey(newPaymentModeId)) {
             newPaymentMode = DBBill.newPmIdToOld.get(newPaymentModeId);
         }
-
         List<Long> newOwersIds = getOwersIds();
 
         // check if owers have changed
@@ -711,21 +732,56 @@ public class EditBillFragment extends Fragment {
                 owersChanged = true;
             }
         }
+        return !(bill.getWhat().equals(newWhat) &&
+                bill.getTimestamp() == newTimestamp &&
+                bill.getAmount() == newAmount &&
+                bill.getPayerId() == newPayerId &&
+                newComment.equals(bill.getComment()) &&
+                newRepeat.equals(bill.getRepeat()) &&
+                // Objects.equals(newPaymentMode, bill.getPaymentMode()) &&
+                newPaymentModeId == bill.getPaymentModeRemoteId() &&
+                newCategoryId == bill.getCategoryRemoteId() &&
+                bill.getComment().equals(newComment) &&
+                !owersChanged
+        );
+    }
+
+    /**
+     * Save the current state in the database and schedule synchronization if needed.
+     *
+     * @param callback Observer which is called after save/synchronization
+     */
+    protected void saveBill(@Nullable ICallback callback) {
+        Log.d(getClass().getSimpleName(), "CUSTOM saveData()");
+        String newWhat = getWhat();
+        String newComment = getComment();
+        long newTimestamp = getTimestamp();
+        double newAmount = getAmount();
+        long newPayerId = getPayerId();
+        String newRepeat = DBBill.NON_REPEATED;
+        String newPaymentMode = DBBill.PAYMODE_NONE;
+        int newPaymentModeId = DBBill.PAYMODE_ID_NONE;
+        int newCategoryId = DBBill.CATEGORY_NONE;
+
+        if (usesOldPaymentModes()) {
+            newPaymentMode = getOldPaymentModeId();
+        } else {
+            newPaymentModeId = getPaymentModeId();
+            newCategoryId = getCategoryId();
+            if (ProjectType.COSPEND.equals(projectType)) {
+                newRepeat = getRepeat();
+            }
+        }
+        // still save old payment mode id
+        if (!usesOldPaymentModes() && DBBill.newPmIdToOld.containsKey(newPaymentModeId)) {
+            newPaymentMode = DBBill.newPmIdToOld.get(newPaymentModeId);
+        }
+
+        List<Long> newOwersIds = getOwersIds();
 
         // if this is an existing bill
         if (bill.getId() != 0) {
-            if (bill.getWhat().equals(newWhat) &&
-                    bill.getTimestamp() == newTimestamp &&
-                    bill.getAmount() == newAmount &&
-                    bill.getPayerId() == newPayerId &&
-                    newComment.equals(bill.getComment()) &&
-                    newRepeat.equals(bill.getRepeat()) &&
-                    newPaymentMode.equals(bill.getPaymentMode()) &&
-                    newPaymentModeId == bill.getPaymentModeRemoteId() &&
-                    newCategoryId == bill.getCategoryRemoteId() &&
-                    bill.getComment().equals(newComment) &&
-                    !owersChanged
-            ) {
+            if (!valuesHaveChanged()) {
                 Log.v(getClass().getSimpleName(), "... not saving bill, since nothing has changed " + bill.getWhat() + " " + newWhat);
             } else {
                 Log.d(TAG, "====== update bill");

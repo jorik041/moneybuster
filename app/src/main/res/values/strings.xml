@@ -21,6 +21,10 @@
     <string name="setting_payer">Who paid?</string>
     <string name="setting_all">All</string>
     <string name="setting_none">None</string>
+    <string name="save_or_discard_bill_dialog_title">Bill edition</string>
+    <string name="save_or_discard_bill_dialog_message">Bill values have been changed. What do you want to do?</string>
+    <string name="save_or_discard_bill_dialog_save">Save</string>
+    <string name="save_or_discard_bill_dialog_discard">Discard</string>
     <string name="currency_manager">Currency manager</string>
     <string name="add_currency_title">Add currency</string>
     <string name="currency_management_unavailable">Currency management is only available for Cospend projects</string>

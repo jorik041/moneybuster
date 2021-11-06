@@ -148,7 +148,8 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
 
     @Override
     public void onBackPressed() {
-        close();
+        fragment.onBackPressed();
+        //close();
     }
 
     @Override

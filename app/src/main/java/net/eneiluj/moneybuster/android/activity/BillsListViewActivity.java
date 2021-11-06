@@ -1997,10 +1997,11 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case PERMISSION_WRITE:
                 if (grantResults.length > 0) {
-                    Log.d(TAG, "[permission WRITE result] "+grantResults[0]);
+                    Log.d(TAG, "[permission WRITE result] " + grantResults[0]);
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         exportCurrentProject();
                     } else {
@@ -3110,21 +3111,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
      * @param duration Duration
      */
     private void showToast(CharSequence text, int duration) {
-        Context context = getApplicationContext();
-
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.sync_success_toast,
-                (ViewGroup) findViewById(R.id.custom_toast_container));
-
-        ImageView im = layout.findViewById(R.id.toast_icon);
-        im.setImageResource(R.drawable.ic_info_outline_grey600_24dp);
-        TextView tv = (TextView) layout.findViewById(R.id.text);
-        tv.setText(text);
-
-        Toast toast = new Toast(context);
-        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-        toast.setDuration(duration);
-        toast.setView(layout);
+        Toast toast = Toast.makeText(this, text, duration);
         toast.show();
     }
 
@@ -3207,7 +3194,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     text.setText("");
 
                     Toast toast = new Toast(getApplicationContext());
-                    toast.setGravity(Gravity.TOP | Gravity.RIGHT, 55, 6);
+                    toast.setGravity(Gravity.TOP | Gravity.END, 55, 6);
                     toast.setDuration(Toast.LENGTH_SHORT);
                     toast.setView(layout);
                     toast.show();
@@ -3253,7 +3240,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     im.setImageResource(R.drawable.ic_nextcloud_logo_white);
 
                     Toast toast2 = new Toast(getApplicationContext());
-                    toast2.setGravity(Gravity.TOP | Gravity.RIGHT, 55, 62);
+                    toast2.setGravity(Gravity.TOP | Gravity.END, 55, 62);
                     toast2.setDuration(Toast.LENGTH_SHORT);
                     toast2.setView(layout2);
                     toast2.show();

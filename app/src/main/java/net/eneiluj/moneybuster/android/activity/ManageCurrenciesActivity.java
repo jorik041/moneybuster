@@ -255,7 +255,6 @@ public class ManageCurrenciesActivity extends AppCompatActivity {
             });
 
             currenciesTable.addView(row);
-
         }
     }
 

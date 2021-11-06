@@ -20,10 +20,17 @@
     <string name="setting_payer">Who paid?</string>
     <string name="setting_all">All</string>
     <string name="setting_none">None</string>
+    <string name="currency_manager">Currency manager</string>
+    <string name="add_currency_title">Add currency</string>
+    <string name="currency_management_unavailable">Currency management is only available for Cospend projects</string>
     <string name="setting_comment">Comment</string>
     <string name="duplicate_bill">Duplicate bill</string>
     <string name="currency_dialog_title">Convert current amount from another currency into %s</string>
     <string name="no_currency_error">There is no additional currency</string>
+    <string name="main_currency">Main currency</string>
+    <string name="no_main_currency">Main currency must be set before adding others</string>
+    <string name="currency_edit_name">Name</string>
+    <string name="currency_rate">Exchange rate</string>
     <string name="setting_amount">How much?</string>
     <string name="setting_amount_long">How much did it cost?</string>
     <string name="setting_owers">For whom?</string>
@@ -118,6 +125,7 @@
     <string name="simple_ok_no_more">Got it!</string>
     <string name="simple_yes">Yes</string>
     <string name="simple_no">No</string>
+    <string name="simple_add">Add</string>
     <string name="simple_edit_bill">Edit bill</string>
     <string name="simple_new_bill">New bill</string>
     <string name="simple_add_project">Add project in MoneyBuster</string>
@@ -195,6 +203,8 @@
     <string name="settings_night_mode_title">Theme</string>
     <string name="settings_offline_mode_title">Offline mode</string>
     <string name="settings_offline_mode_summary">Do not automatically sync. Only sync when user asks.</string>
+    <string name="settings_show_nextcloud_settings_summary">Disable this if you don\'t use Nextcloud and Cospend and just want to create/join IHateMoney and local projects.</string>
+    <string name="settings_show_nextcloud_settings_title">Show Nextcloud settings</string>
     <string name="settings_smart_sync_title">Smart sync with Cospend</string>
     <string name="settings_smart_sync_summary">Only get bills which have changed since last synchronisation. This is faster and uses less data. Compatible with Cospend &gt;= 0.2.0</string>
     <string name="settings_color_title">App main color</string>
@@ -219,6 +229,7 @@
     <string name="settings_notify_updated">Notification on bill changes</string>
     <string name="settings_notify_deleted">Notification on bill deletions</string>
     <string name="project_sync_success">Project %s synchronized</string>
+    <string name="currency_saved_success">Main currency saved</string>
     <string name="file_saved_success">Project saved in %s</string>
     <string name="write_permission_refused">Write permission refused, impossible to write file</string>
     <string name="add_member_dialog_title">New member name</string>

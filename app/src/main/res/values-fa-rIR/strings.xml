@@ -20,10 +20,17 @@
     <string name="setting_payer">چه کسی پرداخت کرده؟</string>
     <string name="setting_all">همه</string>
     <string name="setting_none">هیچ کدام</string>
+    <string name="currency_manager">Currency manager</string>
+    <string name="add_currency_title">Add currency</string>
+    <string name="currency_management_unavailable">Currency management is only available for Cospend projects</string>
     <string name="setting_comment">Comment</string>
     <string name="duplicate_bill">Duplicate bill</string>
     <string name="currency_dialog_title">واحد پولی کنونی را از یک ارز دیگر به %s تبدیل کنید</string>
     <string name="no_currency_error">هیچ واحد پولی اضافی وجود ندارد</string>
+    <string name="main_currency">Main currency</string>
+    <string name="no_main_currency">Main currency must be set before adding others</string>
+    <string name="currency_edit_name">Name</string>
+    <string name="currency_rate">Exchange rate</string>
     <string name="setting_amount">چقدر؟</string>
     <string name="setting_amount_long">چقدر هزینه برداشت؟</string>
     <string name="setting_owers">برای چه کسی؟</string>
@@ -118,6 +125,7 @@
     <string name="simple_ok_no_more">گرفتم!</string>
     <string name="simple_yes">بله</string>
     <string name="simple_no">نه</string>
+    <string name="simple_add">Add</string>
     <string name="simple_edit_bill">ویرایش رسید</string>
     <string name="simple_new_bill">رسید تازه</string>
     <string name="simple_add_project">افزودن پروژه در MoneyBuster</string>
@@ -195,6 +203,8 @@
     <string name="settings_night_mode_title">Theme</string>
     <string name="settings_offline_mode_title">حالت آفلاین</string>
     <string name="settings_offline_mode_summary">خودکار هم‌گام‌سازی نکن. تنها هنگامی که کاربر بخواهد هم‌گام‌سازی کن.</string>
+    <string name="settings_show_nextcloud_settings_summary">Disable this if you don\'t use Nextcloud and Cospend and just want to create/join IHateMoney and local projects.</string>
+    <string name="settings_show_nextcloud_settings_title">Show Nextcloud settings</string>
     <string name="settings_smart_sync_title">هم‌گام‌سازی هوشمند با Cospend</string>
     <string name="settings_smart_sync_summary">تنها رسیدهایی را که از آخرین همگام‌سازی تغییر یافته‌اند دریافت کنید. این سریعتر است و داده کمتری مصرف می‌کند. سازگار با Cospend &gt;= 0.2.0</string>
     <string name="settings_color_title">رنگ اصلی برنامه</string>
@@ -219,6 +229,7 @@
     <string name="settings_notify_updated">آگاه‌سازی هنگام تغییرات رسید</string>
     <string name="settings_notify_deleted">آگاه‌سازی هنگام حذف رسید</string>
     <string name="project_sync_success">پروژه %s هم‌گام‌سازی شد</string>
+    <string name="currency_saved_success">Main currency saved</string>
     <string name="file_saved_success">پروژه در %s ذخیره شد</string>
     <string name="write_permission_refused">دسترسی نوشتن رد شد، نوشتن پرونده ناممکن است</string>
     <string name="add_member_dialog_title">نام عضو تازه</string>

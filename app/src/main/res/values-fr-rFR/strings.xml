@@ -20,10 +20,17 @@
     <string name="setting_payer">Qui a payé ?</string>
     <string name="setting_all">Tous</string>
     <string name="setting_none">Aucun</string>
+    <string name="currency_manager">Gestionnaire de devises</string>
+    <string name="add_currency_title">Ajouter une devise</string>
+    <string name="currency_management_unavailable">La gestion des devises n\'est disponible que pour les projets Cospend</string>
     <string name="setting_comment">Commentaire</string>
     <string name="duplicate_bill">Dupliquer la facture</string>
     <string name="currency_dialog_title">Convertir le montant actuel depuis autre devise vers %s</string>
     <string name="no_currency_error">Il n\'y a pas de devise supplémentaire</string>
+    <string name="main_currency">Devise principale</string>
+    <string name="no_main_currency">La devise principale doit être définie avant d\'en ajouter d\'autres</string>
+    <string name="currency_edit_name">Nom</string>
+    <string name="currency_rate">Taux de change</string>
     <string name="setting_amount">Combien ?</string>
     <string name="setting_amount_long">Combien cela a-t-il couté ?</string>
     <string name="setting_owers">Pour qui ?</string>
@@ -118,6 +125,7 @@
     <string name="simple_ok_no_more">J\'ai compris !</string>
     <string name="simple_yes">Oui</string>
     <string name="simple_no">Non</string>
+    <string name="simple_add">Ajouter</string>
     <string name="simple_edit_bill">Éditer une facture</string>
     <string name="simple_new_bill">Nouvelle facture</string>
     <string name="simple_add_project">Ajouter un projet dans MoneyBuster</string>
@@ -195,6 +203,8 @@
     <string name="settings_night_mode_title">Thème</string>
     <string name="settings_offline_mode_title">Mode hors-ligne</string>
     <string name="settings_offline_mode_summary">Ne pas synchroniser automatiquement. Seulement à la demande de l\'utilisateur.</string>
+    <string name="settings_show_nextcloud_settings_summary">Désactivez cette option si vous n\'utilisez pas Nextcloud et Cospend et que vous voulez juste créer/rejoindre des projets IHateMoney ou locaux.</string>
+    <string name="settings_show_nextcloud_settings_title">Afficher les paramètres du Nextcloud</string>
     <string name="settings_smart_sync_title">Synchronisation intelligente avec Cospend</string>
     <string name="settings_smart_sync_summary">Récupère uniquement les factures qui ont changé depuis la dernière synchronisation. Ceci est plus rapide et utilise moins de données. Compatible avec Cospend &gt;= 0.2.0</string>
     <string name="settings_color_title">Couleur principale de l\'appli</string>
@@ -219,6 +229,7 @@
     <string name="settings_notify_updated">Notification à la modification d\'une facture</string>
     <string name="settings_notify_deleted">Notification à la suppression d\'une facture</string>
     <string name="project_sync_success">Projet %s synchronisé</string>
+    <string name="currency_saved_success">Devise principale enregistrée</string>
     <string name="file_saved_success">Projet enregistré dans %s</string>
     <string name="write_permission_refused">Autorisation d\'écriture refusée, impossible d\'écrire le fichier</string>
     <string name="add_member_dialog_title">Nom du nouveau membre</string>

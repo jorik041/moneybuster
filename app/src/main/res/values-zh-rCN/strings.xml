@@ -20,10 +20,17 @@
     <string name="setting_payer">谁购买了？</string>
     <string name="setting_all">全部</string>
     <string name="setting_none">无</string>
+    <string name="currency_manager">Currency manager</string>
+    <string name="add_currency_title">Add currency</string>
+    <string name="currency_management_unavailable">Currency management is only available for Cospend projects</string>
     <string name="setting_comment">Comment</string>
     <string name="duplicate_bill">Duplicate bill</string>
     <string name="currency_dialog_title">Convert current amount from another currency into %s</string>
     <string name="no_currency_error">There is no additional currency</string>
+    <string name="main_currency">Main currency</string>
+    <string name="no_main_currency">Main currency must be set before adding others</string>
+    <string name="currency_edit_name">Name</string>
+    <string name="currency_rate">Exchange rate</string>
     <string name="setting_amount">多少钱？</string>
     <string name="setting_amount_long">此物品多少钱？</string>
     <string name="setting_owers">为谁购买？</string>
@@ -118,6 +125,7 @@
     <string name="simple_ok_no_more">Got it!</string>
     <string name="simple_yes">是</string>
     <string name="simple_no">否</string>
+    <string name="simple_add">Add</string>
     <string name="simple_edit_bill">编辑账单</string>
     <string name="simple_new_bill">新建账单</string>
     <string name="simple_add_project">在 MoneyBuster 里添加项目</string>
@@ -195,6 +203,8 @@
     <string name="settings_night_mode_title">Theme</string>
     <string name="settings_offline_mode_title">离线模式</string>
     <string name="settings_offline_mode_summary">不要自动同步。只有当用户请求时才同步。</string>
+    <string name="settings_show_nextcloud_settings_summary">Disable this if you don\'t use Nextcloud and Cospend and just want to create/join IHateMoney and local projects.</string>
+    <string name="settings_show_nextcloud_settings_title">Show Nextcloud settings</string>
     <string name="settings_smart_sync_title">Smart sync with Cospend</string>
     <string name="settings_smart_sync_summary">Only get bills which have changed since last synchronisation. This is faster and uses less data. Compatible with Cospend &gt;= 0.2.0</string>
     <string name="settings_color_title">应用主颜色</string>
@@ -219,6 +229,7 @@
     <string name="settings_notify_updated">Notification on bill changes</string>
     <string name="settings_notify_deleted">Notification on bill deletions</string>
     <string name="project_sync_success">已同步项目 %s</string>
+    <string name="currency_saved_success">Main currency saved</string>
     <string name="file_saved_success">Project saved in %s</string>
     <string name="write_permission_refused">Write permission refused, impossible to write file</string>
     <string name="add_member_dialog_title">新成员名称</string>

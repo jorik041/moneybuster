@@ -20,10 +20,17 @@
     <string name="setting_payer">Wer hat gezahlt?</string>
     <string name="setting_all">Alle</string>
     <string name="setting_none">Keiner</string>
+    <string name="currency_manager">Currency manager</string>
+    <string name="add_currency_title">Add currency</string>
+    <string name="currency_management_unavailable">Currency management is only available for Cospend projects</string>
     <string name="setting_comment">Kommentar</string>
     <string name="duplicate_bill">Ausgabe duplizieren</string>
     <string name="currency_dialog_title">Rechne den aktuellen Betrag aus einer anderen Währung in %s um</string>
     <string name="no_currency_error">Es gibt keine zusätzliche Währung</string>
+    <string name="main_currency">Main currency</string>
+    <string name="no_main_currency">Main currency must be set before adding others</string>
+    <string name="currency_edit_name">Name</string>
+    <string name="currency_rate">Exchange rate</string>
     <string name="setting_amount">Wie viel?</string>
     <string name="setting_amount_long">Wie viel hat es gekostet?</string>
     <string name="setting_owers">Für wen?</string>
@@ -106,8 +113,8 @@
     <string name="simple_loading">Wird geladen</string>
     <string name="simple_remove">Entfernen</string>
     <string name="sync_error_dialog_title">Projekt-Sync fehlgeschlagen</string>
-    <string name="sync_error_dialog_full_content">Synchronization with project %1$s failed. Error message:\n\n%2$s\n\nThe associated remote project might not exist anymore. If so, you could remove this project from MoneyBuster.</string>
-    <string name="error_maintenance_mode">The Nextcloud instance is probably in maintenance mode</string>
+    <string name="sync_error_dialog_full_content">Synchronisierung mit Projekt %1$s fehlgeschlagen. Fehlermeldung:\n\n%2$s\n\nDas zugehörige entfernte Projekt existiert möglicherweise nicht mehr. Ist das der Fall, können Sie dieses Projekt von MoneyBuster entfernen.</string>
+    <string name="error_maintenance_mode">Der Nextcloud-Server befindet sich wahrscheinlich im Wartungsmodus</string>
     <string name="error_401">401 Nicht berechtigt</string>
     <string name="error_403">403 Nicht Erlaubt</string>
     <string name="error_404">404 Nicht gefunden</string>
@@ -118,6 +125,7 @@
     <string name="simple_ok_no_more">Ok!</string>
     <string name="simple_yes">Ja</string>
     <string name="simple_no">Nein</string>
+    <string name="simple_add">Add</string>
     <string name="simple_edit_bill">Ausgabe bearbeiten</string>
     <string name="simple_new_bill">Neue Ausgabe</string>
     <string name="simple_add_project">Projekt in MoneyBuster hinzufügen</string>
@@ -195,6 +203,8 @@
     <string name="settings_night_mode_title">Thema</string>
     <string name="settings_offline_mode_title">Offline Modus</string>
     <string name="settings_offline_mode_summary">Nicht automatisch synchronisieren. Synchronisiere nur, wenn der Benutzer fragt.</string>
+    <string name="settings_show_nextcloud_settings_summary">Disable this if you don\'t use Nextcloud and Cospend and just want to create/join IHateMoney and local projects.</string>
+    <string name="settings_show_nextcloud_settings_title">Show Nextcloud settings</string>
     <string name="settings_smart_sync_title">Intelligente Synchronisierung mit Cospend</string>
     <string name="settings_smart_sync_summary">Nur Ausgaben abrufen, die sich seit der letzten Synchronisation geändert haben. Dies ist schneller und verbraucht weniger Daten. Kompatibel mit Cospend &gt;= 0.2.0</string>
     <string name="settings_color_title">App Hauptfarbe</string>
@@ -219,6 +229,7 @@
     <string name="settings_notify_updated">Benachrichtigen bei Ausgabenänderungen</string>
     <string name="settings_notify_deleted">Benachrichtigen bei Ausgabenlöschung</string>
     <string name="project_sync_success">Projekt %s synchronisiert</string>
+    <string name="currency_saved_success">Main currency saved</string>
     <string name="file_saved_success">Projekt gespeichert in %s</string>
     <string name="write_permission_refused">Schreibberechtigung verweigert, Datei kann nicht geschrieben werden</string>
     <string name="add_member_dialog_title">Neuer Mitgliedsname</string>
@@ -264,7 +275,7 @@
     <string name="drawer_no_project">Es gibt kein Projekt.\nTippe hier, um eines zu erstellen/hinzuzufügen</string>
     <string name="drawer_no_account">Hier klicken, um sich mit einem Nextcloud-Konto zu verbinden</string>
     <string name="choose_project_to_select">Projekt auswählen</string>
-    <string name="add_bill_impossible_no_member">At least one activated member is required to add a bill</string>
+    <string name="add_bill_impossible_no_member">Mindestens ein aktiviertes Mitglied ist erforderlich, um eine Ausgabe hinzuzufügen</string>
     <string name="edit_project_local_impossible">Für lokale Projekte nicht möglich</string>
     <string name="choose_account_project_dialog_title">Wähle ein Projekt aus deinem Nextcloud Konto</string>
     <string name="choose_account_project_dialog_impossible">Es gibt kein Cospend-Projekt in deinem Nextcloud Konto</string>

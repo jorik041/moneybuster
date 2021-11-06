@@ -20,10 +20,17 @@
     <string name="setting_payer">Quem pagou?</string>
     <string name="setting_all">Todos</string>
     <string name="setting_none">Nenhum</string>
+    <string name="currency_manager">Currency manager</string>
+    <string name="add_currency_title">Add currency</string>
+    <string name="currency_management_unavailable">Currency management is only available for Cospend projects</string>
     <string name="setting_comment">Comment</string>
     <string name="duplicate_bill">Duplicate bill</string>
     <string name="currency_dialog_title">Converter o montante actual de outra unidade monetária para %s</string>
     <string name="no_currency_error">Não existe uma unidade monetária adicional</string>
+    <string name="main_currency">Main currency</string>
+    <string name="no_main_currency">Main currency must be set before adding others</string>
+    <string name="currency_edit_name">Name</string>
+    <string name="currency_rate">Exchange rate</string>
     <string name="setting_amount">Quanto?</string>
     <string name="setting_amount_long">Quanto custou?</string>
     <string name="setting_owers">De quem?</string>
@@ -118,6 +125,7 @@
     <string name="simple_ok_no_more">Entendi!</string>
     <string name="simple_yes">Sim</string>
     <string name="simple_no">Não</string>
+    <string name="simple_add">Add</string>
     <string name="simple_edit_bill">Editar factura</string>
     <string name="simple_new_bill">Nova factura</string>
     <string name="simple_add_project">Adicionar projecto no MoneyBuster</string>
@@ -195,6 +203,8 @@
     <string name="settings_night_mode_title">Theme</string>
     <string name="settings_offline_mode_title">Modo desconectado</string>
     <string name="settings_offline_mode_summary">Não sincronizar automaticamente. Sincronizar somente quando o utilizador pedir.</string>
+    <string name="settings_show_nextcloud_settings_summary">Disable this if you don\'t use Nextcloud and Cospend and just want to create/join IHateMoney and local projects.</string>
+    <string name="settings_show_nextcloud_settings_title">Show Nextcloud settings</string>
     <string name="settings_smart_sync_title">Sincronização inteligente com o Cospend</string>
     <string name="settings_smart_sync_summary">Obter somente as facturas que foram alteradas desde a última sincronização. É mais rápido e usa menos dados. É compatível com o Cospend &gt;= 0.2.0</string>
     <string name="settings_color_title">Cor principal da aplicação</string>
@@ -219,6 +229,7 @@
     <string name="settings_notify_updated">Notificação quando são alteradas facturas</string>
     <string name="settings_notify_deleted">Notificação quando são eliminadas facturas</string>
     <string name="project_sync_success">Projecto %s sincronizado</string>
+    <string name="currency_saved_success">Main currency saved</string>
     <string name="file_saved_success">Projecto guardado em %s</string>
     <string name="write_permission_refused">Recusada a permissão de escrita, não é possível escrever o ficheiro</string>
     <string name="add_member_dialog_title">Nome do novo membro</string>

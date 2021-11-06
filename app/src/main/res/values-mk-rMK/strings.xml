@@ -20,10 +20,17 @@
     <string name="setting_payer">Кој плати?</string>
     <string name="setting_all">Сите</string>
     <string name="setting_none">Никој</string>
+    <string name="currency_manager">Currency manager</string>
+    <string name="add_currency_title">Add currency</string>
+    <string name="currency_management_unavailable">Currency management is only available for Cospend projects</string>
     <string name="setting_comment">Comment</string>
     <string name="duplicate_bill">Duplicate bill</string>
     <string name="currency_dialog_title">Конвертирај го износот во валута %s</string>
     <string name="no_currency_error">Нема други валути</string>
+    <string name="main_currency">Main currency</string>
+    <string name="no_main_currency">Main currency must be set before adding others</string>
+    <string name="currency_edit_name">Name</string>
+    <string name="currency_rate">Exchange rate</string>
     <string name="setting_amount">Колку?</string>
     <string name="setting_amount_long">Колку чини?</string>
     <string name="setting_owers">За кого?</string>
@@ -118,6 +125,7 @@
     <string name="simple_ok_no_more">Сфатив!</string>
     <string name="simple_yes">Да</string>
     <string name="simple_no">Не</string>
+    <string name="simple_add">Add</string>
     <string name="simple_edit_bill">Измени сметка</string>
     <string name="simple_new_bill">Нова сметка</string>
     <string name="simple_add_project">Додади проект во MoneyBuster</string>
@@ -195,6 +203,8 @@
     <string name="settings_night_mode_title">Theme</string>
     <string name="settings_offline_mode_title">Офлајн режим</string>
     <string name="settings_offline_mode_summary">Не синхронизирај автоматски. Синхронизирај само по побарање на корисник.</string>
+    <string name="settings_show_nextcloud_settings_summary">Disable this if you don\'t use Nextcloud and Cospend and just want to create/join IHateMoney and local projects.</string>
+    <string name="settings_show_nextcloud_settings_title">Show Nextcloud settings</string>
     <string name="settings_smart_sync_title">Паметно синхронизирање со Cospend</string>
     <string name="settings_smart_sync_summary">Превземи ги само сметките во кој има промена од последното синхронизирање. Овој начин е побрз и користи многу помалку податоци. Компатибилно со Cospend &gt;= 0.2.0</string>
     <string name="settings_color_title">Боја на апликацијата</string>
@@ -219,6 +229,7 @@
     <string name="settings_notify_updated">Известување за измена на сметки</string>
     <string name="settings_notify_deleted">Известување за бришење на сметки</string>
     <string name="project_sync_success">Проектот %s е синхронизиран</string>
+    <string name="currency_saved_success">Main currency saved</string>
     <string name="file_saved_success">Проектот е зачуван во %s</string>
     <string name="write_permission_refused">Дозволата за пишување е одбиена, невозможно е да се запише во датотеката</string>
     <string name="add_member_dialog_title">Име на нов член</string>

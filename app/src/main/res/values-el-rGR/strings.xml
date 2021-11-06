@@ -20,10 +20,17 @@
     <string name="setting_payer">Ποιος πλήρωσε;</string>
     <string name="setting_all">Όλα</string>
     <string name="setting_none">Κανένα</string>
+    <string name="currency_manager">Currency manager</string>
+    <string name="add_currency_title">Add currency</string>
+    <string name="currency_management_unavailable">Currency management is only available for Cospend projects</string>
     <string name="setting_comment">Comment</string>
     <string name="duplicate_bill">Duplicate bill</string>
     <string name="currency_dialog_title">Μετατροπή του τρέχοντος ποσού από άλλο νόμισμα σε %s</string>
     <string name="no_currency_error">Δεν υπάρχει επιπλέον νόμισμα</string>
+    <string name="main_currency">Main currency</string>
+    <string name="no_main_currency">Main currency must be set before adding others</string>
+    <string name="currency_edit_name">Name</string>
+    <string name="currency_rate">Exchange rate</string>
     <string name="setting_amount">Πόσο;</string>
     <string name="setting_amount_long">Πόσο κόστισε;</string>
     <string name="setting_owers">Προς ποιον;</string>
@@ -118,6 +125,7 @@
     <string name="simple_ok_no_more">Το \'πιασα!</string>
     <string name="simple_yes">Ναι</string>
     <string name="simple_no">Όχι</string>
+    <string name="simple_add">Add</string>
     <string name="simple_edit_bill">Επεξεργασία λογαριασμού</string>
     <string name="simple_new_bill">Νέος λογαριασμός</string>
     <string name="simple_add_project">Προσθήκη έργου στο MoneyBuster</string>
@@ -195,6 +203,8 @@
     <string name="settings_night_mode_title">Theme</string>
     <string name="settings_offline_mode_title">Λειτουργία χωρίς σύνδεση</string>
     <string name="settings_offline_mode_summary">Όχι αυτόματος συγχρονισμός. Συγχρονισμός μόνο όταν ζητάει ο χρήστης.</string>
+    <string name="settings_show_nextcloud_settings_summary">Disable this if you don\'t use Nextcloud and Cospend and just want to create/join IHateMoney and local projects.</string>
+    <string name="settings_show_nextcloud_settings_title">Show Nextcloud settings</string>
     <string name="settings_smart_sync_title">Έξυπνος συγχρονισμός με Cospend</string>
     <string name="settings_smart_sync_summary">Αποκτήστε μόνο λογαριασμούς που έχουν αλλάξει από τον τελευταίο συγχρονισμό. Αυτό είναι ταχύτερο και χρησιμοποιεί λιγότερα δεδομένα. Συμβατό με το Cospend &gt;= 0.2.0</string>
     <string name="settings_color_title">Κύριο χρώμα εφαρμογής</string>
@@ -219,6 +229,7 @@
     <string name="settings_notify_updated">Notification on bill changes</string>
     <string name="settings_notify_deleted">Notification on bill deletions</string>
     <string name="project_sync_success">Το έργο %s συγχρονίστηκε</string>
+    <string name="currency_saved_success">Main currency saved</string>
     <string name="file_saved_success">Project saved in %s</string>
     <string name="write_permission_refused">Write permission refused, impossible to write file</string>
     <string name="add_member_dialog_title">Νέο όνομα μέλους</string>

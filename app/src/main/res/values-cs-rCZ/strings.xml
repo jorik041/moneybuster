@@ -20,10 +20,17 @@
     <string name="setting_payer">Kdo zaplatil?</string>
     <string name="setting_all">Vše</string>
     <string name="setting_none">Žádné</string>
+    <string name="currency_manager">Currency manager</string>
+    <string name="add_currency_title">Add currency</string>
+    <string name="currency_management_unavailable">Currency management is only available for Cospend projects</string>
     <string name="setting_comment">Komentář</string>
     <string name="duplicate_bill">Duplikovat účet</string>
     <string name="currency_dialog_title">Převést stávající částku z jiné měny na %s</string>
     <string name="no_currency_error">Není zde žádná další měna</string>
+    <string name="main_currency">Main currency</string>
+    <string name="no_main_currency">Main currency must be set before adding others</string>
+    <string name="currency_edit_name">Name</string>
+    <string name="currency_rate">Exchange rate</string>
     <string name="setting_amount">Kolik?</string>
     <string name="setting_amount_long">Kolik to stálo?</string>
     <string name="setting_owers">Pro koho?</string>
@@ -118,6 +125,7 @@
     <string name="simple_ok_no_more">Chápu!</string>
     <string name="simple_yes">Ano</string>
     <string name="simple_no">Ne</string>
+    <string name="simple_add">Add</string>
     <string name="simple_edit_bill">Upravit účet</string>
     <string name="simple_new_bill">Nový účet</string>
     <string name="simple_add_project">Přidat projekt do MoneyBuster</string>
@@ -195,6 +203,8 @@
     <string name="settings_night_mode_title">Motiv vzhledu</string>
     <string name="settings_offline_mode_title">Režim bez připojení k síti</string>
     <string name="settings_offline_mode_summary">Nesynchronizovat automaticky. Synchronizovat pouze na vyžádání uživatelem.</string>
+    <string name="settings_show_nextcloud_settings_summary">Disable this if you don\'t use Nextcloud and Cospend and just want to create/join IHateMoney and local projects.</string>
+    <string name="settings_show_nextcloud_settings_title">Show Nextcloud settings</string>
     <string name="settings_smart_sync_title">Inteligentní synchronizace s Cospend</string>
     <string name="settings_smart_sync_summary">Získejte pouze účty, které se změnily od poslední synchronizace. To je rychlejší a používá méně dat. Kompatibilní s Cospend &gt;= 0.2.0</string>
     <string name="settings_color_title">Hlavní barva aplikace</string>
@@ -219,6 +229,7 @@
     <string name="settings_notify_updated">Upozornění při změně účtů</string>
     <string name="settings_notify_deleted">Upozornění při mazání účtů</string>
     <string name="project_sync_success">Projekt %s synchronizován</string>
+    <string name="currency_saved_success">Main currency saved</string>
     <string name="file_saved_success">Projekt uložen v %s</string>
     <string name="write_permission_refused">Oprávnění k zápisu zamítnuto, do souboru nelze zapsat</string>
     <string name="add_member_dialog_title">Jméno nového člena</string>

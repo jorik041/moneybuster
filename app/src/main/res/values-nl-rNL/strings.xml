@@ -20,10 +20,17 @@
     <string name="setting_payer">Wie heeft er betaald?</string>
     <string name="setting_all">Alle</string>
     <string name="setting_none">Geen</string>
+    <string name="currency_manager">Currency manager</string>
+    <string name="add_currency_title">Add currency</string>
+    <string name="currency_management_unavailable">Currency management is only available for Cospend projects</string>
     <string name="setting_comment">Comment</string>
     <string name="duplicate_bill">Duplicate bill</string>
     <string name="currency_dialog_title">Verander het huidige bedrag van een andere valuta in %s</string>
     <string name="no_currency_error">Er is geen extra valuta</string>
+    <string name="main_currency">Main currency</string>
+    <string name="no_main_currency">Main currency must be set before adding others</string>
+    <string name="currency_edit_name">Name</string>
+    <string name="currency_rate">Exchange rate</string>
     <string name="setting_amount">Hoeveel?</string>
     <string name="setting_amount_long">Hoeveel kostte het?</string>
     <string name="setting_owers">Aan wie?</string>
@@ -118,6 +125,7 @@
     <string name="simple_ok_no_more">Begrepen!</string>
     <string name="simple_yes">Ja</string>
     <string name="simple_no">Nee</string>
+    <string name="simple_add">Add</string>
     <string name="simple_edit_bill">Rekening bewerken</string>
     <string name="simple_new_bill">Nieuwe rekening</string>
     <string name="simple_add_project">Project toevoegen op MoneyBuster</string>
@@ -195,6 +203,8 @@
     <string name="settings_night_mode_title">Theme</string>
     <string name="settings_offline_mode_title">Offline modus</string>
     <string name="settings_offline_mode_summary">Niet automatisch synchroniseren. Alleen synchroniseren op vraag van de gebruiker.</string>
+    <string name="settings_show_nextcloud_settings_summary">Disable this if you don\'t use Nextcloud and Cospend and just want to create/join IHateMoney and local projects.</string>
+    <string name="settings_show_nextcloud_settings_title">Show Nextcloud settings</string>
     <string name="settings_smart_sync_title">Slimme synchronisatie met Samen Betalen</string>
     <string name="settings_smart_sync_summary">Alleen rekeningen ontvangen die gewijzigd werden sinds laatste synchronisatie. Dit is sneller en gebruikt minder gegevens. Compatibel met Cospend &gt;= 0.2.0</string>
     <string name="settings_color_title">Hoofdkleur van app</string>
@@ -219,6 +229,7 @@
     <string name="settings_notify_updated">Notification on bill changes</string>
     <string name="settings_notify_deleted">Notification on bill deletions</string>
     <string name="project_sync_success">Project \'%s\' is gesynchroniseerd</string>
+    <string name="currency_saved_success">Main currency saved</string>
     <string name="file_saved_success">Project opgeslagen in %s</string>
     <string name="write_permission_refused">Write permission refused, impossible to write file</string>
     <string name="add_member_dialog_title">Nieuwe deelnemernaam</string>

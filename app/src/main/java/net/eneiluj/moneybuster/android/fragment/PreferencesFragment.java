@@ -90,10 +90,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 
         final CheckBoxPreference useServerColorPref = (CheckBoxPreference) findPreference(getString(R.string.pref_key_use_server_color));
+        final Preference appColorPref = findPreference(getString(R.string.pref_key_color));
 
         Boolean useServerColor = sp.getBoolean(getString(R.string.pref_key_use_server_color), false);
         if (useServerColor) {
-            findPreference(getString(R.string.pref_key_color)).setVisible(false);
+            appColorPref.setVisible(false);
         }
 
         useServerColorPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -101,9 +102,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 Boolean useServerColor = (Boolean) newValue;
                 if (useServerColor) {
-                    findPreference(getString(R.string.pref_key_color)).setVisible(false);
+                    appColorPref.setVisible(false);
                 } else {
-                    findPreference(getString(R.string.pref_key_color)).setVisible(true);
+                    appColorPref.setVisible(true);
                 }
                 if (getActivity() != null) {
                     getActivity().recreate();
@@ -142,7 +143,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
             }
         });
 
-        findPreference(getString(R.string.pref_key_color)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        appColorPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 showColorDialog(preference);
@@ -233,6 +234,33 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
             notifyUpdatedPref.setVisible(false);
             notifyDeletedPref.setVisible(false);
             autostartPref.setVisible(false);
+        }
+
+        final Preference nextcloudAccountPref = findPreference(getString(R.string.pref_key_nextcloud_account_settings));
+        final Preference cospendSmartSync = findPreference(getString(R.string.pref_key_smart_sync));
+
+        final SwitchPreferenceCompat showNextcloudSettingsPref = (SwitchPreferenceCompat) findPreference(getString(R.string.pref_key_show_nextcloud_settings));
+        showNextcloudSettingsPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                Boolean newShowNextcloudSettings = (Boolean) newValue;
+                nextcloudAccountPref.setVisible(newShowNextcloudSettings);
+                cospendSmartSync.setVisible(newShowNextcloudSettings);
+                useServerColorPref.setVisible(newShowNextcloudSettings);
+                if (!newShowNextcloudSettings) {
+                    useServerColorPref.setChecked(false);
+                    appColorPref.setVisible(true);
+                }
+                return true;
+            }
+        });
+
+        nextcloudAccountPref.setVisible(showNextcloudSettingsPref.isChecked());
+        cospendSmartSync.setVisible(showNextcloudSettingsPref.isChecked());
+        useServerColorPref.setVisible(showNextcloudSettingsPref.isChecked());
+        if (!showNextcloudSettingsPref.isChecked()) {
+            useServerColorPref.setChecked(false);
+            appColorPref.setVisible(true);
         }
     }
 

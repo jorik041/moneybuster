@@ -156,7 +156,8 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                close();
+                fragment.onBackPressed();
+                //close();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -1073,7 +1073,11 @@ public class MoneyBusterServerSyncHelper {
                 .setContentText(notificationContent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 // Set the intent that will fire when the user taps the notification
-                .setContentIntent(PendingIntent.getActivity(appContext, 1, ptIntent, PendingIntent.FLAG_CANCEL_CURRENT))
+                .setContentIntent(
+                        PendingIntent.getActivity(
+                                appContext, 1, ptIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT
+                        )
+                )
                 .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(appContext);

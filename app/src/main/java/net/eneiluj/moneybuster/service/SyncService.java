@@ -17,7 +17,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
-import android.os.Looper;
 
 import androidx.preference.PreferenceManager;
 import androidx.core.app.NotificationCompat;
@@ -27,6 +26,7 @@ import android.util.Log;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import net.eneiluj.moneybuster.R;
@@ -45,7 +45,7 @@ public class SyncService extends Service {
     private static volatile boolean isRunning = false;
     private static volatile boolean firstRun = false;
     private SyncServiceThread thread;
-    private Looper looper;
+    //private Looper looper;
     private MoneyBusterSQLiteOpenHelper db;
     private long intervalMinutes;
 
@@ -61,7 +61,7 @@ public class SyncService extends Service {
     private BroadcastReceiver powerSaverChangeReceiver;
     private BroadcastReceiver airplaneModeChangeReceiver;
 
-    private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm MM-dd");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm MM-dd", Locale.ROOT);
 
     /**
      * Basic initializations.
@@ -86,9 +86,8 @@ public class SyncService extends Service {
         String intervalStr = prefs.getString(getString(R.string.pref_key_sync_interval), "15");
         intervalMinutes = 15;
         try {
-            intervalMinutes = Long.valueOf(intervalStr);
-        }
-        catch (Exception e) {
+            intervalMinutes = Long.parseLong(intervalStr);
+        } catch (Exception e) {
 
         }
 
@@ -103,17 +102,13 @@ public class SyncService extends Service {
 
         isRunning = true;
 
-        //sendBroadcast(BROADCAST_LOCATION_STARTED);
-
         thread = new SyncServiceThread();
         thread.start();
-        looper = thread.getLooper();
+        //looper = thread.getLooper();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // track network connectivity changes
-            connectionMonitor = new ConnectionStateMonitor();
-            connectionMonitor.enable(getApplicationContext());
-        }
+        // track network connectivity changes
+        connectionMonitor = new ConnectionStateMonitor();
+        connectionMonitor.enable(getApplicationContext());
 
     }
 
@@ -151,7 +146,6 @@ public class SyncService extends Service {
                 }
             }
         }
-
         return START_STICKY;
     }
 
@@ -175,10 +169,8 @@ public class SyncService extends Service {
         }
         thread = null;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (connectionMonitor != null) {
-                connectionMonitor.disable(getApplicationContext());
-            }
+        if (connectionMonitor != null) {
+            connectionMonitor.disable(getApplicationContext());
         }
 
         if (powerSaverChangeReceiver != null) {
@@ -276,9 +268,9 @@ public class SyncService extends Service {
                         .setPriority(priority)
                         .setOnlyAlertOnce(true)
                         .setContentText(String.format(
-                                getString(R.string.is_running),
-                                intervalMinutes,
-                                lastSyncDate
+                                getString(R.string.sync_notification_message),
+                                lastSyncDate,
+                                intervalMinutes
                         ));
                         //.setSmallIcon(R.drawable.ic_stat_notify_24dp)
                         //.setContentText(String.format(getString(R.string.is_running), getString(R.string.app_name)));
@@ -292,7 +284,7 @@ public class SyncService extends Service {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(BillsListViewActivity.class);
         stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
         Notification mNotification = mBuilder.build();
         mNotificationManager.notify(mId, mNotification);
@@ -302,20 +294,11 @@ public class SyncService extends Service {
     private void updateNotificationContent() {
         String lastSyncDate = sdf.format(new Date());
         mNotificationBuilder.setContentText(String.format(
-                getString(R.string.is_running),
-                intervalMinutes,
-                lastSyncDate
+                getString(R.string.sync_notification_message),
+                lastSyncDate,
+                intervalMinutes
         ));
         mNotificationManager.notify(this.NOTIFICATION_ID, mNotificationBuilder.build());
-    }
-
-    /**
-     * Send broadcast message
-     * @param broadcast Broadcast message
-     */
-    private void sendBroadcast(String broadcast) {
-        Intent intent = new Intent(broadcast);
-        sendBroadcast(intent);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -367,7 +350,7 @@ public class SyncService extends Service {
 
         SyncWorker(long intervalSec) {
             mIntervalTimeSecs = intervalSec;
-            mLastSyncSystemTime = Long.valueOf(0);
+            mLastSyncSystemTime = 0L;
             //lastAcquisitionStartTimestamp = System.currentTimeMillis()/1000;
 
             mIntervalHandler = null;

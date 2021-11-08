@@ -176,8 +176,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private static final String SAVED_STATE_NAVIGATION_ADAPTER_SLECTION = "navigationAdapterSelection";
     private static final String SAVED_STATE_NAVIGATION_OPEN = "navigationOpen";
 
-    private final static int scan_qrcode_import_cmd = 7;
-
     private static String contentToExport = "";
 
     private static boolean activityVisible = false;
@@ -2888,19 +2886,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (DEBUG) { Log.d(TAG, "[ACT RESULT]"); }
-        // Check which request we're responding to
-        if (requestCode == scan_qrcode_import_cmd) {
-            if (data != null) {
-                // adapt after project has been deleted
-                String scannedUrl = data.getStringExtra(QrCodeScanner.KEY_QR_CODE);
-                Log.d(TAG, "onActivityResult SCANNED URL : "+scannedUrl);
-                Intent i = new Intent(this, NewProjectActivity.class);
-                i.setAction(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(scannedUrl));
-                startActivity(i);
-            }
-        }
+        if (DEBUG) { Log.d(TAG, "[ACT RESULT] requestCode is " + requestCode); }
     }
 
     private void duplicateBill(Long billId) {

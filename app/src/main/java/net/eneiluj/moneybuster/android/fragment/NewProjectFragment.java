@@ -1,7 +1,8 @@
 package net.eneiluj.moneybuster.android.fragment;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -12,7 +13,6 @@ import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,7 +20,6 @@ import android.os.Looper;
 import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.ArrayMap;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.Gravity;
@@ -35,17 +34,20 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -71,8 +73,6 @@ import net.eneiluj.moneybuster.util.MoneyBuster;
 import net.eneiluj.moneybuster.util.SupportUtil;
 import net.eneiluj.moneybuster.util.ThemeUtils;
 
-import org.apache.commons.collections.map.AbstractMapDecorator;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -88,16 +88,12 @@ import java.util.Map;
 public class NewProjectFragment extends Fragment {
     private static final String TAG = NewProjectFragment.class.getSimpleName();
 
-    private static final String SAVEDKEY_PROJECT = "project";
     public static final String PARAM_DEFAULT_IHM_URL = "defaultIhmUrl";
     public static final String PARAM_DEFAULT_NC_URL = "defaultNcUrl";
     public static final String PARAM_DEFAULT_PROJECT_ID = "defaultProjectId";
     public static final String PARAM_DEFAULT_PROJECT_PASSWORD = "defaultProjectPassword";
     public static final String PARAM_DEFAULT_PROJECT_TYPE = "defaultProjectType";
     public static final String PARAM_IS_IMPORT = "isImport";
-
-    private final static int scan_qrcode_import_cmd = 33;
-    private final static int import_file_cmd = 123;
 
     public interface NewProjectFragmentListener {
         void close(long pid, boolean justAdded);
@@ -139,13 +135,9 @@ public class NewProjectFragment extends Fragment {
     protected ImageView importButton;
 
     protected FloatingActionButton fabOk;
-    private ActionBar toolbar;
 
     protected String defaultIhmUrl;
     protected String defaultNcUrl;
-
-    private boolean isSpinnerWhereAction = false;
-    private boolean isSpinnerWhatTodoAction = false;
 
     private ProgressDialog progress = null;
 
@@ -166,17 +158,15 @@ public class NewProjectFragment extends Fragment {
         return f;
     }
 
-    public void onToggle(View view) {
-        ((RadioGroup)view.getParent()).check(view.getId());
-        // app specific stuff ..
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView");
         View view = inflater.inflate(R.layout.activity_new_project, container, false);
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            ((AppCompatActivity) activity).setSupportActionBar(toolbar);
+        }
         whatTodoJoin = view.findViewById(R.id.whatTodoJoin);
         whatTodoCreate = view.findViewById(R.id.whatTodoCreate);
         whereLocal = view.findViewById(R.id.whereLocal);
@@ -299,7 +289,7 @@ public class NewProjectFragment extends Fragment {
             public void onClick(View view) {
                 Log.d(TAG, "Scan button pressed");
                 Intent createIntent = new Intent(getContext(), QrCodeScanner.class);
-                startActivityForResult(createIntent, scan_qrcode_import_cmd);
+                scanQRCodeLauncher.launch(createIntent);
             }
         });
 
@@ -310,7 +300,7 @@ public class NewProjectFragment extends Fragment {
                         .setType("*/*")
                         .setAction(Intent.ACTION_GET_CONTENT);
 
-                startActivityForResult(Intent.createChooser(intent, "Select a file"), import_file_cmd);
+                importFileLauncher.launch(Intent.createChooser(intent, "Select a file"));
             }
         });
 
@@ -450,7 +440,7 @@ public class NewProjectFragment extends Fragment {
             newProjectIdInputLayout.setBackgroundColor(0x55FF0000);
             valid = false;
         } else {
-            newProjectIdInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
+            newProjectIdInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal, requireContext().getTheme()));
         }
 
         // first, what is independent from creation/join
@@ -459,13 +449,13 @@ public class NewProjectFragment extends Fragment {
                 newProjectUrlInputLayout.setBackgroundColor(0x55FF0000);
                 valid = false;
             } else {
-                newProjectUrlInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
+                newProjectUrlInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal, requireContext().getTheme()));
             }
             if (projectPassword.equals("")) {
                 newProjectPasswordInputLayout.setBackgroundColor(0x55FF0000);
                 valid = false;
             } else {
-                newProjectPasswordInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
+                newProjectPasswordInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal, requireContext().getTheme()));
             }
         }
 
@@ -476,13 +466,13 @@ public class NewProjectFragment extends Fragment {
                     newProjectNameInputLayout.setBackgroundColor(0x55FF0000);
                     valid = false;
                 } else {
-                    newProjectNameInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
+                    newProjectNameInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal, requireContext().getTheme()));
                 }
                 if (!SupportUtil.isValidEmail(projectEmail)) {
                     newProjectEmailInputLayout.setBackgroundColor(0x55FF0000);
                     valid = false;
                 } else {
-                    newProjectEmailInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal));
+                    newProjectEmailInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal, requireContext().getTheme()));
                 }
             }
         } else {
@@ -612,7 +602,7 @@ public class NewProjectFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
             listener = (NewProjectFragmentListener) context;
@@ -641,30 +631,44 @@ public class NewProjectFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d(TAG, "PROJECT SAVE INSTANCE STATE");
         //saveBill(null);
         //outState.putSerializable(SAVEDKEY_PROJECT, project);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "[ACT RESULT]");
-        // Check which request we're responding to
-        if (requestCode == scan_qrcode_import_cmd) {
-            if (data != null) {
-                // adapt after project has been deleted
-                String scannedUrl = data.getStringExtra(QrCodeScanner.KEY_QR_CODE);
-                Log.d(TAG, "onActivityResult SCANNED URL : "+scannedUrl);
-                applyMBLink(Uri.parse(scannedUrl));
-            }
-        } else if(requestCode == import_file_cmd && resultCode == Activity.RESULT_OK) {
-            Uri selectedfile = data.getData();
-            Log.v("PLOP", "here is the selected file : "+selectedfile.toString());
-            importFromFile(selectedfile);
-        }
-    }
+    private final ActivityResultLauncher<Intent> scanQRCodeLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    new ActivityResultCallback<ActivityResult>() {
+                        @Override
+                        public void onActivityResult(ActivityResult result) {
+                            Intent data = result.getData();
+                            if (result.getResultCode() == RESULT_OK) {
+                                if (data != null) {
+                                    String scannedUrl = data.getStringExtra(QrCodeScanner.KEY_QR_CODE);
+                                    Log.d(TAG, "onActivityResult SCANNED URL : " + scannedUrl);
+                                    applyMBLink(Uri.parse(scannedUrl));
+                                }
+                            }
+                        }
+                    });
+
+    private final ActivityResultLauncher<Intent> importFileLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    new ActivityResultCallback<ActivityResult>() {
+                        @Override
+                        public void onActivityResult(ActivityResult result) {
+                            Intent data = result.getData();
+                            if (result.getResultCode() == RESULT_OK) {
+                                if (data != null) {
+                                    Uri selectedfile = data.getData();
+                                    Log.v(TAG, "here is the selected file : " + selectedfile.toString());
+                                    importFromFile(selectedfile);
+                                }
+                            }
+                        }
+                    });
 
     private void applyMBLink(Uri data) {
         String password;
@@ -842,11 +846,11 @@ public class NewProjectFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
         //menu.findItem(R.id.menu_delete_remote).setVisible(false);
     }
@@ -899,7 +903,7 @@ public class NewProjectFragment extends Fragment {
 
         // to make it the selected project even if we got here because of a VIEW intent
         // this is supposed to be done in activity result in billListViewActivity
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         preferences.edit().putLong("selected_project", pid).apply();
 
         showToast(getString(R.string.project_added_success), Toast.LENGTH_LONG);
@@ -1295,11 +1299,9 @@ public class NewProjectFragment extends Fragment {
             } catch (IOException e) {
 
             }
-        }
-        catch(FileNotFoundException ex) {
+        } catch(FileNotFoundException ex) {
             Log.d(TAG, ex.getMessage());
-        }
-        catch(CsvValidationException ex) {
+        } catch(CsvValidationException ex) {
             Log.d(TAG, ex.getMessage());
         }
     }

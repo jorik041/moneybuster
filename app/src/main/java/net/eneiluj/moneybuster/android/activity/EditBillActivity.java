@@ -172,6 +172,14 @@ public class EditBillActivity extends AppCompatActivity implements EditBillFragm
         finish();
     }
 
+    public void closeOnSave(long billId) {
+        fragment.onCloseBill();
+        final Intent data = new Intent();
+        data.putExtra(BillsListViewActivity.SAVED_BILL_ID, billId);
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
     public void closeAndDuplicate(long billId) {
         fragment.onCloseBill();
         final Intent data = new Intent();

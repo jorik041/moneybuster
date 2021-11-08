@@ -84,11 +84,9 @@ public class EditBillFragment extends Fragment {
 
     public interface BillFragmentListener {
         void close();
-
         void closeAndDuplicate(long billId);
-
+        void closeOnSave(long billId);
         void closeOnDelete(long billId);
-
         void onBillUpdated(DBBill bill);
     }
 
@@ -664,8 +662,8 @@ public class EditBillFragment extends Fragment {
         } else if (getOwersIds().size() == 0) {
             showToast(getString(R.string.error_invalid_bill_owers), Toast.LENGTH_LONG);
         } else {
-            saveBill(null);
-            listener.close();
+            long savedBillid = saveBill(null);
+            listener.closeOnSave(savedBillid);
         }
     }
 
@@ -751,7 +749,7 @@ public class EditBillFragment extends Fragment {
      *
      * @param callback Observer which is called after save/synchronization
      */
-    protected void saveBill(@Nullable ICallback callback) {
+    protected long saveBill(@Nullable ICallback callback) {
         Log.d(getClass().getSimpleName(), "CUSTOM saveData()");
         String newWhat = getWhat();
         String newComment = getComment();
@@ -792,6 +790,7 @@ public class EditBillFragment extends Fragment {
                 //listener.onBillUpdated(bill);
                 //listener.close();
             }
+            return bill.getId();
         } else {
             // this is a new bill
             // add the bill
@@ -814,6 +813,7 @@ public class EditBillFragment extends Fragment {
             // normally sync should be done when we get back to bill list
             // so next line can be commented
             // db.getMoneyBusterServerSyncHelper().scheduleSync(true, bill.getProjectId());
+            return newBillId;
         }
     }
 

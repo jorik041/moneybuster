@@ -53,6 +53,10 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -155,11 +159,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     public final static String PARAM_DIALOG_CONTENT = "net.eneiluj.moneybuster.PARAM_DIALOG_CONTENT";
     public final static String PARAM_PROJECT_TO_SELECT = "net.eneiluj.moneybuster.PARAM_PROJECT_TO_SELECT";
 
-    private final static int PERMISSION_FOREGROUND_SERVICE = 1;
-
     private static final String TAG = BillsListViewActivity.class.getSimpleName();
 
-    public final static String CREATED_BILL = "net.eneiluj.moneybuster.created_bill";
+    public final static String SAVED_BILL_ID = "net.eneiluj.moneybuster.saved_bill_id";
     public final static String CREATED_PROJECT = "net.eneiluj.moneybuster.created_project";
     public final static String ADDED_PROJECT = "net.eneiluj.moneybuster.added_project";
     public final static String EDITED_PROJECT = "net.eneiluj.moneybuster.edited_project";
@@ -174,15 +176,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     private static final String SAVED_STATE_NAVIGATION_ADAPTER_SLECTION = "navigationAdapterSelection";
     private static final String SAVED_STATE_NAVIGATION_OPEN = "navigationOpen";
 
-    private final static int create_bill_cmd = 0;
-    private final static int show_single_bill_cmd = 1;
-    private final static int server_settings = 2;
-    private final static int about = 3;
-    private final static int addproject = 4;
-    private final static int removeproject = 5;
-    private final static int editproject = 6;
     private final static int scan_qrcode_import_cmd = 7;
-    private final static int save_file_cmd = 8;
 
     private static String contentToExport = "";
 
@@ -253,11 +247,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityVisible = true;
-        // First Run Wizard
-        /*if (!MoneyBusterServerSyncHelper.isConfigured(this)) {
-            Intent settingsIntent = new Intent(this, SettingsActivity.class);
-            startActivityForResult(settingsIntent, server_settings);
-        }*/
         String categoryAdapterSelectedItem = ADAPTER_KEY_ALL;
         if (savedInstanceState != null) {
             navigationSelection = (Category) savedInstanceState.getSerializable(SAVED_STATE_NAVIGATION_SELECTION);
@@ -324,13 +313,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
                     if (which == 0) {
                         Intent newProjectIntent = new Intent(getApplicationContext(), SettingsActivity.class);
-                        startActivityForResult(newProjectIntent, server_settings);
+                        serverSettingsLauncher.launch(newProjectIntent);
                         dialog.dismiss();
                     } else if (which == 1) {
                         Intent newProjectIntent = new Intent(getApplicationContext(), NewProjectActivity.class);
                         newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_IHM_URL, "https://ihatemoney.org");
                         newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_NC_URL, "https://mynextcloud.org");
-                        startActivityForResult(newProjectIntent, addproject);
+                        addProjectLauncher.launch(newProjectIntent);
                         dialog.dismiss();
                     }
                 }
@@ -533,7 +522,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             @Override
             public void onClick(View v) {
                 Intent settingsIntent = new Intent(that, SettingsActivity.class);
-                startActivityForResult(settingsIntent, server_settings);
+                serverSettingsLauncher.launch(settingsIntent);
             }
         });
 
@@ -682,7 +671,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     } else {
                         createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, selectedProjectId);
                         createIntent.putExtra(EditBillActivity.PARAM_PROJECT_TYPE, db.getProject(selectedProjectId).getType().getId());
-                        startActivityForResult(createIntent, create_bill_cmd);
+                        createBillLauncher.launch(createIntent);
                     }
                 }
             }
@@ -1440,8 +1429,8 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         configuredAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                Intent newProjectIntent = new Intent(getApplicationContext(), SettingsActivity.class);
-                startActivityForResult(newProjectIntent, server_settings);
+                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                serverSettingsLauncher.launch(intent);
             }
         });
 
@@ -1540,7 +1529,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             if (!proj.isLocal()) {
                 Intent editProjectIntent = new Intent(getApplicationContext(), EditProjectActivity.class);
                 editProjectIntent.putExtra(PARAM_PROJECT_ID, selectedProjectId);
-                startActivityForResult(editProjectIntent, editproject);
+                editProjectLauncher.launch(editProjectIntent);
 
                 fabMenuDrawerEdit.close(false);
                 drawerLayout.closeDrawers();
@@ -1943,7 +1932,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         // the system file picker when your app creates the document.
         //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
 
-        startActivityForResult(intent, save_file_cmd);
+        saveFileLauncher.launch(intent);
     }
 
     private void saveToFileUri(String content, Uri fileUri) {
@@ -2045,7 +2034,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
 
         newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_NC_URL, defaultNcUrl);
         newProjectIntent.putExtra(NewProjectFragment.PARAM_DEFAULT_IHM_URL, defaultIhmUrl);
-        startActivityForResult(newProjectIntent, addproject);
+        addProjectLauncher.launch(newProjectIntent);
     }
 
     private void showProjectSelectionDialog() {
@@ -2490,7 +2479,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             public void onItemClick(NavigationAdapter.NavigationItem item) {
                 if (item == itemSettings) {
                     Intent settingsIntent = new Intent(getApplicationContext(), PreferencesActivity.class);
-                    startActivityForResult(settingsIntent, server_settings);
+                    serverSettingsLauncher.launch(settingsIntent);
                 }
             }
 
@@ -2748,6 +2737,147 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         super.onNewIntent(intent);
     }
 
+    private final ActivityResultLauncher<Intent> addProjectLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    new ActivityResultCallback<ActivityResult>() {
+                        @Override
+                        public void onActivityResult(ActivityResult result) {
+                            Intent data = result.getData();
+                            if (result.getResultCode() == RESULT_OK && data != null) {
+                                long pid = data.getLongExtra(CREATED_PROJECT, 0);
+                                boolean created = true;
+                                if (pid == 0) {
+                                    created = false;
+                                    pid = data.getLongExtra(ADDED_PROJECT, 0);
+                                }
+                                if (DEBUG) { Log.d(TAG, "BILLS request code : addproject " + pid); }
+                                if (pid != 0) {
+                                    setSelectedProject(pid);
+                                    Log.d(TAG, "CREATED project id: " + pid);
+                                    DBProject addedProj = db.getProject(pid);
+                                    String message;
+                                    String title;
+                                    if (created) {
+                                        Log.e(TAG, "CREATED !!!");
+                                        title = getString(R.string.project_create_success_title);
+                                        message = getString(R.string.project_create_success_message, addedProj.getRemoteId());
+                                    } else {
+                                        Log.e(TAG, "ADDED !!!");
+                                        title = getString(R.string.project_add_success_title);
+                                        message = getString(R.string.project_add_success_message, addedProj.getRemoteId());
+                                    }
+                                    showDialog(
+                                            message,
+                                            title,
+                                            R.drawable.ic_add_circle_white_24dp
+                                    );
+                                }
+                            }
+                        }
+                    });
+
+    private final ActivityResultLauncher<Intent> serverSettingsLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    new ActivityResultCallback<ActivityResult>() {
+                        @Override
+                        public void onActivityResult(ActivityResult result) {
+                            Intent data = result.getData();
+                            if (result.getResultCode() == RESULT_OK && data != null) {
+                                updateUsernameInDrawer();
+                                db = MoneyBusterSQLiteOpenHelper.getInstance(BillsListViewActivity.this);
+                                if (db.getMoneyBusterServerSyncHelper().isSyncPossible()) {
+                                    /*adapter.removeAll();
+                                    synchronize();*/
+                                } else {
+                                    if (MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(getApplicationContext())) {
+                                        Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(CospendClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+    private final ActivityResultLauncher<Intent> createBillLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    new ActivityResultCallback<ActivityResult>() {
+                        @Override
+                        public void onActivityResult(ActivityResult result) {
+                            Intent data = result.getData();
+                            if (result.getResultCode() == RESULT_OK) {
+                                if (data != null) {
+                                    long createdBillId = data.getLongExtra(SAVED_BILL_ID, 0);
+                                    Log.d(TAG, "[ACT RESULT CREATED BILL ] " + createdBillId);
+                                    //adapter.add(createdBill);
+                                }
+                                listView.scrollToPosition(0);
+                            }
+                        }
+                    });
+
+    private final ActivityResultLauncher<Intent> editBillLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    new ActivityResultCallback<ActivityResult>() {
+                        @Override
+                        public void onActivityResult(ActivityResult result) {
+                            Intent data = result.getData();
+                            Log.d(TAG, "EDIT BILL result");
+                            if (result.getResultCode() == RESULT_OK) {
+                                if (data != null) {
+                                    Long editedBillId = data.getLongExtra(SAVED_BILL_ID, 0);
+                                    Log.d(TAG, "[ACT RESULT EDITED BILL ] " + editedBillId);
+                                    long billId = data.getLongExtra(BILL_TO_DUPLICATE, 0);
+                                    Log.d(TAG, "onActivityResult bill edition BILL ID TO DUPLICATE : " + billId);
+                                    if (billId != 0) {
+                                        duplicateBill(billId);
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+    private final ActivityResultLauncher<Intent> editProjectLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    new ActivityResultCallback<ActivityResult>() {
+                        @Override
+                        public void onActivityResult(ActivityResult result) {
+                            Intent data = result.getData();
+                            Log.d(TAG, "EDIT project result");
+                            if (result.getResultCode() == RESULT_OK) {
+                                if (data != null) {
+                                    // adapt after project has been deleted
+                                    long pid = data.getLongExtra(DELETED_PROJECT, 0);
+                                    Log.d(TAG, "onActivityResult editproject DELETED PID : "+pid);
+                                    if (pid != 0) {
+                                        setSelectedProject(0);
+                                    }
+                                    // adapt after project has been edited
+                                    pid = data.getLongExtra(EDITED_PROJECT, 0);
+                                    Log.d(TAG, "onActivityResult editproject EDITED PID : "+pid);
+                                    if (pid != 0) {
+                                        setSelectedProject(pid);
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+    private final ActivityResultLauncher<Intent> saveFileLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    new ActivityResultCallback<ActivityResult>() {
+                        @Override
+                        public void onActivityResult(ActivityResult result) {
+                            Intent data = result.getData();
+                            Log.d(TAG, "SAVE FILE result");
+                            if (result.getResultCode() == RESULT_OK) {
+                                if (data != null) {
+                                    Uri savedFile = data.getData();
+                                    Log.v(TAG, "WE SAVE to " + savedFile);
+                                    saveToFileUri(contentToExport, savedFile);
+                                }
+                            }
+                        }
+                    });
+
     /**
      * Handles the Results of started Sub Activities
      *
@@ -2760,68 +2890,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         super.onActivityResult(requestCode, resultCode, data);
         if (DEBUG) { Log.d(TAG, "[ACT RESULT]"); }
         // Check which request we're responding to
-        if (requestCode == create_bill_cmd) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-                //not need because of db.synchronisation in createActivity
-
-                DBBill createdBill = (DBBill) data.getExtras().getSerializable(CREATED_BILL);
-                if (DEBUG) { Log.d(TAG, "[ACT RESULT CREATED BILL ] " + createdBill.getWhat()); }
-                adapter.add(createdBill);
-            }
-            listView.scrollToPosition(0);
-        } else if (requestCode == addproject) {
-            long pid = data.getLongExtra(CREATED_PROJECT, 0);
-            boolean created = true;
-            if (pid == 0) {
-                created = false;
-                pid = data.getLongExtra(ADDED_PROJECT, 0);
-            }
-            if (DEBUG) { Log.d(TAG, "BILLS request code : addproject " + pid); }
-            if (pid != 0) {
-                setSelectedProject(pid);
-                Log.d(TAG, "CREATED project id: " + pid);
-                DBProject addedProj = db.getProject(pid);
-                String message;
-                String title;
-                if (created) {
-                    Log.e(TAG, "CREATED !!!");
-                    title = getString(R.string.project_create_success_title);
-                    message = getString(R.string.project_create_success_message, addedProj.getRemoteId());
-                } else {
-                    Log.e(TAG, "ADDED !!!");
-                    title = getString(R.string.project_add_success_title);
-                    message = getString(R.string.project_add_success_message, addedProj.getRemoteId());
-                }
-                showDialog(
-                    message,
-                    title,
-                    R.drawable.ic_add_circle_white_24dp
-                );
-            }
-        } else if (requestCode == editproject) {
-            if (data != null) {
-                // adapt after project has been deleted
-                long pid = data.getLongExtra(DELETED_PROJECT, 0);
-                Log.d(TAG, "onActivityResult editproject PID : "+pid);
-                if (pid != 0) {
-                    setSelectedProject(0);
-                }
-                // adapt after project has been edited
-                pid = data.getLongExtra(EDITED_PROJECT, 0);
-                if (pid != 0) {
-                    setSelectedProject(pid);
-                }
-            }
-        } else if (requestCode == show_single_bill_cmd) {
-            if (data != null) {
-                long billId = data.getLongExtra(BILL_TO_DUPLICATE, 0);
-                Log.d(TAG, "onActivityResult show_single_bill_cmd BILL ID TO DUPLICATE : " + billId);
-                if (billId != 0) {
-                    duplicateBill(billId);
-                }
-            }
-        } else if (requestCode == scan_qrcode_import_cmd) {
+        if (requestCode == scan_qrcode_import_cmd) {
             if (data != null) {
                 // adapt after project has been deleted
                 String scannedUrl = data.getStringExtra(QrCodeScanner.KEY_QR_CODE);
@@ -2830,23 +2899,6 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 i.setAction(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(scannedUrl));
                 startActivity(i);
-            }
-        } else if (requestCode == save_file_cmd) {
-            if (data != null) {
-                Uri savedFile = data.getData();
-                Log.v(TAG, "WE SAVE to "+savedFile);
-                saveToFileUri(contentToExport, savedFile);
-            }
-        } else if (requestCode == server_settings) {
-            updateUsernameInDrawer();
-            db = MoneyBusterSQLiteOpenHelper.getInstance(this);
-            if (db.getMoneyBusterServerSyncHelper().isSyncPossible()) {
-                /*adapter.removeAll();
-                synchronize();*/
-            } else {
-                if (MoneyBusterServerSyncHelper.isNextcloudAccountConfigured(getApplicationContext())) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.error_sync, getString(CospendClientUtil.LoginStatus.NO_NETWORK.str)), Toast.LENGTH_LONG).show();
-                }
             }
         }
     }
@@ -2862,7 +2914,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                 createIntent.putExtra(EditBillActivity.PARAM_PROJECT_ID, selectedProjectId);
                 createIntent.putExtra(EditBillActivity.PARAM_PROJECT_TYPE, db.getProject(selectedProjectId).getType().getId());
                 createIntent.putExtra(EditBillActivity.PARAM_BILL_ID_TO_DUPLICATE, billId);
-                startActivityForResult(createIntent, create_bill_cmd);
+                createBillLauncher.launch(createIntent);
             }
         }
     }
@@ -2972,7 +3024,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             long selectedProjectId = preferences.getLong("selected_project", 0);
             intent.putExtra(EditBillActivity.PARAM_PROJECT_TYPE, db.getProject(selectedProjectId).getType().getId());
             //intent.putExtra(EditBillActivity.PARAM_MEMBERS_BALANCE, membersBalance);
-            startActivityForResult(intent, show_single_bill_cmd);
+            editBillLauncher.launch(intent);
         }
     }
 

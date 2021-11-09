@@ -75,7 +75,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 public class EditBillFragment extends Fragment {
 
@@ -96,7 +95,6 @@ public class EditBillFragment extends Fragment {
     private static final String PARAM_PROJECT_TYPE = "projectType";
     private static final String SAVEDKEY_BILL = "bill";
     private static final String SAVEDKEY_PROJECT_TYPE = "type";
-    private static final String SAVEDKEY_ORIGINAL_BILL = "original_bill";
 
     protected DBBill bill;
     protected boolean billIsDuplicated = false;

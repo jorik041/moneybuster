@@ -1571,7 +1571,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     //drawerLayout.closeDrawers();
                     refreshLists();
                     synchronize();
-                    showToast(getString(R.string.remove_project_confirmation, proj.getName()));
+                    String projName = proj.getName();
+                    String projectNameString = (projName == null || "".equals(projName)) ? proj.getRemoteId() : projName;
+                    showToast(getString(R.string.remove_project_confirmation, projectNameString));
                 }
             });
             builder.setNegativeButton(getString(R.string.simple_no), new DialogInterface.OnClickListener() {
@@ -2111,7 +2113,7 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
             fabManageProject.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_phone_android_white_24dp));
         } else {
             // remote project
-            selText = (proj.getName() == null) ? "???" : proj.getName();
+            selText = (proj.getName() == null || "".equals(proj.getName())) ? proj.getRemoteId() : proj.getName();
             //selText += "";
             /*selText = proj.getRemoteId() + "@";
             selText += proj.getServerUrl()

@@ -817,9 +817,13 @@ public class NewProjectFragment extends Fragment {
         // join or create local
         boolean todoCreate = getTodoCreate();
         if (!todoCreate || ProjectType.LOCAL.equals(type)) {
-            long pid = saveProject(null, false);
-            // if it's local, we call that creation, otherwise we can say it's been "added"
-            listener.close(pid, !ProjectType.LOCAL.equals(type));
+            if (ProjectType.LOCAL.equals(type)) {
+                long pid = saveLocalProject(null, false);
+                // if it's local, we call that creation, otherwise we can say it's been "added"
+                listener.close(pid, false);
+            } else {
+                saveRemoteProject(null, false);
+            }
         } else {
             // create remote project (we know the type is not local)
             // the callback will quit this activity
@@ -870,36 +874,43 @@ public class NewProjectFragment extends Fragment {
         Log.d(getClass().getSimpleName(), "onCLOSE()");
     }
 
-    /**
-     * Save the current state in the database and schedule synchronization if needed.
-     *
-     * @param callback Observer which is called after save/synchronization
-     */
-    protected long saveProject(@Nullable ICallback callback, boolean ignorePassword) {
+    protected long saveLocalProject(@Nullable ICallback callback, boolean ignorePassword) {
         ProjectType type = getProjectType();
         String remoteId = getRemoteId();
-        String url = null;
-        String password = null;
-        String email = null;
-        String name;
-        if (type.equals(ProjectType.LOCAL)) {
-            name = getRemoteId();
-        } else {
-            url = getUrl();
-            if (ignorePassword) {
-                password = "";
-            } else {
-                password = getPassword();
-            }
-            email = getEmail();
-            name = getName();
-        }
-
+        String name = getRemoteId();
         DBProject newProject = new DBProject(
+                0, remoteId, null, name, null,
+                null, null, type, 0L, null
+        );
+        return addProjectToDb(newProject);
+    }
+
+    protected void saveRemoteProject(@Nullable ICallback callback, boolean ignorePassword) {
+        DBProject newProject = getProjectFromFields(ignorePassword);
+        if (!db.getMoneyBusterServerSyncHelper().getRemoteProjectInfo(newProject, getRemoteInfoCallBack)) {
+            showToast(getString(R.string.error_no_network), Toast.LENGTH_LONG);
+        }
+    }
+
+    private DBProject getProjectFromFields(boolean ignorePassword) {
+        ProjectType type = getProjectType();
+        String remoteId = getRemoteId();
+        String url = getUrl();
+        String email = getEmail();
+        String name = getName();
+        String password = "";
+        if (!ignorePassword) {
+            password = getPassword();
+        }
+        // get project info to check we can connect
+        return new DBProject(
                 0, remoteId, password, name, url,
                 email, null, type, 0L, null
         );
-        long pid = db.addProject(newProject);
+    }
+
+    private long addProjectToDb(DBProject project) {
+        long pid = db.addProject(project);
 
         // to make it the selected project even if we got here because of a VIEW intent
         // this is supposed to be done in activity result in billListViewActivity
@@ -908,7 +919,7 @@ public class NewProjectFragment extends Fragment {
 
         showToast(getString(R.string.project_added_success), Toast.LENGTH_LONG);
 
-        Log.i(TAG, "PROJECT local id : " + pid + " : " + newProject);
+        Log.i(TAG, "PROJECT local id : " + pid + " : " + project);
         return pid;
     }
 
@@ -998,17 +1009,48 @@ public class NewProjectFragment extends Fragment {
         return newProjectEmail.getText().toString();
     }
 
-    private IProjectCreationCallback createRemoteCallBack = new IProjectCreationCallback() {
+    private final ICallback getRemoteInfoCallBack = new ICallback() {
+        @Override
+        public void onFinish() {
+        }
+
+        public void onFinish(String result, String message) {
+            if (message.isEmpty()) {
+                long pid = addProjectToDb(getProjectFromFields(false));
+                listener.close(pid, true);
+            } else {
+                androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(
+                        new ContextThemeWrapper(
+                                getContext(),
+                                R.style.AppThemeDialog
+                        )
+                );
+                builder.setTitle(getString(R.string.simple_error));
+                builder.setMessage(getString(R.string.error_project_connect_check, message));
+                builder.setPositiveButton(getString(R.string.simple_ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                builder.show();
+            }
+        }
+
+        @Override
+        public void onScheduled() {
+        }
+    };
+
+    private final IProjectCreationCallback createRemoteCallBack = new IProjectCreationCallback() {
         @Override
         public void onFinish() {
         }
 
         public void onFinish(String result, String message, boolean usePrivateApi) {
             if (message.isEmpty()) {
-                long pid = saveProject(null, usePrivateApi);
-                listener.close(pid, false);
+                saveRemoteProject(null, usePrivateApi);
+                // listener.close(pid, false);
             } else {
-                //showToast(getString(R.string.error_create_remote_project_helper, message), Toast.LENGTH_LONG);
                 androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(
                         new ContextThemeWrapper(
                                 getContext(),

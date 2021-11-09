@@ -1047,17 +1047,21 @@ public class MoneyBusterServerSyncHelper {
     }
 
     public String getErrorMessageFromException(NextcloudHttpRequestFailedException e) {
+        String message = "";
         int errorCode = e.getStatusCode();
         if (errorCode == 503) {
-            return appContext.getString(R.string.error_maintenance_mode);
+            message += appContext.getString(R.string.error_maintenance_mode);
+        } else if (errorCode == 400) {
+            message += appContext.getString(R.string.error_400);
         } else if (errorCode == 401) {
-            return appContext.getString(R.string.error_401);
+            message += appContext.getString(R.string.error_401);
         } else if (errorCode == 403) {
-            return appContext.getString(R.string.error_403);
+            message += appContext.getString(R.string.error_403);
         } else if (errorCode == 404) {
-            return appContext.getString(R.string.error_404);
+            message += appContext.getString(R.string.error_404);
         }
-        return "";
+        message += "\n" + e.getCause().getMessage();
+        return message;
     }
 
     public void notifyProjectEvent(String dialogContent, String notificationContent, long projectId) {
@@ -1099,11 +1103,9 @@ public class MoneyBusterServerSyncHelper {
                 NextcloudAPI nextcloudAPI = new NextcloudAPI(appContext.getApplicationContext(), ssoAccount, new GsonBuilder().create(), apiCallback);
                 //Log.d(TAG, "SSSSSSSSSSSSS "+ssoAccount.url+" "+ssoAccount.userId);
                 return new VersatileProjectSyncClient(url, username, password, nextcloudAPI, ssoAccount);
-            }
-            catch (NextcloudFilesAppAccountNotFoundException e) {
+            } catch (NextcloudFilesAppAccountNotFoundException e) {
                 return null;
-            }
-            catch (NoCurrentAccountSelectedException e) {
+            } catch (NoCurrentAccountSelectedException e) {
                 return null;
             }
         } else {
@@ -1508,11 +1510,9 @@ public class MoneyBusterServerSyncHelper {
                 SingleSignOnAccount ssoAccount = SingleAccountHelper.getCurrentSingleSignOnAccount(appContext.getApplicationContext());
                 NextcloudAPI nextcloudAPI = new NextcloudAPI(appContext.getApplicationContext(), ssoAccount, new GsonBuilder().create(), apiCallback);
                 return new CospendClient(url, ssoAccount.userId, password, nextcloudAPI);
-            }
-            catch (NextcloudFilesAppAccountNotFoundException e) {
+            } catch (NextcloudFilesAppAccountNotFoundException e) {
                 return null;
-            }
-            catch (NoCurrentAccountSelectedException e) {
+            } catch (NoCurrentAccountSelectedException e) {
                 return null;
             }
         } else {
@@ -1945,6 +1945,117 @@ public class MoneyBusterServerSyncHelper {
                 intent.putExtra(BROADCAST_AVATAR_UPDATED_MEMBER, memberId);
                 appContext.sendBroadcast(intent);
             }
+        }
+    }
+
+    public boolean canConnectToRemoteProject(DBProject project) {
+        VersatileProjectSyncClient client = createVersatileProjectSyncClient();
+        try {
+            ServerResponse.ProjectResponse projResponse = client.getProject(customCertManager, project, 0, null);
+            String name = projResponse.getName();
+            String email = projResponse.getEmail();
+        } catch (JSONException e) {
+            Log.e(TAG, "Invalid JSON: " + e);
+            return false;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to get project info: " + e);
+            return false;
+        }
+        return true;
+    }
+
+    // update member avatar with Nextcloud user one
+    public boolean getRemoteProjectInfo(DBProject project, ICallback callback) {
+        if (isSyncPossible()) {
+            GetRemoteProjectInfoTask getRemoteProjectInfoTask = new GetRemoteProjectInfoTask(project, callback);
+            getRemoteProjectInfoTask.execute();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * task to ask server to create public share with name restriction on device
+     * or just get the share token if it already exists
+     */
+    private class GetRemoteProjectInfoTask extends AsyncTask<Void, Void, LoginStatus> {
+        private VersatileProjectSyncClient client;
+        private final DBProject project;
+        private final ICallback callback;
+        private final List<Throwable> exceptions = new ArrayList<>();
+        private final List<String> errorMessages = new ArrayList<>();
+        private boolean usePrivateApi = false;
+
+        public GetRemoteProjectInfoTask(DBProject project, ICallback callback) {
+            this.project = project;
+            this.callback = callback;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected LoginStatus doInBackground(Void... voids) {
+            client = createVersatileProjectSyncClient();
+            if (BillsListViewActivity.DEBUG) {
+                Log.i(getClass().getSimpleName(), "STARTING create remote project");
+            }
+            LoginStatus status = LoginStatus.OK;
+            try {
+                ServerResponse.ProjectResponse projResponse = client.getProject(customCertManager, project, 0, null);
+                String name = projResponse.getName();
+                String email = projResponse.getEmail();
+                Log.e(TAG, "Project info: " + name + " and " + email);
+            } catch (NextcloudHttpRequestFailedException e) {
+                if (BillsListViewActivity.DEBUG) {
+                    Log.e(getClass().getSimpleName(), "Exception1", e);
+                }
+                //exceptions.add(e);
+                status = LoginStatus.REQ_FAILED;
+                errorMessages.add(getErrorMessageFromException(e));
+            } catch (JSONException e) {
+                Log.e(TAG, "Invalid JSON: " + e);
+                exceptions.add(e);
+                status = LoginStatus.CONNECTION_FAILED;
+            } catch (IOException e) {
+                if (BillsListViewActivity.DEBUG) {
+                    Log.e(getClass().getSimpleName(), "Exception2", e);
+                }
+                exceptions.add(e);
+                status = LoginStatus.CONNECTION_FAILED;
+            } catch (TokenMismatchException e) {
+                if (BillsListViewActivity.DEBUG) {
+                    Log.e(getClass().getSimpleName(), "Exception3", e);
+                }
+                exceptions.add(e);
+                status = LoginStatus.CONNECTION_FAILED;
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to get project info: " + e);
+                exceptions.add(e);
+                status = LoginStatus.CONNECTION_FAILED;
+            }
+            if (BillsListViewActivity.DEBUG) {
+                Log.i(getClass().getSimpleName(), "FINISHED create remote project");
+            }
+            return status;
+        }
+
+        @Override
+        protected void onPostExecute(LoginStatus status) {
+            super.onPostExecute(status);
+            String errorString = "";
+            if (status != LoginStatus.OK) {
+                for (String errorMessage : errorMessages) {
+                    errorString += errorMessage + "\n";
+                }
+                errorString += "\n";
+                for (Throwable e : exceptions) {
+                    errorString += e.getClass().getName() + ": " + e.getMessage();
+                }
+            }
+            callback.onFinish(null, errorString);
         }
     }
 }

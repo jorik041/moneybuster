@@ -5,6 +5,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## 0.1.15 – 2021-11-20
+### Added
+- simple math operations in amount field
+  [#83](https://gitlab.com/eneiluj/moneybuster/issues/83) @mbbert
+- new option to disable/hide all nextcloud-related stuff
+  [#77](https://gitlab.com/eneiluj/moneybuster/issues/77) @Holoserica
+- currency management
+  [!18](https://gitlab.com/eneiluj/moneybuster/-/merge_requests/18) @ma11753
+  
+### Changed
+- show confirmation dialog when pressing back on bill edition (if values have changed)
+  [#84](https://gitlab.com/eneiluj/moneybuster/issues/84) @mbbert
+  
+### Fixed
+- bump SSO lib to 0.6.0 to work with NC Files 3.18.0
+  [89](https://gitlab.com/eneiluj/moneybuster/issues/89) @mrclschstr @daufinsyd
+
 ## 0.1.13 – 2021-10-01
 ### Changed
 - new category and payment mode filter entries

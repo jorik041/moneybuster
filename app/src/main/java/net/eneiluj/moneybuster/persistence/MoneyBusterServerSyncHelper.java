@@ -570,11 +570,13 @@ public class MoneyBusterServerSyncHelper {
                 String name = projResponse.getName();
                 String email = projResponse.getEmail();
                 String currencyName = projResponse.getCurrencyName();
+                boolean deletionDisabled = projResponse.getDeletionDisabled();
                 // update project if needed
                 if (project.getName() == null || project.getName().equals("")
                         || !name.equals(project.getName())
                         || project.getEmail() == null
                         || project.getEmail().equals("")
+                        || project.isDeletionDisabled() != deletionDisabled
                         || (
                                 (currencyName == null && project.getCurrencyName() != null) ||
                                 (currencyName != null && project.getCurrencyName() == null) ||
@@ -582,11 +584,15 @@ public class MoneyBusterServerSyncHelper {
                         )
                         || !email.equals(project.getEmail())) {
                     Log.d(getClass().getSimpleName(), "update local project : " + project);
-                    // this is usefull to transmit correct info back to billListActivity when project was just added
+                    // this is useful to transmit correct info back to billListActivity when project was just added
                     project.setName(name);
                     project.setCurrencyName(currencyName);
-                    dbHelper.updateProject(project.getId(), name, email,
-                            null, null, null, currencyName);
+                    project.setDeletionDisabled(deletionDisabled);
+                    dbHelper.updateProject(
+                        project.getId(), name, email,
+                        null, null, null,
+                        currencyName, deletionDisabled
+                    );
                 }
 
                 // get payment modes
@@ -944,7 +950,7 @@ public class MoneyBusterServerSyncHelper {
                 dbHelper.updateProject(
                         project.getId(), null, null,
                         null, null, serverSyncTimestamp,
-                        null
+                        null, null
                 );
                 status = LoginStatus.OK;
             } catch (ServerResponse.NotModifiedException e) {
@@ -1238,7 +1244,7 @@ public class MoneyBusterServerSyncHelper {
                 }
             } else {
                 dbHelper.updateProject(project.getId(), newName, newEmail, newPassword,
-                          null, null, null);
+                          null, null, null, null);
             }
             callback.onFinish(newName, errorString);
         }
@@ -1338,7 +1344,7 @@ public class MoneyBusterServerSyncHelper {
     public boolean createRemoteProject(String remoteId, String name, String email, String password, String ihmUrl, ProjectType projectType, IProjectCreationCallback callback) {
         if (isSyncPossible()) {
             DBProject proj = new DBProject(0, remoteId, password, name, ihmUrl, email,
-                    null, projectType, 0L, null);
+                    null, projectType, 0L, null, false);
             CreateRemoteProjectTask createRemoteProjectTask = new CreateRemoteProjectTask(proj, callback);
             createRemoteProjectTask.execute();
             return true;
@@ -1605,7 +1611,8 @@ public class MoneyBusterServerSyncHelper {
                                 null,
                                 ProjectType.COSPEND,
                                 0L,
-                                null
+                                null,
+                                false
                         );
                         dbHelper.addProject(newProj);
                     }

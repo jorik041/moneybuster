@@ -765,8 +765,11 @@ public class NewProjectFragment extends Fragment {
         ProjectType type = getProjectType();
         boolean todoCreate = getTodoCreate();
         String url = getUrl();
-        DBProject fakeProj = new DBProject(0, "", "", "", url,
-                "", 0L, ProjectType.COSPEND, 0L, null);
+        DBProject fakeProj = new DBProject(
+                0, "", "", "", url,
+                "", 0L, ProjectType.COSPEND, 0L,
+                null, false
+        );
         if (isValidUrl(url) && todoCreate && ProjectType.COSPEND.equals(type) &&
                 db.getMoneyBusterServerSyncHelper().canCreateAuthenticatedProject(fakeProj)) {
             android.app.AlertDialog.Builder builder;
@@ -880,7 +883,8 @@ public class NewProjectFragment extends Fragment {
         String name = getRemoteId();
         DBProject newProject = new DBProject(
                 0, remoteId, null, name, null,
-                null, null, type, 0L, null
+                null, null, type, 0L,
+                null, false
         );
         return addProjectToDb(newProject);
     }
@@ -905,7 +909,8 @@ public class NewProjectFragment extends Fragment {
         // get project info to check we can connect
         return new DBProject(
                 0, remoteId, password, name, url,
-                email, null, type, 0L, null
+                email, null, type, 0L,
+                null, false
         );
     }
 
@@ -1284,7 +1289,8 @@ public class NewProjectFragment extends Fragment {
                 // add project
                 DBProject newProject = new DBProject(
                         0, projectRemoteId, "", projectRemoteId, null,
-                        null, null, ProjectType.LOCAL, 0L, mainCurrencyName
+                        null, null, ProjectType.LOCAL, 0L,
+                        mainCurrencyName, false
                 );
                 long pid = db.addProject(newProject);
                 Log.v(TAG, "NEW PROJECT ID : "+pid);

@@ -117,7 +117,11 @@ public class ManageCurrenciesActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String newMaincurrencyName = mainCurrencyTextEdit.getText().toString();
                 mainCurrencyTextEdit.clearFocus();
-                db.updateProject(selectedProjectID, null, null, null, null, null, newMaincurrencyName);
+                db.updateProject(
+                        selectedProjectID, null, null, null,
+                        null, null, newMaincurrencyName,
+                        null
+                );
                 DBProject project = db.getProject(selectedProjectID);
                 db.syncIfRemote(db.getProject(selectedProjectID));
                 if (!db.getMoneyBusterServerSyncHelper()

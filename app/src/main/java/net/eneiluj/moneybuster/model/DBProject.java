@@ -16,10 +16,11 @@ public class DBProject implements Serializable {
     private ProjectType type;
     private Long lastSyncedTimestamp;
     private String currencyName;
+    private boolean deletionDisabled;
 
     public DBProject(long id, String remoteId, String password, String name, String serverUrl,
                      String email, Long lastPayerId, ProjectType type, Long lastSyncedTimestamp,
-                     @Nullable String currencyName) {
+                     @Nullable String currencyName, boolean deletionDisabled) {
         this.id = id;
         this.remoteId = remoteId;
         this.name = name;
@@ -30,6 +31,15 @@ public class DBProject implements Serializable {
         this.lastSyncedTimestamp = lastSyncedTimestamp;
         this.type = type;
         this.currencyName = currencyName;
+        this.deletionDisabled = deletionDisabled;
+    }
+
+    public boolean isDeletionDisabled() {
+        return deletionDisabled;
+    }
+
+    public void setDeletionDisabled(boolean deletionDisabled) {
+        this.deletionDisabled = deletionDisabled;
     }
 
     public String getCurrencyName() {

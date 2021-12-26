@@ -2544,6 +2544,13 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     case ItemTouchHelper.LEFT: {
                         final DBBill bill = (DBBill) adapter.getItem(viewHolder.getAdapterPosition());
                         final DBBill dbBill = db.getBill(bill.getId());
+                        // check if we can delete bills in this project
+                        final DBProject project = db.getProject(dbBill.getProjectId());
+                        if (project.isDeletionDisabled()) {
+                            showToast(getString(R.string.bill_deletion_is_disabled));
+                            refreshLists();
+                            return;
+                        }
                         // get real original state to potentially restore it
                         final int originalState = dbBill.getState();
 
@@ -3096,6 +3103,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     List<Integer> selection = adapter.getSelected();
                     for (Integer i : selection) {
                         DBBill bill = (DBBill) adapter.getItem(i);
+
+                        // check if we can delete bills
+                        final DBProject project = db.getProject(bill.getProjectId());
+                        if (project.isDeletionDisabled()) {
+                            showToast(getString(R.string.bill_deletion_is_disabled));
+                            mode.finish();
+                            return true;
+                        }
 
                         // get up to date bill
                         final DBBill dbBill = db.getBill(bill.getId());

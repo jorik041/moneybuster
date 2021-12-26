@@ -673,7 +673,13 @@ public class EditBillFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.menu_delete:
                 if (bill.getId() != 0) {
-                    confirmDeleteAlertBuilder.show();
+                    DBProject project = db.getProject(bill.getProjectId());
+                    if (project.isDeletionDisabled()) {
+                        showToast(getString(R.string.bill_deletion_is_disabled), Toast.LENGTH_LONG);
+                        return true;
+                    } else {
+                        confirmDeleteAlertBuilder.show();
+                    }
                 } else {
                     listener.close();
                 }
@@ -805,7 +811,8 @@ public class EditBillFragment extends Fragment {
             // update last payer id
             db.updateProject(
                     bill.getProjectId(), null, null,
-                    null, newPayerId,null, null
+                    null, newPayerId,null,
+                    null, null
             );
 
             // normally sync should be done when we get back to bill list

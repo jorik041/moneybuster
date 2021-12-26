@@ -36,6 +36,7 @@
     <string name="no_main_currency">Main currency must be set before adding others</string>
     <string name="currency_edit_name">Name</string>
     <string name="currency_rate">Exchange rate</string>
+    <string name="bill_deletion_is_disabled">Bill deletion is disabled for this project</string>
     <string name="setting_amount">How much?</string>
     <string name="setting_amount_long">How much did it cost?</string>
     <string name="setting_owers">For whom?</string>

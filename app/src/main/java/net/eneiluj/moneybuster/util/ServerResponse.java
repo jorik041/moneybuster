@@ -56,6 +56,10 @@ public class ServerResponse {
             return getNameFromJSON(new JSONObject(getContent()));
         }
 
+        public boolean getDeletionDisabled() throws JSONException {
+            return getDeletionDisabledFromJSON(new JSONObject(getContent()));
+        }
+
         public String getCurrencyName() throws JSONException {
             return getCurrencyNameFromJSON(new JSONObject(getContent()));
         }
@@ -292,6 +296,14 @@ public class ServerResponse {
             name = json.getString("name");
         }
         return name;
+    }
+
+    protected boolean getDeletionDisabledFromJSON(JSONObject json) throws JSONException {
+        boolean deletionDisabled = false;
+        if (json.has("deletion_disabled")) {
+            deletionDisabled = json.getBoolean("deletion_disabled");
+        }
+        return deletionDisabled;
     }
 
     protected String getCurrencyNameFromJSON(JSONObject json) throws JSONException {

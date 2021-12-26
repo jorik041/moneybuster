@@ -43,7 +43,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String TAG = MoneyBusterSQLiteOpenHelper.class.getSimpleName();
 
-    private static final int database_version = 16;
+    private static final int database_version = 17;
     private static final String database_name = "IHATEMONEY";
 
     private static final String table_members = "MEMBERS";
@@ -71,6 +71,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String key_type = "TYPE";
     private static final String key_lastSyncTimestamp = "LASTSYNCED";
     private static final String key_currencyName = "CURRENCYNAME";
+    private static final String key_deletionDisabled = "DELETIONDISABLED";
 
     private static final String table_bills = "BILLS";
     //private static final String key_id = "ID";
@@ -131,7 +132,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String[] columnsProjects = {
             // long id, String remoteId, String password, String name, String ihmUrl, String email
             key_id, key_remoteId, key_password,  key_name, key_ihmUrl,
-            key_email, key_lastPayerId, key_type, key_lastSyncTimestamp, key_currencyName
+            key_email, key_lastPayerId, key_type, key_lastSyncTimestamp, key_currencyName, key_deletionDisabled
     };
 
     private static final String[] columnsBills = {
@@ -229,6 +230,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
                 key_ihmUrl + " TEXT, " +
                 key_password + " TEXT, " +
                 key_currencyName + " TEXT, " +
+                key_deletionDisabled + " INTEGER, " +
                 key_lastPayerId + " INTEGER, " +
                 key_lastSyncTimestamp + " INTEGER DEFAULT 0, " +
                 key_email + " TEXT, " +
@@ -327,7 +329,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
 
                 updateProject(project.getId(), project.getName(), project.getEmail(),
                         project.getPassword(), project.getLastPayerId(), project.getType(),
-                        project.getLastSyncedTimestamp(), project.getCurrencyName(), db);
+                        project.getLastSyncedTimestamp(), project.getCurrencyName(), project.isDeletionDisabled(), db);
             }
         }
 
@@ -406,7 +408,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
             for (DBProject project : projects) {
                 updateProject(project.getId(), project.getName(), project.getEmail(),
                         project.getPassword(), project.getLastPayerId(), project.getType(),
-                        (long) 0, project.getCurrencyName(), db);
+                        (long) 0, project.getCurrencyName(), project.isDeletionDisabled(), db);
             }
         }
         if (oldVersion < 15) {
@@ -425,6 +427,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         }
         if (oldVersion < 16) {
             db.execSQL("ALTER TABLE " + table_currencies + " ADD COLUMN " + key_state + " INTEGER DEFAULT " + DBBill.STATE_OK);
+        }
+        if (oldVersion < 17) {
+            db.execSQL("ALTER TABLE " + table_projects + " ADD COLUMN " + key_deletionDisabled + " INTEGER");
         }
     }
 
@@ -947,7 +952,8 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
             cursor.getLong(cursor.getColumnIndex(key_lastPayerId)),
             ProjectType.getTypeById(cursor.getString(cursor.getColumnIndex(key_type))),
             cursor.getLong(cursor.getColumnIndex(key_lastSyncTimestamp)),
-            cursor.getString(cursor.getColumnIndex(key_currencyName))
+            cursor.getString(cursor.getColumnIndex(key_currencyName)),
+            cursor.getInt(cursor.getColumnIndex(key_deletionDisabled)) != 0
         );
     }
 
@@ -970,7 +976,7 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     public void updateProject(long projId, @Nullable String newName, @Nullable String newEmail,
                               @Nullable String newPassword, @Nullable Long newLastPayerId,
                               @Nullable Long newLastSyncedTimestamp,
-                              @Nullable String newCurrencyName) {
+                              @Nullable String newCurrencyName, @Nullable Boolean newDeletionDisabled) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -991,6 +997,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         }
         if (newCurrencyName != null) {
             values.put(key_currencyName, newCurrencyName);
+        }
+        if (newDeletionDisabled != null) {
+            values.put(key_deletionDisabled, newDeletionDisabled ? 1 : 0);
         }
         if (values.size() > 0) {
             int rows = db.update(table_projects, values, key_id + " = ?", new String[]{String.valueOf(projId)});
@@ -1000,19 +1009,19 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
     public void updateProject(long projId, @Nullable String newName, @Nullable String newEmail,
                               @Nullable String newPassword, @Nullable Long newLastPayerId,
                               @NonNull ProjectType projectType, @Nullable Long newLastSyncedTimestamp,
-                              @Nullable String newCurrencyName) {
+                              @Nullable String newCurrencyName, @Nullable Boolean newDeletionDisabled) {
         //debugPrintFullDB();
         SQLiteDatabase db = this.getWritableDatabase();
         updateProject(
                 projId, newName, newEmail, newPassword, newLastPayerId, projectType,
-                newLastSyncedTimestamp, newCurrencyName, db
+                newLastSyncedTimestamp, newCurrencyName, newDeletionDisabled, db
         );
     }
 
     private void updateProject(long projId, @Nullable String newName, @Nullable String newEmail,
                                @Nullable String newPassword, @Nullable Long newLastPayerId,
                                @NonNull ProjectType projectType, @Nullable Long newLastSyncedTimestamp,
-                               @Nullable String newCurrencyName, SQLiteDatabase db) {
+                               @Nullable String newCurrencyName, @Nullable Boolean newDeletionDisabled, SQLiteDatabase db) {
         //debugPrintFullDB();
         ContentValues values = new ContentValues();
         if (newName != null) {
@@ -1032,6 +1041,9 @@ public class MoneyBusterSQLiteOpenHelper extends SQLiteOpenHelper {
         }
         if (newCurrencyName != null) {
             values.put(key_currencyName, newCurrencyName);
+        }
+        if (newDeletionDisabled != null) {
+            values.put(key_deletionDisabled, newDeletionDisabled ? 1 : 0);
         }
         values.put(key_type, projectType.getId());
         if (values.size() > 0) {

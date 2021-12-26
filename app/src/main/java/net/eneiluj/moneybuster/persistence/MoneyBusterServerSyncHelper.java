@@ -425,13 +425,21 @@ public class MoneyBusterServerSyncHelper {
                     try {
                         ServerResponse.DeleteRemoteBillResponse deleteRemoteBillResponse = client.deleteRemoteBill(customCertManager, project, bToDel.getRemoteId());
                         if (deleteRemoteBillResponse.getStringContent().equals("OK")) {
-                            Log.d(getClass().getSimpleName(), "successfully deleted bill on remote project : delete it locally");
+                            Log.d(TAG, "successfully deleted bill on remote project : delete it locally");
                             dbHelper.deleteBill(bToDel.getId());
                         }
                     } catch (IOException e) {
-                        // if it's not there on the server
+                        // the bill does not exist in the remote project
                         if (e.getMessage().equals("\"Not Found\"")) {
-                            Log.d(getClass().getSimpleName(), "failed to delete bill on remote project : delete it locally anyway");
+                            Log.d(TAG, "failed to delete bill on remote project : delete it locally anyway");
+                            dbHelper.deleteBill(bToDel.getId());
+                        } else {
+                            throw e;
+                        }
+                    } catch (NextcloudHttpRequestFailedException e) {
+                        if (e.getStatusCode() == 404) {
+                            // the bill does not exist in the remote project
+                            Log.d(TAG, "failed to delete bill on remote project : delete it locally anyway");
                             dbHelper.deleteBill(bToDel.getId());
                         } else {
                             throw e;
@@ -449,15 +457,10 @@ public class MoneyBusterServerSyncHelper {
                         } else {
                             Log.d(getClass().getSimpleName(), "FAILED to edit remote bill (" + editRemoteBillResponse.getStringContent() + ")");
                         }
-                    } catch (IOException e) {
-                        // if it's not there on the server
-                        if (e.getMessage().equals("{\"message\": \"Internal Server Error\"}")) {
-                            Log.d(getClass().getSimpleName(), "FAILED to edit remote bill : it does not exist remotely");
-                            // pullremotechanges will take care of deletion
-                            //dbHelper.deleteBill(bToEdit.getId());
-                        } else {
-                            throw e;
-                        }
+                    } catch (IOException | NextcloudHttpRequestFailedException e) {
+                        Log.d(getClass().getSimpleName(), "FAILED to edit remote bill: it probably does not exist remotely");
+                        // pullremotechanges will take care of deletion if it's not there anymore
+                        //dbHelper.deleteBill(bToEdit.getId());
                     }
                 }
                 // add what's been added

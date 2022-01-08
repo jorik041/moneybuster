@@ -75,6 +75,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 public class EditBillFragment extends Fragment {
 
@@ -740,8 +741,8 @@ public class EditBillFragment extends Fragment {
                 bill.getPayerId() == newPayerId &&
                 newComment.equals(bill.getComment()) &&
                 newRepeat.equals(bill.getRepeat()) &&
-                // Objects.equals(newPaymentMode, bill.getPaymentMode()) &&
-                newPaymentModeId == bill.getPaymentModeRemoteId() &&
+                (!usesOldPaymentModes() || Objects.equals(newPaymentMode, bill.getPaymentMode())) &&
+                (usesOldPaymentModes() || newPaymentModeId == bill.getPaymentModeRemoteId()) &&
                 newCategoryId == bill.getCategoryRemoteId() &&
                 bill.getComment().equals(newComment) &&
                 !owersChanged

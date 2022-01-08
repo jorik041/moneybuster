@@ -710,14 +710,14 @@ public class EditBillFragment extends Fragment {
             newPaymentMode = getOldPaymentModeId();
         } else {
             newPaymentModeId = getPaymentModeId();
-            newCategoryId = getCategoryId();
-            if (ProjectType.COSPEND.equals(projectType)) {
-                newRepeat = getRepeat();
+            // still save old payment mode id
+            if (DBBill.newPmIdToOld.containsKey(newPaymentModeId)) {
+                newPaymentMode = DBBill.newPmIdToOld.get(newPaymentModeId);
             }
         }
-        // still save old payment mode id
-        if (!usesOldPaymentModes() && DBBill.newPmIdToOld.containsKey(newPaymentModeId)) {
-            newPaymentMode = DBBill.newPmIdToOld.get(newPaymentModeId);
+        newCategoryId = getCategoryId();
+        if (ProjectType.COSPEND.equals(projectType)) {
+            newRepeat = getRepeat();
         }
         List<Long> newOwersIds = getOwersIds();
 
@@ -769,14 +769,14 @@ public class EditBillFragment extends Fragment {
             newPaymentMode = getOldPaymentModeId();
         } else {
             newPaymentModeId = getPaymentModeId();
-            newCategoryId = getCategoryId();
-            if (ProjectType.COSPEND.equals(projectType)) {
-                newRepeat = getRepeat();
+            // still save old payment mode id
+            if (DBBill.newPmIdToOld.containsKey(newPaymentModeId)) {
+                newPaymentMode = DBBill.newPmIdToOld.get(newPaymentModeId);
             }
         }
-        // still save old payment mode id
-        if (!usesOldPaymentModes() && DBBill.newPmIdToOld.containsKey(newPaymentModeId)) {
-            newPaymentMode = DBBill.newPmIdToOld.get(newPaymentModeId);
+        newCategoryId = getCategoryId();
+        if (ProjectType.COSPEND.equals(projectType)) {
+            newRepeat = getRepeat();
         }
 
         List<Long> newOwersIds = getOwersIds();

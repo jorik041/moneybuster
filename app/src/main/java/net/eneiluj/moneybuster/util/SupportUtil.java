@@ -22,6 +22,8 @@ import net.eneiluj.moneybuster.model.CreditDebt;
 import net.eneiluj.moneybuster.model.DBBill;
 import net.eneiluj.moneybuster.model.DBBillOwer;
 import net.eneiluj.moneybuster.model.DBMember;
+import net.eneiluj.moneybuster.model.DBProject;
+import net.eneiluj.moneybuster.model.ProjectType;
 import net.eneiluj.moneybuster.model.Transaction;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
 
@@ -168,6 +170,7 @@ public class SupportUtil {
                                   Map<Long, Double> membersSpent,
                                   int catId, int paymentModeId,
                                   String dateMin, String dateMax) {
+        DBProject project = db.getProject(projId);
         int nbBills = 0;
         Map<Long, Double> membersWeight = new HashMap<>();
 
@@ -186,9 +189,14 @@ public class SupportUtil {
         for (DBBill b : dbBills) {
             // don't take deleted bills and respect category filter
             if (b.getState() != DBBill.STATE_DELETED &&
-                    (catId == -1000 || catId == -100 || b.getCategoryRemoteId() == catId) &&
-                    (catId != -100 || b.getCategoryRemoteId() != DBBill.CATEGORY_REIMBURSEMENT) &&
-                    (paymentModeId == -1000 || b.getPaymentModeRemoteId() == paymentModeId) &&
+                    (
+                            project.getType().equals(ProjectType.IHATEMONEY)
+                            || (
+                                    (catId == -1000 || catId == -100 || b.getCategoryRemoteId() == catId) &&
+                                    (catId != -100 || b.getCategoryRemoteId() != DBBill.CATEGORY_REIMBURSEMENT) &&
+                                    (paymentModeId == -1000 || b.getPaymentModeRemoteId() == paymentModeId)
+                            )
+                    ) &&
                     (dateMin == null || b.getDate().compareTo(dateMin) >= 0) &&
                     (dateMax == null || b.getDate().compareTo(dateMax) <= 0)) {
                 nbBills++;

@@ -120,7 +120,7 @@ public class ManageCurrenciesActivity extends AppCompatActivity {
                 db.updateProject(
                         selectedProjectID, null, null, null,
                         null, null, newMaincurrencyName,
-                        null
+                        null, null
                 );
                 DBProject project = db.getProject(selectedProjectID);
                 db.syncIfRemote(db.getProject(selectedProjectID));

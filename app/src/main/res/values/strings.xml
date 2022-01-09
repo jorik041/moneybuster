@@ -193,6 +193,7 @@
     <string name="changelog">Changelog</string>
     <string name="changelog_url" translatable="false">https://gitlab.com/eneiluj/moneybuster/blob/master/CHANGELOG.md#change-log</string>
     <string name="permanent_notification_title">Permanent sync</string>
+    <string name="insufficient_access_level">You are not allowed to perform this action</string>
 
     <!-- Settings -->
     <string name="settings_appearance_category">Appearance</string>

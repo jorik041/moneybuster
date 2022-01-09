@@ -768,7 +768,7 @@ public class NewProjectFragment extends Fragment {
         DBProject fakeProj = new DBProject(
                 0, "", "", "", url,
                 "", 0L, ProjectType.COSPEND, 0L,
-                null, false
+                null, false, DBProject.ACCESS_LEVEL_UNKNOWN
         );
         if (isValidUrl(url) && todoCreate && ProjectType.COSPEND.equals(type) &&
                 db.getMoneyBusterServerSyncHelper().canCreateAuthenticatedProject(fakeProj)) {
@@ -884,7 +884,7 @@ public class NewProjectFragment extends Fragment {
         DBProject newProject = new DBProject(
                 0, remoteId, null, name, null,
                 null, null, type, 0L,
-                null, false
+                null, false, DBProject.ACCESS_LEVEL_UNKNOWN
         );
         return addProjectToDb(newProject);
     }
@@ -910,7 +910,7 @@ public class NewProjectFragment extends Fragment {
         return new DBProject(
                 0, remoteId, password, name, url,
                 email, null, type, 0L,
-                null, false
+                null, false, DBProject.ACCESS_LEVEL_UNKNOWN
         );
     }
 
@@ -1290,7 +1290,7 @@ public class NewProjectFragment extends Fragment {
                 DBProject newProject = new DBProject(
                         0, projectRemoteId, "", projectRemoteId, null,
                         null, null, ProjectType.LOCAL, 0L,
-                        mainCurrencyName, false
+                        mainCurrencyName, false, DBProject.ACCESS_LEVEL_UNKNOWN
                 );
                 long pid = db.addProject(newProject);
                 Log.v(TAG, "NEW PROJECT ID : "+pid);

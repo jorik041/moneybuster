@@ -17,10 +17,18 @@ public class DBProject implements Serializable {
     private Long lastSyncedTimestamp;
     private String currencyName;
     private boolean deletionDisabled;
+    private int myAccessLevel;
+
+    public static final int ACCESS_LEVEL_UNKNOWN = -1;
+    public static final int ACCESS_LEVEL_NONE = 0;
+    public static final int ACCESS_LEVEL_VIEWER = 1;
+    public static final int ACCESS_LEVEL_PARTICIPANT = 2;
+    public static final int ACCESS_LEVEL_MAINTAINER = 3;
+    public static final int ACCESS_LEVEL_ADMIN = 4;
 
     public DBProject(long id, String remoteId, String password, String name, String serverUrl,
                      String email, Long lastPayerId, ProjectType type, Long lastSyncedTimestamp,
-                     @Nullable String currencyName, boolean deletionDisabled) {
+                     @Nullable String currencyName, boolean deletionDisabled, int myAccessLevel) {
         this.id = id;
         this.remoteId = remoteId;
         this.name = name;
@@ -32,6 +40,15 @@ public class DBProject implements Serializable {
         this.type = type;
         this.currencyName = currencyName;
         this.deletionDisabled = deletionDisabled;
+        this.myAccessLevel = myAccessLevel;
+    }
+
+    public int getMyAccessLevel() {
+        return myAccessLevel;
+    }
+
+    public void setMyAccessLevel(int myAccessLevel) {
+        this.myAccessLevel = myAccessLevel;
     }
 
     public boolean isDeletionDisabled() {

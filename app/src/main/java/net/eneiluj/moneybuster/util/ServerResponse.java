@@ -9,6 +9,7 @@ import net.eneiluj.moneybuster.model.DBCategory;
 import net.eneiluj.moneybuster.model.DBCurrency;
 import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.DBPaymentMode;
+import net.eneiluj.moneybuster.model.DBProject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,6 +59,10 @@ public class ServerResponse {
 
         public boolean getDeletionDisabled() throws JSONException {
             return getDeletionDisabledFromJSON(new JSONObject(getContent()));
+        }
+
+        public int getMyAccessLevel() throws JSONException {
+            return getMyAccessLevelFromJSON(new JSONObject(getContent()));
         }
 
         public String getCurrencyName() throws JSONException {
@@ -304,6 +309,14 @@ public class ServerResponse {
             deletionDisabled = json.getBoolean("deletion_disabled");
         }
         return deletionDisabled;
+    }
+
+    protected int getMyAccessLevelFromJSON(JSONObject json) throws JSONException {
+        int myAccessLevel = DBProject.ACCESS_LEVEL_UNKNOWN;
+        if (json.has("myaccesslevel")) {
+            myAccessLevel = json.getInt("myaccesslevel");
+        }
+        return myAccessLevel;
     }
 
     protected String getCurrencyNameFromJSON(JSONObject json) throws JSONException {

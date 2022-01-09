@@ -1600,6 +1600,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         long selectedProjectId = preferences.getLong("selected_project", 0);
 
         if (selectedProjectId != 0) {
+            // check if we are allowed
+            DBProject project = db.getProject(selectedProjectId);
+            int myAccessLevel = project.getMyAccessLevel();
+            if (myAccessLevel != DBProject.ACCESS_LEVEL_UNKNOWN && myAccessLevel < DBProject.ACCESS_LEVEL_MAINTAINER) {
+                showToast(getString(R.string.insufficient_access_level));
+                return;
+            }
+
             final List<DBMember> members = db.getMembersOfProject(selectedProjectId, null);
             List<String> memberNames = new ArrayList<>();
             for (DBMember m : members) {
@@ -1630,6 +1638,14 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
         final long selectedProjectId = preferences.getLong("selected_project", 0);
 
         if (selectedProjectId != 0) {
+            // check if we are allowed
+            DBProject project = db.getProject(selectedProjectId);
+            int myAccessLevel = project.getMyAccessLevel();
+            if (myAccessLevel != DBProject.ACCESS_LEVEL_UNKNOWN && myAccessLevel < DBProject.ACCESS_LEVEL_MAINTAINER) {
+                showToast(getString(R.string.insufficient_access_level));
+                return;
+            }
+
             AlertDialog.Builder builder = new AlertDialog.Builder(
                     new ContextThemeWrapper(
                             BillsListViewActivity.this,

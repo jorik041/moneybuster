@@ -562,7 +562,7 @@ public class MoneyBusterServerSyncHelper {
          * Pull remote Changes: update or create each remote members/bills and remove remotely deleted ones
          */
         private LoginStatus pullRemoteChanges() {
-            Log.d(getClass().getSimpleName(), "pullRemoteChanges(" + project + ")");
+            Log.d(TAG, "pullRemoteChanges(" + project + ")");
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(appContext);
             boolean cospendSmartSync = pref.getBoolean(appContext.getString(R.string.pref_key_smart_sync), false);
             String lastETag = null;
@@ -574,12 +574,14 @@ public class MoneyBusterServerSyncHelper {
                 String email = projResponse.getEmail();
                 String currencyName = projResponse.getCurrencyName();
                 boolean deletionDisabled = projResponse.getDeletionDisabled();
+                int myAccessLevel = projResponse.getMyAccessLevel();
                 // update project if needed
                 if (project.getName() == null || project.getName().equals("")
                         || !name.equals(project.getName())
                         || project.getEmail() == null
                         || project.getEmail().equals("")
                         || project.isDeletionDisabled() != deletionDisabled
+                        || project.getMyAccessLevel() != myAccessLevel
                         || (
                                 (currencyName == null && project.getCurrencyName() != null) ||
                                 (currencyName != null && project.getCurrencyName() == null) ||
@@ -591,10 +593,11 @@ public class MoneyBusterServerSyncHelper {
                     project.setName(name);
                     project.setCurrencyName(currencyName);
                     project.setDeletionDisabled(deletionDisabled);
+                    project.setMyAccessLevel(myAccessLevel);
                     dbHelper.updateProject(
                         project.getId(), name, email,
                         null, null, null,
-                        currencyName, deletionDisabled
+                        currencyName, deletionDisabled, myAccessLevel
                     );
                 }
 
@@ -953,7 +956,7 @@ public class MoneyBusterServerSyncHelper {
                 dbHelper.updateProject(
                         project.getId(), null, null,
                         null, null, serverSyncTimestamp,
-                        null, null
+                        null, null, null
                 );
                 status = LoginStatus.OK;
             } catch (ServerResponse.NotModifiedException e) {
@@ -1246,8 +1249,11 @@ public class MoneyBusterServerSyncHelper {
                     appContext.sendBroadcast(intent2);
                 }
             } else {
-                dbHelper.updateProject(project.getId(), newName, newEmail, newPassword,
-                          null, null, null, null);
+                dbHelper.updateProject(
+                        project.getId(), newName, newEmail, newPassword,
+                        null, null,
+                        null, null, null
+                );
             }
             callback.onFinish(newName, errorString);
         }
@@ -1346,8 +1352,11 @@ public class MoneyBusterServerSyncHelper {
 
     public boolean createRemoteProject(String remoteId, String name, String email, String password, String ihmUrl, ProjectType projectType, IProjectCreationCallback callback) {
         if (isSyncPossible()) {
-            DBProject proj = new DBProject(0, remoteId, password, name, ihmUrl, email,
-                    null, projectType, 0L, null, false);
+            DBProject proj = new DBProject(
+                    0, remoteId, password, name, ihmUrl, email,
+                    null, projectType, 0L, null,
+                    false, DBProject.ACCESS_LEVEL_UNKNOWN
+            );
             CreateRemoteProjectTask createRemoteProjectTask = new CreateRemoteProjectTask(proj, callback);
             createRemoteProjectTask.execute();
             return true;
@@ -1562,9 +1571,6 @@ public class MoneyBusterServerSyncHelper {
             return status;
         }
 
-        /**
-         * Pull remote Changes: update or create each remote session and remove remotely deleted sessions.
-         */
         private LoginStatus pullRemoteProjects() {
             Log.d(getClass().getSimpleName(), "pullRemoteProjects()");
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
@@ -1615,7 +1621,8 @@ public class MoneyBusterServerSyncHelper {
                                 ProjectType.COSPEND,
                                 0L,
                                 null,
-                                false
+                                false,
+                                DBProject.ACCESS_LEVEL_UNKNOWN
                         );
                         dbHelper.addProject(newProj);
                     }

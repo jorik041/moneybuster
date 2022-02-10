@@ -18,10 +18,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    lintOptions {
-        disable 'MissingTranslation'
-        abortOnError false
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -43,18 +39,22 @@ android {
         dataBinding true
         viewBinding true
     }
+    lint {
+        abortOnError false
+        disable 'MissingTranslation'
+    }
 }
 
 dependencies {
     implementation project(':cert4android')
 
 // AndroidX
-    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
     // needed for cert4android (conflict resolution)
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'com.google.android.material:material:1.5.0'
 
 // Other
     implementation 'com.github.clans:fab:1.6.4'

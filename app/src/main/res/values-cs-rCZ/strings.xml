@@ -20,17 +20,22 @@
     <string name="setting_payer">Kdo zaplatil?</string>
     <string name="setting_all">Vše</string>
     <string name="setting_none">Žádné</string>
-    <string name="currency_manager">Currency manager</string>
-    <string name="add_currency_title">Add currency</string>
-    <string name="currency_management_unavailable">Currency management is only available for Cospend projects</string>
+    <string name="save_or_discard_bill_dialog_title">Upravování účtu</string>
+    <string name="save_or_discard_bill_dialog_message">Hodnoty na účtu byly změněny. Co chcete udělat?</string>
+    <string name="save_or_discard_bill_dialog_save">Uložit</string>
+    <string name="save_or_discard_bill_dialog_discard">Zahodit</string>
+    <string name="currency_manager">Správa měn</string>
+    <string name="add_currency_title">Přidat měnu</string>
+    <string name="currency_management_unavailable">Správa měn je k dispozici pouze pro Cospend projekty</string>
     <string name="setting_comment">Komentář</string>
     <string name="duplicate_bill">Duplikovat účet</string>
     <string name="currency_dialog_title">Převést stávající částku z jiné měny na %s</string>
     <string name="no_currency_error">Není zde žádná další měna</string>
-    <string name="main_currency">Main currency</string>
-    <string name="no_main_currency">Main currency must be set before adding others</string>
-    <string name="currency_edit_name">Name</string>
-    <string name="currency_rate">Exchange rate</string>
+    <string name="main_currency">Hlavní měna</string>
+    <string name="no_main_currency">Než bude možné přidávat další, je třeba aby byla nastavená hlavní měna</string>
+    <string name="currency_edit_name">Název</string>
+    <string name="currency_rate">Směnný kurz</string>
+    <string name="bill_deletion_is_disabled">Smazání účtu není v tomto projektu umožňováno</string>
     <string name="setting_amount">Kolik?</string>
     <string name="setting_amount_long">Kolik to stálo?</string>
     <string name="setting_owers">Pro koho?</string>
@@ -115,6 +120,7 @@
     <string name="sync_error_dialog_title">Synchronizace projektu se nezdařila</string>
     <string name="sync_error_dialog_full_content">Synchronizace s projektem %1$s se nezdařila. Chybové hlášení:\n\n%2$s\n\nPřidružený vzdálený projekt už možná neexistuje. Pokud tomu tak je, můžete ho odstranit z MoneyBuster.</string>
     <string name="error_maintenance_mode">Na dané instanci Nextcloud pravděpodobně probíhá údržba</string>
+    <string name="error_400">400 Chybný požadavek</string>
     <string name="error_401">401 (chybí oprávnění)</string>
     <string name="error_403">403 (zamítnuto)</string>
     <string name="error_404">404 (nenalezeno)</string>
@@ -125,7 +131,7 @@
     <string name="simple_ok_no_more">Chápu!</string>
     <string name="simple_yes">Ano</string>
     <string name="simple_no">Ne</string>
-    <string name="simple_add">Add</string>
+    <string name="simple_add">Přidat</string>
     <string name="simple_edit_bill">Upravit účet</string>
     <string name="simple_new_bill">Nový účet</string>
     <string name="simple_add_project">Přidat projekt do MoneyBuster</string>
@@ -203,8 +209,8 @@
     <string name="settings_night_mode_title">Motiv vzhledu</string>
     <string name="settings_offline_mode_title">Režim bez připojení k síti</string>
     <string name="settings_offline_mode_summary">Nesynchronizovat automaticky. Synchronizovat pouze na vyžádání uživatelem.</string>
-    <string name="settings_show_nextcloud_settings_summary">Disable this if you don\'t use Nextcloud and Cospend and just want to create/join IHateMoney and local projects.</string>
-    <string name="settings_show_nextcloud_settings_title">Show Nextcloud settings</string>
+    <string name="settings_show_nextcloud_settings_summary">Vypněte pokud nepoužíváte Nextcloud a Cospend a chcete jen vytvářet / připojovat se k IHateMoney a projektům, uloženým přímo na zařízení.</string>
+    <string name="settings_show_nextcloud_settings_title">Zobrazit nastavení Nextcloud</string>
     <string name="settings_smart_sync_title">Inteligentní synchronizace s Cospend</string>
     <string name="settings_smart_sync_summary">Získejte pouze účty, které se změnily od poslední synchronizace. To je rychlejší a používá méně dat. Kompatibilní s Cospend &gt;= 0.2.0</string>
     <string name="settings_color_title">Hlavní barva aplikace</string>
@@ -229,7 +235,7 @@
     <string name="settings_notify_updated">Upozornění při změně účtů</string>
     <string name="settings_notify_deleted">Upozornění při mazání účtů</string>
     <string name="project_sync_success">Projekt %s synchronizován</string>
-    <string name="currency_saved_success">Main currency saved</string>
+    <string name="currency_saved_success">Hlavní měna uložena</string>
     <string name="file_saved_success">Projekt uložen v %s</string>
     <string name="write_permission_refused">Oprávnění k zápisu zamítnuto, do souboru nelze zapsat</string>
     <string name="add_member_dialog_title">Jméno nového člena</string>
@@ -279,7 +285,7 @@
     <string name="edit_project_local_impossible">Nemožné pro lokální projekty</string>
     <string name="choose_account_project_dialog_title">Vyberte projekt ze svého Nextcloud účtu</string>
     <string name="choose_account_project_dialog_impossible">Ve vašem Nextcloud účtu není žádný Cospend projekt</string>
-    <string name="is_running">Synchronizováno v %2$s (každých %1$d min)</string>
+    <string name="sync_notification_message">Synchronizováno v %1$s (každých %2$d min)</string>
     <string name="error_invalid_sync_interval">Je třeba, aby interval synchronizace byl z rozmezí 5 až 1440 (24h)</string>
     <string name="project_activity_notification">Projekt %1$s</string>
     <string name="activity_dialog_title">Aktivita v projektu %1$s</string>
@@ -289,6 +295,7 @@
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster narazilo na neznámý certifikát. Chcete mu důvěřovat?</string>
     <!-- Network -->
     <!-- Error -->
+    <string name="error_project_connect_check">Nelze dosáhnout vzdáleného projektu:\n\n%1$s</string>
     <string name="error_sync">Synchronizace projektu se nezdařila: %1$s</string>
     <string name="error_invalid_login">Neplatné přihlášení: %1$s</string>
     <string name="error_json">je na serveru aktivována aplikace Cospend?</string>

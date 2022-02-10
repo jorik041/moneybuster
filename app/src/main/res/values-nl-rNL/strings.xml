@@ -20,6 +20,10 @@
     <string name="setting_payer">Wie heeft er betaald?</string>
     <string name="setting_all">Alle</string>
     <string name="setting_none">Geen</string>
+    <string name="save_or_discard_bill_dialog_title">Bill edition</string>
+    <string name="save_or_discard_bill_dialog_message">Bill values have been changed. What do you want to do?</string>
+    <string name="save_or_discard_bill_dialog_save">Save</string>
+    <string name="save_or_discard_bill_dialog_discard">Discard</string>
     <string name="currency_manager">Currency manager</string>
     <string name="add_currency_title">Add currency</string>
     <string name="currency_management_unavailable">Currency management is only available for Cospend projects</string>
@@ -31,6 +35,7 @@
     <string name="no_main_currency">Main currency must be set before adding others</string>
     <string name="currency_edit_name">Name</string>
     <string name="currency_rate">Exchange rate</string>
+    <string name="bill_deletion_is_disabled">Bill deletion is disabled for this project</string>
     <string name="setting_amount">Hoeveel?</string>
     <string name="setting_amount_long">Hoeveel kostte het?</string>
     <string name="setting_owers">Aan wie?</string>
@@ -115,6 +120,7 @@
     <string name="sync_error_dialog_title">Projectsynchronisatie mislukt</string>
     <string name="sync_error_dialog_full_content">Synchronization with project %1$s failed. Error message:\n\n%2$s\n\nThe associated remote project might not exist anymore. If so, you could remove this project from MoneyBuster.</string>
     <string name="error_maintenance_mode">The Nextcloud instance is probably in maintenance mode</string>
+    <string name="error_400">400 Bad request</string>
     <string name="error_401">401 Unauthorized</string>
     <string name="error_403">403 Forbidden</string>
     <string name="error_404">404 Not Found</string>
@@ -279,7 +285,7 @@
     <string name="edit_project_local_impossible">Onmogelijk voor lokale projecten</string>
     <string name="choose_account_project_dialog_title">Kies een project uit je Nextcloud account</string>
     <string name="choose_account_project_dialog_impossible">Er is geen Samen Betalen-project in uw Nextcloud account</string>
-    <string name="is_running">Gesynchroniseerd op %2$s (elke %1$d min)</string>
+    <string name="sync_notification_message">Synced at %1$s (every %2$d min)</string>
     <string name="error_invalid_sync_interval">Sync interval must be between 5 and 1440 (24h)</string>
     <string name="project_activity_notification">Project %1$s</string>
     <string name="activity_dialog_title">Projectactiviteit %1$s</string>
@@ -289,6 +295,7 @@
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster heeft een onbekend certificaat aangetroffen. Wil je dit vertrouwen?</string>
     <!-- Network -->
     <!-- Error -->
+    <string name="error_project_connect_check">Impossible to reach the remote project:\n\n%1$s</string>
     <string name="error_sync">Projectsynchronisatie mislukt: %1$s</string>
     <string name="error_invalid_login">Ongeldige inloggegevens: %1$s</string>
     <string name="error_json">Is de Cospend-app geactiveerd op de server?</string>

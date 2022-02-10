@@ -20,6 +20,10 @@
     <string name="setting_payer">Кой е платил?</string>
     <string name="setting_all">Всички</string>
     <string name="setting_none">Без</string>
+    <string name="save_or_discard_bill_dialog_title">Bill edition</string>
+    <string name="save_or_discard_bill_dialog_message">Bill values have been changed. What do you want to do?</string>
+    <string name="save_or_discard_bill_dialog_save">Save</string>
+    <string name="save_or_discard_bill_dialog_discard">Discard</string>
     <string name="currency_manager">Currency manager</string>
     <string name="add_currency_title">Add currency</string>
     <string name="currency_management_unavailable">Currency management is only available for Cospend projects</string>
@@ -31,6 +35,7 @@
     <string name="no_main_currency">Main currency must be set before adding others</string>
     <string name="currency_edit_name">Name</string>
     <string name="currency_rate">Exchange rate</string>
+    <string name="bill_deletion_is_disabled">Bill deletion is disabled for this project</string>
     <string name="setting_amount">Колко?</string>
     <string name="setting_amount_long">Колко струва?</string>
     <string name="setting_owers">За кого?</string>
@@ -115,6 +120,7 @@
     <string name="sync_error_dialog_title">Неуспешно синхронизиране на проекта</string>
     <string name="sync_error_dialog_full_content">Неуспешно синхронизиране с проекта %1$s. Съобщение за грешка \n\n%2$s\n\n. Съответният дистанционен проект вече може и да не съществува. Ако това е така, можете да премахнете проекта от MoneyBuster.</string>
     <string name="error_maintenance_mode">Приложението Nextcloud вероятно е в режим на поддръжка</string>
+    <string name="error_400">400 Bad request</string>
     <string name="error_401">401: Неупълномощен достъп</string>
     <string name="error_403">403: Забранен достъп</string>
     <string name="error_404">404: Неоткрит</string>
@@ -279,7 +285,7 @@
     <string name="edit_project_local_impossible">Невъзможно за местни проекти</string>
     <string name="choose_account_project_dialog_title">Изберете проект от акаунта си в Nextcloud</string>
     <string name="choose_account_project_dialog_impossible">В акаунта ви Nextcloud няма проект Cospend</string>
-    <string name="is_running">Синхронизиран в %2$s (на всеки %1$d мин.)</string>
+    <string name="sync_notification_message">Synced at %1$s (every %2$d min)</string>
     <string name="error_invalid_sync_interval">Интервалите на синхронизация трябва да бъдат между 5 и 1440 (24 ч.)</string>
     <string name="project_activity_notification">Проект %1$s</string>
     <string name="activity_dialog_title">Дейност в проект %1$s</string>
@@ -289,6 +295,7 @@
     <string name="trust_certificate_unknown_certificate_found">MoneyBuster попадна на неизвестен сертификат. Искате ли да му се доверите?</string>
     <!-- Network -->
     <!-- Error -->
+    <string name="error_project_connect_check">Impossible to reach the remote project:\n\n%1$s</string>
     <string name="error_sync">Неуспешно синхронизиране на проекта: %1$s</string>
     <string name="error_invalid_login">Невалидно вписване: %1$s</string>
     <string name="error_json">Активирано ли е приложението Cospend на сървъра?</string>

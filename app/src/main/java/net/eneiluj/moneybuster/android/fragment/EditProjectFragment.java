@@ -292,7 +292,8 @@ public class EditProjectFragment extends PreferenceFragmentCompat {
                     db.updateProject(
                             project.getId(), null, null, pwd,
                             null, project.getType(), null,
-                            null, null, null
+                            null, null,
+                            null, null
                     );
                     listener.closeOnEdit(project.getId());
                 } else {

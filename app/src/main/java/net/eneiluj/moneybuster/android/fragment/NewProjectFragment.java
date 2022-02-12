@@ -435,8 +435,24 @@ public class NewProjectFragment extends Fragment {
         String projectName = getName();
         String projectEmail = getEmail();
 
+        boolean isIhmInvitationLink = type.equals(ProjectType.IHATEMONEY)
+                && isValidUrl(projectUrl)
+                && isInvitationLink(projectUrl);
+        // show/hide projId and password if this is an IHM invitation link
+        if (type.equals(ProjectType.IHATEMONEY)) {
+            if (isIhmInvitationLink) {
+                newProjectPasswordLayout.setVisibility(View.GONE);
+                newProjectNameLayout.setVisibility(View.GONE);
+                newProjectIdLayout.setVisibility(View.GONE);
+            } else {
+                newProjectPasswordLayout.setVisibility(View.VISIBLE);
+                newProjectNameLayout.setVisibility(View.VISIBLE);
+                newProjectIdLayout.setVisibility(View.VISIBLE);
+            }
+        }
+
         // always check project ID
-        if (projectId.equals("")) {
+        if (projectId.equals("") && !isIhmInvitationLink) {
             newProjectIdInputLayout.setBackgroundColor(0x55FF0000);
             valid = false;
         } else {
@@ -451,7 +467,7 @@ public class NewProjectFragment extends Fragment {
             } else {
                 newProjectUrlInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal, requireContext().getTheme()));
             }
-            if (projectPassword.equals("")) {
+            if (projectPassword.equals("") && !isIhmInvitationLink) {
                 newProjectPasswordInputLayout.setBackgroundColor(0x55FF0000);
                 valid = false;
             } else {
@@ -768,7 +784,8 @@ public class NewProjectFragment extends Fragment {
         DBProject fakeProj = new DBProject(
                 0, "", "", "", url,
                 "", 0L, ProjectType.COSPEND, 0L,
-                null, false, DBProject.ACCESS_LEVEL_UNKNOWN
+                null, false, DBProject.ACCESS_LEVEL_UNKNOWN,
+                ""
         );
         if (isValidUrl(url) && todoCreate && ProjectType.COSPEND.equals(type) &&
                 db.getMoneyBusterServerSyncHelper().canCreateAuthenticatedProject(fakeProj)) {
@@ -884,7 +901,8 @@ public class NewProjectFragment extends Fragment {
         DBProject newProject = new DBProject(
                 0, remoteId, null, name, null,
                 null, null, type, 0L,
-                null, false, DBProject.ACCESS_LEVEL_UNKNOWN
+                null, false, DBProject.ACCESS_LEVEL_UNKNOWN,
+                null
         );
         return addProjectToDb(newProject);
     }
@@ -903,14 +921,27 @@ public class NewProjectFragment extends Fragment {
         String email = getEmail();
         String name = getName();
         String password = "";
+        String bearerToken = null;
         if (!ignorePassword) {
             password = getPassword();
+        }
+        // handle IHM invitation links
+        if (type.equals(ProjectType.IHATEMONEY) && isInvitationLink(url)) {
+            password = "";
+
+            Uri data = Uri.parse(url);
+            bearerToken = data.getPathSegments().get(data.getPathSegments().size() - 1);
+            remoteId = data.getPathSegments().get(data.getPathSegments().size() - 3);
+            url = "https://" +
+                    data.getHost() + data.getPath().replaceAll("/" + remoteId + "/" + bearerToken + "$", "");
+            Log.e(TAG, "IHM invitation link, url: " + url + " , token: " + bearerToken + " , remoteId: " + remoteId);
         }
         // get project info to check we can connect
         return new DBProject(
                 0, remoteId, password, name, url,
                 email, null, type, 0L,
-                null, false, DBProject.ACCESS_LEVEL_UNKNOWN
+                null, false, DBProject.ACCESS_LEVEL_UNKNOWN,
+                bearerToken
         );
     }
 
@@ -1000,6 +1031,12 @@ public class NewProjectFragment extends Fragment {
     protected boolean isValidUrl(String url) {
         return Patterns.WEB_URL.matcher(url).matches();
         //return (isHttpsUrl(url) || isHttpUrl(url));
+    }
+    protected boolean isInvitationLink(String url) {
+        Uri data = Uri.parse(url);
+        return data.getScheme().equals("https")
+            && data.getPathSegments().size() >= 3
+            && "join".equals(data.getPathSegments().get(data.getPathSegments().size() - 2));
     }
     protected String getPassword() {
         return newProjectPassword.getText().toString();
@@ -1290,7 +1327,8 @@ public class NewProjectFragment extends Fragment {
                 DBProject newProject = new DBProject(
                         0, projectRemoteId, "", projectRemoteId, null,
                         null, null, ProjectType.LOCAL, 0L,
-                        mainCurrencyName, false, DBProject.ACCESS_LEVEL_UNKNOWN
+                        mainCurrencyName, false, DBProject.ACCESS_LEVEL_UNKNOWN,
+                        null
                 );
                 long pid = db.addProject(newProject);
                 Log.v(TAG, "NEW PROJECT ID : "+pid);

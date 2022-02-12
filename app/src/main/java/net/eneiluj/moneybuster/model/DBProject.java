@@ -12,6 +12,7 @@ public class DBProject implements Serializable {
     private String serverUrl;
     private String email;
     private String password;
+    private String bearerToken;
     private Long lastPayerId;
     private ProjectType type;
     private Long lastSyncedTimestamp;
@@ -28,19 +29,29 @@ public class DBProject implements Serializable {
 
     public DBProject(long id, String remoteId, String password, String name, String serverUrl,
                      String email, Long lastPayerId, ProjectType type, Long lastSyncedTimestamp,
-                     @Nullable String currencyName, boolean deletionDisabled, int myAccessLevel) {
+                     @Nullable String currencyName, boolean deletionDisabled, int myAccessLevel,
+                     @Nullable String bearerToken) {
         this.id = id;
         this.remoteId = remoteId;
         this.name = name;
         this.serverUrl = serverUrl;
         this.email = email;
         this.password = password;
+        this.bearerToken = bearerToken;
         this.lastPayerId = lastPayerId;
         this.lastSyncedTimestamp = lastSyncedTimestamp;
         this.type = type;
         this.currencyName = currencyName;
         this.deletionDisabled = deletionDisabled;
         this.myAccessLevel = myAccessLevel;
+    }
+
+    public String getBearerToken() {
+        return bearerToken;
+    }
+
+    public void setBearerToken(String bearerToken) {
+        this.bearerToken = bearerToken;
     }
 
     public int getMyAccessLevel() {

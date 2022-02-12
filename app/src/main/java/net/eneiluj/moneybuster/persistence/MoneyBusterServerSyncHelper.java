@@ -597,7 +597,7 @@ public class MoneyBusterServerSyncHelper {
                     dbHelper.updateProject(
                         project.getId(), name, email,
                         null, null, null,
-                        currencyName, deletionDisabled, myAccessLevel
+                        currencyName, deletionDisabled, myAccessLevel, null
                     );
                 }
 
@@ -956,7 +956,8 @@ public class MoneyBusterServerSyncHelper {
                 dbHelper.updateProject(
                         project.getId(), null, null,
                         null, null, serverSyncTimestamp,
-                        null, null, null
+                        null, null, null,
+                        null
                 );
                 status = LoginStatus.OK;
             } catch (ServerResponse.NotModifiedException e) {
@@ -1252,7 +1253,8 @@ public class MoneyBusterServerSyncHelper {
                 dbHelper.updateProject(
                         project.getId(), newName, newEmail, newPassword,
                         null, null,
-                        null, null, null
+                        null, null, null,
+                        null
                 );
             }
             callback.onFinish(newName, errorString);
@@ -1355,7 +1357,7 @@ public class MoneyBusterServerSyncHelper {
             DBProject proj = new DBProject(
                     0, remoteId, password, name, ihmUrl, email,
                     null, projectType, 0L, null,
-                    false, DBProject.ACCESS_LEVEL_UNKNOWN
+                    false, DBProject.ACCESS_LEVEL_UNKNOWN, null
             );
             CreateRemoteProjectTask createRemoteProjectTask = new CreateRemoteProjectTask(proj, callback);
             createRemoteProjectTask.execute();
@@ -1622,7 +1624,8 @@ public class MoneyBusterServerSyncHelper {
                                 0L,
                                 null,
                                 false,
-                                DBProject.ACCESS_LEVEL_UNKNOWN
+                                DBProject.ACCESS_LEVEL_UNKNOWN,
+                                null
                         );
                         dbHelper.addProject(newProj);
                     }

@@ -812,8 +812,9 @@ public class EditBillFragment extends Fragment {
             // update last payer id
             db.updateProject(
                     bill.getProjectId(), null, null,
-                    null, newPayerId,null,
-                    null, null, null
+                    null, newPayerId, null,
+                    null, null,
+                    null, null
             );
 
             // normally sync should be done when we get back to bill list

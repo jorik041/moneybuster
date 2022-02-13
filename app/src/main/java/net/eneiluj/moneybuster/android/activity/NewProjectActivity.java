@@ -76,15 +76,22 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
                         data.getHost() + data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
                 defaultProjectType = ProjectType.COSPEND;
             } else if (data.getScheme().equals("ihatemoney") && data.getPathSegments().size() >= 1) {
-                if (data.getPath().endsWith("/")) {
-                    defaultProjectPassword = "";
-                    defaultProjectId = data.getLastPathSegment();
+                // invitation link
+                if (data.getPathSegments().size() >= 3
+                    && "join".equals(data.getPathSegments().get(data.getPathSegments().size() - 2))) {
+                    defaultIhmUrl = "https://" +
+                            data.getHost() + data.getPath();
                 } else {
-                    defaultProjectPassword = data.getLastPathSegment();
-                    defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
+                    if (data.getPath().endsWith("/")) {
+                        defaultProjectPassword = "";
+                        defaultProjectId = data.getLastPathSegment();
+                    } else {
+                        defaultProjectPassword = data.getLastPathSegment();
+                        defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
+                    }
+                    defaultIhmUrl = "https://" +
+                            data.getHost() + data.getPath().replaceAll("/" + defaultProjectId + "/" + defaultProjectPassword + "$", "");
                 }
-                defaultIhmUrl = "https://" +
-                        data.getHost() + data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
                 defaultProjectType = ProjectType.IHATEMONEY;
             } else if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 2) {
                 if (data.getPath().endsWith("/")) {

@@ -709,17 +709,24 @@ public class NewProjectFragment extends Fragment {
             showHideInputFields(false);
             showHideValidationButtons();
         } else if (data.getScheme().equals("ihatemoney") && data.getPathSegments().size() >= 1) {
-            if (data.getPath().endsWith("/")) {
-                password = "";
-                pid = data.getLastPathSegment();
+            if (data.getPathSegments().size() >= 3
+                    && "join".equals(data.getPathSegments().get(data.getPathSegments().size() - 2))) {
+                newProjectPassword.setText("");
+                newProjectId.setText("");
+                url = "https://" + data.getHost() + data.getPath();
             } else {
-                password = data.getLastPathSegment();
-                pid = data.getPathSegments().get(data.getPathSegments().size() - 2);
+                if (data.getPath().endsWith("/")) {
+                    password = "";
+                    pid = data.getLastPathSegment();
+                } else {
+                    password = data.getLastPathSegment();
+                    pid = data.getPathSegments().get(data.getPathSegments().size() - 2);
+                }
+                url = "https://" +
+                        data.getHost() + data.getPath().replaceAll("/" + pid + "/" + password + "$", "");
+                newProjectPassword.setText(password);
+                newProjectId.setText(pid);
             }
-            url = "https://" +
-                    data.getHost() + data.getPath().replaceAll("/" + pid + "/" + password + "$", "");
-            newProjectPassword.setText(password);
-            newProjectId.setText(pid);
             newProjectUrl.setText(url);
             whereLocal.setChecked(false);
             whereIhm.setChecked(true);
@@ -995,6 +1002,12 @@ public class NewProjectFragment extends Fragment {
         defaultNcUrl = getArguments().getString(PARAM_DEFAULT_NC_URL);
 
         showHideInputFields(true);
+
+        if (ProjectType.IHATEMONEY.getId().equals(defaultTypeId)
+                && isFormValid()
+                && isInvitationLink(defaultIhmUrl)) {
+            onPressOk();
+        }
 
         newProjectId.setText(getArguments().getString(PARAM_DEFAULT_PROJECT_ID));
 

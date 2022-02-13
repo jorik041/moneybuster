@@ -125,6 +125,7 @@ public class VersatileProjectSyncClient {
         String target;
         String username = null;
         String password = null;
+        String bearerToken = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
@@ -144,9 +145,15 @@ public class VersatileProjectSyncClient {
                     + "/api/projects/" + project.getRemoteId();
             username = project.getRemoteId();
             password = project.getPassword();
+            bearerToken = project.getBearerToken();
         }
 
-        return new ServerResponse.ProjectResponse(requestServer(ccm, target, METHOD_GET, null, null, lastETag, username, password));
+        return new ServerResponse.ProjectResponse(
+                requestServer(
+                        ccm, target, METHOD_GET, null, null, lastETag,
+                        username, password, bearerToken
+                )
+        );
     }
 
     public ServerResponse.EditRemoteProjectResponse editRemoteProject(
@@ -170,6 +177,7 @@ public class VersatileProjectSyncClient {
         String target;
         String username = null;
         String password = null;
+        String bearerToken = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
             if (newMainCurrencyName != null) {
                 paramKeys.add("currencyname");
@@ -193,8 +201,14 @@ public class VersatileProjectSyncClient {
             //https://ihatemoney.org/api/projects/demo
             username = project.getRemoteId();
             password = project.getPassword();
+            bearerToken = project.getBearerToken();
         }
-        return new ServerResponse.EditRemoteProjectResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, username, password));
+        return new ServerResponse.EditRemoteProjectResponse(
+                requestServer(
+                        ccm, target, METHOD_PUT, paramKeys, paramValues, null,
+                        username, password, bearerToken
+                )
+        );
     }
 
     public ServerResponse.EditRemoteMemberResponse editRemoteMember(CustomCertManager ccm, DBProject project, DBMember member) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
@@ -210,6 +224,7 @@ public class VersatileProjectSyncClient {
         String target;
         String username = null;
         String password = null;
+        String bearerToken = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
             // put color if set
             Integer r = member.getR();
@@ -239,9 +254,15 @@ public class VersatileProjectSyncClient {
                 + "/api/projects/" + project.getRemoteId() + "/members/" + member.getRemoteId();
             username = project.getRemoteId();
             password = project.getPassword();
+            bearerToken = project.getBearerToken();
         }
 
-        return new ServerResponse.EditRemoteMemberResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, username, password));
+        return new ServerResponse.EditRemoteMemberResponse(
+                requestServer(
+                        ccm, target, METHOD_PUT, paramKeys, paramValues, null,
+                        username, password, bearerToken
+                )
+        );
     }
 
     public ServerResponse.EditRemoteBillResponse editRemoteBill(CustomCertManager ccm, DBProject project, DBBill bill, Map<Long, Long> memberIdToRemoteId) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
@@ -264,6 +285,7 @@ public class VersatileProjectSyncClient {
         String target;
         String username = null;
         String password = null;
+        String bearerToken = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
             paramKeys.add("timestamp");
             paramValues.add(String.valueOf(bill.getTimestamp()));
@@ -304,6 +326,7 @@ public class VersatileProjectSyncClient {
                 + "/api/projects/" + project.getRemoteId() + "/bills/" + bill.getRemoteId();
             username = project.getRemoteId();
             password = project.getPassword();
+            bearerToken = project.getBearerToken();
 
             for (long boId : bill.getBillOwersIds()) {
                 paramKeys.add("payed_for");
@@ -314,13 +337,19 @@ public class VersatileProjectSyncClient {
                 );
             }
         }
-        return new ServerResponse.EditRemoteBillResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, username, password));
+        return new ServerResponse.EditRemoteBillResponse(
+                requestServer(
+                        ccm, target, METHOD_PUT, paramKeys, paramValues, null,
+                        username, password, bearerToken
+                )
+        );
     }
 
     public ServerResponse.DeleteRemoteProjectResponse deleteRemoteProject(CustomCertManager ccm, DBProject project) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         String target;
         String username = null;
         String password = null;
+        String bearerToken = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
@@ -339,14 +368,21 @@ public class VersatileProjectSyncClient {
                 + "/api/projects/" + project.getRemoteId();
             username = project.getRemoteId();
             password = project.getPassword();
+            bearerToken = project.getBearerToken();
         }
-        return new ServerResponse.DeleteRemoteProjectResponse(requestServer(ccm, target, METHOD_DELETE, null, null, null, username, password));
+        return new ServerResponse.DeleteRemoteProjectResponse(
+                requestServer(
+                        ccm, target, METHOD_DELETE, null, null,
+                        null, username, password, bearerToken
+                )
+        );
     }
 
     public ServerResponse.DeleteRemoteBillResponse deleteRemoteBill(CustomCertManager ccm, DBProject project, long billRemoteId) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         String target;
         String username = null;
         String password = null;
+        String bearerToken = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
@@ -366,8 +402,14 @@ public class VersatileProjectSyncClient {
                     + "/api/projects/" + project.getRemoteId() + "/bills/" + billRemoteId;
             username = project.getRemoteId();
             password = project.getPassword();
+            bearerToken = project.getBearerToken();
         }
-        return new ServerResponse.DeleteRemoteBillResponse(requestServer(ccm, target, METHOD_DELETE, null, null, null, username, password));
+        return new ServerResponse.DeleteRemoteBillResponse(
+                requestServer(
+                        ccm, target, METHOD_DELETE, null, null,
+                        null, username, password, bearerToken
+                )
+        );
     }
 
     public ServerResponse.CreateRemoteProjectResponse createAnonymousRemoteProject(CustomCertManager ccm, DBProject project) throws IOException, NextcloudHttpRequestFailedException {
@@ -383,7 +425,12 @@ public class VersatileProjectSyncClient {
         paramValues.add(project.getPassword() == null ? "" : project.getPassword());
         paramKeys.add("id");
         paramValues.add(project.getRemoteId() == null ? "" : project.getRemoteId());
-        return new ServerResponse.CreateRemoteProjectResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, null, null));
+        return new ServerResponse.CreateRemoteProjectResponse(
+                requestServer(
+                        ccm, target, METHOD_POST, paramKeys, paramValues,
+                        null, null, null, null
+                )
+        );
     }
 
     public ServerResponse.CreateRemoteProjectResponse createAuthenticatedRemoteProject(CustomCertManager ccm, DBProject project) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
@@ -412,7 +459,12 @@ public class VersatileProjectSyncClient {
             password = this.password;
             target = project.getServerUrl().replaceAll("/+$", "")
                     + "/api-priv/projects";
-            return new ServerResponse.CreateRemoteProjectResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, username, password));
+            return new ServerResponse.CreateRemoteProjectResponse(
+                    requestServer(
+                            ccm, target, METHOD_POST, paramKeys, paramValues,
+                            null, username, password, null
+                    )
+            );
         }
     }
 
@@ -436,6 +488,7 @@ public class VersatileProjectSyncClient {
         String target;
         String username = null;
         String password = null;
+        String bearerToken = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
             paramKeys.add("comment");
             paramValues.add(bill.getComment());
@@ -476,6 +529,7 @@ public class VersatileProjectSyncClient {
                 + "/api/projects/" + project.getRemoteId() + "/bills";
             username = project.getRemoteId();
             password = project.getPassword();
+            bearerToken = project.getBearerToken();
 
             for (long boId : bill.getBillOwersIds()) {
                 paramKeys.add("payed_for");
@@ -487,7 +541,12 @@ public class VersatileProjectSyncClient {
             }
         }
 
-        return new ServerResponse.CreateRemoteBillResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, username, password));
+        return new ServerResponse.CreateRemoteBillResponse(
+                requestServer(
+                        ccm, target, METHOD_POST, paramKeys, paramValues, null,
+                        username, password, bearerToken
+                )
+        );
     }
 
     public ServerResponse.CreateRemoteMemberResponse createRemoteMember(CustomCertManager ccm, DBProject project, DBMember member) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
@@ -499,6 +558,7 @@ public class VersatileProjectSyncClient {
         String target;
         String username = null;
         String password = null;
+        String bearerToken = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
             // put color if set
             Integer r = member.getR();
@@ -528,15 +588,22 @@ public class VersatileProjectSyncClient {
                     + "/api/projects/" + project.getRemoteId() + "/members";
             username = project.getRemoteId();
             password = project.getPassword();
+            bearerToken = project.getBearerToken();
         }
 
-        return new ServerResponse.CreateRemoteMemberResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, username, password));
+        return new ServerResponse.CreateRemoteMemberResponse(
+                requestServer(
+                        ccm, target, METHOD_POST, paramKeys, paramValues, null,
+                        username, password, bearerToken
+                )
+        );
     }
 
     public ServerResponse.BillsResponse getBills(CustomCertManager ccm, DBProject project, boolean cospendSmartSync) throws JSONException, IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         String target;
         String username = null;
         String password = null;
+        String bearerToken = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
             Long tsLastSync = project.getLastSyncedTimestamp();
             if (canAccessProjectWithNCLogin(project)) {
@@ -544,7 +611,13 @@ public class VersatileProjectSyncClient {
                 password = this.password;
                 target = project.getServerUrl().replaceAll("/+$", "")
                     + "/api-priv/projects/" + project.getRemoteId() + "/bills?lastchanged=" + tsLastSync;
-                return new ServerResponse.BillsResponse(requestServer(ccm, target, METHOD_GET, null, null, null, username, password), true);
+                return new ServerResponse.BillsResponse(
+                        requestServer(
+                                ccm, target, METHOD_GET, null, null,
+                                null, username, password, null
+                        ),
+                        true
+                );
             } else if (canAccessProjectWithSSO(project)) {
                 target = "/index.php/apps/cospend/api-priv/projects/" + project.getRemoteId() + "/bills";
                 List<String> paramKeys = new ArrayList<>();
@@ -557,12 +630,24 @@ public class VersatileProjectSyncClient {
                     target = project.getServerUrl().replaceAll("/+$", "")
                         + "/apiv2/projects/" + project.getRemoteId() + "/"
                         + getEncodedPassword(project.getPassword()) + "/bills?lastchanged=" + tsLastSync;
-                    return new ServerResponse.BillsResponse(requestServer(ccm, target, METHOD_GET, null, null, null, username, password), true);
+                    return new ServerResponse.BillsResponse(
+                            requestServer(
+                                    ccm, target, METHOD_GET, null, null,
+                                    null, username, password, null
+                            ),
+                            true
+                    );
                 } else {
                     target = project.getServerUrl().replaceAll("/+$", "")
                         + "/api/projects/" + project.getRemoteId() + "/"
                         + getEncodedPassword(project.getPassword()) + "/bills";
-                    return new ServerResponse.BillsResponse(requestServer(ccm, target, METHOD_GET, null, null, null, username, password), false);
+                    return new ServerResponse.BillsResponse(
+                            requestServer(
+                                    ccm, target, METHOD_GET, null, null,
+                                    null, username, password, null
+                            ),
+                            false
+                    );
                 }
             }
         } else {
@@ -570,7 +655,14 @@ public class VersatileProjectSyncClient {
                 + "/api/projects/" + project.getRemoteId() + "/bills";
             username = project.getRemoteId();
             password = project.getPassword();
-            return new ServerResponse.BillsResponse(requestServer(ccm, target, METHOD_GET, null, null, null, username, password), false);
+            bearerToken = project.getBearerToken();
+            return new ServerResponse.BillsResponse(
+                    requestServer(
+                            ccm, target, METHOD_GET, null, null,
+                            null, username, password, bearerToken
+                    ),
+                    false
+            );
         }
     }
 
@@ -578,6 +670,7 @@ public class VersatileProjectSyncClient {
         String target;
         String username = null;
         String password = null;
+        String bearerToken = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
@@ -598,8 +691,14 @@ public class VersatileProjectSyncClient {
                 + "/api/projects/" + project.getRemoteId() + "/members";
             username = project.getRemoteId();
             password = project.getPassword();
+            bearerToken = project.getBearerToken();
         }
-        return new ServerResponse.MembersResponse(requestServer(ccm, target, METHOD_GET, null, null, null, username, password));
+        return new ServerResponse.MembersResponse(
+                requestServer(
+                        ccm, target, METHOD_GET, null, null,
+                        null, username, password, bearerToken
+                )
+        );
     }
 
     private ResponseData requestServerWithSSO(NextcloudAPI nextcloudAPI, String target, String method, List<String> paramKeys, List<String> paramValues) throws TokenMismatchException, NextcloudHttpRequestFailedException {
@@ -673,14 +772,21 @@ public class VersatileProjectSyncClient {
      * @throws MalformedURLException
      * @throws IOException
      */
-    private ResponseData requestServer(CustomCertManager ccm, String target, String method, List<String> paramKeys, List<String> paramValues, String lastETag, String username, String password)
+    private ResponseData requestServer(CustomCertManager ccm, String target, String method,
+                                       List<String> paramKeys, List<String> paramValues,
+                                       String lastETag, String username, String password,
+                                       @Nullable String bearerToken)
             throws IOException, NextcloudHttpRequestFailedException {
         StringBuffer result = new StringBuffer();
         // setup connection
         String targetURL = target;
         HttpURLConnection con = SupportUtil.getHttpURLConnection(ccm, targetURL);
         con.setRequestMethod(method);
-        if (username != null) {
+        if (bearerToken != null) {
+            con.setRequestProperty(
+                    "Authorization",
+                    "Bearer " + bearerToken);
+        } else if (username != null) {
             con.setRequestProperty(
                     "Authorization",
                     "Basic " + Base64.encodeToString((username + ":" + password).getBytes(), Base64.NO_WRAP));
@@ -760,6 +866,7 @@ public class VersatileProjectSyncClient {
         String target;
         String username = null;
         String password = null;
+        String bearerToken = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
             // launch the request
             if (canAccessProjectWithNCLogin(project)) {
@@ -780,9 +887,15 @@ public class VersatileProjectSyncClient {
                     + "/api/projects/" + project.getRemoteId() + "/currency";
             username = project.getRemoteId();
             password = project.getPassword();
+            bearerToken = project.getBearerToken();
         }
 
-        return new ServerResponse.CreateRemoteCurrencyResponse(requestServer(ccm, target, METHOD_POST, paramKeys, paramValues, null, username, password));
+        return new ServerResponse.CreateRemoteCurrencyResponse(
+                requestServer(
+                        ccm, target, METHOD_POST, paramKeys, paramValues, null,
+                        username, password, bearerToken
+                )
+        );
     }
 
     public ServerResponse.EditRemoteCurrencyResponse editRemoteCurrency(CustomCertManager ccm, DBProject project, DBCurrency currency) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
@@ -797,6 +910,7 @@ public class VersatileProjectSyncClient {
         String target;
         String username = null;
         String password = null;
+        String bearerToken = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
 
             // launch the request
@@ -818,15 +932,22 @@ public class VersatileProjectSyncClient {
                     + "/api/projects/" + project.getRemoteId() + "/currency/" + currency.getRemoteId();
             username = project.getRemoteId();
             password = project.getPassword();
+            bearerToken = project.getBearerToken();
         }
 
-        return new ServerResponse.EditRemoteCurrencyResponse(requestServer(ccm, target, METHOD_PUT, paramKeys, paramValues, null, username, password));
+        return new ServerResponse.EditRemoteCurrencyResponse(
+                requestServer(
+                        ccm, target, METHOD_PUT, paramKeys, paramValues, null,
+                        username, password, bearerToken
+                )
+        );
     }
 
     public ServerResponse.DeleteRemoteCurrencyResponse deleteRemoteCurrency(CustomCertManager ccm, DBProject project, long currencyRemoteId) throws IOException, TokenMismatchException, NextcloudHttpRequestFailedException {
         String target;
         String username = null;
         String password = null;
+        String bearerToken = null;
         if (ProjectType.COSPEND.equals(project.getType())) {
             if (canAccessProjectWithNCLogin(project)) {
                 username = this.username;
@@ -846,7 +967,13 @@ public class VersatileProjectSyncClient {
                     + "/api/projects/" + project.getRemoteId() + "/currency/" + currencyRemoteId;
             username = project.getRemoteId();
             password = project.getPassword();
+            bearerToken = project.getBearerToken();
         }
-        return new ServerResponse.DeleteRemoteCurrencyResponse(requestServer(ccm, target, METHOD_DELETE, null, null, null, username, password));
+        return new ServerResponse.DeleteRemoteCurrencyResponse(
+                requestServer(
+                        ccm, target, METHOD_DELETE, null, null,
+                        null, username, password, bearerToken
+                )
+        );
     }
 }

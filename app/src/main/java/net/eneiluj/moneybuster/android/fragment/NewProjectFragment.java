@@ -812,8 +812,9 @@ public class NewProjectFragment extends Fragment {
     }
 
     private void createProject() {
+        boolean isIhmInvitationLink = isInvitationLink(getUrl());
         String rid = getRemoteId();
-        if (rid == null || rid.equals("") || rid.contains(",") || rid.contains("/")) {
+        if (!isIhmInvitationLink && (rid == null || rid.equals("") || rid.contains(",") || rid.contains("/"))) {
             showToast(getString(R.string.error_invalid_project_remote_id), Toast.LENGTH_LONG);
             return;
         }
@@ -821,16 +822,18 @@ public class NewProjectFragment extends Fragment {
         ProjectType type = getProjectType();
 
         if (!ProjectType.LOCAL.equals(type)) {
-            // check values
-            String url = getUrl();
-            if (!isValidUrl(url)) {
-                //showToast(getString(R.string.error_invalid_url), Toast.LENGTH_LONG);
-                return;
-            }
-            String pwd = getPassword();
-            if (url != null && !url.equals("") && (pwd == null || pwd.equals(""))) {
-                //showToast(getString(R.string.error_invalid_project_password), Toast.LENGTH_LONG);
-                return;
+            if (!isIhmInvitationLink) {
+                // check values
+                String url = getUrl();
+                if (!isValidUrl(url)) {
+                    //showToast(getString(R.string.error_invalid_url), Toast.LENGTH_LONG);
+                    return;
+                }
+                String pwd = getPassword();
+                if (url != null && !url.equals("") && (pwd == null || pwd.equals(""))) {
+                    //showToast(getString(R.string.error_invalid_project_password), Toast.LENGTH_LONG);
+                    return;
+                }
             }
         }
 
@@ -909,6 +912,9 @@ public class NewProjectFragment extends Fragment {
 
     protected void saveRemoteProject(@Nullable ICallback callback, boolean ignorePassword) {
         DBProject newProject = getProjectFromFields(ignorePassword);
+        Log.e(TAG, "URLLLLL " + newProject.getServerUrl());
+        Log.e(TAG, "IDDDDDDDD " + newProject.getRemoteId());
+        Log.e(TAG, "TOKENNNNN " + newProject.getBearerToken());
         if (!db.getMoneyBusterServerSyncHelper().getRemoteProjectInfo(newProject, getRemoteInfoCallBack)) {
             showToast(getString(R.string.error_no_network), Toast.LENGTH_LONG);
         }
@@ -933,7 +939,7 @@ public class NewProjectFragment extends Fragment {
             bearerToken = data.getPathSegments().get(data.getPathSegments().size() - 1);
             remoteId = data.getPathSegments().get(data.getPathSegments().size() - 3);
             url = "https://" +
-                    data.getHost() + data.getPath().replaceAll("/" + remoteId + "/" + bearerToken + "$", "");
+                    data.getHost() + data.getPath().replaceAll("/" + remoteId + "/join/" + bearerToken + "$", "");
             Log.e(TAG, "IHM invitation link, url: " + url + " , token: " + bearerToken + " , remoteId: " + remoteId);
         }
         // get project info to check we can connect

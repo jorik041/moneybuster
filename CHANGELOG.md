@@ -5,6 +5,27 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## 0.1.16 – 2022-03-04
+### Added
+- accept IHM invitation links in new project form and when clicked or scanned
+  [#91](https://gitlab.com/eneiluj/moneybuster/issues/91) @almet
+
+### Changed
+- prevent bill deletion when it is disabled in the project
+  [#99](https://gitlab.com/eneiluj/moneybuster/issues/99) @Shining-cat
+- sync my access level, check it before adding/editing a member, WARNING: will work with Cospend >= v1.4.4  
+  [#98](https://gitlab.com/eneiluj/moneybuster/issues/98) @macapple194
+
+### Fixed
+- fix bill deletion/edition in pushLocalChanges when remote bill does not exist
+  [#99](https://gitlab.com/eneiluj/moneybuster/issues/99) @Shining-cat
+- fix bug in category edition when using old payment modes
+  [#98](https://gitlab.com/eneiluj/moneybuster/issues/98) @macapple194
+- fix change payment mode detection
+  [#98](https://gitlab.com/eneiluj/moneybuster/issues/98) @macapple194
+- fix stats for IHM projects  
+  [#101](https://gitlab.com/eneiluj/moneybuster/issues/101) @rootsh0pf
+
 ## 0.1.15 – 2021-11-20
 ### Added
 - simple math operations in amount field

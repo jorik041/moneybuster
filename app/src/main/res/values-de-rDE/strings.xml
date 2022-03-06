@@ -351,6 +351,8 @@
     <string name="fallback_weblogin_text">Zur alten Login-Methode zurückkehren</string>
     <string name="fallback_weblogin_back">Zurück</string>
     <string name="use_sso_toggle">Konto der Nextcloud Dateien-App verwenden</string>
+    <!-- QR Code Scanner -->
+    <string name="error_scanning_bill_qr_code">QR Code konnte nicht gescannt werden</string>
     <!-- Plurals -->
     <plurals name="ab_selected">
         <item quantity="one">%d ausgewählt</item>

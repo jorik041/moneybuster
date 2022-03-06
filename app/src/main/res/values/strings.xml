@@ -152,6 +152,7 @@
     <string name="action_select_project">select current project</string>
     <string name="menu_select_all">Select all</string>
     <string name="menu_delete">Delete</string>
+    <string name="menu_scan">Scan</string>
     <string name="menu_delete_project_remote">Delete project on server</string>
     <string name="menu_save_project">Save project</string>
     <string name="menu_save_bill">Save bill</string>
@@ -395,6 +396,9 @@
     <string name="fallback_weblogin_text">Revert to old login method</string>
     <string name="fallback_weblogin_back">Back</string>
     <string name="use_sso_toggle">Use account from Nextcloud Files app</string>
+
+    <!-- QR Code Scanner -->
+    <string name="error_scanning_bill_qr_code">QR code could not be scanned.</string>
 
     <!-- Plurals -->
     <plurals name="ab_selected">

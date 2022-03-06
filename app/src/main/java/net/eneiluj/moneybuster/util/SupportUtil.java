@@ -69,6 +69,12 @@ public class SupportUtil {
         dotNumberFormat.setMaximumFractionDigits(Integer.MAX_VALUE);
         dotNumberFormat.setGroupingUsed(false);
     }
+
+    public static final NumberFormat commaNumberFormat = NumberFormat.getNumberInstance(Locale.GERMANY);
+    static {
+        commaNumberFormat.setMaximumFractionDigits(Integer.MAX_VALUE);
+        commaNumberFormat.setGroupingUsed(false);
+    }
     /**
      * Creates a {@link Spanned} from a HTML string on all SDK versions.
      *

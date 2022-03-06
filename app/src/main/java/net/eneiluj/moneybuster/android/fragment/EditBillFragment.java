@@ -1,10 +1,13 @@
 package net.eneiluj.moneybuster.android.fragment;
 
+import static android.app.Activity.RESULT_OK;
+
 import androidx.appcompat.app.ActionBar;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -34,6 +37,10 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -46,6 +53,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import net.eneiluj.moneybuster.R;
+import net.eneiluj.moneybuster.android.activity.QrCodeScanner;
 import net.eneiluj.moneybuster.android.ui.TextDrawable;
 import net.eneiluj.moneybuster.android.ui.UserAdapter;
 import net.eneiluj.moneybuster.android.ui.UserItem;
@@ -57,7 +65,9 @@ import net.eneiluj.moneybuster.model.DBMember;
 import net.eneiluj.moneybuster.model.DBPaymentMode;
 import net.eneiluj.moneybuster.model.DBProject;
 import net.eneiluj.moneybuster.model.ProjectType;
+import net.eneiluj.moneybuster.model.parsed.AustrianBillQrCode;
 import net.eneiluj.moneybuster.persistence.MoneyBusterSQLiteOpenHelper;
+import net.eneiluj.moneybuster.util.BillParser;
 import net.eneiluj.moneybuster.util.ICallback;
 import net.eneiluj.moneybuster.util.MoneyBuster;
 import net.eneiluj.moneybuster.util.SupportUtil;
@@ -66,6 +76,7 @@ import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -140,6 +151,8 @@ public class EditBillFragment extends Fragment {
 
     private SimpleDateFormat sdfDate;
     private SimpleDateFormat sdfTime;
+
+    private BillParser billParser;
 
     private boolean isSpinnerUserAction = false;
     private boolean isSpinnerRepeatAction = false;
@@ -447,6 +460,31 @@ public class EditBillFragment extends Fragment {
         return view;
     }
 
+    private final ActivityResultLauncher<Intent> scanQRCodeLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    new ActivityResultCallback<ActivityResult>() {
+                        @Override
+                        public void onActivityResult(ActivityResult result) {
+                            Intent data = result.getData();
+                            if (result.getResultCode() == RESULT_OK) {
+                                if (data != null) {
+                                    String scannedBill = data.getStringExtra(QrCodeScanner.KEY_QR_CODE);
+                                    Log.d(TAG, "onActivityResult SCANNED BILL : " + scannedBill);
+                                    try {
+                                        AustrianBillQrCode bill = billParser.parseAustrianBillFromQrCode(scannedBill);
+                                        calendar.setTimeInMillis(bill.getDate().getTime());
+                                        updateDateLabel();
+                                        updateTimeLabel();
+                                        editAmount.setText(SupportUtil.normalNumberFormat.format(bill.getAmount()));
+                                    } catch (ParseException e) {
+                                        Log.d(TAG, "Could not parse scanned bill : " + scannedBill);
+                                        showToast(getString(R.string.error_scanning_bill_qr_code), Toast.LENGTH_LONG);
+                                    }
+                                }
+                            }
+                        }
+                    });
+
     private void convertToCurrency(long currencyId) {
         DBCurrency currency = db.getCurrency(currencyId);
         double initAmount = getAmount();
@@ -519,6 +557,8 @@ public class EditBillFragment extends Fragment {
 
         sdfDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
         sdfTime = new SimpleDateFormat("HH:mm", Locale.ROOT);
+
+        billParser = new BillParser();
 
         if (savedInstanceState == null) {
             long id = getArguments().getLong(PARAM_BILL_ID);
@@ -684,6 +724,11 @@ public class EditBillFragment extends Fragment {
                 } else {
                     listener.close();
                 }
+                return true;
+            case R.id.menu_scan:
+                Log.d(TAG, "Scan button pressed");
+                Intent createIntent = new Intent(getContext(), QrCodeScanner.class);
+                scanQRCodeLauncher.launch(createIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

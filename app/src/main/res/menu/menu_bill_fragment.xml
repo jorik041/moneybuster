@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_scan"
+        android:icon="@drawable/ic_qrcode_grey"
+        android:orderInCategory="89"
+        android:title="@string/menu_scan"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/menu_delete"
         android:icon="@drawable/ic_baseline_delete_grey_24"
         android:orderInCategory="89"

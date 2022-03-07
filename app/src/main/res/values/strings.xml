@@ -152,7 +152,7 @@
     <string name="action_select_project">select current project</string>
     <string name="menu_select_all">Select all</string>
     <string name="menu_delete">Delete</string>
-    <string name="menu_scan">Scan</string>
+    <string name="menu_scan">Scan Austrian tax QRCode</string>
     <string name="menu_delete_project_remote">Delete project on server</string>
     <string name="menu_save_project">Save project</string>
     <string name="menu_save_bill">Save bill</string>

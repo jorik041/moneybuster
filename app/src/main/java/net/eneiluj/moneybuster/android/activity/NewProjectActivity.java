@@ -64,7 +64,10 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
             if (data == null) {
                 showToast(getString(R.string.import_no_data), Toast.LENGTH_LONG);
                 shouldCloseActivity = true;
-            } else if (data.getScheme().equals("cospend") && data.getPathSegments().size() >= 1) {
+            } else if (
+                    (data.getScheme().equals("cospend") || data.getScheme().equals("cospend+http"))
+                    && data.getPathSegments().size() >= 1
+            ) {
                 if (data.getPath().endsWith("/")) {
                     defaultProjectPassword = "";
                     defaultProjectId = data.getLastPathSegment();
@@ -72,17 +75,28 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
                     defaultProjectPassword = data.getLastPathSegment();
                     defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
                 }
-                defaultNcUrl = "https://" + data.getHost();
+                String protocol = "https";
+                if (data.getScheme().equals("cospend+http")) {
+                    protocol = "http";
+                }
+                defaultNcUrl = protocol + "://" + data.getHost();
                 if (data.getPort() != -1) {
                     defaultNcUrl += ":" + data.getPort();
                 }
                 defaultNcUrl += data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
                 defaultProjectType = ProjectType.COSPEND;
-            } else if (data.getScheme().equals("ihatemoney") && data.getPathSegments().size() >= 1) {
+            } else if (
+                    (data.getScheme().equals("ihatemoney") || data.getScheme().equals("ihatemoney+http"))
+                    && data.getPathSegments().size() >= 1
+            ) {
                 // invitation link
                 if (data.getPathSegments().size() >= 3
                     && "join".equals(data.getPathSegments().get(data.getPathSegments().size() - 2))) {
-                    defaultIhmUrl = "https://" + data.getHost();
+                    String protocol = "https";
+                    if (data.getScheme().equals("ihatemoney+http")) {
+                        protocol = "http";
+                    }
+                    defaultIhmUrl = protocol + "://" + data.getHost();
                     if (data.getPort() != -1) {
                         defaultIhmUrl += ":" + data.getPort();
                     }
@@ -96,31 +110,16 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
                         defaultProjectPassword = data.getLastPathSegment();
                         defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
                     }
-                    defaultIhmUrl = "https://" +
-                            data.getHost() + data.getPath().replaceAll("/" + defaultProjectId + "/" + defaultProjectPassword + "$", "");
+                    String protocol = "https";
+                    if (data.getScheme().equals("ihatemoney+http")) {
+                        protocol = "http";
+                    }
+                    defaultIhmUrl = protocol + "://" + data.getHost();
+                    if (data.getPort() != -1) {
+                        defaultIhmUrl += ":" + data.getPort();
+                    }
+                    defaultIhmUrl += data.getPath().replaceAll("/" + defaultProjectId + "/" + defaultProjectPassword + "$", "");
                 }
-                defaultProjectType = ProjectType.IHATEMONEY;
-            } else if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 2) {
-                if (data.getPath().endsWith("/")) {
-                    defaultProjectPassword = "";
-                    defaultProjectId = data.getLastPathSegment();
-                } else {
-                    defaultProjectPassword = data.getLastPathSegment();
-                    defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
-                }
-                defaultNcUrl = "https:/" +
-                        data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
-                defaultProjectType = ProjectType.COSPEND;
-            } else if (data.getHost().equals("net.eneiluj.moneybuster.ihatemoney") && data.getPathSegments().size() >= 2) {
-                if (data.getPath().endsWith("/")) {
-                    defaultProjectPassword = "";
-                    defaultProjectId = data.getLastPathSegment();
-                } else {
-                    defaultProjectPassword = data.getLastPathSegment();
-                    defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
-                }
-                defaultIhmUrl = "https:/" +
-                        data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
                 defaultProjectType = ProjectType.IHATEMONEY;
             } else {
                 showToast(getString(R.string.import_bad_url), Toast.LENGTH_LONG);

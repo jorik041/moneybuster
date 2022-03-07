@@ -690,7 +690,10 @@ public class NewProjectFragment extends Fragment {
         String password;
         String url;
         String pid;
-        if (data.getScheme().equals("cospend") && data.getPathSegments().size() >= 1) {
+        if (
+                (data.getScheme().equals("cospend") || data.getScheme().equals("cospend+http"))
+                && data.getPathSegments().size() >= 1
+        ) {
             if (data.getPath().endsWith("/")) {
                 password = "";
                 pid = data.getLastPathSegment();
@@ -698,7 +701,11 @@ public class NewProjectFragment extends Fragment {
                 password = data.getLastPathSegment();
                 pid = data.getPathSegments().get(data.getPathSegments().size() - 2);
             }
-            url = "https://" + data.getHost();
+            String protocol = "https";
+            if (data.getScheme().equals("cospend+http")) {
+                protocol = "http";
+            }
+            url = protocol + "://" + data.getHost();
             if (data.getPort() != -1) {
                 url += ":" + data.getPort();
             }
@@ -711,12 +718,19 @@ public class NewProjectFragment extends Fragment {
             whereCospend.setChecked(true);
             showHideInputFields(false);
             showHideValidationButtons();
-        } else if (data.getScheme().equals("ihatemoney") && data.getPathSegments().size() >= 1) {
+        } else if (
+                (data.getScheme().equals("ihatemoney") || data.getScheme().equals("ihatemoney+http"))
+                && data.getPathSegments().size() >= 1
+        ) {
             if (data.getPathSegments().size() >= 3
                     && "join".equals(data.getPathSegments().get(data.getPathSegments().size() - 2))) {
                 newProjectPassword.setText("");
                 newProjectId.setText("");
-                url = "https://" + data.getHost();
+                String protocol = "https";
+                if (data.getScheme().equals("ihatemoney+http")) {
+                    protocol = "http";
+                }
+                url = protocol + "://" + data.getHost();
                 if (data.getPort() != -1) {
                     url += ":" + data.getPort();
                 }
@@ -729,47 +743,18 @@ public class NewProjectFragment extends Fragment {
                     password = data.getLastPathSegment();
                     pid = data.getPathSegments().get(data.getPathSegments().size() - 2);
                 }
-                url = "https://" +
-                        data.getHost() + data.getPath().replaceAll("/" + pid + "/" + password + "$", "");
+                String protocol = "https";
+                if (data.getScheme().equals("ihatemoney+http")) {
+                    protocol = "http";
+                }
+                url = protocol + "://" + data.getHost();
+                if (data.getPort() != -1) {
+                    url += ":" + data.getPort();
+                }
+                url += data.getPath().replaceAll("/" + pid + "/" + password + "$", "");
                 newProjectPassword.setText(password);
                 newProjectId.setText(pid);
             }
-            newProjectUrl.setText(url);
-            whereLocal.setChecked(false);
-            whereIhm.setChecked(true);
-            whereCospend.setChecked(false);
-            showHideInputFields(false);
-            showHideValidationButtons();
-        } else if (data.getHost().equals("net.eneiluj.moneybuster.cospend") && data.getPathSegments().size() >= 2) {
-            if (data.getPath().endsWith("/")) {
-                password = "";
-                pid = data.getLastPathSegment();
-            } else {
-                password = data.getLastPathSegment();
-                pid = data.getPathSegments().get(data.getPathSegments().size() - 2);
-            }
-            url = "https:/" +
-                    data.getPath().replaceAll("/"+pid+"/" + password + "$", "");
-            newProjectPassword.setText(password);
-            newProjectId.setText(pid);
-            newProjectUrl.setText(url);
-            whereLocal.setChecked(false);
-            whereIhm.setChecked(false);
-            whereCospend.setChecked(true);
-            showHideInputFields(false);
-            showHideValidationButtons();
-        } else if (data.getHost().equals("net.eneiluj.moneybuster.ihatemoney") && data.getPathSegments().size() >= 2) {
-            if (data.getPath().endsWith("/")) {
-                password = "";
-                pid = data.getLastPathSegment();
-            } else {
-                password = data.getLastPathSegment();
-                pid = data.getPathSegments().get(data.getPathSegments().size() - 2);
-            }
-            url = "https:/" +
-                    data.getPath().replaceAll("/" + pid + "/" + password + "$", "");
-            newProjectPassword.setText(password);
-            newProjectId.setText(pid);
             newProjectUrl.setText(url);
             whereLocal.setChecked(false);
             whereIhm.setChecked(true);
@@ -1060,7 +1045,7 @@ public class NewProjectFragment extends Fragment {
     }
     protected boolean isInvitationLink(String url) {
         Uri data = Uri.parse(url);
-        return data.getScheme().equals("https")
+        return (data.getScheme().equals("https") || data.getScheme().equals("http"))
             && data.getPathSegments().size() >= 3
             && "join".equals(data.getPathSegments().get(data.getPathSegments().size() - 2));
     }

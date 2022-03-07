@@ -94,7 +94,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:host="net.eneiluj.moneybuster.cospend" android:pathPrefix="/" android:scheme="https" />
+                <data android:host="*" android:pathPrefix="/" android:scheme="cospend+http" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -106,7 +106,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:host="net.eneiluj.moneybuster.ihatemoney" android:pathPrefix="/" android:scheme="https" />
+                <data android:host="*" android:pathPrefix="/" android:scheme="ihatemoney+http" />
             </intent-filter>
         </activity>
 

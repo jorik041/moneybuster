@@ -151,6 +151,7 @@
     <string name="action_select_project">Aktuelles Projekt auswählen</string>
     <string name="menu_select_all">Alle auswählen</string>
     <string name="menu_delete">Löschen</string>
+    <string name="menu_scan">Scan Austrian tax QRCode</string>
     <string name="menu_delete_project_remote">Projekt auf dem Server löschen</string>
     <string name="menu_save_project">Projekt speichern</string>
     <string name="menu_save_bill">Ausgabe speichern</string>
@@ -191,6 +192,7 @@
     <string name="first_welcome_dialog_content">Konfiguriere zuerst ein Nextcloud-Konto, erstelle ein Projekt oder trete einem Projekt bei (mit IHateMoney oder Nextcloud Cospend). Füge dann Mitglieder hinzu und/oder erstelle Ausgaben!\n\nWeitere wichtige Aktionen:\n* Rechne das Projekt ab, um einen Gesamt-Rückzahlungsplan zu generieren\n* Projektstatistiken anzeigen\n* Teilen: Generiere einen QR-Code, den andere scannen können, um dem Projekt beizutreten\n\nAuf Android &gt;= 8.0 kannst du lange auf die Aktionsschaltflächen drücken, um die Hilfe anzuzeigen.</string>
     <string name="changelog">Änderungsprotokoll</string>
     <string name="permanent_notification_title">Permanente Synchronisierung</string>
+    <string name="insufficient_access_level">Sie sind nicht berechtigt, um diese Aktion durchzuführen</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Aussehen</string>
     <string name="settings_network_category">Netzwerk</string>

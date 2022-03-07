@@ -151,6 +151,7 @@
     <string name="action_select_project">изберете текущия проект</string>
     <string name="menu_select_all">Избиране на всичко</string>
     <string name="menu_delete">Изтриване</string>
+    <string name="menu_scan">Scan Austrian tax QRCode</string>
     <string name="menu_delete_project_remote">Изтриване на проекта в сървъра</string>
     <string name="menu_save_project">Запазване на проекта</string>
     <string name="menu_save_bill">Записване на сметката</string>
@@ -191,6 +192,7 @@
     <string name="first_welcome_dialog_content">Първо, конфигурирайте акаунта в Nextcloud или създайте/присъединете се към проект (в IHateMoney или Nextcloud Cospend), след това добавете членове и/или създайте няколко сметки!\n\nДруги основни действия:\n*Настрой проекта, за да се създаде глобален план за плащанията\n* Покажи статистиката за проекта\n* Сподели: създай QR код, който другите могат да сканират, за да се присъединят към проекта\n\nВ Android &gt;= 8.0 можете продължително да натискате бутоните за действие, за да се покаже помощта.</string>
     <string name="changelog">Дневник на промените</string>
     <string name="permanent_notification_title">Постоянно синхронизиране</string>
+    <string name="insufficient_access_level">You are not allowed to perform this action</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Външен вид</string>
     <string name="settings_network_category">Мрежа</string>
@@ -351,6 +353,8 @@
     <string name="fallback_weblogin_text">Обратно към стария метод за влизане</string>
     <string name="fallback_weblogin_back">Назад</string>
     <string name="use_sso_toggle">Употребявайте акаунта от приложението Nextcloud Files</string>
+    <!-- QR Code Scanner -->
+    <string name="error_scanning_bill_qr_code">QR code could not be scanned.</string>
     <!-- Plurals -->
     <plurals name="ab_selected">
         <item quantity="one">%d избрано</item>

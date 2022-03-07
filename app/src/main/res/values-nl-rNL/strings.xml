@@ -151,6 +151,7 @@
     <string name="action_select_project">Huidige project selecteren</string>
     <string name="menu_select_all">Alles selecteren</string>
     <string name="menu_delete">Verwijderen</string>
+    <string name="menu_scan">Scan Austrian tax QRCode</string>
     <string name="menu_delete_project_remote">Project verwijderen op server</string>
     <string name="menu_save_project">Project opslaan</string>
     <string name="menu_save_bill">Rekening opslaan</string>
@@ -191,6 +192,7 @@
     <string name="first_welcome_dialog_content">First, configure Nextcloud account or create/join a project (IHateMoney or Nextcloud Cospend), then add some members and/or create some bills!\n\nOther main actions:\n* Settle the project to generate a global repayment plan\n* Show project statistics\n* Share: generate a QRCode that others can scan to join the project\n\nOn Android &gt;= 8.0 you can long press the action buttons to display help.</string>
     <string name="changelog">Wijzigingslogboek</string>
     <string name="permanent_notification_title">Permanente synchronisatie</string>
+    <string name="insufficient_access_level">You are not allowed to perform this action</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Uiterlijk</string>
     <string name="settings_network_category">Netwerk</string>
@@ -351,6 +353,8 @@
     <string name="fallback_weblogin_text">Terugkeren naar oude login methode</string>
     <string name="fallback_weblogin_back">Vorige</string>
     <string name="use_sso_toggle">Gebruik account van Nextcloud Bestanden app</string>
+    <!-- QR Code Scanner -->
+    <string name="error_scanning_bill_qr_code">QR code could not be scanned.</string>
     <!-- Plurals -->
     <plurals name="ab_selected">
         <item quantity="one">%d geselecteerd</item>

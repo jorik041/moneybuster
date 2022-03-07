@@ -151,6 +151,7 @@
     <string name="action_select_project">επιλογή τρέχοντος έργου</string>
     <string name="menu_select_all">Επιλογή Όλων</string>
     <string name="menu_delete">Διαγραφή</string>
+    <string name="menu_scan">Scan Austrian tax QRCode</string>
     <string name="menu_delete_project_remote">Διαγραφή έργου στο διακομιστή</string>
     <string name="menu_save_project">Αποθήκευση έργου</string>
     <string name="menu_save_bill">Αποθήκευση λογαριασμού</string>
@@ -191,6 +192,7 @@
     <string name="first_welcome_dialog_content">Πρώτα προσαρμόστε έναν λογαριασμό Nextcloud ή δημιουργήσετε/συνδεθείτε σε ένα έργο (IHateMoney ή Nextcloud Cospend), προσθέστε μερικά μέλη και/ή δημιουργήστε μερικούς λογαριασμούς!\n\nΆλλες κύριες δράσεις:\n* Εξόφληση ενός έργου για τη δημιουργία ενός συνολικού σχεδίου αποπληρωμής\n* Εμφάνιση στατιστικών έργων\n* Κοινοποίηση: δημιουργία ένα QRCode που μπορούν να σαρώσουν άλλοι για να συμμετάσχουν στο έργο\n\nΣτο Android &gt;= 8.0 μπορείτε να πατήσετε πατημένα τα κουμπιά δράσης για να εμφανιστεί η βοήθεια.</string>
     <string name="changelog">Αρχείο αλλαγών</string>
     <string name="permanent_notification_title">Permanent sync</string>
+    <string name="insufficient_access_level">You are not allowed to perform this action</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Εμφάνιση</string>
     <string name="settings_network_category">Δίκτυο</string>
@@ -351,6 +353,8 @@
     <string name="fallback_weblogin_text">Επιστροφή σε παλιά μέθοδο σύνδεσης</string>
     <string name="fallback_weblogin_back">Πίσω</string>
     <string name="use_sso_toggle">Χρήση λογαριασμού από την εφαρμογή Nextcloud Files</string>
+    <!-- QR Code Scanner -->
+    <string name="error_scanning_bill_qr_code">QR code could not be scanned.</string>
     <!-- Plurals -->
     <plurals name="ab_selected">
         <item quantity="one">%d επιλέχθηκε</item>

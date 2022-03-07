@@ -151,6 +151,7 @@
     <string name="action_select_project">选择当前项目</string>
     <string name="menu_select_all">选择所有</string>
     <string name="menu_delete">删除</string>
+    <string name="menu_scan">Scan Austrian tax QRCode</string>
     <string name="menu_delete_project_remote">删除服务器上的项目</string>
     <string name="menu_save_project">保存项目</string>
     <string name="menu_save_bill">保存账单</string>
@@ -191,6 +192,7 @@
     <string name="first_welcome_dialog_content">First, configure Nextcloud account or create/join a project (IHateMoney or Nextcloud Cospend), then add some members and/or create some bills!\n\nOther main actions:\n* Settle the project to generate a global repayment plan\n* Show project statistics\n* Share: generate a QRCode that others can scan to join the project\n\nOn Android &gt;= 8.0 you can long press the action buttons to display help.</string>
     <string name="changelog">更新日志</string>
     <string name="permanent_notification_title">Permanent sync</string>
+    <string name="insufficient_access_level">You are not allowed to perform this action</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Appearance</string>
     <string name="settings_network_category">Network</string>
@@ -351,6 +353,8 @@
     <string name="fallback_weblogin_text">恢复到旧登录方法</string>
     <string name="fallback_weblogin_back">返回</string>
     <string name="use_sso_toggle">使用 Nextcloud 实例的帐户</string>
+    <!-- QR Code Scanner -->
+    <string name="error_scanning_bill_qr_code">QR code could not be scanned.</string>
     <!-- Plurals -->
     <plurals name="ab_selected">
         <item quantity="other">已选择 %d 个</item>

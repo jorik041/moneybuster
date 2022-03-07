@@ -151,6 +151,7 @@
     <string name="action_select_project">seleccionar proyecto actual</string>
     <string name="menu_select_all">Seleccionar todo</string>
     <string name="menu_delete">Eliminar</string>
+    <string name="menu_scan">Scan Austrian tax QRCode</string>
     <string name="menu_delete_project_remote">Eliminar proyecto en el servidor</string>
     <string name="menu_save_project">Guardar proyecto</string>
     <string name="menu_save_bill">Guardar factura</string>
@@ -191,6 +192,7 @@
     <string name="first_welcome_dialog_content">Primero, configura la cuenta de Nextcloud o crea/únete a un proyecto (IHateMoney o Nextcloud Cospend), a continuación añade miembros y/o crea algunas facturas.\n\nOtras acciones principales:\n* Liquidar el proyecto para generar un plan global de pago\n* Mostrar estadísticas del proyecto\n* Compartir: generar un código QR que otros puedan escanear para unirse al proyecto\n\nEn Android &gt;= 8.0 puedes mantener pulsados los botones de acción para mostrar ayuda.</string>
     <string name="changelog">Registro de cambios</string>
     <string name="permanent_notification_title">Sincronización permanente</string>
+    <string name="insufficient_access_level">You are not allowed to perform this action</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Apariencia</string>
     <string name="settings_network_category">Red</string>
@@ -351,6 +353,8 @@
     <string name="fallback_weblogin_text">Volver al antiguo método de inicio de sesión</string>
     <string name="fallback_weblogin_back">Atrás</string>
     <string name="use_sso_toggle">Usar una cuenta de la aplicación Nextcloud Files</string>
+    <!-- QR Code Scanner -->
+    <string name="error_scanning_bill_qr_code">QR code could not be scanned.</string>
     <!-- Plurals -->
     <plurals name="ab_selected">
         <item quantity="one">%d seleccionado</item>

@@ -20,22 +20,22 @@
     <string name="setting_payer">Quem pagou?</string>
     <string name="setting_all">Todos</string>
     <string name="setting_none">Nenhum</string>
-    <string name="save_or_discard_bill_dialog_title">Bill edition</string>
-    <string name="save_or_discard_bill_dialog_message">Bill values have been changed. What do you want to do?</string>
-    <string name="save_or_discard_bill_dialog_save">Save</string>
-    <string name="save_or_discard_bill_dialog_discard">Discard</string>
-    <string name="currency_manager">Currency manager</string>
-    <string name="add_currency_title">Add currency</string>
-    <string name="currency_management_unavailable">Currency management is only available for Cospend projects</string>
-    <string name="setting_comment">Comment</string>
-    <string name="duplicate_bill">Duplicate bill</string>
+    <string name="save_or_discard_bill_dialog_title">Edição de facturas</string>
+    <string name="save_or_discard_bill_dialog_message">Os valores da factura mudaram. O que pretende fazer?</string>
+    <string name="save_or_discard_bill_dialog_save">Guardar</string>
+    <string name="save_or_discard_bill_dialog_discard">Descartar</string>
+    <string name="currency_manager">Gestor de unidades monetárias</string>
+    <string name="add_currency_title">Adicionar unidade monetária</string>
+    <string name="currency_management_unavailable">A gestão de unidades monetárias só está disponível para projectos Cospend</string>
+    <string name="setting_comment">Comentário</string>
+    <string name="duplicate_bill">Duplicar factura</string>
     <string name="currency_dialog_title">Converter o montante actual de outra unidade monetária para %s</string>
     <string name="no_currency_error">Não existe uma unidade monetária adicional</string>
-    <string name="main_currency">Main currency</string>
-    <string name="no_main_currency">Main currency must be set before adding others</string>
-    <string name="currency_edit_name">Name</string>
-    <string name="currency_rate">Exchange rate</string>
-    <string name="bill_deletion_is_disabled">Bill deletion is disabled for this project</string>
+    <string name="main_currency">Unidade monetária principal</string>
+    <string name="no_main_currency">A unidade monetária principal tem que ser definida antes de adicionar outras</string>
+    <string name="currency_edit_name">Nome</string>
+    <string name="currency_rate">Taxa de câmbio</string>
+    <string name="bill_deletion_is_disabled">A eliminação de facturas está desactivada neste projecto</string>
     <string name="setting_amount">Quanto?</string>
     <string name="setting_amount_long">Quanto custou?</string>
     <string name="setting_owers">De quem?</string>
@@ -112,18 +112,18 @@
     <string name="setting_email">E-mail (remoto)</string>
     <string name="project_added_success">Projecto adicionado com sucesso ao MoneyBuster</string>
     <string name="action_search">Pesquisar</string>
-    <string name="action_search_in_project">Search in %s</string>
+    <string name="action_search_in_project">Procurar em %s</string>
     <string name="simple_error">Erro</string>
-    <string name="simple_close">Close</string>
+    <string name="simple_close">Fechar</string>
     <string name="simple_loading">A carregar</string>
     <string name="simple_remove">Remover</string>
     <string name="sync_error_dialog_title">Falha na sincronização do projecto</string>
-    <string name="sync_error_dialog_full_content">Synchronization with project %1$s failed. Error message:\n\n%2$s\n\nThe associated remote project might not exist anymore. If so, you could remove this project from MoneyBuster.</string>
-    <string name="error_maintenance_mode">The Nextcloud instance is probably in maintenance mode</string>
-    <string name="error_400">400 Bad request</string>
-    <string name="error_401">401 Unauthorized</string>
-    <string name="error_403">403 Forbidden</string>
-    <string name="error_404">404 Not Found</string>
+    <string name="sync_error_dialog_full_content">A sincronização com o projecto %1$s falhou. Mensagem de erro:\n\n%2$s\n\nO projecto remoto associado pode já não existir. Se for esse o caso, pode remover este projecto do MoneyBuster.</string>
+    <string name="error_maintenance_mode">A instância do Nextcloud provavelmente está em modo de manutenção</string>
+    <string name="error_400">400 Pedido inválido</string>
+    <string name="error_401">401 Não autorizado</string>
+    <string name="error_403">403 Proibido</string>
+    <string name="error_404">404 Não encontrado</string>
     <string name="simple_do_nothing">Não fazer nada</string>
     <string name="creating_remote_project">Criando projecto remoto</string>
     <string name="simple_cancel">Cancelar</string>
@@ -131,7 +131,7 @@
     <string name="simple_ok_no_more">Entendi!</string>
     <string name="simple_yes">Sim</string>
     <string name="simple_no">Não</string>
-    <string name="simple_add">Add</string>
+    <string name="simple_add">Adicionar</string>
     <string name="simple_edit_bill">Editar factura</string>
     <string name="simple_new_bill">Nova factura</string>
     <string name="simple_add_project">Adicionar projecto no MoneyBuster</string>
@@ -151,6 +151,7 @@
     <string name="action_select_project">seleccionar projecto actual</string>
     <string name="menu_select_all">Seleccionar tudo</string>
     <string name="menu_delete">Eliminar</string>
+    <string name="menu_scan">Scan Austrian tax QRCode</string>
     <string name="menu_delete_project_remote">Eliminar projecto no servidor</string>
     <string name="menu_save_project">Guardar projecto</string>
     <string name="menu_save_bill">Guardar factura</string>
@@ -164,9 +165,9 @@
     <string name="fab_manage_members">Gerir membros</string>
     <string name="fab_export_project">Exportar projecto</string>
     <string name="drawer_last_sync_text">Última sincronização: %1$02d:%2$02d</string>
-    <string name="scan_qrcode_tooltip">Scan a Cospend/IHateMoney QRCode</string>
-    <string name="new_project_from_nextcloud_tooltip">Choose project from Nextcloud account</string>
-    <string name="import_tooltip">Import from CSV file</string>
+    <string name="scan_qrcode_tooltip">Ler um código QR do Cospend/IHateMoney</string>
+    <string name="new_project_from_nextcloud_tooltip">Escolher projecto a partir de uma conta Nextcloud</string>
+    <string name="import_tooltip">Importar a partir de um ficheiro CSV</string>
     <string name="import_error_owers">CSV malformado, donos inválidos na linha %1$d</string>
     <string name="import_error_date">CSV malformado, data inválida na linha %1$d</string>
     <string name="import_error_header">CSV malformado, nomes de colunas inválidos na linha %1$d</string>
@@ -191,6 +192,7 @@
     <string name="first_welcome_dialog_content">Primeiro configure uma conta Nextcloud ou crie/adira a um projecto (IHateMoney ou Nextcloud Cospend), depois adicione alguns membros e/ou crie algumas facturas!\n\nOutras acções principais:\n* Liquide o projecto para gerar um plano de reembolso global\n* Mostre estatísticas do projecto\n* Partilhe: crie um código QR que outros podem ler para aderir ao projecto\n\nNo Android &gt;= 8.0 pode premir os botões de acção de forma prolongada para obter ajuda.</string>
     <string name="changelog">Registo de alterações</string>
     <string name="permanent_notification_title">Sincronização permanente</string>
+    <string name="insufficient_access_level">Não tem permissão para executar esta acção</string>
     <!-- Settings -->
     <string name="settings_appearance_category">Aspecto</string>
     <string name="settings_network_category">Rede</string>
@@ -206,11 +208,11 @@
     <string name="settings_submit">Conectar</string>
     <string name="settings_submitting">Conectando &#8230;</string>
     <string name="settings_theme_title">Tema</string>
-    <string name="settings_night_mode_title">Theme</string>
+    <string name="settings_night_mode_title">Tema</string>
     <string name="settings_offline_mode_title">Modo desconectado</string>
     <string name="settings_offline_mode_summary">Não sincronizar automaticamente. Sincronizar somente quando o utilizador pedir.</string>
-    <string name="settings_show_nextcloud_settings_summary">Disable this if you don\'t use Nextcloud and Cospend and just want to create/join IHateMoney and local projects.</string>
-    <string name="settings_show_nextcloud_settings_title">Show Nextcloud settings</string>
+    <string name="settings_show_nextcloud_settings_summary">Desactive isto se não usar o Nextcloud e o Cospend e quer simplesmente criar/juntar projectos IHateMoney e locais.</string>
+    <string name="settings_show_nextcloud_settings_title">Mostrar configurações do Nextcloud</string>
     <string name="settings_smart_sync_title">Sincronização inteligente com o Cospend</string>
     <string name="settings_smart_sync_summary">Obter somente as facturas que foram alteradas desde a última sincronização. É mais rápido e usa menos dados. É compatível com o Cospend &gt;= 0.2.0</string>
     <string name="settings_color_title">Cor principal da aplicação</string>
@@ -235,7 +237,7 @@
     <string name="settings_notify_updated">Notificação quando são alteradas facturas</string>
     <string name="settings_notify_deleted">Notificação quando são eliminadas facturas</string>
     <string name="project_sync_success">Projecto %s sincronizado</string>
-    <string name="currency_saved_success">Main currency saved</string>
+    <string name="currency_saved_success">Unidade monetária principal guardada</string>
     <string name="file_saved_success">Projecto guardado em %s</string>
     <string name="write_permission_refused">Recusada a permissão de escrita, não é possível escrever o ficheiro</string>
     <string name="add_member_dialog_title">Nome do novo membro</string>
@@ -255,10 +257,10 @@
     <string name="stats_balance">Saldo</string>
     <string name="fab_statistics">Estatísticas do projecto</string>
     <string name="fab_settle">Liquidar</string>
-    <string name="project_add_success_message">Project %1$s was successfully added</string>
-    <string name="project_create_success_message">Project %1$s was successfully created</string>
+    <string name="project_add_success_message">O projecto %1$s foi adicionado com sucesso</string>
+    <string name="project_create_success_message">O projecto %1$s foi criado com sucesso</string>
     <string name="project_add_success_title">Projecto adicionado</string>
-    <string name="project_create_success_title">Project created</string>
+    <string name="project_create_success_title">Projecto criado</string>
     <string name="import_bad_url">Ligação do MoneyBuster malformada, impossível de importar</string>
     <string name="import_no_data">Algo correu mal ao adicionar um projecto novo</string>
     <string name="fab_scan_qrcode_import">Importar código QR do MB</string>
@@ -281,11 +283,11 @@
     <string name="drawer_no_project">Não existem projectos.\nToque aqui para criar/adicionar um</string>
     <string name="drawer_no_account">Clique aqui para se conectar a uma conta Nextcloud</string>
     <string name="choose_project_to_select">Seleccionar um projecto</string>
-    <string name="add_bill_impossible_no_member">At least one activated member is required to add a bill</string>
+    <string name="add_bill_impossible_no_member">É necessário pelo menos um membro activado para adicionar uma factura</string>
     <string name="edit_project_local_impossible">Impossível para projecto locais</string>
     <string name="choose_account_project_dialog_title">Escolha um projecto da sua conta Nextcloud</string>
     <string name="choose_account_project_dialog_impossible">Não quaisquer projectos Cospend na sua conta Nextcloud</string>
-    <string name="sync_notification_message">Synced at %1$s (every %2$d min)</string>
+    <string name="sync_notification_message">Sincronizado em %1$s (a cada %2$d minutos)</string>
     <string name="error_invalid_sync_interval">O intervalo de sincronização tem que ser entre 5 e 1440 (24h)</string>
     <string name="project_activity_notification">Projecto %1$s</string>
     <string name="activity_dialog_title">Actividade no projecto %1$s</string>
@@ -295,7 +297,7 @@
     <string name="trust_certificate_unknown_certificate_found">O MoneyBuster encontrou um certificado desconhecido. Quer confiar nele?</string>
     <!-- Network -->
     <!-- Error -->
-    <string name="error_project_connect_check">Impossible to reach the remote project:\n\n%1$s</string>
+    <string name="error_project_connect_check">Foi impossível alcançar o projecto remoto: \n\n%1$s</string>
     <string name="error_sync">Falha na sincronização do projecto: %1$s</string>
     <string name="error_invalid_login">Autenticação inválida: %1$s</string>
     <string name="error_json">A aplicação Cospend está activada no servidor?</string>
@@ -316,7 +318,7 @@
     <string name="error_create_remote_project_helper">Erro na criação do projecto remoto: %s</string>
     <string name="error_edit_remote_project_helper">Erro na edição do projecto remoto: %s</string>
     <string name="error_token_mismatch">Por favor volte a autenticar a sua conta SSO nas configurações</string>
-    <string name="error_req_failed">Request failed</string>
+    <string name="error_req_failed">O pedido falhou</string>
     <!-- Snackbar Actions -->
     <!-- URLs -->
     <!-- About -->
@@ -346,11 +348,13 @@
     <!-- Key / Values for preferences -->
     <string name="pref_value_theme_light">Luminoso</string>
     <string name="pref_value_theme_dark">Escuro</string>
-    <string name="pref_value_theme_system">Follow system</string>
+    <string name="pref_value_theme_system">Usar o mesmo do sistema</string>
     <string name="avatar">Avatar</string>
     <string name="fallback_weblogin_text">Reverter para o método antigo de início de sessão</string>
     <string name="fallback_weblogin_back">Voltar</string>
     <string name="use_sso_toggle">Usar conta da aplicação Nextcloud</string>
+    <!-- QR Code Scanner -->
+    <string name="error_scanning_bill_qr_code">QR code could not be scanned.</string>
     <!-- Plurals -->
     <plurals name="ab_selected">
         <item quantity="one">%d seleccionado</item>

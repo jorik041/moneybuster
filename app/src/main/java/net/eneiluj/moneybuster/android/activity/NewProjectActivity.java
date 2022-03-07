@@ -72,15 +72,22 @@ public class NewProjectActivity extends AppCompatActivity implements NewProjectF
                     defaultProjectPassword = data.getLastPathSegment();
                     defaultProjectId = data.getPathSegments().get(data.getPathSegments().size() - 2);
                 }
-                defaultNcUrl = "https://" +
-                        data.getHost() + data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
+                defaultNcUrl = "https://" + data.getHost();
+                if (data.getPort() != -1) {
+                    defaultNcUrl += ":" + data.getPort();
+                }
+                defaultNcUrl += data.getPath().replaceAll("/"+defaultProjectId+"/" + defaultProjectPassword + "$", "");
                 defaultProjectType = ProjectType.COSPEND;
             } else if (data.getScheme().equals("ihatemoney") && data.getPathSegments().size() >= 1) {
                 // invitation link
                 if (data.getPathSegments().size() >= 3
                     && "join".equals(data.getPathSegments().get(data.getPathSegments().size() - 2))) {
-                    defaultIhmUrl = "https://" +
-                            data.getHost() + data.getPath();
+                    defaultIhmUrl = "https://" + data.getHost();
+                    if (data.getPort() != -1) {
+                        defaultIhmUrl += ":" + data.getPort();
+                    }
+                    defaultIhmUrl += data.getPath();
+                    Log.e("PORT", "port is " + data.getPort());
                 } else {
                     if (data.getPath().endsWith("/")) {
                         defaultProjectPassword = "";

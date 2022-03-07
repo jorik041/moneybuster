@@ -698,8 +698,11 @@ public class NewProjectFragment extends Fragment {
                 password = data.getLastPathSegment();
                 pid = data.getPathSegments().get(data.getPathSegments().size() - 2);
             }
-            url = "https://" +
-                    data.getHost() + data.getPath().replaceAll("/"+pid+"/" + password + "$", "");
+            url = "https://" + data.getHost();
+            if (data.getPort() != -1) {
+                url += ":" + data.getPort();
+            }
+            url += data.getPath().replaceAll("/"+pid+"/" + password + "$", "");
             newProjectPassword.setText(password);
             newProjectId.setText(pid);
             newProjectUrl.setText(url);
@@ -713,7 +716,11 @@ public class NewProjectFragment extends Fragment {
                     && "join".equals(data.getPathSegments().get(data.getPathSegments().size() - 2))) {
                 newProjectPassword.setText("");
                 newProjectId.setText("");
-                url = "https://" + data.getHost() + data.getPath();
+                url = "https://" + data.getHost();
+                if (data.getPort() != -1) {
+                    url += ":" + data.getPort();
+                }
+                url += data.getPath();
             } else {
                 if (data.getPath().endsWith("/")) {
                     password = "";

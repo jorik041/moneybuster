@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
     // buildToolsVersion '31.0.0'
     defaultConfig {
         applicationId "net.eneiluj.moneybuster"
         minSdkVersion 23
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode 36
         versionName "0.1.16"
         vectorDrawables.useSupportLibrary true
@@ -43,18 +43,19 @@ android {
         abortOnError false
         disable 'MissingTranslation'
     }
+    namespace 'net.eneiluj.moneybuster'
 }
 
 dependencies {
     implementation project(':cert4android')
 
 // AndroidX
-    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.appcompat:appcompat:1.4.2'
     // needed for cert4android (conflict resolution)
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'com.google.android.material:material:1.6.1'
 
 // Other
     implementation 'com.github.clans:fab:1.6.4'

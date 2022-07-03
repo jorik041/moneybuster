@@ -438,21 +438,21 @@ public class NewProjectFragment extends Fragment {
         boolean isIhmInvitationLink = type.equals(ProjectType.IHATEMONEY)
                 && isValidUrl(projectUrl)
                 && isInvitationLink(projectUrl);
-        // show/hide projId and password if this is an IHM invitation link
-        if (type.equals(ProjectType.IHATEMONEY)) {
-            if (isIhmInvitationLink) {
-                newProjectPasswordLayout.setVisibility(View.GONE);
-                newProjectNameLayout.setVisibility(View.GONE);
-                newProjectIdLayout.setVisibility(View.GONE);
-            } else {
-                newProjectPasswordLayout.setVisibility(View.VISIBLE);
-                newProjectNameLayout.setVisibility(View.VISIBLE);
-                newProjectIdLayout.setVisibility(View.VISIBLE);
-            }
+        boolean isCospendScheme = type.equals(ProjectType.COSPEND)
+                && isCospendSchemeLink(projectUrl);
+        // show/hide projId and password if this is an IHM invitation link or a Cospend scheme link
+        if (isIhmInvitationLink || isCospendScheme) {
+            newProjectPasswordLayout.setVisibility(View.GONE);
+            newProjectNameLayout.setVisibility(View.GONE);
+            newProjectIdLayout.setVisibility(View.GONE);
+        } else {
+            newProjectPasswordLayout.setVisibility(View.VISIBLE);
+            newProjectNameLayout.setVisibility(View.VISIBLE);
+            newProjectIdLayout.setVisibility(View.VISIBLE);
         }
 
         // always check project ID
-        if (projectId.equals("") && !isIhmInvitationLink) {
+        if (projectId.equals("") && !isIhmInvitationLink && !isCospendScheme) {
             newProjectIdInputLayout.setBackgroundColor(0x55FF0000);
             valid = false;
         } else {
@@ -461,13 +461,16 @@ public class NewProjectFragment extends Fragment {
 
         // first, what is independent from creation/join
         if (!type.equals(ProjectType.LOCAL)) {
-            if (projectUrl.equals("") || !isValidUrl(projectUrl)) {
+            if (
+                    !isCospendScheme
+                    && (projectUrl.equals("") || !isValidUrl(projectUrl))
+            ) {
                 newProjectUrlInputLayout.setBackgroundColor(0x55FF0000);
                 valid = false;
             } else {
                 newProjectUrlInputLayout.setBackgroundColor(getResources().getColor(R.color.bg_normal, requireContext().getTheme()));
             }
-            if (projectPassword.equals("") && !isIhmInvitationLink) {
+            if (projectPassword.equals("") && !isIhmInvitationLink && !isCospendScheme) {
                 newProjectPasswordInputLayout.setBackgroundColor(0x55FF0000);
                 valid = false;
             } else {
@@ -812,8 +815,9 @@ public class NewProjectFragment extends Fragment {
 
     private void createProject() {
         boolean isIhmInvitationLink = isInvitationLink(getUrl());
+        boolean isCospendScheme = isCospendSchemeLink(getUrl());
         String rid = getRemoteId();
-        if (!isIhmInvitationLink && (rid == null || rid.equals("") || rid.contains(",") || rid.contains("/"))) {
+        if (!isIhmInvitationLink && !isCospendScheme && (rid == null || rid.equals("") || rid.contains(",") || rid.contains("/"))) {
             showToast(getString(R.string.error_invalid_project_remote_id), Toast.LENGTH_LONG);
             return;
         }
@@ -821,7 +825,7 @@ public class NewProjectFragment extends Fragment {
         ProjectType type = getProjectType();
 
         if (!ProjectType.LOCAL.equals(type)) {
-            if (!isIhmInvitationLink) {
+            if (!isIhmInvitationLink && !isCospendScheme) {
                 // check values
                 String url = getUrl();
                 if (!isValidUrl(url)) {
@@ -941,6 +945,21 @@ public class NewProjectFragment extends Fragment {
                     data.getHost() + data.getPath().replaceAll("/" + remoteId + "/join/" + bearerToken + "$", "");
             Log.e(TAG, "IHM invitation link, url: " + url + " , token: " + bearerToken + " , remoteId: " + remoteId);
         }
+        // handle Cospend scheme links
+        if (type.equals(ProjectType.COSPEND) && isCospendSchemeLink(url)) {
+            Log.e(TAG, "!!!!Cospend raw URL " + url);
+            Uri data = Uri.parse(url);
+            password = data.getPathSegments().get(data.getPathSegments().size() - 1);
+            remoteId = data.getPathSegments().get(data.getPathSegments().size() - 2);
+            String protocol = "https";
+            if (data.getScheme().equals("cospend+http")) {
+                protocol = "http";
+            }
+            url = protocol + "://"
+                    + data.getHost() + data.getPath().replaceAll("/" + remoteId + "/" + password + "$", "")
+                    + "/index.php/apps/cospend";
+            Log.e(TAG, "Cospend scheme link, url: " + url + " , password: " + password + " , remoteId: " + remoteId);
+        }
         // get project info to check we can connect
         return new DBProject(
                 0, remoteId, password, name, url,
@@ -1030,7 +1049,7 @@ public class NewProjectFragment extends Fragment {
     protected String getUrl() {
         String url = newProjectUrl.getText().toString().trim();
         ProjectType type = getProjectType();
-        if (ProjectType.COSPEND.equals(type)) {
+        if (ProjectType.COSPEND.equals(type) && !isCospendSchemeLink(url)) {
             url = url.replaceAll("/+$", "") + "/index.php/apps/cospend";
         }
         if (!url.startsWith("http://") && !url.startsWith("https://") && isValidUrl("https://"+url)) {
@@ -1045,9 +1064,14 @@ public class NewProjectFragment extends Fragment {
     }
     protected boolean isInvitationLink(String url) {
         Uri data = Uri.parse(url);
-        return (data.getScheme().equals("https") || data.getScheme().equals("http"))
-            && data.getPathSegments().size() >= 3
-            && "join".equals(data.getPathSegments().get(data.getPathSegments().size() - 2));
+        return ("https".equals(data.getScheme()) || "http".equals(data.getScheme()))
+                && data.getPathSegments().size() >= 3
+                && "join".equals(data.getPathSegments().get(data.getPathSegments().size() - 2));
+    }
+    protected boolean isCospendSchemeLink(String url) {
+        Uri data = Uri.parse(url);
+        return ("cospend".equals(data.getScheme()) || "cospend+http".equals(data.getScheme()))
+            && data.getPathSegments().size() >= 2;
     }
     protected String getPassword() {
         return newProjectPassword.getText().toString();

@@ -3219,6 +3219,9 @@ public class BillsListViewActivity extends AppCompatActivity implements ItemAdap
                     long projectId = intent.getLongExtra(BROADCAST_PROJECT_ID, 0);
                     if (projectId != 0) {
                         DBProject project = db.getProject(projectId);
+                        if (project == null) {
+                            return;
+                        }
                         String dialogContent = getString(R.string.sync_error_dialog_full_content, project.getName(), errorMessage);
 
                         android.app.AlertDialog.Builder builder;

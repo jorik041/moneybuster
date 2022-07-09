@@ -13,6 +13,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <!-- For QRCode scanner -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false"/>
     <uses-permission android:name="android.permission.VIBRATE" />
     <!-- For SSO account import -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>

@@ -8,16 +8,21 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.budiyev.android.codescanner.CodeScanner;
+import com.budiyev.android.codescanner.CodeScannerView;
+import com.budiyev.android.codescanner.DecodeCallback;
 import com.google.zxing.Result;
 
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
+import net.eneiluj.moneybuster.R;
 
-public class QrCodeScanner extends AppCompatActivity implements ZXingScannerView.ResultHandler {
-    private ZXingScannerView mScannerView;
+public class QrCodeScanner extends AppCompatActivity {
+    private CodeScanner mCodeScanner;
 
     private static final String TAG = QrCodeScanner.class.getSimpleName();
 
@@ -28,32 +33,44 @@ public class QrCodeScanner extends AppCompatActivity implements ZXingScannerView
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
-        // Programmatically initialize the scanner view
-        mScannerView = new ZXingScannerView(this);
-        // Set the scanner view as the content view
-        setContentView(mScannerView);
         ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.CAMERA }, PERMISSION_CAMERA);
+
+        setContentView(R.layout.activity_code_scanner);
+        CodeScannerView scannerView = findViewById(R.id.scanner_view);
+        mCodeScanner = new CodeScanner(this, scannerView);
+        mCodeScanner.setDecodeCallback(new DecodeCallback() {
+            @Override
+            public void onDecoded(@NonNull final Result result) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        handleResult(result);
+                    }
+                });
+            }
+        });
+        scannerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCodeScanner.startPreview();
+            }
+        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        // Register ourselves as a handler for scan results.
-        mScannerView.setResultHandler(this);
-        // Start camera on resume
-        mScannerView.startCamera();
+        mCodeScanner.startPreview();
         if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[Scanner onResume]"); }
     }
 
     @Override
     public void onPause() {
-        super.onPause();
-        // Stop camera on pause
-        mScannerView.stopCamera();
+        mCodeScanner.releaseResources();
         if (BillsListViewActivity.DEBUG) { Log.d(TAG, "[Scanner onPause]"); }
+        super.onPause();
     }
 
-    @Override
     public void handleResult(Result rawResult) {
         // Do something with the result here
         // Prints scan results
